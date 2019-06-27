@@ -5,214 +5,226 @@
     <title>EventHub</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
-      .festa {
-        color:#e69200;
-      }
+        .festa {
+            color:#e69200;
+        }
 
-      .incontro {
-        color: #03406a;
-      }
+        .incontro {
+            color: #03406a;
+        }
 
-      .sport {
-        color: #2b8e00;
-      }
+        .sport {
+            color: #2b8e00;
+        }
 
-      .festaBadge {
-        background-color: white;
-        border: solid 1px #e69200;
-        color: #e69200;
-        font-size: 100%;
-      }
+        .festaBadge {
+            background-color: white;
+            border: solid 1px #e69200;
+            color: #e69200;
+            font-size: 100%;
+        }
 
-      .incontroBadge {
-        background-color: white;
-        border: solid 1px #03406a;
-        color: #03406a;
-        font-size: 100%;
-      }
+        .incontroBadge {
+            background-color: white;
+            border: solid 1px #03406a;
+            color: #03406a;
+            font-size: 100%;
+        }
 
-      .sportBadge {
-        background-color: white;
-        border: solid 1px #2b8e00;
-        color: #2b8e00;
-        font-size: 100%;
-      }
+        .sportBadge {
+            background-color: white;
+            border: solid 1px #2b8e00;
+            color: #2b8e00;
+            font-size: 100%;
+        }
 
-      a.festaButton, a.sportButton, a.incontroButton {
-        width: 100px;
-      }
+        a.festaButton, a.sportButton, a.incontroButton {
 
-      a.festaButtonPrimary {
-        background-color: #e69200;
-        border-color: #e69200;
-        color: white;
-      }
+        }
 
-      a.sportButtonPrimary {
-        background-color: #2b8e00;
-        border-color: #2b8e00;
-        color: white;
-      }
+        a.festaButtonPrimary {
+            background-color: #e69200;
+            border-color: #e69200;
+            color: white;
+        }
 
-      a.incontroButtonPrimary {
-        background-color: #03406a;
-        border-color: #03406a;
-        color: white;
-      }
+        a.sportButtonPrimary {
+            background-color: #2b8e00;
+            border-color: #2b8e00;
+            color: white;
+        }
 
-      a.festaButtonSecondary {
-        background-color: white;
-        border-color: #e69200;
-        color: #e69200;
-      }
+        a.incontroButtonPrimary {
+            background-color: #03406a;
+            border-color: #03406a;
+            color: white;
+        }
 
-      a.sportButtonSecondary {
-        background-color: white;
-        border-color: #2b8e00;
-        color: #2b8e00;
-      }
+        a.festaButtonSecondary {
+            background-color: white;
+            border-color: #e69200;
+            color: #e69200;
+        }
 
-      a.incontroButtonSecondary {
-        background-color: white;
-        border-color: #03406a;
-        color: #03406a;
-      }
+        a.sportButtonSecondary {
+            background-color: white;
+            border-color: #2b8e00;
+            color: #2b8e00;
+        }
 
-      .eventoCard {
-        width:90%;
-        margin: 2% auto;
-      }
+        a.incontroButtonSecondary {
+            background-color: white;
+            border-color: #03406a;
+            color: #03406a;
+        }
+
+        .eventoCard {
+            width:90%;
+            margin: 2% auto;
+        }
     </style>
 </head>
-<body>
+<body class="container-fluid">
 
-  <div class="card eventoCard">
-      <div class="card bg-dark" id="locandina&evento">
-          <img src="../petri.png" class="card-img" alt="locandina evento" style="min-height: 300px">
-          <div class="card-img-overlay text-white">
-              <div class="d-flex align-items-start flex-column h-100">
-                <div class="container-fluid">
-                  <div class="row">
-                      <div class="col-8">
-                          <h5 class="card-title">Evento della Madonna</h5>
-                          <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
-                      </div>
-                      <div class="col-4 d-flex justify-content-end">
-                          <h5 class="card-title">0000</h5>
-                      </div>
-                  </div>
-                </div>
-                <div class="container-fluid mt-auto mb-2">
-                  <div class="row">
-                      <div class="col-12 card-text">
-                          Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
-                      </div>
-                  </div>
-                </div>
+<nav class="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
+    <h1 class="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold">EH</h1>
+    <form class="col-10 form-inline container-fluid px-1">
+        <div class="row w-100 mx-0">
+            <label for="tf-search" class="d-none">Search field</label>
+            <label for="btn-search" class="d-none">Search button</label>
+            <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa" class="col-10 form-control" />
+            <button id="btn-search" name="btn-search" class="col-auto ml-auto btn btn-success " type="submit">
+                <em class="fa fa-search" aria-hidden="true"></em>
+            </button>
+        </div>
+    </form>
+</nav>
 
-              </div>
-          </div>
-      </div>
-      <div class="card-body" id="bottoni&tag">
-          <div class="container-fluid py-2">
-              <div class="row">
-                  <div class="col-3 my-auto">
-                      <a href="#" class="badge badge-pill festa festaBadge">#Festa</a>
-                  </div>
-                  <div class="col-9 d-flex justify-content-end">
-                      <a href="#" class="btn btn-outline-primary festaButton festaButtonSecondary mr-4">Segui</a>
-                      <a href="#" class="btn btn-primary festaButton festaButtonPrimary">Partecipa</a>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="card eventoCard">
-      <div class="card bg-dark" id="locandina&evento">
-          <img src="../petri.png" class="card-img" alt="locandina evento" style="min-height: 300px">
-          <div class="card-img-overlay text-white">
-              <div class="d-flex align-items-start flex-column h-100">
-                <div class="container-fluid">
-                  <div class="row">
-                      <div class="col-8">
-                          <h5 class="card-title">Evento della Madonna</h5>
-                          <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
-                      </div>
-                      <div class="col-4 d-flex justify-content-end">
-                          <h5 class="card-title">0000</h5>
-                      </div>
-                  </div>
+<div class="row">
+    <div class="col-11 card my-2 mx-auto">
+        <div class="card bg-dark" id="locandina&evento">
+            <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
+            <div class="card-img-overlay text-white">
+                <div class="d-flex align-items-start flex-column h-100">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title">Evento della Madonna</h5>
+                                <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
+                            </div>
+                            <div class="col-4 d-flex justify-content-end">
+                                <h5 class="card-title">0000</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid mt-auto mb-2">
+                        <div class="row">
+                            <div class="col-12 card-text">
+                                Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="container-fluid mt-auto mb-2">
-                  <div class="row">
-                      <div class="col-12 card-text">
-                          Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
-                      </div>
-                  </div>
+            </div>
+        </div>
+        <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
+            <div class="row">
+                <div class="col-3 my-auto">
+                    <a href="#" class="badge badge-pill festa festaBadge">#Festa</a>
                 </div>
-
-              </div>
-          </div>
-      </div>
-      <div class="card-body" id="bottoni&tag">
-          <div class="container-fluid py-2">
-              <div class="row">
-                  <div class="col-3 my-auto">
-                      <a href="#" class="badge badge-pill incontro incontroBadge">#Incontro</a>
-                  </div>
-                  <div class="col-9 d-flex justify-content-end">
-                      <a href="#" class="btn btn-outline-primary incontroButton incontroButtonSecondary mr-4">Segui</a>
-                      <a href="#" class="btn btn-primary incontroButton incontroButtonPrimary">Partecipa</a>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="card eventoCard">
-      <div class="card bg-dark" id="locandina&evento">
-          <img src="../petri.png" class="card-img" alt="locandina evento" style="min-height: 300px">
-          <div class="card-img-overlay text-white">
-              <div class="d-flex align-items-start flex-column h-100">
-                <div class="container-fluid">
-                  <div class="row">
-                      <div class="col-8">
-                          <h5 class="card-title">Evento della Madonna</h5>
-                          <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
-                      </div>
-                      <div class="col-4 d-flex justify-content-end">
-                          <h5 class="card-title">0000</h5>
-                      </div>
-                  </div>
+                <div class="col-9 d-flex justify-content-end">
+                    <a href="#" class="btn festaButton festaButtonSecondary">Segui</a>
+                    <a href="#" class="btn festaButton festaButtonPrimary ml-2">Partecipa</a>
                 </div>
-                <div class="container-fluid mt-auto mb-2">
-                  <div class="row">
-                      <div class="col-12 card-text">
-                          Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
-                      </div>
-                  </div>
-                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-              </div>
-          </div>
-      </div>
-      <div class="card-body" id="bottoni&tag">
-          <div class="container-fluid py-2">
-              <div class="row">
-                  <div class="col-3 my-auto">
-                      <a href="#" class="badge badge-pill sport sportBadge">#Sport</a>
-                  </div>
-                  <div class="col-9 d-flex justify-content-end">
-                      <a href="#" class="btn btn-outline-primary sportButton sportButtonSecondary mr-4">Segui</a>
-                      <a href="#" class="btn btn-primary sportButton sportButtonPrimary">Partecipa</a>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+<div class="row">
+    <div class="col-11 card my-2 mx-auto">
+        <div class="card bg-dark" id="locandina&evento">
+            <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
+            <div class="card-img-overlay text-white">
+                <div class="d-flex align-items-start flex-column h-100">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title">Evento della Madonna</h5>
+                                <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
+                            </div>
+                            <div class="col-4 d-flex justify-content-end">
+                                <h5 class="card-title">0000</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid mt-auto mb-2">
+                        <div class="row">
+                            <div class="col-12 card-text">
+                                Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
+            <div class="row">
+                <div class="col-3 my-auto">
+                    <a href="#" class="badge badge-pill incontro incontroBadge">#Incontro</a>
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    <a href="#" class="btn incontroButton incontroButtonSecondary">Segui</a>
+                    <a href="#" class="btn incontroButton incontroButtonPrimary ml-2">Partecipa</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-11 card my-2 mx-auto">
+        <div class="card bg-dark" id="locandina&evento">
+            <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
+            <div class="card-img-overlay text-white">
+                <div class="d-flex align-items-start flex-column h-100">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title">Evento della Madonna</h5>
+                                <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
+                            </div>
+                            <div class="col-4 d-flex justify-content-end">
+                                <h5 class="card-title">0000</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid mt-auto mb-2">
+                        <div class="row">
+                            <div class="col-12 card-text">
+                                Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
+            <div class="row">
+                <div class="col-3 my-auto">
+                    <a href="#" class="badge badge-pill sport sportBadge">#Sport</a>
+                </div>
+                <div class="col-9 d-flex justify-content-end">
+                    <a href="#" class="btn sportButton sportButtonSecondary">Segui</a>
+                    <a href="#" class="btn sportButton sportButtonPrimary ml-2">Partecipa</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 
