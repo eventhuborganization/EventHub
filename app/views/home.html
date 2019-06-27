@@ -5,7 +5,7 @@
     <title>EventHub</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
     <style>
         .festa {
@@ -85,6 +85,10 @@
             width:90%;
             margin: 2% auto;
         }
+
+        .main-container {
+            margin-bottom: 60px;
+        }
     </style>
 </head>
 <body class="container-fluid">
@@ -103,127 +107,137 @@
     </form>
 </nav>
 
-<div class="row">
-    <div class="col-11 card my-2 mx-auto">
-        <div class="card bg-dark" id="locandina&evento">
-            <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
-            <div class="card-img-overlay text-white">
-                <div class="d-flex align-items-start flex-column h-100">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-8">
-                                <h5 class="card-title">Evento della Madonna</h5>
-                                <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
-                            </div>
-                            <div class="col-4 d-flex justify-content-end">
-                                <h5 class="card-title">0000</h5>
+<div class="main-container">
+    <div class="row">
+        <div class="col-11 card my-2 mx-auto">
+            <div class="card bg-dark" id="locandina&evento">
+                <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
+                <div class="card-img-overlay text-white">
+                    <div class="d-flex align-items-start flex-column h-100">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h5 class="card-title">Evento della Madonna</h5>
+                                    <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
+                                </div>
+                                <div class="col-4 d-flex justify-content-end">
+                                    <h5 class="card-title">0000</h5>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="container-fluid mt-auto mb-2">
-                        <div class="row">
-                            <div class="col-12 card-text">
-                                Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                        <div class="container-fluid mt-auto mb-2">
+                            <div class="row">
+                                <div class="col-12 card-text">
+                                    Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
-            <div class="row">
-                <div class="col-3 my-auto">
-                    <a href="#" class="badge badge-pill festa festaBadge">#Festa</a>
+            <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
+                <div class="row">
+                    <div class="col-3 my-auto">
+                        <a href="#" class="badge badge-pill festa festaBadge">#Festa</a>
+                    </div>
+                    <div class="col-9 d-flex justify-content-end">
+                        <a href="#" class="btn festaButton festaButtonSecondary">Segui</a>
+                        <a href="#" class="btn festaButton festaButtonPrimary ml-2">Partecipa</a>
+                    </div>
                 </div>
-                <div class="col-9 d-flex justify-content-end">
-                    <a href="#" class="btn festaButton festaButtonSecondary">Segui</a>
-                    <a href="#" class="btn festaButton festaButtonPrimary ml-2">Partecipa</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-11 card my-2 mx-auto">
+            <div class="card bg-dark" id="locandina&evento">
+                <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
+                <div class="card-img-overlay text-white">
+                    <div class="d-flex align-items-start flex-column h-100">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h5 class="card-title">Evento della Madonna</h5>
+                                    <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
+                                </div>
+                                <div class="col-4 d-flex justify-content-end">
+                                    <h5 class="card-title">0000</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid mt-auto mb-2">
+                            <div class="row">
+                                <div class="col-12 card-text">
+                                    Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
+                <div class="row">
+                    <div class="col-3 my-auto">
+                        <a href="#" class="badge badge-pill incontro incontroBadge">#Incontro</a>
+                    </div>
+                    <div class="col-9 d-flex justify-content-end">
+                        <a href="#" class="btn incontroButton incontroButtonSecondary">Segui</a>
+                        <a href="#" class="btn incontroButton incontroButtonPrimary ml-2">Partecipa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-11 card my-2 mx-auto">
+            <div class="card bg-dark" id="locandina&evento">
+                <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
+                <div class="card-img-overlay text-white">
+                    <div class="d-flex align-items-start flex-column h-100">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h5 class="card-title">Evento della Madonna</h5>
+                                    <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
+                                </div>
+                                <div class="col-4 d-flex justify-content-end">
+                                    <h5 class="card-title">0000</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid mt-auto mb-2">
+                            <div class="row">
+                                <div class="col-12 card-text">
+                                    Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
+                <div class="row">
+                    <div class="col-3 my-auto">
+                        <a href="#" class="badge badge-pill sport sportBadge">#Sport</a>
+                    </div>
+                    <div class="col-9 d-flex justify-content-end">
+                        <a href="#" class="btn sportButton sportButtonSecondary">Segui</a>
+                        <a href="#" class="btn sportButton sportButtonPrimary ml-2">Partecipa</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-11 card my-2 mx-auto">
-        <div class="card bg-dark" id="locandina&evento">
-            <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
-            <div class="card-img-overlay text-white">
-                <div class="d-flex align-items-start flex-column h-100">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-8">
-                                <h5 class="card-title">Evento della Madonna</h5>
-                                <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
-                            </div>
-                            <div class="col-4 d-flex justify-content-end">
-                                <h5 class="card-title">0000</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container-fluid mt-auto mb-2">
-                        <div class="row">
-                            <div class="col-12 card-text">
-                                Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
-            <div class="row">
-                <div class="col-3 my-auto">
-                    <a href="#" class="badge badge-pill incontro incontroBadge">#Incontro</a>
-                </div>
-                <div class="col-9 d-flex justify-content-end">
-                    <a href="#" class="btn incontroButton incontroButtonSecondary">Segui</a>
-                    <a href="#" class="btn incontroButton incontroButtonPrimary ml-2">Partecipa</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-11 card my-2 mx-auto">
-        <div class="card bg-dark" id="locandina&evento">
-            <img src="../public/images/aaa.png" class="card-img" alt="locandina evento" style="min-height: 300px">
-            <div class="card-img-overlay text-white">
-                <div class="d-flex align-items-start flex-column h-100">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-8">
-                                <h5 class="card-title">Evento della Madonna</h5>
-                                <h6 class="card-subtitle text-muted">Organizzazione SPA</h6>
-                            </div>
-                            <div class="col-4 d-flex justify-content-end">
-                                <h5 class="card-title">0000</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container-fluid mt-auto mb-2">
-                        <div class="row">
-                            <div class="col-12 card-text">
-                                Lorem ipsum dolor sit amet, soluta regione urbanitas vis in, qui elit populo ut.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body container-fluid py-2 px-0" id="bottoni&tag">
-            <div class="row">
-                <div class="col-3 my-auto">
-                    <a href="#" class="badge badge-pill sport sportBadge">#Sport</a>
-                </div>
-                <div class="col-9 d-flex justify-content-end">
-                    <a href="#" class="btn sportButton sportButtonSecondary">Segui</a>
-                    <a href="#" class="btn sportButton sportButtonPrimary ml-2">Partecipa</a>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
+    <div class="col text-center my-auto"><a><em class="fas fa-map-marked-alt fa-lg"></em></a></div>
+    <div class="col text-center my-auto"><a><em class="fas fa-user fa-lg"></em></a></div>
+    <div class="col text-center my-auto"><a><em class="fas fa-home fa-2x bg-primary text-white rounded-circle p-2"></em></a></div>
+    <div class="col text-center my-auto"><a><em class="fas fa-users fa-lg"></em></a></div>
+    <div class="col text-center my-auto"><a><em class="fas fa-bell fa-lg"></em></a></div>
 </div>
 
 </body>
