@@ -30,3 +30,13 @@ body, html {
   padding: 20px;
   text-align: center;
 }
+
+.btn {
+  width: 40%;
+}
+
+@media screen and (min-width: 800px) {
+  .btn {
+    width: 20%;
+  }
+}
