@@ -80,5 +80,20 @@ footer em {
 }
 
 .floating-button {
-  margin-bottom: 25%;
+  margin-bottom: 30%;
+}
+
+.event-name {
+    font-size:1.35rem;
+    font-weight:500;
+    margin-top:0;
+    color: white;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+.event-text {
+    font-size:1rem;
+    font-weight:500;
+    margin-top:0;
+    color: white !important;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
