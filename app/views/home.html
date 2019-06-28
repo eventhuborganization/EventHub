@@ -6,90 +6,8 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="../public/stylesheets/home.css">
 
-    <style>
-        .festa {
-            color:#e69200;
-        }
-
-        .incontro {
-            color: #03406a;
-        }
-
-        .sport {
-            color: #2b8e00;
-        }
-
-        .festaBadge {
-            background-color: white;
-            border: solid 1px #e69200;
-            color: #e69200;
-            font-size: 100%;
-        }
-
-        .incontroBadge {
-            background-color: white;
-            border: solid 1px #03406a;
-            color: #03406a;
-            font-size: 100%;
-        }
-
-        .sportBadge {
-            background-color: white;
-            border: solid 1px #2b8e00;
-            color: #2b8e00;
-            font-size: 100%;
-        }
-
-        a.festaButton, a.sportButton, a.incontroButton {
-
-        }
-
-        a.festaButtonPrimary {
-            background-color: #e69200;
-            border-color: #e69200;
-            color: white;
-        }
-
-        a.sportButtonPrimary {
-            background-color: #2b8e00;
-            border-color: #2b8e00;
-            color: white;
-        }
-
-        a.incontroButtonPrimary {
-            background-color: #03406a;
-            border-color: #03406a;
-            color: white;
-        }
-
-        a.festaButtonSecondary {
-            background-color: white;
-            border-color: #e69200;
-            color: #e69200;
-        }
-
-        a.sportButtonSecondary {
-            background-color: white;
-            border-color: #2b8e00;
-            color: #2b8e00;
-        }
-
-        a.incontroButtonSecondary {
-            background-color: white;
-            border-color: #03406a;
-            color: #03406a;
-        }
-
-        .eventoCard {
-            width:90%;
-            margin: 2% auto;
-        }
-
-        .main-container {
-            margin-bottom: 60px;
-        }
-    </style>
 </head>
 <body class="container-fluid">
 
@@ -101,11 +19,19 @@
             <label for="btn-search" class="d-none">Search button</label>
             <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa" class="col-10 form-control" />
             <button id="btn-search" name="btn-search" class="col-auto ml-auto btn btn-success " type="submit">
-                <em class="fa fa-search" aria-hidden="true"></em>
+                <em class="fas fa-search" aria-hidden="true"></em>
             </button>
         </div>
     </form>
 </nav>
+
+<div class="row floating-button fixed-bottom">
+  <div class="col-12">
+    <button class="btn btn-lg btn-primary rounded-circle float-right mr-5" type="submit">
+        <em class="fas fa-plus" aria-hidden="true"></em>
+    </button>
+  </div>
+</div>
 
 <div class="main-container">
     <div class="row">
@@ -232,13 +158,13 @@
     </div>
 </div>
 
-<div class="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
-    <div class="col text-center my-auto"><a><em class="fas fa-map-marked-alt fa-lg"></em></a></div>
-    <div class="col text-center my-auto"><a><em class="fas fa-user fa-lg"></em></a></div>
-    <div class="col text-center my-auto"><a><em class="fas fa-home fa-2x bg-primary text-white rounded-circle p-2"></em></a></div>
-    <div class="col text-center my-auto"><a><em class="fas fa-users fa-lg"></em></a></div>
-    <div class="col text-center my-auto"><a><em class="fas fa-bell fa-lg"></em></a></div>
-</div>
+<footer class="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
+    <div class="col text-center my-auto"><a href="#"><em class="fas fa-map-marked-alt fa-lg"></em></a></div>
+    <div class="col text-center my-auto"><a href="#"><em class="fas fa-user fa-lg"></em></a></div>
+    <div class="col text-center my-auto"><a href="#"><em class="fas fa-home fa-2x bg-primary text-white rounded-circle p-2"></em></a></div>
+    <div class="col text-center my-auto"><a href="#"><em class="fas fa-users fa-lg"></em></a></div>
+    <div class="col text-center my-auto"><a href="#"><em class="fas fa-bell fa-lg"></em></a></div>
+</footer>
 
 </body>
 
