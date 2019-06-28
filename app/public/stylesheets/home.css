@@ -90,10 +90,16 @@ footer em {
     color: white;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
+
 .event-text {
     font-size:1rem;
     font-weight:500;
     margin-top:0;
     color: white !important;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+.card-img {
+  max-height: 300px;
+  min-height: 250px;
 }
