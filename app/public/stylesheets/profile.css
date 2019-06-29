@@ -4,6 +4,12 @@
     text-shadow: -1px 0 darkblue, 0 1px darkblue, 1px 0 darkblue, 0 -1px darkblue;
 }
 
+.btn-remove {
+    border-width: 2px !important;
+    background-color: rgba(0,0,0, 0.4);
+    text-shadow: -1px 0 darkred, 0 1px darkred, 1px 0 darkred, 0 -1px darkred;
+}
+
 .personal-badge {
     border-width: medium !important;
 }

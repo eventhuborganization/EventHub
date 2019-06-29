@@ -29,7 +29,10 @@
                 <div class="d-flex align-items-start flex-column h-100">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col d-flex justify-content-end">
+                            <div class="col d-flex justify-content-start align-items-center px-2">
+                                <div class="border border-danger rounded-pill px-2 py-1 btn-remove"><em class="fas fa-minus"></em> Rimuovi</div>
+                            </div>
+                            <div class="col d-flex justify-content-end align-items-center px-2">
                                 <em class="fas fa-cog fa-lg"></em>
                             </div>
                         </div>
@@ -41,6 +44,16 @@
                                     <em class="fas fa-trophy fa-lg"></em>
                                     <span class="ml-3">0000</span>
                                 </div>
+                                <form class="d-none" action="#" method="post">
+                                    <button class="btn btn-lg btn-primary rounded-circle" type="submit">
+                                        <em class="fas fa-plus" aria-hidden="true"></em>
+                                    </button>
+                                </form>
+                                <form class="d-none" action="#" method="post">
+                                    <button class="btn btn-lg btn-primary rounded-circle" type="submit">
+                                        <em class="fas fa-street-view" aria-hidden="true"></em>
+                                    </button>
+                                </form>
                                 <div class="text-primary border border-primary rounded-pill d-flex justify-content-between px-3 py-1 align-items-center profile-badge">
                                     <em class="fas fa-address-card fa-lg"></em>
                                     <span class="ml-3">0000</span>
