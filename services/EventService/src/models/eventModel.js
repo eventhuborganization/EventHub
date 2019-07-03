@@ -13,6 +13,9 @@ var EventSchema = new Schema({
         type: String,
         required: 'A creator is required'
     },
+    location:{
+        type: String
+    },
     visibility:{
         type: String,
         default: 'Private'
@@ -25,10 +28,10 @@ var EventSchema = new Schema({
         type: String,
         required: 'A subtipology is required'
     },
-    eventData:{
+    eventDate:{
         type: Date
     },
-    creationData:{
+    creationDate:{
         type: Date,
         default: Date.now
     }

@@ -1,12 +1,31 @@
 module.exports = function(app) {
     var eventController = require("../controllers/eventController")
-    
-    app.get("/event/getById/:id", eventController.getEvent)
-    
-    app.get("/event/getByTipology/:tipology", eventController.getEventByTipology)
-    
-    app.get("/event/getByCreator/:creator", eventController.getEventByCreator)
-    
+    //app.get("/", eventController.newEvent)
+
+    app.route("/event")
+    .get(eventController.getEvent)
+
+
+    app.route("/event/id/:id") //selezione evento per id
+    .get(eventController.getEventById)
+    .put() //Update Event
+    .delete() //delete Event
+
+    app.route("/event/tipology/:tipology")//selezione evento per tipologia
+    .get(eventController.getEventByTipology)
+    .put()
+    .delete()
+
+    app.route("/event/creator/:creator")//selezione evento per creatore
+    .get(eventController.getEventByCreator)
+    .put()
+    .delete()
+
+    // app.route('/movies/:id')
+    // .get(moviesController.read_movie)
+    // .put(moviesController.update_movie)
+    // .delete(moviesController.delete_movie);
+
     // app.post("/event/new", (req,res) => {
     //     if(req.body.event.name &&
     //         req.body.even.description &&
