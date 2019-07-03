@@ -1,0 +1,9 @@
+.card-img {
+  max-height: 300px;
+  min-height: 250px;
+}
+
+.floating-button {
+  margin-left: 85%;
+  margin-bottom: 22%;
+}

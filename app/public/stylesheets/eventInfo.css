@@ -1,0 +1,21 @@
+.buttonEvent {
+    width: 20%;
+}
+
+.google-map {
+  max-height: 10% !important;
+}
+
+.contact-info p {
+  font-size: larger;
+}
+
+.contact-info div.row {
+  margin-top: 1%;
+}
+
+@media screen and (min-width: 800px) {
+    .btn {
+      width: 10%;
+    }
+  }
