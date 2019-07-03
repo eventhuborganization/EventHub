@@ -2,6 +2,10 @@
     width: 20%;
 }
 
+.google-map {
+  max-height: 10% !important;
+}
+
 .contact-info p {
   font-size: larger;
 }
