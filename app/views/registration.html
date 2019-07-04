@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EventHub</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="../public/stylesheets/registration.css">
+
+</head>
+<body class="container-fluid">
+
+  <div class="row bg-image"></div>
+
+  <main class="row">
+    <form action="" method="post" class="col-11 col-md-6 bg-text">
+        <div class="form-group row">
+            <div class="col text-center">
+                <h3>EventHub</h3>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-4 col-md-3 col-form-label">Nome <span class="text-danger">*</span></label>
+            <input type="text" id="name" class="form-control col-7 col-md-8 ml-md-3" name="name" placeholder="Mario" required>
+        </div>
+        <!--<div class="form-group row">
+            <label for="surname" class="col-4 col-md-3 col-form-label">Cognome <span class="text-danger">*</span></label>
+            <input type="password" id="surname" class="form-control col-7 col-md-8 ml-md-3" name="surname" placeholder="Rossi" required>
+        </div>-->
+        <div class="form-group row">
+            <div class="col-4 col-md-3 d-flex flex-column justify-content-center">
+                <label class="col-form-label">Sesso <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-8 col-md-8 toggle">
+                <input type="radio" name="radioSex" id="radioMale" value="male" checked="checked">
+                <label for="radioMale">Maschio</label>
+                <input type="radio" name="radioSex" id="radioFemale" value="female">
+                <label for="radioFemale">Femmina</label>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="birthdate" class="col-4 col-md-3 col-form-label">Data di nascita<span class="text-danger">*</span></label>
+            <div class="col-7 col-md-8 ml-md-3 my-auto px-0">
+                <input type="date" id="birthdate" class="form-control" name="birthdate" value="2001-09-11" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="tel" class="col-4 col-md-3 col-form-label">Numero di telefono</label>
+            <div class="col-7 col-md-8 ml-md-3 my-auto px-0">
+                <input type="tel" id="tel" class="form-control" name="tel" placeholder="333 4444444">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="city" class="col-4 col-md-3 col-form-label">Città <span class="text-danger">*</span></label>
+            <input type="text" id="city" class="form-control col-7 col-md-8 ml-md-3" name="city" placeholder="Imola" required>
+        </div>
+        <div class="form-group row">
+            <label for="province" class="col-4 col-md-3 col-form-label">Provincia <span class="text-danger">*</span></label>
+            <input type="text" id="province" class="form-control col-7 col-md-8 ml-md-3" name="province" placeholder="Bologna" required>
+        </div>
+        <div class="form-group row">
+            <label for="address" class="col-4 col-md-3 col-form-label">Indirizzo <span class="text-danger">*</span></label>
+            <input type="text" id="address" class="form-control col-7 col-md-8 ml-md-3" name="address" placeholder="Via tal del tali, 15" required>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="col-4 col-md-3 col-form-label">Email <span class="text-danger">*</span></label>
+            <input type="email" id="email" class="form-control col-7 col-md-8 ml-md-3" name="email" placeholder="prova@mail.com" required>
+        </div>
+        <div class="form-group row">
+            <label for="pwd" class="col-4 col-md-3 col-form-label">Password <span class="text-danger">*</span></label>
+            <input type="password" id="pwd" class="form-control col-7 col-md-8 ml-md-3" name="pwd" placeholder="Password" required>
+        </div>
+        <div class="form-group row">
+            <label for="pwd-conf" class="col-4 col-md-3 col-form-label">Conferma password <span class="text-danger">*</span></label>
+            <div class="col-7 col-md-8 ml-md-3 my-auto px-0">
+                <input type="password" id="pwd-conf" class="form-control" name="pwd-conf" placeholder="Password" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-start">
+                <label for="p-0" class="text-danger">*obbligatorio</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-end">
+                <input type="reset" value="Cancella" class="btn btn-outline-light mr-3">
+                <input type="submit" value="Registrati" class="btn btn-light mr-3">
+            </div>
+        </div>
+    </form>
+  </main>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</html>
