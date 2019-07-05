@@ -9,28 +9,35 @@ var EventSchema = new Schema({
     description:{
         type: String
     },
-    creator:{
-        type: String,
+    organizator:{
+        type: Schema.Types.ObjectId,
         required: 'A creator is required'
     },
-    location:{
-        type: String
+    eventDate:{
+        type: Date,
+        required: 'A date is required'
     },
-    visibility:{
-        type: String,
-        default: 'Private'
+    location:{
+        type: {latitude: String, longitude: String},
+        required: 'A location is required'
+    },
+    public:{
+        type: Boolean,
+        default: false
     },
     tipology:{
-        type: String,
+        type: {name: String, subtipology: String},
         required: 'A tipology is required'
     },
-    subtipology:{
-        type: String,
-        required: 'A subtipology is required'
+    participants: [Schema.Types.ObjectId],
+    followers: [Schema.Types.ObjectId],
+    thumbnail: [String],
+    maximumParticipants: {
+        type: Number, 
+        min: 0,
+        required: 'A maximum number of participant is required'
     },
-    eventDate:{
-        type: Date
-    },
+    reviews: [Schema.Types.ObjectId],
     creationDate:{
         type: Date,
         default: Date.now
@@ -38,11 +45,12 @@ var EventSchema = new Schema({
 })
 
 //Query che seleziona gli eventi di un dato creatore
-EventSchema.query.byCreator = (creatorName)=>{
-    return this.where({creator: creatorName})
+EventSchema.query.byOrganizator = (organizzatorId)=>{
+    return this.where({'organizator': organizzatorId})
 }
 //Query che seleziona gli eventi di una data tipologia
 EventSchema.query.byTipology = (tipologyName)=>{
-    return this.where({tipology: tipologyName})
+    return this.where({'tipology.name': tipologyName})
 }
+
 module.exports = mongoose.model('Events', EventSchema);

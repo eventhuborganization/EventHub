@@ -26,9 +26,18 @@ exports.getEventById = (req, res) => {
     })
 }
 
-exports.getEventByCreator = (req, res) => {
+exports.updateEventById = (req, res) => {
+    Event.findById(req.params.id, (err, movie) => {
+        if(err){
+            res.send(err)
+        }
+        res.json(event)
+    })
+}
+
+exports.getEventByOrganizator = (req, res) => {
     if(req.params.creator){
-        Event.find().byCreator(req.params.creator).exec((err, event) => {
+        Event.find().byOrganizator(req.params.creator).exec((err, event) => {
             res.json(event);
         });
     }
@@ -43,23 +52,12 @@ exports.getEventByTipology = (req, res) => {
 }
 
 exports.newEvent = (req, res) => {
-    // var event = new Event({name: eventName,
-    // description:eventDescription,
-    // creator:eventCreator,
-    // location: position,
-    // visibility: visibility,
-    // tipology:typology,
-    // subtipology:subtypology,
-    // eventData:date})//Inserire nel database in nuovo evento.
-    var event = new Event({name: "Eventotest",
-        description:"Questa è una descrizione",
-        creator:"io",
-        location: "da qualche parte",
-        visibility: "Private",
-        tipology:"a",
-        subtipology:"a.1",
-        eventData:Date.now})//Inserire nel database in nuovo evento.
+    if(req.body.event){
+        var event = new Event(req.body.event)
     event.save((err) => {if(err) {console.log("[ERRORE] - " + err);}})
 
     res.status(200).send("Ok boss")
+    } else {
+        res.status(404).send("Campi errati")
+    }
 }
