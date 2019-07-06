@@ -52,18 +52,21 @@ var UserSchema = new Schema({
     eventsFollowed: [Schema.Types.ObjectId],
     badges: {
         type: [Schema.Types.ObjectId],
-        required: true
+        required: true,
+        default: []
     },
     points: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     actions: {
         type: [{
             action: Schema.Types.ObjectId,
             date: Date
         }],
-        required: true
+        required: true,
+        default: []
     },
     reviewsDone: [Schema.Types.ObjectId],
     reviewsReceived: [Schema.Types.ObjectId]
@@ -135,10 +138,6 @@ var ActionSchema = new Schema({
         required: true
     }
 });
-
-UserSchema.query.byId = (name) => {
-    return this.where({ _id: name });
-};
 
 module.exports = mongoose.model('Users', UserSchema);
 module.exports = mongoose.model('Reviews', ReviewSchema);
