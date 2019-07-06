@@ -2,19 +2,19 @@ module.exports = function(app) {
     var controller = require("../controllers/controller");
 
     app.route("/users")
-        .post();
+        .post(controller.createNewUser);
 
     app.route("/users/:uuid")
-        .get()
-        .put()
-        .delete();
+        .get(controller.getUserInformations)
+        .put(controller.updateUserInformations)
+        .delete(controller.deleteUser);
 
     app.route("/users/credentials")
-        .post()
-        .put();
+        .post(controller.userLogin)
+        .put(controller.updateUserCredentials);
 
     app.route("/users/:uuid/notifications/:fromIndex")
-        .get();
+        .get(controller.getUserNotifications);
 
     app.route("/users/:uuid/notifications")
         .post();
