@@ -42,7 +42,7 @@ var UserSchema = new Schema({
     },
     groups: [Schema.Types.ObjectId],
     notifications: [{
-        notTipology: Number,
+        tipology: Number,
         sender: Schema.Types.ObjectId,
         timestamp: Date,
         read: Boolean
@@ -136,13 +136,8 @@ var ActionSchema = new Schema({
     }
 });
 
-
-//Query che seleziona gli eventi di un dato creatore
-/*EventSchema.query.byCreator = (creatorName)=>{
-    return this.where({creator: creatorName})
-}
-//Query che seleziona gli eventi di una data tipologia
-EventSchema.query.byTipology = (tipologyName)=>{
-    return this.where({tipology: tipologyName})
-}*/
-module.exports = mongoose.model('users', UserSchema);
+module.exports = mongoose.model('Users', UserSchema);
+module.exports = mongoose.model('Reviews', ReviewSchema);
+module.exports = mongoose.model('Groups', GroupSchema);
+module.exports = mongoose.model("Actions", ActionSchema);
+module.exports = mongoose.model("Badges", BadgeSchema);
