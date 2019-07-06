@@ -136,6 +136,10 @@ var ActionSchema = new Schema({
     }
 });
 
+UserSchema.query.byId = (name) => {
+    return this.where({ _id: name });
+};
+
 module.exports = mongoose.model('Users', UserSchema);
 module.exports = mongoose.model('Reviews', ReviewSchema);
 module.exports = mongoose.model('Groups', GroupSchema);
