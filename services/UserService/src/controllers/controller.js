@@ -41,6 +41,12 @@ function sha512(password, salt){
 
 exports.createNewUser = (req, res) => {
     let newUser = req.body;
+    if( !(newUser.name 
+        && newUser.organization 
+        && newUser.email
+        && newUser.password)) {
+        res.status(400).end();
+    }
     newUser.salt = genRandomString(16);
     newUser.password = sha512(newUser.password, newUser.salt);
     let dbUser = new Users(newUser);
@@ -66,6 +72,9 @@ exports.deleteUser = (req, res) => {
 
 exports.userLogin = (req, res) => {
     let data = req.body;
+    if( !data.email || !data.password) {
+        res.status(400).end();
+    }
     Users.findOne({ email: data.email }, function(err, user){
         if(err){
             res.status(500).send({
