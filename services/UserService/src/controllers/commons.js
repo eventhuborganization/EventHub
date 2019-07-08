@@ -54,5 +54,9 @@ function badRequest(res) {
 }
 
 function userNotFound(res) {
-    res.status(404).send({ description: 'User not found.'});
+    notFound(res,{ description: 'User not found.'});
+}
+
+function notFound(res, jsonData) {
+    res.status(404).send(jsonData);
 }

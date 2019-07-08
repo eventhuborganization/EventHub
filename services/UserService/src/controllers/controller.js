@@ -93,9 +93,9 @@ exports.addUserNotification = (req, res) => {
     if (req.body.tipology instanceof Number && req.body.sender instanceof Schema.Types.ObjectId && timestamp instanceof Date && read instanceof Boolean) {
         Users.findById(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
             if (err) {
-                res.status(404).end();
+                userNotFound(res);
             }
-            res.status(200).end();
+            result(res);
         });
     }
     
@@ -104,15 +104,15 @@ exports.addUserNotification = (req, res) => {
 exports.addLinkedUser = (req, res) => {
     Users.findById(req.body.uuid1, (err, user1) => {
         if (err) {
-            res.status(404).end();
+            userNotFound(res);
         }
         Users.findById(req.body.uuid2, (err, user2) => {
             if(err) {
-                res.status(404).end();
+                userNotFound(res);
             }
             user1.linkedUsers.push(req.body.uuid2);
             user2.linkedUsers.push(req.body.uuid1);
-            res.status(200).end();
+            result(res);
         });
     });
 };
@@ -120,20 +120,20 @@ exports.addLinkedUser = (req, res) => {
 exports.removeLinkedUser = (req, res) => {
     Users.findById(req.body.uuid1, (err, user1) => {
         if (err) {
-            res.status(404).end();
+            userNotFound(res);
         }
         Users.findById(req.body.uuid2, (err, user2) => {
             if(err) {
-                res.status(404).end();
+                userNotFound(res);
             }
             let index1 = user1.linkedUsers.indexOf(req.body.uuid2);
             let index2 = user2.linkedUsers.indexOf(req.body.uuid1);
             if (index1>-1 && index2>-1) {
                 user1.linkedUsers.splice(index1,1);
                 user2.linkedUsers.splice(index2,1);
-                res.status(200).end();
+                result(res);
             } else {
-                res.status(404).end();
+                notFound(res,{description: 'Link between users not found.'})
             }
         });
     });
@@ -143,9 +143,9 @@ exports.getLinkedUser = (req,res) => {
     if(req.params.uuid){
         Users.findById(req.params.uuid, (err, user) => {
             if(err){
-                res.status(404).send(err).end();
+                userNotFound(res);
             }
-            res.status(event?200:204).json(user.linkedUsers);
+            resultWithJSON(res, {linked: user.linkedUsers});
         })
     }
 };
@@ -154,9 +154,9 @@ exports.getBadgePoints = (req, res) => {
     if(req.params.uuid){
         Users.findById(req.params.uuid, (err, user) => {
             if(err){
-                res.status(404).send(err)
+                userNotFound(res);
             }
-            res.status(event?200:204).json(user.badges, user.points);
+            resultWithJSON(res, {badge: user.badges, points: user.points});
         })
     }
 };
