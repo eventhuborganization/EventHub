@@ -44,13 +44,4 @@ var EventSchema = new Schema({
     }
 })
 
-//Query che seleziona gli eventi di un dato creatore
-EventSchema.query.byOrganizator = (organizzatorId)=>{
-    return this.where({'organizator': organizzatorId})
-}
-//Query che seleziona gli eventi di una data tipologia
-EventSchema.query.byTipology = (tipologyName)=>{
-    return this.where({'tipology.name': tipologyName})
-}
-
 module.exports = mongoose.model('Events', EventSchema);

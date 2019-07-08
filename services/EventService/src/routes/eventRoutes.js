@@ -9,12 +9,12 @@ module.exports = function(app) {
     .get(eventController.getEventById)
     .put(eventController.updateEventById)
 
-    app.route("/events/:uuid/users")//selezione evento per tipologia
-    .post() //ritorna i partecipanti o i follower di un evento
-    .delete() //cancella utente e o utenti dalle partecipazioni/following
+    app.route("/events/:uuid/users")
+    .post(eventController.addUserToEvent) //ritorna i partecipanti o i follower di un evento
+    .delete(eventController.removeUserToEvent) //cancella utente e o utenti dalle partecipazioni/following
 
     app.route("/events/:uuid/reviews")//selezione evento per creatore
-    .get() //ottieni 
-    .post() //nuova recensione
+    .get(eventController.getEventReviews) //ottieni 
+    .post(eventController.addEventReviews) //nuova recensione
     
 }
