@@ -46,16 +46,18 @@ exports.createNewUser = (req, res) => {
         && newUser.email
         && newUser.password)) {
         res.status(400).end();
+    } else {
+        newUser.salt = genRandomString(16);
+        newUser.password = sha512(newUser.password, newUser.salt);
+        let dbUser = new Users(newUser);
+        dbUser.save(function(err, user) {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.status(201).json(user);
+            }
+        });
     }
-    newUser.salt = genRandomString(16);
-    newUser.password = sha512(newUser.password, newUser.salt);
-    let dbUser = new Users(newUser);
-    dbUser.save(function(err, user) {
-		if (err) {
-            res.status(500).send(err);
-        }
-		res.status(201).json(user);
-	});
 };
 
 exports.deleteUser = (req, res) => {
@@ -74,24 +76,24 @@ exports.userLogin = (req, res) => {
     let data = req.body;
     if( !data.email || !data.password) {
         res.status(400).end();
-    }
-    Users.findOne({ email: data.email }, function(err, user){
-        if(err){
-            res.status(500).send({
-                description: err
-            });
-        }
-        if(user == null){
-            res.status(404).end();
-        } else {
-            let pwd = sha512(req.params.password, user.salt);
-            if(pwd === user.password) {
-                res.status(200).end();
-            } else {
+    } else {
+        Users.findOne({ email: data.email }, function(err, user){
+            if(err){
+                res.status(500).send({
+                    description: err
+                });
+            } else if(user == null){
                 res.status(404).end();
+            } else {
+                let pwd = sha512(req.params.password, user.salt);
+                if(pwd === user.password) {
+                    res.status(200).end();
+                } else {
+                    res.status(404).end();
+                }
             }
-        }
-    });
+        });
+    }
 };
 
 exports.getUserInformations = (req, res) => {
@@ -100,8 +102,7 @@ exports.getUserInformations = (req, res) => {
             res.status(500).send({
                 description: err
             });
-        }
-        if(user == null){
+        } else if(user == null){
             res.status(404).end();
         } else {
             res.status(200).json(user);
@@ -113,6 +114,82 @@ exports.updateUserInformations = (req, res) => {
 };
 
 exports.updateUserCredentials = (req, res) => {
+    let data = req.body;
+    if(!data.email || !data.password) {
+        res.status(400).end();
+    } else {
+        Users.findOne({ email: data.email }, function(err, user){
+            if(err){
+                res.status(500).send({
+                    description: err
+                });
+            } else if(user == null){
+                res.status(404).end();
+            } else {
+                let pwd = sha512(req.params.password, user.salt);
+                if(pwd === user.password) {
+                    if(data.newEmail && data.newPassword) {
+                        let newSalt = genRandomString(16);
+                        let newPassword = sha512(newPassword, salt);
+                        Users.findOneAndUpdate(
+                            { email: data.email },
+                            { 
+                                email: data.newEmail, 
+                                password: newPassword,
+                                salt: newSalt
+                            },
+                            function(err, user){
+                                if(err){
+                                    res.status(500).send({
+                                        description: err
+                                    });
+                                } else {
+                                    res.status(200).end();
+                                }
+                            }
+                        );
+                    } else if(data.newEmail) {
+                        Users.findOneAndUpdate(
+                            { email: data.email },
+                            { email: data.newEmail },
+                            function(err, user){
+                                if(err){
+                                    res.status(500).send({
+                                        description: err
+                                    });
+                                } else {
+                                    res.status(200).end();
+                                }
+                            }
+                        );
+                    } else if(data.newPassword) {
+                        let newSalt = genRandomString(16);
+                        let newPassword = sha512(newPassword, salt);
+                        Users.findOneAndUpdate(
+                            { email: data.email },
+                            { 
+                                password: newPassword,
+                                salt: newSalt
+                            },
+                            function(err, user){
+                                if(err){
+                                    res.status(500).send({
+                                        description: err
+                                    });
+                                } else {
+                                    res.status(200).end();
+                                }
+                            }
+                        );
+                    } else {
+                        res.send(400).end();
+                    }
+                } else {
+                    res.status(404).end();
+                }
+            }
+        });
+    }
 };
 
 exports.getUserNotifications = (req, res) => {
@@ -121,8 +198,7 @@ exports.getUserNotifications = (req, res) => {
             res.status(500).send({
                 description: err
             });
-        }
-        if(user == null){
+        } else if(user == null){
             res.status(404).end();
         } else {
             let limit = req.params.fromIndex + NUM_NOTIFICATIONS_TO_SHOW;
