@@ -44,6 +44,10 @@ function isNewUserWellFormed(user){
         && user.password;
 }
 
+/**
+ * Know if a update user data is well formed
+ * @param {Object} user the update data
+ */
 function isUpdateUserDataWellFormed(user){
     return user.name
         || user.surname
@@ -126,13 +130,18 @@ function badRequest(res) {
 }
 
 /**
- * Send a not found request message over the network
+ * Send a user not found request message over the network
  * @param {*} res where to send the message
  */
 function userNotFound(res) {
     notFound(res,{ description: 'User not found.'});
 }
 
+/**
+ * Send a not found request message over the network
+ * @param {*} res where to send the message
+ * @param {*} jsonData the message to sen<d
+ */
 function notFound(res, jsonData) {
     res.status(404).send(jsonData);
 }
