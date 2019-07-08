@@ -1,6 +1,6 @@
 const httpsClient = require('https')
 
-module.exports = class EventService {
+module.exports.EventService = class EventService{
     constructor(host, port){
         // this. user = user
         // this.password = password
@@ -13,15 +13,17 @@ module.exports = class EventService {
     /**
      * Ritorna gli eventi filtrati con i valori dell'oggetto query.
      * 
+     * query = '?eventProperty=property&eventProperty2=property2' 
+     * 
      * Codici di ritorno:
      *  - 201: tutto bene risultati presenti
      *  - 204: tutto bene ma risultati non esistenti
      *  - 404: errore nella query
      * 
-     * @param {Object} query dell'evento da selezionare.
+     * @param {Object} query dell'evento da selezionare. 
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
-    getEvent(query = {}, callback = null){
+    getEvent(query = "", callback = null){
         let requestData = JSON.stringify(query)
         httpsClient.get(`${this.hostport}/events`+ requestData, callback)
     }
@@ -64,10 +66,11 @@ module.exports = class EventService {
      *  - 400: errore nell'inserimento
      * 
      * @param {ObjectId} eventUuid uuid dell'evento.
+     * @param {ObjectId} reviewsUuid uuid della recensione da aggiungere.
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
-    addEventReviews(eventUuid, callback = null){
-        data = JSON.stringify(dataToUpdate)
+    addEventReviews(eventUuid, reviewsUuid, callback = null){
+        data = JSON.stringify({reviews: reviewsUuid})
         const option = {  
             hostname: host,
             port: port,
@@ -91,7 +94,7 @@ module.exports = class EventService {
      *
      *  @param {ObjectId} eventUuid uuid dell'evento che si vuole assegnare l'aggiunta delle persone.
      * @param {Object} dataToUpdate oggetto con dento i valori da assegnare per aggiornare l'evento. L'oggetto
-     * deve avere la seguiente struttura {user : {participants: value, followers: value}}.
+     * deve avere la seguiente struttura {event : {name: '', location:{}, etc...}}.
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     updateEventById(eventUuid, dataToUpdate, callback = null){
