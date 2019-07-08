@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let request = require('request');
-let commons = require('commons');
-let security = require('security');
+let commons = require('./commons');
+let security = require('./security');
 
 let Users = mongoose.model('Users');
 let Reviews = mongoose.model('Reviews');
@@ -40,7 +40,7 @@ exports.createNewUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-    Users.deleteOne({ _id: req.params.uuid }, (err) => {
+    Users.findByIdAndDelete(req.params.uuid, function(err, user) {
         if(err) {
             internalError(res, err);
         } else {
