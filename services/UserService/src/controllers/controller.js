@@ -90,13 +90,15 @@ exports.getUserNotifications = (req, res) => {
 
 
 exports.addUserNotification = (req, res) => {
-    Users.findById(req.params.uuid, (err, user) => {
-        if (err) {
-            res.status(404).end();
-        }
-        user.notifications.push(notification);
-        res.status(200).end();
-    });
+    if (req.body.tipology instanceof Number && req.body.sender instanceof Schema.Types.ObjectId && timestamp instanceof Date && read instanceof Boolean) {
+        Users.findById(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
+            if (err) {
+                res.status(404).end();
+            }
+            res.status(200).end();
+        });
+    }
+    
 };
 
 exports.addLinkedUser = (req, res) => {
@@ -141,9 +143,9 @@ exports.getLinkedUser = (req,res) => {
     if(req.params.uuid){
         Users.findById(req.params.uuid, (err, user) => {
             if(err){
-                res.status(404).send(err)
+                res.status(404).send(err).end();
             }
-            res.status(event?201:204).json(user.linkedUsers);
+            res.status(event?200:204).json(user.linkedUsers);
         })
     }
 };
@@ -154,7 +156,7 @@ exports.getBadgePoints = (req, res) => {
             if(err){
                 res.status(404).send(err)
             }
-            res.status(event?201:204).json(user.badges, user.points);
+            res.status(event?200:204).json(user.badges, user.points);
         })
     }
 };
