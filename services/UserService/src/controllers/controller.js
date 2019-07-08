@@ -1,13 +1,16 @@
 let mongoose = require('mongoose');
 let request = require('request');
 let commons = require('./commons');
-let crypto = require('crypto');
+let security = require('./security');
+let network = require('./network');
 
 let Users = mongoose.model('Users');
 let Reviews = mongoose.model('Reviews');
 let Groups = mongoose.model('Groups');
 let Actions = mongoose.model("Actions");
 let Badges = mongoose.model("Badges");
+
+const NUM_NOTIFICATIONS_TO_SHOW = 10;
 
 /**
  * Get the user from an ID
@@ -18,89 +21,227 @@ function getUserById(userId, callback){
     Users.findById(userId, callback);
 }
 
-/**
- * Generates random string of characters i.e salt
- * @param {number} length length of the random string
- */
-function genRandomString(length){
-    return crypto.randomBytes(Math.ceil(length/2))
-            .toString('hex') /** convert to hexadecimal format */
-            .slice(0,length);   /** return required number of characters */
-}
-
-/**
- * Hash password with sha512.
- * @param {String} password list of required fields
- * @param {String} salt data to be validated
- */
-function sha512(password, salt){
-    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
-    hash.update(password);
-    return hash.digest('hex');
-}
-
 exports.createNewUser = (req, res) => {
     let newUser = req.body;
-    newUser.salt = genRandomString(16);
-    newUser.password = sha512(newUser.password, newUser.salt);
-    let dbUser = new Users(newUser);
-    dbUser.save(function(err, user) {
-		if (err) {
-            res.status(400).send(err);
-        }
-		res.status(201).json(user);
-	});
+    if(!commons.isNewUserWellFormed(newUser)) {
+        network.badRequest(res);
+    } else {
+        let password = security.hashPassword(newUser.password);
+        newUser.salt = password.salt;
+        newUser.password = password.pwd;
+        let dbUser = new Users(newUser);
+        dbUser.save(function(err, user) {
+            if (err) {
+                network.internalError(res, err);
+            } else {
+                network.userCreated(res, user);
+            }
+        });
+    }
 };
 
 exports.deleteUser = (req, res) => {
-    Users.deleteOne({ _id: req.params.uuid }, (err) => {
+    Users.findByIdAndDelete(req.params.uuid, function(err, user) {
         if(err) {
-            res.status(404).end();
+            network.internalError(res, err);
         } else {
-            res.status(200).end();
+            network.result(res);
         }
     });
 };
 
 exports.userLogin = (req, res) => {
     let data = req.body;
-    Users.findOne({ email: data.email }, function(err, user){
+    if(!commons.isLoginDataWellFormed(data)) {
+        network.userNotFound(res);
+    } else {
+        Users.findOne({ email: data.email }, function(err, user){
+            if(err){
+                network.internalError(res, err);
+            } else if(user == null){
+                network.userNotFound(res);
+            } else {
+                let pwd = security.sha512(req.params.password, user.salt);
+                if(pwd === user.password) {
+                    network.result(res);
+                } else {
+                    network.userNotFound(res);
+                }
+            }
+        });
+    }
+};
+
+exports.getUserInformations = (req, res) => {
+    getUserById(req.params.uuid, function(err, user){
         if(err){
-            res.status(404).end();
-        }
-        let pwd = sha512(req.params.password, user.salt);
-        if(pwd === user.password) {
-            res.status(200).end();
+            network.internalError(res);
+        } else if(user == null){
+            network.userNotFound(res);
         } else {
-            res.status(404).end();
+            network.resultWithJSON(res, user);
         }
     });
 };
 
-exports.getUserInformations = (req, res) => {
-};
-
 exports.updateUserInformations = (req, res) => {
+    let data = req.body;
+    if(commons.isUpdateUserDataWellFormed(data)){
+        Users.findByIdAndUpdate(req.params.uuid, data, function(err, user){
+            if(err){
+                network.internalError(res);
+            } else {
+                network.result(res);
+            }
+        });
+    } else {
+        network.badRequest(res);
+    }
 };
 
 exports.updateUserCredentials = (req, res) => {
+    let data = req.body;
+    if(!commons.isLoginDataWellFormed(data)) {
+        network.badRequest(res);
+    } else {
+        Users.findOne({ email: data.email }, function(err, user){
+            if(err){
+                network.internalError(res, err);
+            } else if(user == null){
+                network.userNotFound(res);
+            } else {
+                let pwd = security.sha512(req.params.password, user.salt);
+                if(pwd === user.password) {
+                    var dataToUpdate;
+                    if(data.newEmail && data.newPassword) {
+                        let newPassword = security.hashPassword(data.newPassword);
+                        dataToUpdate = { 
+                            email: data.newEmail, 
+                            password: newPassword.pwd,
+                            salt: newPassword.salt
+                        };
+                    } else if(data.newEmail) {
+                        dataToUpdate = { email: data.newEmail };
+                    } else if(data.newPassword) {
+                        let newPassword = security.hashPassword(data.newPassword);
+                        dataToUpdate = { 
+                            password: newPassword.pwd,
+                            salt: newPassword.salt
+                        };
+                    }
+                    if(dataToUpdate) {
+                        commons.updateUserDataFromEmail(user.email, dataToUpdate, res);
+                    } else {
+                        network.badRequest(res);
+                    }
+                } else {
+                    network.userNotFound(res);
+                }
+            }
+        });
+    }
 };
 
 exports.getUserNotifications = (req, res) => {
+    getUserById(req.params.uuid, function(err, user){
+        if(err){
+            network.internalError(res, err);
+        } else if(user == null){
+            network.userNotFound(res);
+        } else {
+            let limit = req.params.fromIndex + NUM_NOTIFICATIONS_TO_SHOW;
+            let notificationsToShow = user.notifications.slice(req.params.fromIndex, limit);
+            network.resultWithJSON(res, {
+                notifications: notificationsToShow
+            });
+        }
+    });
+};
+
+exports.addUserNotification = (req, res) => {
+    if (req.body.tipology instanceof Number && req.body.sender instanceof Schema.Types.ObjectId && timestamp instanceof Date && read instanceof Boolean) {
+        Users.findById(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
+            if (err) {
+                network.userNotFound(res);
+            }
+            network.result(res);
+        });
+    }
+    
+};
+
+exports.addLinkedUser = (req, res) => {
+    Users.findById(req.body.uuid1, (err, user1) => {
+        if (err) {
+            network.userNotFound(res);
+        }
+        Users.findById(req.body.uuid2, (err, user2) => {
+            if(err) {
+                network.userNotFound(res);
+            }
+            user1.linkedUsers.push(req.body.uuid2);
+            user2.linkedUsers.push(req.body.uuid1);
+            network.result(res);
+        });
+    });
+};
+
+exports.removeLinkedUser = (req, res) => {
+    Users.findById(req.body.uuid1, (err, user1) => {
+        if (err) {
+            network.userNotFound(res);
+        }
+        Users.findById(req.body.uuid2, (err, user2) => {
+            if(err) {
+                network.userNotFound(res);
+            }
+            let index1 = user1.linkedUsers.indexOf(req.body.uuid2);
+            let index2 = user2.linkedUsers.indexOf(req.body.uuid1);
+            if (index1>-1 && index2>-1) {
+                user1.linkedUsers.splice(index1,1);
+                user2.linkedUsers.splice(index2,1);
+                network.result(res);
+            } else {
+                network.notFound(res,{description: 'Link between users not found.'})
+            }
+        });
+    });
+};
+
+exports.getLinkedUser = (req,res) => {
+    if(req.params.uuid){
+        Users.findById(req.params.uuid, (err, user) => {
+            if(err){
+                network.userNotFound(res);
+            }
+            network.resultWithJSON(res, {linked: user.linkedUsers});
+        })
+    }
+};
+
+exports.getBadgePoints = (req, res) => {
+    if(req.params.uuid){
+        Users.findById(req.params.uuid, (err, user) => {
+            if(err){
+                network.userNotFound(res);
+            }
+            network.resultWithJSON(res, {badge: user.badges, points: user.points});
+        })
+    }
 };
 
 exports.getUserEvents = (req, res) => {
     getUserById(req.params.uuid, (err, user) => {
         if (err)
-            internalError(res, err);
+            network.internalError(res, err);
         else if (!user)
-            userNotFound(res);
+            network.userNotFound(res);
         else {
             var eventsToBeRequested = user.eventsSubscribed.concat(user.eventsFollowed);
             request.get('https://localhost/events?uuids=' + JSON.stringify(eventsToBeRequested), { json: true },
                 (err, eventRes, body) => {
                 if (err || !body)
-                    notContentRetrieved(res);
+                    network.notContentRetrieved(res);
                 else {
                     var eventsSubscribed = [];
                     var eventsFollowed = [];
@@ -112,7 +253,7 @@ exports.getUserEvents = (req, res) => {
                             eventsFollowed.push(e);
                         }
                     });
-                    resultWithJSON(res, {
+                    network.resultWithJSON(res, {
                         eventsSubscribed: eventsSubscribed,
                         eventsFollowed: eventsFollowed
                     });
@@ -123,25 +264,25 @@ exports.getUserEvents = (req, res) => {
 };
 
 exports.addEventToUser = (req, res) => {
-    updateUserEvents(req, res,{$push: retrieveEventsToUpdate(req.body)});
+    commons.updateUserEvents(req, res,{$push: retrieveEventsToUpdate(req.body)});
 };
 
 exports.removeEventToUser = (req, res) => {
-    updateUserEvents(req, res,{$pull: retrieveEventsToUpdate(req.body)});
+    commons.updateUserEvents(req, res,{$pull: retrieveEventsToUpdate(req.body)});
 };
 
 exports.getWrittenReviews = (req, res) => {
     getUserById(req.params.uuid, (err, user) => {
         if (err)
-            internalError(res, err);
+            network.internalError(res, err);
         else if (!user)
-            userNotFound(res);
+            network.userNotFound(res);
         else {
             Reviews.find({_id: {$in: user.reviewsDone}}, (err, reviews) => {
                 if (err)
-                    notContentRetrieved(res);
+                    network.notContentRetrieved(res);
                 else
-                    resultWithJSON(res, { reviews: reviews});
+                    network.resultWithJSON(res, { reviews: reviews});
             });
         }
     });
@@ -149,21 +290,21 @@ exports.getWrittenReviews = (req, res) => {
 
 exports.createNewReview = (req, res) => {
     let newReview = req.body;
-    if(!isNewReviewWellFormed(newReview))
-        badRequest(res);
+    if(!commons.isNewReviewWellFormed(newReview))
+        network.badRequest(res);
     else {
         let dbReview = new Users(newReview);
         dbReview.save((err, review) => {
             if (err)
-                internalError(res);
+                network.internalError(res);
             else {
                 Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [review._id]}}, (err, model) => {
                     if (err)
-                        internalError(res, err);
+                        network.internalError(res, err);
                     else if (!model)
-                        userNotFound(res);
+                        network.userNotFound(res);
                     else
-                        itemCreated(res, review);
+                        network.itemCreated(res, review);
                 });
             }
         });
@@ -173,15 +314,15 @@ exports.createNewReview = (req, res) => {
 exports.deleteReview = (req, res) => {
     Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [req.body.review]}}, (err, model) => {
         if (err)
-            internalError(res, err);
+            network.internalError(res, err);
         else if (!model)
-            userNotFound(res);
+            network.userNotFound(res);
         else {
             Reviews.findByIdAndRemove(req.body.review, (err, reviewRemoved) => {
                 if (err)
-                    internalError(res, err);
+                    network.internalError(res, err);
                 else
-                    resultWithJSON(res, reviewRemoved);
+                    network.resultWithJSON(res, reviewRemoved);
             });
         }
     });
@@ -190,15 +331,15 @@ exports.deleteReview = (req, res) => {
 exports.getReceivedReviews = (req, res) => {
     getUserById(req.params.uuid, (err, user) => {
         if (err)
-            internalError(res, err);
+            network.internalError(res, err);
         else if (!user)
-            userNotFound(res);
+            network.userNotFound(res);
         else {
             Reviews.find({_id: {$in: user.reviewsReceived}}, (err, reviews) => {
                 if (err)
-                    notContentRetrieved(res);
+                    network.notContentRetrieved(res);
                 else
-                    resultWithJSON(res, { reviews: reviews});
+                    network.resultWithJSON(res, { reviews: reviews});
             });
         }
     });
@@ -207,15 +348,15 @@ exports.getReceivedReviews = (req, res) => {
 exports.getUserActions = (req, res) => {
     getUserById(req.params.uuid, (err, user) => {
         if (err)
-            internalError(res, err);
+            network.internalError(res, err);
         else if (!user)
-            userNotFound(res);
+            network.userNotFound(res);
         else {
             Actions.find({_id: {$in: user.actions.map(x => x.action)}}, (err, actions) => {
                 if (err)
-                    notContentRetrieved(res);
+                    network.notContentRetrieved(res);
                 else
-                    resultWithJSON(res, { actions: actions});
+                    network.resultWithJSON(res, { actions: actions});
             });
         }
     });
@@ -223,15 +364,15 @@ exports.getUserActions = (req, res) => {
 
 exports.addUserAction = (req, res) => {
     let newAction = req.body;
-    if(!isNewActionWellFormed(newAction)) {
-        badRequest(res);
+    if(!commons.isNewActionWellFormed(newAction)) {
+        network.badRequest(res);
     } else {
         let dbAction = new Users(newAction);
         dbAction.save(function(err, action) {
             if (err) {
-                internalError(res, err);
+                network.internalError(res, err);
             } else {
-                itemCreated(res, action);
+                network.itemCreated(res, action);
             }
         });
     }

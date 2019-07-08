@@ -17,14 +17,17 @@ module.exports = function(app) {
         .get(controller.getUserNotifications);
 
     app.route("/users/:uuid/notifications")
-        .post();
+        .post(controller.addUserNotification);
 
     app.route("/users/linkedUsers")
-        .post()
-        .delete();
+        .post(controller.addLinkedUser)
+        .delete(controller.removeLinkedUser);
 
+    app.route("/users/:uuid/linkedUsers")
+        .get(controller.getLinkedUser);
+    
     app.route("/users/:uuid/levels")
-        .get();
+        .get(controller.getBadgePoints);
 
     app.route("/users/:uuid/events")
         .get(controller.getUserEvents)
