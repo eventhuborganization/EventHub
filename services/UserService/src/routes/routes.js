@@ -32,16 +32,16 @@ module.exports = function(app) {
         .delete(controller.removeEventToUser);
 
     app.route("/users/:uuid/reviews/written")
-        .get()
-        .post()
-        .delete();
+        .get(controller.getWrittenReviews)
+        .post(controller.createNewReview)
+        .delete(controller.deleteReview);
 
     app.route("/users/:uuid/reviews/received")
-        .get();
+        .get(controller.getReceivedReviews);
 
     app.route("/users/:uuid/actions")
-        .get()
-        .post();
+        .get(controller.getUserActions)
+        .post(controller.addUserAction);
 
     /*/users/:uuid
     - GET => tutte le info dell'utente [Return: 200 | 404]

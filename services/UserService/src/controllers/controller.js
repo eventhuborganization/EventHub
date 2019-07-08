@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 let request = require('request');
-let commons = require('commons');
+let commons = require('./commons');
 let crypto = require('crypto');
 
 let Users = mongoose.model('Users');
@@ -97,13 +97,15 @@ exports.getUserEvents = (req, res) => {
             userNotFound(res);
         else {
             var eventsToBeRequested = user.eventsSubscribed.concat(user.eventsFollowed);
-            request('https://localhost/events?uuids=' + JSON.stringify(eventsToBeRequested),
-                { json: true },(err, res, body) => {
-                if (!err && res && body) {
-                    let eventsRequested = JSON.parse(body);
+            request.get('https://localhost/events?uuids=' + JSON.stringify(eventsToBeRequested), { json: true },
+                (err, eventRes, body) => {
+                if (err || !body)
+                    notContentRetrieved(res);
+                else {
                     var eventsSubscribed = [];
                     var eventsFollowed = [];
-                    eventsRequested.forEach((e,index) => {
+                    //body dovrebbe già essere un array, speriamooooo ahahah
+                    body.forEach((e,index) => {
                         if (user.eventsSubscribed.contains(e._id)) {
                             eventsSubscribed.push(e);
                         } else if (user.eventsFollowed.contains(e._id)) {
@@ -126,4 +128,111 @@ exports.addEventToUser = (req, res) => {
 
 exports.removeEventToUser = (req, res) => {
     updateUserEvents(req, res,{$pull: retrieveEventsToUpdate(req.body)});
+};
+
+exports.getWrittenReviews = (req, res) => {
+    getUserById(req.params.uuid, (err, user) => {
+        if (err)
+            internalError(res, err);
+        else if (!user)
+            userNotFound(res);
+        else {
+            Reviews.find({_id: {$in: user.reviewsDone}}, (err, reviews) => {
+                if (err)
+                    notContentRetrieved(res);
+                else
+                    resultWithJSON(res, { reviews: reviews});
+            });
+        }
+    });
+};
+
+exports.createNewReview = (req, res) => {
+    let newReview = req.body;
+    if(!isNewReviewWellFormed(newReview))
+        badRequest(res);
+    else {
+        let dbReview = new Users(newReview);
+        dbReview.save((err, review) => {
+            if (err)
+                internalError(res);
+            else {
+                Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [review._id]}}, (err, model) => {
+                    if (err)
+                        internalError(res, err);
+                    else if (!model)
+                        userNotFound(res);
+                    else
+                        itemCreated(res, review);
+                });
+            }
+        });
+    }
+};
+
+exports.deleteReview = (req, res) => {
+    Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [req.body.review]}}, (err, model) => {
+        if (err)
+            internalError(res, err);
+        else if (!model)
+            userNotFound(res);
+        else {
+            Reviews.findByIdAndRemove(req.body.review, (err, reviewRemoved) => {
+                if (err)
+                    internalError(res, err);
+                else
+                    resultWithJSON(res, reviewRemoved);
+            });
+        }
+    });
+};
+
+exports.getReceivedReviews = (req, res) => {
+    getUserById(req.params.uuid, (err, user) => {
+        if (err)
+            internalError(res, err);
+        else if (!user)
+            userNotFound(res);
+        else {
+            Reviews.find({_id: {$in: user.reviewsReceived}}, (err, reviews) => {
+                if (err)
+                    notContentRetrieved(res);
+                else
+                    resultWithJSON(res, { reviews: reviews});
+            });
+        }
+    });
+};
+
+exports.getUserActions = (req, res) => {
+    getUserById(req.params.uuid, (err, user) => {
+        if (err)
+            internalError(res, err);
+        else if (!user)
+            userNotFound(res);
+        else {
+            Actions.find({_id: {$in: user.actions.map(x => x.action)}}, (err, actions) => {
+                if (err)
+                    notContentRetrieved(res);
+                else
+                    resultWithJSON(res, { actions: actions});
+            });
+        }
+    });
+};
+
+exports.addUserAction = (req, res) => {
+    let newAction = req.body;
+    if(!isNewActionWellFormed(newAction)) {
+        badRequest(res);
+    } else {
+        let dbAction = new Users(newAction);
+        dbAction.save(function(err, action) {
+            if (err) {
+                internalError(res, err);
+            } else {
+                itemCreated(res, action);
+            }
+        });
+    }
 };
