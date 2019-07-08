@@ -1,6 +1,6 @@
 const httpsClient = require('https')
 
-class EventService {
+module.exports = class EventService {
     constructor(host, port){
         // this. user = user
         // this.password = password
@@ -195,7 +195,6 @@ class EventService {
         postRequest.end()
     }
 }
-
 
 /**
  * per usare quest proprietà usare la seguente linea di codice:
