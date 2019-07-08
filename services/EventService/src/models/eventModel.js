@@ -31,7 +31,7 @@ var EventSchema = new Schema({
     },
     participants: [Schema.Types.ObjectId],
     followers: [Schema.Types.ObjectId],
-    thumbnail: [String],
+    thumbnail: String,
     maximumParticipants: {
         type: Number, 
         min: 0,

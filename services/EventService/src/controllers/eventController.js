@@ -24,10 +24,10 @@ exports.getEventById = (req, res) => {
 };
 
 exports.updateEventById = (req, res) => {
-    if(req.params.uuid){
+    if(req.params.uuid && req.body.event){
         Event.findByIdAndUpdate(req.params.uuid, req.body.event, (err, event) => {
             if(err){
-                res.status(404).send(err)
+                res.status(400).send(err)
             }
             res.status(200).send(ok)
         })
@@ -35,24 +35,36 @@ exports.updateEventById = (req, res) => {
 };
 
 exports.addUserToEvent = (req, res) => {
+    if(req.params.uuid && req.body.user){
+        Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.user}, (err, event) => {
+            err ? res.status(400).send(err): res.status(200).send('ok')
+        })
+    }
 }
 
 exports.removeUserToEvent = (req, res) => {
+    if(req.params.uuid && req.body.user){
+        Event.findByIdAndUpdate(req.params.uuid, {$pull : req.body.user}, (err, event) => {
+            err ? res.status(400).send(err): res.status(200).send('ok')
+        })
+    }
 }
 
 exports.getEventReviews = (req, res) => {
-    Event.findById(req.params.uuid, (err,event) => {
-        event.save((err) => {
-            if(err) {
-                console.log("[ERRORE] - " + err);
-                res.status(400).send(err)
-            }
-        })
+    Event.findById(req.params.uuid, (err, event) => {
+        if(err){
+            res.status(404).send(err)
+        }
         res.status(event.reviews.lengh > 0 ? 201 : 204).json(event.reviews)
     })
 }
 
 exports.addEventReviews = (req, res) => {
+    if(req.params.uuid && req.body.reviews){
+        Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.reviews}, (err, event) => {
+            err ? res.status(400).send(err): res.status(200).send('ok')
+        })
+    }
 }
 
 exports.newEvent = (req, res) => {
