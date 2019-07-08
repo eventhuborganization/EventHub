@@ -38,7 +38,8 @@ function manageUserUpdateResult(err, model, res) {
  * @param {Object} user the new user data
  */
 function isNewUserWellFormed(user){
-    return user.name 
+    return user 
+        && user.name 
         && user.organization 
         && user.email
         && user.password;
@@ -49,11 +50,12 @@ function isNewUserWellFormed(user){
  * @param {Object} user the update data
  */
 function isUpdateUserDataWellFormed(user){
-    return user.name
+    return user
+        && (user.name
         || user.surname
         || user.phoneNumber
         || user.address
-        || user.profilePicture;
+        || user.profilePicture);
 }
 
 /**
@@ -61,7 +63,7 @@ function isUpdateUserDataWellFormed(user){
  * @param {Object} data the login data
  */
 function isLoginDataWellFormed(data){
-    return data.email && data.password;
+    return data && data.email && data.password;
 }
 
 /**
