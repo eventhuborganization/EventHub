@@ -31,7 +31,7 @@ var EventSchema = new Schema({
     },
     participants: [Schema.Types.ObjectId],
     followers: [Schema.Types.ObjectId],
-    thumbnail: [String],
+    thumbnail: String,
     maximumParticipants: {
         type: Number, 
         min: 0,
@@ -43,14 +43,5 @@ var EventSchema = new Schema({
         default: Date.now
     }
 })
-
-//Query che seleziona gli eventi di un dato creatore
-EventSchema.query.byOrganizator = (organizzatorId)=>{
-    return this.where({'organizator': organizzatorId})
-}
-//Query che seleziona gli eventi di una data tipologia
-EventSchema.query.byTipology = (tipologyName)=>{
-    return this.where({'tipology.name': tipologyName})
-}
 
 module.exports = mongoose.model('Events', EventSchema);
