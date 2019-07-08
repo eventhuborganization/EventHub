@@ -33,26 +33,102 @@ function manageUserUpdateResult(err, model, res) {
         result(res);
 }
 
+/**
+ * Know if a user is well formed
+ * @param {Object} user the new user data
+ */
+function isNewUserWellFormed(user){
+    return user.name 
+        && user.organization 
+        && user.email
+        && user.password;
+}
+
+function isUpdateUserDataWellFormed(user){
+    return user.name
+        || user.surname
+        || user.phoneNumber
+        || user.address
+        || user.profilePicture;
+}
+
+/**
+ * Know id a login data is well formed
+ * @param {Object} data the login data
+ */
+function isLoginDataWellFormed(data){
+    return data.email && data.password;
+}
+
+/**
+ * Update user data
+ * @param {String} email the user's email 
+ * @param {Object} updateValues the values to update 
+ * @param {*} res where to send any message
+ */
+function updateUserDataFromEmail(email, updateValues, res){
+    Users.findOneAndUpdate(
+        { email: email },
+        updateValues,
+        function(err, user){
+            if(err){
+                internalError(res);
+            } else {
+                result(res);
+            }
+        }
+    );
+}
+
+/* ------------------------------------ */
+
+/**
+ * Send an internal error over the network
+ * @param {*} res where to send the message
+ * @param {*} err the error
+ */
 function internalError(res, err) {
     res.status(500).send(err);
 }
 
+/**
+ * Send an ok message over the network
+ * @param {*} res where to send the message
+ */
 function result(res) {
     res.status(200).send({});
 }
 
+/**
+ * Send an ok message over the network
+ * @param {*} res where to send the message
+ * @param {Object} data the JSON data to send
+ */
 function resultWithJSON(res, data) {
     res.status(200).json(data);
 }
 
-function userCreated(res) {
-    res.status(201).send({});
+/**
+ * Send a created message over the network
+ * @param {*} res where to send the message
+ * @param {Object} user the user's data
+ */
+function userCreated(res, user) {
+    res.status(201).send(user);
 }
 
+/**
+ * Send a bad request message over the network
+ * @param {*} res where to send the message
+ */
 function badRequest(res) {
     res.status(400).send({});
 }
 
+/**
+ * Send a not found request message over the network
+ * @param {*} res where to send the message
+ */
 function userNotFound(res) {
     notFound(res,{ description: 'User not found.'});
 }
