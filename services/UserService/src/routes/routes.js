@@ -27,9 +27,9 @@ module.exports = function(app) {
         .get();
 
     app.route("/users/:uuid/events")
-        .get()
-        .post()
-        .delete();
+        .get(controller.getUserEvents)
+        .post(controller.addEventToUser)
+        .delete(controller.removeEventToUser);
 
     app.route("/users/:uuid/reviews/written")
         .get()
