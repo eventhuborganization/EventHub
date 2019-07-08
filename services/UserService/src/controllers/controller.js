@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let request = require('request');
 let commons = require('commons');
-let crypto = require('crypto');
+let security = require('security');
 
 let Users = mongoose.model('Users');
 let Reviews = mongoose.model('Reviews');
@@ -20,43 +20,20 @@ function getUserById(userId, callback){
     Users.findById(userId, callback);
 }
 
-/**
- * Generates random string of characters i.e salt
- * @param {number} length length of the random string
- */
-function genRandomString(length){
-    return crypto.randomBytes(Math.ceil(length/2))
-            .toString('hex') /** convert to hexadecimal format */
-            .slice(0,length);   /** return required number of characters */
-}
-
-/**
- * Hash password with sha512.
- * @param {String} password list of required fields
- * @param {String} salt data to be validated
- */
-function sha512(password, salt){
-    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
-    hash.update(password);
-    return hash.digest('hex');
-}
-
 exports.createNewUser = (req, res) => {
     let newUser = req.body;
-    if( !(newUser.name 
-        && newUser.organization 
-        && newUser.email
-        && newUser.password)) {
+    if(!isNewUserWellFormed(newUser)) {
         res.status(400).end();
     } else {
-        newUser.salt = genRandomString(16);
-        newUser.password = sha512(newUser.password, newUser.salt);
+        let password = hashPassword(newUser.password);
+        newUser.salt = password.salt;
+        newUser.password = password.pwd;
         let dbUser = new Users(newUser);
         dbUser.save(function(err, user) {
             if (err) {
-                res.status(500).send(err);
+                internalError(res, err);
             } else {
-                res.status(201).json(user);
+                userCreated(res, user);
             }
         });
     }
@@ -65,33 +42,29 @@ exports.createNewUser = (req, res) => {
 exports.deleteUser = (req, res) => {
     Users.deleteOne({ _id: req.params.uuid }, (err) => {
         if(err) {
-            res.status(500).send({
-                description: err
-            });
+            internalError(res, err);
         } else {
-            res.status(200).end();
+            result(res);
         }
     });
 };
 
 exports.userLogin = (req, res) => {
     let data = req.body;
-    if( !data.email || !data.password) {
-        res.status(400).end();
+    if(!isLoginDataWellFormed(data)) {
+        userNotFound(res);
     } else {
         Users.findOne({ email: data.email }, function(err, user){
             if(err){
-                res.status(500).send({
-                    description: err
-                });
+                internalError(res, err);
             } else if(user == null){
-                res.status(404).end();
+                userNotFound(res);
             } else {
                 let pwd = sha512(req.params.password, user.salt);
                 if(pwd === user.password) {
-                    res.status(200).end();
+                    result(res);
                 } else {
-                    res.status(404).end();
+                    userNotFound(res);
                 }
             }
         });
@@ -101,93 +74,67 @@ exports.userLogin = (req, res) => {
 exports.getUserInformations = (req, res) => {
     getUserById(req.params.uuid, function(err, user){
         if(err){
-            res.status(500).send({
-                description: err
-            });
+            internalError(res);
         } else if(user == null){
-            res.status(404).end();
+            userNotFound(res);
         } else {
-            res.status(200).json(user);
+            resultWithJSON(res, user);
         }
     });
 };
 
 exports.updateUserInformations = (req, res) => {
+    let data = req.body;
+    if(isUpdateUserDataWellFormed(data)){
+        Users.findByIdAndUpdate(req.params.uuid, data, function(err, user){
+            if(err){
+                internalError(res);
+            } else {
+                result(res);
+            }
+        });
+    } else {
+        badRequest(res);
+    }
 };
 
 exports.updateUserCredentials = (req, res) => {
     let data = req.body;
-    if(!data.email || !data.password) {
-        res.status(400).end();
+    if(!isLoginDataWellFormed(data)) {
+        badRequest(res);
     } else {
         Users.findOne({ email: data.email }, function(err, user){
             if(err){
-                res.status(500).send({
-                    description: err
-                });
+                internalError(res, err);
             } else if(user == null){
-                res.status(404).end();
+                userNotFound(res);
             } else {
                 let pwd = sha512(req.params.password, user.salt);
                 if(pwd === user.password) {
+                    var dataToUpdate;
                     if(data.newEmail && data.newPassword) {
-                        let newSalt = genRandomString(16);
-                        let newPassword = sha512(newPassword, salt);
-                        Users.findOneAndUpdate(
-                            { email: data.email },
-                            { 
-                                email: data.newEmail, 
-                                password: newPassword,
-                                salt: newSalt
-                            },
-                            function(err, user){
-                                if(err){
-                                    res.status(500).send({
-                                        description: err
-                                    });
-                                } else {
-                                    res.status(200).end();
-                                }
-                            }
-                        );
+                        let newPassword = hashPassword(data.newPassword);
+                        dataToUpdate = { 
+                            email: data.newEmail, 
+                            password: newPassword.pwd,
+                            salt: newPassword.salt
+                        };
                     } else if(data.newEmail) {
-                        Users.findOneAndUpdate(
-                            { email: data.email },
-                            { email: data.newEmail },
-                            function(err, user){
-                                if(err){
-                                    res.status(500).send({
-                                        description: err
-                                    });
-                                } else {
-                                    res.status(200).end();
-                                }
-                            }
-                        );
+                        dataToUpdate = { email: data.newEmail };
                     } else if(data.newPassword) {
-                        let newSalt = genRandomString(16);
-                        let newPassword = sha512(newPassword, salt);
-                        Users.findOneAndUpdate(
-                            { email: data.email },
-                            { 
-                                password: newPassword,
-                                salt: newSalt
-                            },
-                            function(err, user){
-                                if(err){
-                                    res.status(500).send({
-                                        description: err
-                                    });
-                                } else {
-                                    res.status(200).end();
-                                }
-                            }
-                        );
+                        let newPassword = hashPassword(data.newPassword);
+                        dataToUpdate = { 
+                            password: newPassword.pwd,
+                            salt: newPassword.salt
+                        };
+                    }
+                    if(dataToUpdate) {
+                        updateUserDataFromEmail(user.email, dataToUpdate, res);
                     } else {
-                        res.send(400).end();
+                        badRequest(res);
                     }
                 } else {
-                    res.status(404).end();
+                    userNotFound(res);
                 }
             }
         });
@@ -197,15 +144,13 @@ exports.updateUserCredentials = (req, res) => {
 exports.getUserNotifications = (req, res) => {
     getUserById(req.params.uuid, function(err, user){
         if(err){
-            res.status(500).send({
-                description: err
-            });
+            internalError(res, err);
         } else if(user == null){
-            res.status(404).end();
+            userNotFound(res);
         } else {
             let limit = req.params.fromIndex + NUM_NOTIFICATIONS_TO_SHOW;
             let notificationsToShow = user.notifications.slice(req.params.fromIndex, limit);
-            res.status(200).json({
+            resultWithJSON(res, {
                 notifications: notificationsToShow
             });
         }
