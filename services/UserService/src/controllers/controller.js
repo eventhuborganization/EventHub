@@ -7,6 +7,8 @@ let Groups = mongoose.model('Groups');
 let Actions = mongoose.model("Actions");
 let Badges = mongoose.model("Badges");
 
+const NUM_NOTIFICATIONS_TO_SHOW = 10;
+
 /**
  * Get the user from an ID
  * @param {Schema.Types.ObjectId} userId the userId
@@ -44,7 +46,7 @@ exports.createNewUser = (req, res) => {
     let dbUser = new Users(newUser);
     dbUser.save(function(err, user) {
 		if (err) {
-            res.status(400).send(err);
+            res.status(500).send(err);
         }
 		res.status(201).json(user);
 	});
@@ -53,7 +55,9 @@ exports.createNewUser = (req, res) => {
 exports.deleteUser = (req, res) => {
     Users.deleteOne({ _id: req.params.uuid }, (err) => {
         if(err) {
-            res.status(404).end();
+            res.status(500).send({
+                description: err
+            });
         } else {
             res.status(200).end();
         }
@@ -64,18 +68,36 @@ exports.userLogin = (req, res) => {
     let data = req.body;
     Users.findOne({ email: data.email }, function(err, user){
         if(err){
-            res.status(404).end();
+            res.status(500).send({
+                description: err
+            });
         }
-        let pwd = sha512(req.params.password, user.salt);
-        if(pwd === user.password) {
-            res.status(200).end();
-        } else {
+        if(user == null){
             res.status(404).end();
+        } else {
+            let pwd = sha512(req.params.password, user.salt);
+            if(pwd === user.password) {
+                res.status(200).end();
+            } else {
+                res.status(404).end();
+            }
         }
     });
 };
 
 exports.getUserInformations = (req, res) => {
+    getUserById(req.params.uuid, function(err, user){
+        if(err){
+            res.status(500).send({
+                description: err
+            });
+        }
+        if(user == null){
+            res.status(404).end();
+        } else {
+            res.status(200).json(user);
+        }
+    });
 };
 
 exports.updateUserInformations = (req, res) => {
@@ -85,5 +107,21 @@ exports.updateUserCredentials = (req, res) => {
 };
 
 exports.getUserNotifications = (req, res) => {
+    getUserById(req.params.uuid, function(err, user){
+        if(err){
+            res.status(500).send({
+                description: err
+            });
+        }
+        if(user == null){
+            res.status(404).end();
+        } else {
+            let limit = req.params.fromIndex + NUM_NOTIFICATIONS_TO_SHOW;
+            let notificationsToShow = user.notifications.slice(req.params.fromIndex, limit);
+            res.status(200).json({
+                notifications: notificationsToShow
+            });
+        }
+    });
 };
 
