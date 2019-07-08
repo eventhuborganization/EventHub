@@ -87,3 +87,74 @@ exports.updateUserCredentials = (req, res) => {
 exports.getUserNotifications = (req, res) => {
 };
 
+
+
+exports.addUserNotification = (req, res) => {
+    Users.findById(req.params.uuid, (err, user) => {
+        if (err) {
+            res.status(404).end();
+        }
+        user.notifications.push(notification);
+        res.status(200).end();
+    });
+};
+
+exports.addLinkedUser = (req, res) => {
+    Users.findById(req.body.uuid1, (err, user1) => {
+        if (err) {
+            res.status(404).end();
+        }
+        Users.findById(req.body.uuid2, (err, user2) => {
+            if(err) {
+                res.status(404).end();
+            }
+            user1.linkedUsers.push(req.body.uuid2);
+            user2.linkedUsers.push(req.body.uuid1);
+            res.status(200).end();
+        });
+    });
+};
+
+exports.removeLinkedUser = (req, res) => {
+    Users.findById(req.body.uuid1, (err, user1) => {
+        if (err) {
+            res.status(404).end();
+        }
+        Users.findById(req.body.uuid2, (err, user2) => {
+            if(err) {
+                res.status(404).end();
+            }
+            let index1 = user1.linkedUsers.indexOf(req.body.uuid2);
+            let index2 = user2.linkedUsers.indexOf(req.body.uuid1);
+            if (index1>-1 && index2>-1) {
+                user1.linkedUsers.splice(index1,1);
+                user2.linkedUsers.splice(index2,1);
+                res.status(200).end();
+            } else {
+                res.status(404).end();
+            }
+        });
+    });
+};
+
+exports.getLinkedUser = (req,res) => {
+    if(req.params.uuid){
+        Users.findById(req.params.uuid, (err, user) => {
+            if(err){
+                res.status(404).send(err)
+            }
+            res.status(event?201:204).json(user.linkedUsers);
+        })
+    }
+};
+
+exports.getBadgePoints = (req, res) => {
+    if(req.params.uuid){
+        Users.findById(req.params.uuid, (err, user) => {
+            if(err){
+                res.status(404).send(err)
+            }
+            res.status(event?201:204).json(user.badges, user.points);
+        })
+    }
+};
