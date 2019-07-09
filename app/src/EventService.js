@@ -70,7 +70,7 @@ exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     addEventReviews(eventUuid, reviewsUuid, callback = null){
-        let data = JSON.stringify({reviews: reviewsUuid})
+        let data = JSON.stringify({reviews:{reviews: [reviewsUuid]}})
         const option = {  
             hostname: this.host,
             port: this.port,
@@ -92,7 +92,7 @@ exports.EventService = class EventService{
      *  - 200: dato aggiunto correttamente
      *  - 400: errore nell'inserimento
      *
-     *  @param {ObjectId} eventUuid uuid dell'evento che si vuole assegnare l'aggiunta delle persone.
+     * @param {ObjectId} eventUuid uuid dell'evento che si vuole assegnare l'aggiunta delle persone.
      * @param {Object} dataToUpdate oggetto con dento i valori da assegnare per aggiornare l'evento. L'oggetto
      * deve avere la seguiente struttura {event : {name: '', location:{}, etc...}}.
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
@@ -131,7 +131,7 @@ exports.EventService = class EventService{
         const option = {  
             hostname: this.host,
             port: this.port,
-            path: `/events/${eventUuid}`,
+            path: `/events/${eventUuid}/users`,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -155,11 +155,11 @@ exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     removeUserToEvent(eventUuid, users, callback = null){
-        data = JSON.stringify(users)
+        let data = JSON.stringify(users)
         const option = {  
             hostname: this.host,
             port: this.port,
-            path: `/events/${eventUuid}`,
+            path: `/events/${eventUuid}/users`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
