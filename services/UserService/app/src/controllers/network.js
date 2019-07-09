@@ -39,7 +39,7 @@ exports.itemCreated = (res, item) => {
  * @param {Object} user the user's data
  */
 exports.userCreated = (res, user) => {
-    itemCreated(res, user);
+    exports.itemCreated(res, user);
 };
 
 /**
