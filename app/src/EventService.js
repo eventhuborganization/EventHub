@@ -1,12 +1,12 @@
-const httpsClient = require('https')
+const httpsClient = require('http')
 
-module.exports.EventService = class EventService{
+exports.EventService = class EventService{
     constructor(host, port){
         // this. user = user
         // this.password = password
         this.host = host
         this.port = port
-        this.hostport = host + ":" + port
+        this.hostport = 'http://' + host + ':' + port
 
     }
 
@@ -24,8 +24,8 @@ module.exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     getEvent(query = "", callback = null){
-        let requestData = JSON.stringify(query)
-        httpsClient.get(`${this.hostport}/events`+ requestData, callback)
+        //let requestData = JSON.stringify(query)
+        httpsClient.get(`${this.hostport}/events`+ query, callback)
     }
 
     /**
@@ -70,10 +70,10 @@ module.exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     addEventReviews(eventUuid, reviewsUuid, callback = null){
-        data = JSON.stringify({reviews: reviewsUuid})
+        let data = JSON.stringify({reviews: reviewsUuid})
         const option = {  
-            hostname: host,
-            port: port,
+            hostname: this.host,
+            port: this.port,
             path: `/events/${eventUuid}/reviews`,
             method: 'POST',
             headers: {
@@ -98,10 +98,10 @@ module.exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     updateEventById(eventUuid, dataToUpdate, callback = null){
-        data = JSON.stringify(dataToUpdate)
+        let data = JSON.stringify(dataToUpdate)
         const option = {  
-            hostname: host,
-            port: port,
+            hostname: this.host,
+            port: this.port,
             path: `/events/${eventUuid}`,
             method: 'PUT',
             headers: {
@@ -127,10 +127,10 @@ module.exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     addUserToEvent(eventUuid, users, callback = null){
-        data = JSON.stringify(users)
+        let data = JSON.stringify(users)
         const option = {  
-            hostname: host,
-            port: port,
+            hostname: this.host,
+            port: this.port,
             path: `/events/${eventUuid}`,
             method: 'POST',
             headers: {
@@ -157,8 +157,8 @@ module.exports.EventService = class EventService{
     removeUserToEvent(eventUuid, users, callback = null){
         data = JSON.stringify(users)
         const option = {  
-            hostname: host,
-            port: port,
+            hostname: this.host,
+            port: this.port,
             path: `/events/${eventUuid}`,
             method: 'DELETE',
             headers: {
@@ -181,11 +181,11 @@ module.exports.EventService = class EventService{
      * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
      */
     newEvent(event, callback){
-        data = JSON.stringify(event)
+        let data = JSON.stringify(event)
         const option = {  
-            hostname: host,
-            port: port,
-            path: '/event/new',
+            hostname: this.host,
+            port: this.port,
+            path: '/events',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -210,16 +210,32 @@ module.exports.EventService = class EventService{
  * ! Trovare una soluzione più elegante
  */
 exports.Event = {
-    name: '',
-    description: '',
-    organizator: '',
-    eventDate: Date.now,
-    location: {maps:'', coordinate:{lat: 0, long: 0}},
-    public: false,
-    tipology: {name:'', subtipology:''},
-    maximumParticipant:0,
-    participants: [],
-    followers:[],
-    thumbnail: '',
-    reviews: [],
+    event:{
+        name: '',
+        description: '',
+        organizator: '',
+        eventDate: Date.now(),
+        location: {maps:'', coordinate:{lat: 0, long: 0}},
+        public: false,
+        tipology: {name:'', subtipology:''},
+        maximumParticipants:0,
+        participants: [],
+        followers:[],
+        thumbnail: '',
+        reviews: [],
+    }
+}
+
+/**
+ * Esempio di callback per debug e per vedere un po' come funziona.
+ * 
+ * @param res dati restituiti della request http del modulo nodejs.
+ */
+exports.defaultCallback = (res) => {
+    console.log('STATUS: ' + res.statusCode);
+    console.log('HEADERS: ' + JSON.stringify(res.headers));
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+      console.log('BODY: ' + chunk);
+    });
 }
