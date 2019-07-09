@@ -396,7 +396,7 @@ exports.addUserAction = (req, res) => {
                                     map.set(element, value);
                                 });
 
-                                // scorro sui badge rimasti e vedo se qualcuno matcha i miei casi
+                                // check if there is a new badge earned
                                 badgesDiff.forEach(badge => {
                                     if(commons.isBadgeEarned(badge, map)){
                                         user.badges.push(badge._id);
@@ -410,7 +410,6 @@ exports.addUserAction = (req, res) => {
                                         network.result();
                                     }
                                 });
-
 
                             }
                         });
