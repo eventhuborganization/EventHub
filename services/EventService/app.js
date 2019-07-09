@@ -7,7 +7,7 @@ var Event = require('./src/models/eventModel')
 
 const app = express()
 const port = 3000
-//mongoose.connect('mongodb://localhost/dbevent', { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect('mongodb://localhost/dbevent', { useNewUrlParser: true, useFindAndModify: false });
 
 //Per gestire i parametri passati nel corpo della richiesta http.
 app.use(bodyParser.urlencoded({ extended: true }));
