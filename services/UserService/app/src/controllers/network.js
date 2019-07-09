@@ -55,7 +55,7 @@ exports.badRequest = (res) => {
  * @param {*} res where to send the message
  */
 exports.userNotFound = (res) => {
-    notFound(res,{ description: 'User not found.'});
+    exports.notFound(res,{ description: 'User not found.'});
 };
 
 exports.notContentRetrieved = (res) => {
