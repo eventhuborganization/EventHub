@@ -376,4 +376,5 @@ exports.addUserAction = (req, res) => {
             }
         });
     }
+    //verififca badge e nel caso aggiungilo all'untente
 };

@@ -31,7 +31,7 @@ exports.resultWithJSON = (res, data) => {
  */
 exports.itemCreated = (res, item) => {
     res.status(201).send(item);
-}
+};
 
 /**
  * Send a created message over the network
