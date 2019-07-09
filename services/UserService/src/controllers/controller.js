@@ -293,7 +293,7 @@ exports.createNewReview = (req, res) => {
     if(!commons.isNewReviewWellFormed(newReview))
         network.badRequest(res);
     else {
-        let dbReview = new Users(newReview);
+        let dbReview = new Reviews(newReview);
         dbReview.save((err, review) => {
             if (err)
                 network.internalError(res);
@@ -367,12 +367,56 @@ exports.addUserAction = (req, res) => {
     if(!commons.isNewActionWellFormed(newAction)) {
         network.badRequest(res);
     } else {
-        let dbAction = new Users(newAction);
+        let dbAction = new Actions(newAction);
         dbAction.save(function(err, action) {
             if (err) {
                 network.internalError(res, err);
             } else {
-                network.itemCreated(res, action);
+                Users.findById(req.params.uuid, (err, user) => {
+                    if (err)
+                        network.internalError(res, err);
+                    else if (!user)
+                        network.userNotFound(res);
+                    else {
+                        user.actions = user.actions.push(action);
+                        Badges.find({}, function(err, badges) {
+                            if(err)
+                                network.internalError(res, err);
+                            else if (badges) {
+                                //removing already acquired badges
+                                let badgesDiff = badges.filter((elem) => user.badges.indexOf(elem._id) < 0);
+
+                                // count all user's actions
+                                let map = new Map();
+                                user.actions.forEach(element => {
+                                    var value = map.get(element);
+                                    if(!element)
+                                        value = 0;
+                                    value++;
+                                    map.set(element, value);
+                                });
+
+                                // scorro sui badge rimasti e vedo se qualcuno matcha i miei casi
+                                badgesDiff.forEach(badge => {
+                                    if(commons.isBadgeEarned(badge, map)){
+                                        user.badges.push(badge._id);
+                                    }
+                                });
+
+                                user.save(function(err, user){
+                                    if(err){
+                                        network.internalError(res, err);
+                                    } else {
+                                        network.result();
+                                    }
+                                });
+
+
+                            }
+                        });
+                    }
+                        
+                });
             }
         });
     }
