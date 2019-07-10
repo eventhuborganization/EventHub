@@ -19,6 +19,9 @@ module.exports = function(app) {
     app.route("/users/:uuid/notifications")
         .post(controller.addUserNotification);
 
+    app.route("/users/:userUuid/notifications/:notUuid")
+        .put(controller.notificationRead);
+
     app.route("/users/linkedUsers")
         .post(controller.addLinkedUser)
         .delete(controller.removeLinkedUser);

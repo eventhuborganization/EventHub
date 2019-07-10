@@ -189,6 +189,36 @@ exports.addUserNotification = (req, res) => {
     }
 };
 
+exports.notificationRead = (req, res) => {
+    Users.findById(req.params.userUuid, (err, user) => {
+        if (err) {
+            network.userNotFound(res);
+        } else if(user.notifications.length > 0){
+            var found = false;
+            let length = user.notifications.length;
+            for(var x = 0; x < length && !found; x++){
+                if(user.notifications[x]._id == req.params.notUuid){
+                    user.notifications[x].read = true;
+                    found = true;
+                }
+            }
+            if(found){
+                user.save((err) => {
+                    if(err){
+                        network.internalError(res, err);
+                    } else {
+                        network.result(res);
+                    }
+                });
+            } else {
+                network.notFound(res, {description: "Notification not found"});
+            }
+        } else {
+            network.notFound(res, {description: "Notification not found"});
+        }
+    });
+}
+
 exports.addLinkedUser = (req, res) => {
     if(req.body.uuid1 instanceof Schema.Types.ObjectId && req.body.uuid2 instanceof Schema.Types.ObjectId) {
         Users.findById(req.body.uuid1, (err, user1) => {
