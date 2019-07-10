@@ -94,7 +94,7 @@ exports.getUserInformations = (req, res) => {
 exports.updateUserInformations = (req, res) => {
     let data = req.body;
     if(commons.isUpdateUserDataWellFormed(data)){
-        Users.findByIdAndUpdate(req.params.uuid, data, (err, user) => {
+        Users.findByIdAndUpdate(req.params.uuid, data, (err) => {
             if(err){
                 network.internalError(res);
             } else {
@@ -441,7 +441,6 @@ exports.addUserAction = (req, res) => {
             }
         });
     }
-        //verififca badge e nel caso aggiungilo all'untente
 };
 
 exports.getUserGroups = (req, res) => {
