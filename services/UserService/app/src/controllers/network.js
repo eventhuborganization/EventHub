@@ -51,6 +51,15 @@ exports.badRequest = (res) => {
 };
 
 /**
+ * Send a bad request message over the network
+ * @param {*} res where to send the message
+ * @param {Object} msg the message to send 
+ */
+exports.badRequestJSON = (res, msg) => {
+    res.status(400).json(msg);
+};
+
+/**
  * Send a user not found request message over the network
  * @param {*} res where to send the message
  */

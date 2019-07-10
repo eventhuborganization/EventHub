@@ -26,22 +26,28 @@ exports.createNewUser = (req, res) => {
     if(!commons.isNewUserWellFormed(newUser)) {
         network.badRequest(res);
     } else {
-        let password = security.hashPassword(newUser.password);
-        newUser.salt = password.salt;
-        newUser.password = password.pwd;
-        let dbUser = new Users(newUser);
-        dbUser.save(function(err, user) {
-            if (err) {
-                network.internalError(res, err);
+        Users.findOne({email: newUser.email}, (err, user) => {
+            if(err || user == null){
+                let password = security.hashPassword(newUser.password);
+                newUser.salt = password.salt;
+                newUser.password = password.pwd;
+                let dbUser = new Users(newUser);
+                dbUser.save(function(err, user) {
+                    if (err) {
+                        network.internalError(res, err);
+                    } else {
+                        network.userCreated(res, user);
+                    }
+                });
             } else {
-                network.userCreated(res, user);
+                network.badRequestJSON({description: "This email is already registered to another user."});
             }
         });
     }
 };
 
 exports.deleteUser = (req, res) => {
-    Users.findByIdAndDelete(req.params.uuid, function(err, user) {
+    Users.findByIdAndDelete(req.params.uuid, (err, user) => {
         if(err) {
             network.internalError(res, err);
         } else {
@@ -55,7 +61,7 @@ exports.userLogin = (req, res) => {
     if(!commons.isLoginDataWellFormed(data)) {
         network.userNotFound(res);
     } else {
-        Users.findOne({ email: data.email }, function(err, user){
+        Users.findOne({ email: data.email }, (err, user) => {
             if(err){
                 network.internalError(res, err);
             } else if(user == null){
@@ -73,7 +79,7 @@ exports.userLogin = (req, res) => {
 };
 
 exports.getUserInformations = (req, res) => {
-    getUserById(req.params.uuid, function(err, user){
+    getUserById(req.params.uuid, (err, user) => {
         if(err){
             network.internalError(res);
         } else if(user == null){
@@ -87,7 +93,7 @@ exports.getUserInformations = (req, res) => {
 exports.updateUserInformations = (req, res) => {
     let data = req.body;
     if(commons.isUpdateUserDataWellFormed(data)){
-        Users.findByIdAndUpdate(req.params.uuid, data, function(err, user){
+        Users.findByIdAndUpdate(req.params.uuid, data, (err, user) => {
             if(err){
                 network.internalError(res);
             } else {
@@ -104,7 +110,7 @@ exports.updateUserCredentials = (req, res) => {
     if(!commons.isLoginDataWellFormed(data)) {
         network.badRequest(res);
     } else {
-        Users.findOne({ email: data.email }, function(err, user){
+        Users.findOne({ email: data.email }, (err, user) => {
             if(err){
                 network.internalError(res, err);
             } else if(user == null){
@@ -143,7 +149,7 @@ exports.updateUserCredentials = (req, res) => {
 };
 
 exports.getUserNotifications = (req, res) => {
-    getUserById(req.params.uuid, function(err, user){
+    getUserById(req.params.uuid, (err, user) => {
         if(err){
             network.internalError(res, err);
         } else if(user == null){
