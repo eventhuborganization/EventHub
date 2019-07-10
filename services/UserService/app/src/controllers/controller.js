@@ -85,6 +85,7 @@ exports.getUserInformations = (req, res) => {
         } else if(user == null){
             network.userNotFound(res);
         } else {
+            user = commons.deleteUserPrivateInformations(user);
             network.resultWithJSON(res, user);
         }
     });
@@ -107,7 +108,9 @@ exports.updateUserInformations = (req, res) => {
 
 exports.updateUserCredentials = (req, res) => {
     let data = req.body;
+    console.log("hellooooo");    
     if(!commons.isLoginDataWellFormed(data)) {
+        console.log("addioooo");
         network.badRequest(res);
     } else {
         Users.findOne({ email: data.email }, (err, user) => {
@@ -116,9 +119,9 @@ exports.updateUserCredentials = (req, res) => {
             } else if(user == null){
                 network.userNotFound(res);
             } else {
-                let pwd = security.sha512(req.params.password, user.salt);
+                let pwd = security.sha512(data.password, user.salt);
                 if(pwd === user.password) {
-                    var dataToUpdate;
+                    var dataToUpdate = {};
                     if(data.newEmail && data.newPassword) {
                         let newPassword = security.hashPassword(data.newPassword);
                         dataToUpdate = { 
@@ -135,9 +138,13 @@ exports.updateUserCredentials = (req, res) => {
                             salt: newPassword.salt
                         };
                     }
-                    if(dataToUpdate) {
+                    console.log(dataToUpdate);
+                    
+                    if(Object.keys(dataToUpdate).length > 0) {
                         commons.updateUserDataFromEmail(user.email, dataToUpdate, res);
                     } else {
+                        console.log("ciaooooo");
+                        
                         network.badRequest(res);
                     }
                 } else {

@@ -3,6 +3,13 @@ let network = require('./network');
 
 let Users = mongoose.model('Users');
 
+exports.deleteUserPrivateInformations = (user) => {
+    delete user.password;
+    delete user.salt;
+    delete user._id;
+    return user;
+}
+
 exports.updateUserEvents = (req, res, updates) => {
     if (checkIfEventsUpdateIsABadRequest(req.body))
         badRequest(res);
@@ -100,7 +107,7 @@ exports.isLoginDataWellFormed = (data) => {
  * @param {*} res where to send any message
  */
 exports.updateUserDataFromEmail = (email, updateValues, res) => {
-    Users.findOneAndUpdate(
+    var updateFunction = () => Users.findOneAndUpdate(
         { email: email },
         updateValues,
         (err) => {
@@ -111,6 +118,18 @@ exports.updateUserDataFromEmail = (email, updateValues, res) => {
             }
         }
     );
+
+    if(updateValues.email){
+        Users.findOne({email: updateValues.email}, (err, user) => {
+            if(err || user == null){
+                updateFunction();
+            } else {
+                network.badRequestJSON(res, {description: "This email is already registered to another user."});
+            }
+        });
+    } else {
+        updateFunction();
+    }
 };
 
 /**
