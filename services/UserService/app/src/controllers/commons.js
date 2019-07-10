@@ -63,6 +63,12 @@ exports.isNewNotificationWellFormed = (notification) => {
         && typeof notification.sender === "string";
 };
 
+exports.isLinkWellFormed = (link) => {
+    return link != null 
+        && typeof(link.uuid1) == "string"  
+        && typeof(link.uuid2) == "string";
+}
+
 /**
  * Know if a user is well formed
  * @param {Object} user the new user data

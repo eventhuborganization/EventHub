@@ -220,21 +220,24 @@ exports.notificationRead = (req, res) => {
 }
 
 exports.addLinkedUser = (req, res) => {
-    if(req.body.uuid1 instanceof Schema.Types.ObjectId && req.body.uuid2 instanceof Schema.Types.ObjectId) {
+    if(commons.isLinkWellFormed(req.body)) {
         Users.findById(req.body.uuid1, (err, user1) => {
             if (err) {
                 network.userNotFound(res);
+            } else if (user1.linkedUsers.includes(req.body.uuid2)){
+                network.badRequestJSON(res, {description: "The users are already linked"});
+            } else {
+                Users.findById(req.body.uuid2, (err, user2) => {
+                    if(err) {
+                        network.userNotFound(res);
+                    }
+                    user1.linkedUsers.push(req.body.uuid2);
+                    user2.linkedUsers.push(req.body.uuid1);
+                    user1.save();
+                    user2.save();
+                    network.result(res);
+                });
             }
-            Users.findById(req.body.uuid2, (err, user2) => {
-                if(err) {
-                    network.userNotFound(res);
-                }
-                user1.linkedUsers.push(req.body.uuid2);
-                user2.linkedUsers.push(req.body.uuid1);
-                user1.save();
-                user2.save();
-                network.result(res);
-            });
         });
     } else {
         network.badRequest(res);
@@ -242,7 +245,7 @@ exports.addLinkedUser = (req, res) => {
 };
 
 exports.removeLinkedUser = (req, res) => {
-    if(req.body.uuid1 instanceof Schema.Types.ObjectId && req.body.uuid2 instanceof Schema.Types.ObjectId) {
+    if(commons.isLinkWellFormed(req.body)) {
         Users.findById(req.body.uuid1, (err, user1) => {
             if (err) {
                 network.userNotFound(res);
@@ -274,7 +277,7 @@ exports.getLinkedUser = (req,res) => {
         if(err){
             network.userNotFound(res);
         }
-        network.resultWithJSON(res, {linked: user.linkedUsers});
+        network.resultWithJSON(res, {linkedUsers: user.linkedUsers});
     })
 };
 
