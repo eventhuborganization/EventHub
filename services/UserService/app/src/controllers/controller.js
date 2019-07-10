@@ -40,7 +40,7 @@ exports.createNewUser = (req, res) => {
                     }
                 });
             } else {
-                network.badRequestJSON({description: "This email is already registered to another user."});
+                network.badRequestJSON(res, {description: "This email is already registered to another user."});
             }
         });
     }
