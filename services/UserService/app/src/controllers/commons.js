@@ -37,11 +37,18 @@ exports.retrieveEventsToUpdate = (body) => {
 };
 
 exports.isNewActionWellFormed = (action) => {
-    return action && action.type && action.points;
+    return action != null 
+        && typeof(action.type) == "number"
+        && typeof(action.points) == "number";
 };
 
 exports.isNewReviewWellFormed = (review) => {
-    return review && review.writer && review.event && review.text && review.date && review.evaluation;
+    return review != null 
+        && typeof(review.writer) == "string"  
+        && typeof(review.event) == "string" 
+        && typeof(review.text) == "string"  
+        && review.date instanceof Date
+        && typeof(review.evaluation) == "string";
 };
 
 /**
@@ -49,11 +56,11 @@ exports.isNewReviewWellFormed = (review) => {
  * @param {Object} user the new user data
  */
 exports.isNewUserWellFormed = (user) => {
-    return user 
-        && user.name 
-        && user.organization 
-        && user.email
-        && user.password;
+    return user != null
+        && typeof(user.name) == "string" 
+        && typeof(user.organization) == "boolean" 
+        && typeof(user.email) == "string"
+        && typeof(user.password) == "string";
 };
 
 /**
@@ -61,12 +68,12 @@ exports.isNewUserWellFormed = (user) => {
  * @param {Object} user the update data
  */
 exports.isUpdateUserDataWellFormed = (user) => {
-    return user
-        && (user.name
-        || user.surname
-        || user.phoneNumber
-        || user.address
-        || user.profilePicture);
+    return user != null
+        && (typeof(user.name) == "string"
+        || typeof(user.surname) == "string"
+        || typeof(user.phoneNumber) == "string"
+        || user.address instanceof Object
+        || typeof(user.profilePicture) == "string");
 };
 
 /**
@@ -74,7 +81,9 @@ exports.isUpdateUserDataWellFormed = (user) => {
  * @param {Object} data the login data
  */
 exports.isLoginDataWellFormed = (data) => {
-    return data && data.email && data.password;
+    return data != null
+        && typeof(data.email) == "string"
+        && typeof(data.password) == "string";
 };
 
 /**
