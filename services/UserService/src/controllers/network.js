@@ -58,6 +58,14 @@ exports.userNotFound = (res) => {
     notFound(res,{ description: 'User not found.'});
 };
 
+/**
+ * Send a group not found request message over the network
+ * @param {*} res where to send the message
+ */
+exports.groupNotFound = (res) => {
+    notFound(res,{ description: 'Group not found.'});
+};
+
 exports.notContentRetrieved = (res) => {
     res.status(204).end();
 };

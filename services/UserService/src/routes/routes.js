@@ -46,6 +46,17 @@ module.exports = function(app) {
         .get(controller.getUserActions)
         .post(controller.addUserAction);
 
+    app.route("/user/:uuid/groups")
+        .get(controller.getUserGroups)
+        .post(controller.addUserInGroup)
+        .delete(controller.removeUserFromGroup);
+
+    app.route("/group")
+        .post(controller.createGroup);
+
+    app.route("/group/:uuid")
+        .get(controller.getGroup);
+
     /*/users/:uuid
     - GET => tutte le info dell'utente [Return: 200 | 404]
     - PUT => Aggiornamento utente by json [Return: 200 | 400 | 404]

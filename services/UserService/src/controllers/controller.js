@@ -160,14 +160,13 @@ exports.getUserNotifications = (req, res) => {
 
 exports.addUserNotification = (req, res) => {
     if (req.body.tipology instanceof Number && req.body.sender instanceof Schema.Types.ObjectId && timestamp instanceof Date && read instanceof Boolean) {
-        Users.findById(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
+        Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
             if (err) {
                 network.userNotFound(res);
             }
             network.result(res);
         });
     }
-    
 };
 
 exports.addLinkedUser = (req, res) => {
@@ -181,6 +180,8 @@ exports.addLinkedUser = (req, res) => {
             }
             user1.linkedUsers.push(req.body.uuid2);
             user2.linkedUsers.push(req.body.uuid1);
+            user1.save();
+            user2.save();
             network.result(res);
         });
     });
@@ -200,6 +201,8 @@ exports.removeLinkedUser = (req, res) => {
             if (index1>-1 && index2>-1) {
                 user1.linkedUsers.splice(index1,1);
                 user2.linkedUsers.splice(index2,1);
+                user1.save();
+                user2.save();
                 network.result(res);
             } else {
                 network.notFound(res,{description: 'Link between users not found.'})
@@ -375,5 +378,91 @@ exports.addUserAction = (req, res) => {
                 network.itemCreated(res, action);
             }
         });
+    }
+};
+
+exports.getUserGroups = (req, res) => {
+    if(req.params.uuid){
+        Users.findById(req.params.uuid, (err, user) => {
+            if(err){
+                network.userNotFound(res);
+            }
+            network.resultWithJSON(res, user.groups);
+        })
+    }
+};
+
+exports.addUserInGroup = (req, res) => {
+    if (req.param.uuid) {
+        Users.findById(req.param.uuid, (err, user) => {
+            if (err) {
+                network.userNotFound(res);
+            }
+            Groups.findById(req.body.group, (err, group) => {
+                if(err) {
+                    network.groupNotFound(res);
+                }
+                user.groups.push(req.body.group);
+                group.members.push(req.param.uuid);
+                user.save();
+                group.save();
+                network.result(res);
+            });
+        });
+    }
+};
+
+exports.removeUserFromGroup = (req, res) => {
+    if (req.param.uuid) {
+        Users.findById(req.param.uuid, (err, user) => {
+            if (err) {
+                network.userNotFound(res);
+            }
+            Groups.findById(req.body.group, (err, group) => {
+                if(err) {
+                    network.groupNotFound(res);
+                }
+                let indexGroup = user.groups.indexOf(req.body.group);
+                let indexMember= group.members.indexOf(req.param.uuid);
+                if (indexGroup>-1 && indexMember>-1) {
+                    user.groups.splice(indexGroup,1);
+                    group.members.splice(indexMember,1);
+                    user.save();
+                    group.save();
+                    network.result(res);
+                } else {
+                    network.notFound(res,{description: 'Link between user and group not found.'})
+                }
+            });
+        });
+    }
+};
+
+exports.createGroup = (req, res) => {
+    let newGroup = {name: "", members: []};
+    if(req.body.name && req.body.user) {
+        newGroup.name = req.body.name;
+        newGroup.members = [req.body.user];
+        let dbGroup = new Groups(newGroup);
+        dbGroup.save(function(err, group) {
+            if (err) {
+                network.internalError(res, err);
+            } else {
+                network.itemCreated(res, group);
+            }
+        });
+    } else {
+        network.badRequest(res);
+    }
+};
+
+exports.getGroup = (req, res) => {
+    if(req.params.uuid){
+        Groups.findById(req.params.uuid, (err, group) => {
+            if(err){
+                network.userNotFound(res);
+            }
+            network.resultWithJSON(res, group);
+        })
     }
 };
