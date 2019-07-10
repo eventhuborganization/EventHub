@@ -63,7 +63,7 @@ exports.userNotFound = (res) => {
  * @param {*} res where to send the message
  */
 exports.groupNotFound = (res) => {
-    notFound(res,{ description: 'Group not found.'});
+    exports.notFound(res,{ description: 'Group not found.'});
 };
 
 exports.notContentRetrieved = (res) => {
