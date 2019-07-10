@@ -47,7 +47,7 @@ exports.createNewUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-    Users.findByIdAndDelete(req.params.uuid, (err, user) => {
+    Users.findByIdAndDelete(req.params.uuid, (err) => {
         if(err) {
             network.internalError(res, err);
         } else {
@@ -67,7 +67,7 @@ exports.userLogin = (req, res) => {
             } else if(user == null){
                 network.userNotFound(res);
             } else {
-                let pwd = security.sha512(req.params.password, user.salt);
+                let pwd = security.sha512(data.password, user.salt);
                 if(pwd === user.password) {
                     network.result(res);
                 } else {
