@@ -107,8 +107,8 @@ exports.updateUserInformations = (req, res) => {
 };
 
 exports.updateUserCredentials = (req, res) => {
-    let data = req.body;
-    console.log("hellooooo");    
+    console.log("hellooooo");
+    let data = req.body;    
     if(!commons.isLoginDataWellFormed(data)) {
         console.log("addioooo");
         network.badRequest(res);
@@ -173,7 +173,12 @@ exports.getUserNotifications = (req, res) => {
 
 exports.addUserNotification = (req, res) => {
     if (commons.isNewNotificationWellFormed(req.body)) {
-        Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
+        let data = {};
+        data.read = false;
+        data.timestamp = Date.now();
+        data.tipology = req.body.tipology;
+        data.sender = req.body.sender;
+        Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {
             if (err) {
                 network.userNotFound(res);
             }

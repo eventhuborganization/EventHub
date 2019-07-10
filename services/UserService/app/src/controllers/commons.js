@@ -60,9 +60,7 @@ exports.isNewReviewWellFormed = (review) => {
 
 exports.isNewNotificationWellFormed = (notification) => {
     return typeof notification.tipology === "number" 
-        && notification.sender instanceof Schema.Types.ObjectId 
-        && notification.timestamp instanceof Date 
-        && typeof notification.read === "boolean";
+        && typeof notification.sender === "string";
 };
 
 /**
