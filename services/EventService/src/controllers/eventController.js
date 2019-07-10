@@ -20,13 +20,12 @@ exports.getEventById = (req, res) => {
         if(err){
             res.status(404).send(err)
         } else {
-            res.status(event.lengh > 0 ? 201 : 204).json(event)
+            res.status(Object.keys(event).length > 0 ? 201 : 204).json(event)
         }
     })
 };
 
 exports.updateEventById = (req, res) => {
-    console.log(req.body.event)
     if(req.body.event){
         Event.findByIdAndUpdate(req.params.uuid, req.body.event, (err, event) => {
             if(err){
@@ -41,7 +40,9 @@ exports.updateEventById = (req, res) => {
 
 exports.addUserToEvent = (req, res) => {
     if(req.body.user){
+        console.log(req.body)
         Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.user}, (err, event) => {
+            console.log(err)
             err ? res.status(400).send(err): res.status(200).send('ok')
         })
     }
@@ -49,7 +50,7 @@ exports.addUserToEvent = (req, res) => {
 
 exports.removeUserToEvent = (req, res) => {
     if(req.body.user){
-        Event.findByIdAndUpdate(req.params.uuid, {$pull : req.body.user}, (err, event) => {
+        Event.findByIdAndUpdate(req.params.uuid, {$pullAll : req.body.user}, (err, event) => {
             err ? res.status(400).send(err): res.status(200).send('ok')
         })
     }
@@ -60,7 +61,7 @@ exports.getEventReviews = (req, res) => {
         if(err){
             res.status(404).send(err)
         } else {
-            res.status(event.reviews.lengh > 0 ? 201 : 204).json(event.reviews)
+            res.status(event.reviews.length > 0 ? 201 : 204).json(event.reviews)
         }
     })
 }

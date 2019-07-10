@@ -6,7 +6,7 @@ var Event = require('./src/models/model');
 
 const app = express();
 const port = 3000;
-mongoose.connect('mongodb://localhost/event-hub-db', { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect('mongodb://mymongo/event-hub-db', { useNewUrlParser: true, useFindAndModify: false });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

@@ -84,8 +84,6 @@ exports.isLoginDataWellFormed = (data) => {
  * @param {*} res where to send any message
  */
 exports.updateUserDataFromEmail = (email, updateValues, res) => {
-    let mongoose = require('mongoose');
-    let Users = mongoose.model('Users');
     Users.findOneAndUpdate(
         { email: email },
         updateValues,
@@ -98,3 +96,17 @@ exports.updateUserDataFromEmail = (email, updateValues, res) => {
         }
     );
 };
+
+/**
+ * Get the difference array1 - array2
+ * @param {Array} array1 the first array
+ * @param {Array} array2 the second array
+ */
+exports.arrayDiff = (array1, array2) => {
+    return array1.filter((elem) => array2.indexOf(elem) < 0);
+}
+
+exports.isBadgeEarned = (badge, map) => {
+    let successfullRequirements = badge.requirements.filter(req => map.get(req.action) >= req.quantity);
+    return successfullRequirements.length === badge.requirements.length;
+}

@@ -31,7 +31,7 @@ exports.resultWithJSON = (res, data) => {
  */
 exports.itemCreated = (res, item) => {
     res.status(201).send(item);
-}
+};
 
 /**
  * Send a created message over the network
@@ -39,7 +39,7 @@ exports.itemCreated = (res, item) => {
  * @param {Object} user the user's data
  */
 exports.userCreated = (res, user) => {
-    itemCreated(res, user);
+    exports.itemCreated(res, user);
 };
 
 /**
@@ -55,7 +55,7 @@ exports.badRequest = (res) => {
  * @param {*} res where to send the message
  */
 exports.userNotFound = (res) => {
-    notFound(res,{ description: 'User not found.'});
+    exports.notFound(res,{ description: 'User not found.'});
 };
 
 /**
