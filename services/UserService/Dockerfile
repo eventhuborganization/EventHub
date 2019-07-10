@@ -70,11 +70,16 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && apk del .build-deps-yarn
 
 ENV WORKINGDIR=/root/app
+
+WORKDIR ${WORKINGDIR}
+
 RUN	mkdir -p ${WORKINGDIR} && chmod 666 ${WORKINGDIR}
 
 COPY 	./app  ${WORKINGDIR}/
 
 RUN rm -rf node_modules/
-RUN	npm install
+RUN npm install
 
 EXPOSE 3000
+
+CMD node app.js

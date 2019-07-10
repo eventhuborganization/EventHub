@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  user-service:
+    build:
+      context: ./services/UserService
+      dockerfile: Dockerfile
+    image: event-hub_user-service
+    container_name: event-hub_user-service
+    hostname: event-hub_user-service
+    ports:
+      - 3000:3000
+    networks:
+      - internal
+  mongodb:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: event-hub_mongodb
+    container_name: event-hub_mongodb
+    hostname: event-hub_mongodb
+    ports:
+      - 27017-27019:27017-27019
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+    driver_opts:
+       com.docker.network.bridge.name: "brinternal"
+       com.docker.network.enable_ipv6: "false"
+
