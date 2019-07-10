@@ -44,6 +44,13 @@ exports.isNewReviewWellFormed = (review) => {
     return review && review.writer && review.event && review.text && review.date && review.evaluation;
 };
 
+exports.isNewNotificationWellFormed = (notification) => {
+    return typeof notification.tipology === "number" 
+        && notification.sender instanceof Schema.Types.ObjectId 
+        && notification.timestamp instanceof Date 
+        && typeof notification.read === "boolean";
+};
+
 /**
  * Know if a user is well formed
  * @param {Object} user the new user data
