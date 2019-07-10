@@ -22,9 +22,11 @@ module.exports = function(app) {
     app.route("/users/:userUuid/notifications/:notUuid")
         .put(controller.notificationRead);
 
-    app.route("/users/linkedUsers")
-        .post(controller.addLinkedUser)
-        .delete(controller.removeLinkedUser);
+    app.route("/users/linkedUsers/add")
+        .post(controller.addLinkedUser);
+
+    app.route("/users/linkedUsers/remove")
+        .post(controller.removeLinkedUser);
 
     app.route("/users/:uuid/linkedUsers")
         .get(controller.getLinkedUser);
