@@ -159,78 +159,84 @@ exports.getUserNotifications = (req, res) => {
 };
 
 exports.addUserNotification = (req, res) => {
-    if (req.body.tipology instanceof Number && req.body.sender instanceof Schema.Types.ObjectId && timestamp instanceof Date && read instanceof Boolean) {
+    if (commons.isNewNotificationWellFormed(req.body)) {
         Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: req.body}}, (err, user) => {
             if (err) {
                 network.userNotFound(res);
             }
             network.result(res);
         });
+    } else {
+        network.badRequest(res);
     }
 };
 
 exports.addLinkedUser = (req, res) => {
-    Users.findById(req.body.uuid1, (err, user1) => {
-        if (err) {
-            network.userNotFound(res);
-        }
-        Users.findById(req.body.uuid2, (err, user2) => {
-            if(err) {
+    if(req.body.uuid1 instanceof Schema.Types.ObjectId && req.body.uuid2 instanceof Schema.Types.ObjectId) {
+        Users.findById(req.body.uuid1, (err, user1) => {
+            if (err) {
                 network.userNotFound(res);
             }
-            user1.linkedUsers.push(req.body.uuid2);
-            user2.linkedUsers.push(req.body.uuid1);
-            user1.save();
-            user2.save();
-            network.result(res);
-        });
-    });
-};
-
-exports.removeLinkedUser = (req, res) => {
-    Users.findById(req.body.uuid1, (err, user1) => {
-        if (err) {
-            network.userNotFound(res);
-        }
-        Users.findById(req.body.uuid2, (err, user2) => {
-            if(err) {
-                network.userNotFound(res);
-            }
-            let index1 = user1.linkedUsers.indexOf(req.body.uuid2);
-            let index2 = user2.linkedUsers.indexOf(req.body.uuid1);
-            if (index1>-1 && index2>-1) {
-                user1.linkedUsers.splice(index1,1);
-                user2.linkedUsers.splice(index2,1);
+            Users.findById(req.body.uuid2, (err, user2) => {
+                if(err) {
+                    network.userNotFound(res);
+                }
+                user1.linkedUsers.push(req.body.uuid2);
+                user2.linkedUsers.push(req.body.uuid1);
                 user1.save();
                 user2.save();
                 network.result(res);
-            } else {
-                network.notFound(res,{description: 'Link between users not found.'})
-            }
+            });
         });
-    });
+    } else {
+        network.badRequest(res);
+    }
+};
+
+exports.removeLinkedUser = (req, res) => {
+    if(req.body.uuid1 instanceof Schema.Types.ObjectId && req.body.uuid2 instanceof Schema.Types.ObjectId) {
+        Users.findById(req.body.uuid1, (err, user1) => {
+            if (err) {
+                network.userNotFound(res);
+            }
+            Users.findById(req.body.uuid2, (err, user2) => {
+                if(err) {
+                    network.userNotFound(res);
+                }
+                let index1 = user1.linkedUsers.indexOf(req.body.uuid2);
+                let index2 = user2.linkedUsers.indexOf(req.body.uuid1);
+                if (index1>-1 && index2>-1) {
+                    user1.linkedUsers.splice(index1,1);
+                    user2.linkedUsers.splice(index2,1);
+                    user1.save();
+                    user2.save();
+                    network.result(res);
+                } else {
+                    network.notFound(res,{description: 'Link between users not found.'})
+                }
+            });
+        });
+    } else {
+        network.badRequest(res);
+    }
 };
 
 exports.getLinkedUser = (req,res) => {
-    if(req.params.uuid){
-        Users.findById(req.params.uuid, (err, user) => {
-            if(err){
-                network.userNotFound(res);
-            }
-            network.resultWithJSON(res, {linked: user.linkedUsers});
-        })
-    }
+    Users.findById(req.params.uuid, (err, user) => {
+        if(err){
+            network.userNotFound(res);
+        }
+        network.resultWithJSON(res, {linked: user.linkedUsers});
+    })
 };
 
 exports.getBadgePoints = (req, res) => {
-    if(req.params.uuid){
-        Users.findById(req.params.uuid, (err, user) => {
-            if(err){
-                network.userNotFound(res);
-            }
-            network.resultWithJSON(res, {badge: user.badges, points: user.points});
-        })
-    }
+    Users.findById(req.params.uuid, (err, user) => {
+        if(err){
+            network.userNotFound(res);
+        }
+        network.resultWithJSON(res, {badge: user.badges, points: user.points});
+    })
 };
 
 exports.getUserEvents = (req, res) => {
@@ -426,18 +432,16 @@ exports.addUserAction = (req, res) => {
 };
 
 exports.getUserGroups = (req, res) => {
-    if(req.params.uuid){
-        Users.findById(req.params.uuid, (err, user) => {
-            if(err){
-                network.userNotFound(res);
-            }
-            network.resultWithJSON(res, user.groups);
-        })
-    }
+    Users.findById(req.params.uuid, (err, user) => {
+        if(err){
+            network.userNotFound(res);
+        }
+        network.resultWithJSON(res, user.groups);
+    })
 };
 
 exports.addUserInGroup = (req, res) => {
-    if (req.param.uuid) {
+    if (req.body.group instanceof Schema.Types.ObjectId) {
         Users.findById(req.param.uuid, (err, user) => {
             if (err) {
                 network.userNotFound(res);
@@ -453,11 +457,13 @@ exports.addUserInGroup = (req, res) => {
                 network.result(res);
             });
         });
+    } else {
+        network.badRequest(res);
     }
 };
 
 exports.removeUserFromGroup = (req, res) => {
-    if (req.param.uuid) {
+    if (req.body.group instanceof Schema.Types.ObjectId) {
         Users.findById(req.param.uuid, (err, user) => {
             if (err) {
                 network.userNotFound(res);
@@ -479,12 +485,14 @@ exports.removeUserFromGroup = (req, res) => {
                 }
             });
         });
+    } else {
+        network.badRequest(res);
     }
 };
 
 exports.createGroup = (req, res) => {
-    let newGroup = {name: "", members: []};
-    if(req.body.name && req.body.user) {
+    if(typeof req.body.name === "string" && req.body.user instanceof Schema.Types.ObjectId) {
+        let newGroup = {};
         newGroup.name = req.body.name;
         newGroup.members = [req.body.user];
         let dbGroup = new Groups(newGroup);
@@ -501,12 +509,10 @@ exports.createGroup = (req, res) => {
 };
 
 exports.getGroup = (req, res) => {
-    if(req.params.uuid){
-        Groups.findById(req.params.uuid, (err, group) => {
-            if(err){
-                network.userNotFound(res);
-            }
-            network.resultWithJSON(res, group);
-        })
-    }
+    Groups.findById(req.params.uuid, (err, group) => {
+        if(err){
+            network.userNotFound(res);
+        }
+        network.resultWithJSON(res, group);
+    })
 };
