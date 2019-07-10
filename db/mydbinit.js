@@ -29,10 +29,7 @@ db.users.insert({
     "organization": false,
     "email": "stefano.righini@studio.unibo.it",
     "password": "AGDIH548csdf5DD",
-    "salt": "pepe",
-    "linkedUsers": [],
-    "badge": [],
-    "points": 0
+    "salt": "pepe"
 });
 
 db.users.insert({
@@ -41,10 +38,7 @@ db.users.insert({
     "organization": true,
     "email": "80voglia@xxx.it",
     "password": "GSBSU88",
-    "salt": "pepe",
-    "linkedUsers": [],
-    "badge": [],
-    "points": 0
+    "salt": "pepe"
 });
 
 var uuid = db.users.find({"name": "La voglia matta"}).limit(1)[0]._id

@@ -27,7 +27,7 @@ exports.sha512 = (password, salt) => {
  */
 exports.hashPassword = (password) => {
     let salt = genRandomString(16);
-    let hashedPassword = sha512(password, salt);
+    let hashedPassword = exports.sha512(password, salt);
     return {
         salt: salt,
         pwd: hashedPassword

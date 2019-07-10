@@ -19,9 +19,14 @@ module.exports = function(app) {
     app.route("/users/:uuid/notifications")
         .post(controller.addUserNotification);
 
-    app.route("/users/linkedUsers")
-        .post(controller.addLinkedUser)
-        .delete(controller.removeLinkedUser);
+    app.route("/users/:userUuid/notifications/:notUuid")
+        .put(controller.notificationRead);
+
+    app.route("/users/linkedUsers/add")
+        .post(controller.addLinkedUser);
+
+    app.route("/users/linkedUsers/remove")
+        .post(controller.removeLinkedUser);
 
     app.route("/users/:uuid/linkedUsers")
         .get(controller.getLinkedUser);
@@ -45,6 +50,17 @@ module.exports = function(app) {
     app.route("/users/:uuid/actions")
         .get(controller.getUserActions)
         .post(controller.addUserAction);
+
+    app.route("/user/:uuid/groups")
+        .get(controller.getUserGroups)
+        .post(controller.addUserInGroup)
+        .delete(controller.removeUserFromGroup);
+
+    app.route("/group")
+        .post(controller.createGroup);
+
+    app.route("/group/:uuid")
+        .get(controller.getGroup);
 
     /*/users/:uuid
     - GET => tutte le info dell'utente [Return: 200 | 404]

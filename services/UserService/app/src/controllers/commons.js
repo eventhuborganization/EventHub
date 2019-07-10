@@ -3,6 +3,13 @@ let network = require('./network');
 
 let Users = mongoose.model('Users');
 
+exports.deleteUserPrivateInformations = (user) => {
+    delete user.password;
+    delete user.salt;
+    delete user._id;
+    return user;
+}
+
 exports.updateUserEvents = (req, res, updates) => {
     if (checkIfEventsUpdateIsABadRequest(req.body))
         badRequest(res);
@@ -37,23 +44,41 @@ exports.retrieveEventsToUpdate = (body) => {
 };
 
 exports.isNewActionWellFormed = (action) => {
-    return action && action.type && action.points;
+    return action != null 
+        && typeof(action.type) == "number"
+        && typeof(action.points) == "number";
 };
 
 exports.isNewReviewWellFormed = (review) => {
-    return review && review.writer && review.event && review.text && review.date && review.evaluation;
+    return review != null 
+        && typeof(review.writer) == "string"  
+        && typeof(review.event) == "string" 
+        && typeof(review.text) == "string"  
+        && review.date instanceof Date
+        && typeof(review.evaluation) == "string";
 };
+
+exports.isNewNotificationWellFormed = (notification) => {
+    return typeof notification.tipology === "number" 
+        && typeof notification.sender === "string";
+};
+
+exports.isLinkWellFormed = (link) => {
+    return link != null 
+        && typeof(link.uuid1) == "string"  
+        && typeof(link.uuid2) == "string";
+}
 
 /**
  * Know if a user is well formed
  * @param {Object} user the new user data
  */
 exports.isNewUserWellFormed = (user) => {
-    return user 
-        && user.name 
-        && user.organization 
-        && user.email
-        && user.password;
+    return user != null
+        && typeof(user.name) == "string" 
+        && typeof(user.organization) == "boolean" 
+        && typeof(user.email) == "string"
+        && typeof(user.password) == "string";
 };
 
 /**
@@ -61,12 +86,12 @@ exports.isNewUserWellFormed = (user) => {
  * @param {Object} user the update data
  */
 exports.isUpdateUserDataWellFormed = (user) => {
-    return user
-        && (user.name
-        || user.surname
-        || user.phoneNumber
-        || user.address
-        || user.profilePicture);
+    return user != null
+        && (typeof(user.name) == "string"
+        || typeof(user.surname) == "string"
+        || typeof(user.phoneNumber) == "string"
+        || user.address instanceof Object
+        || typeof(user.profilePicture) == "string");
 };
 
 /**
@@ -74,7 +99,9 @@ exports.isUpdateUserDataWellFormed = (user) => {
  * @param {Object} data the login data
  */
 exports.isLoginDataWellFormed = (data) => {
-    return data && data.email && data.password;
+    return data != null
+        && typeof(data.email) == "string"
+        && typeof(data.password) == "string";
 };
 
 /**
@@ -84,7 +111,7 @@ exports.isLoginDataWellFormed = (data) => {
  * @param {*} res where to send any message
  */
 exports.updateUserDataFromEmail = (email, updateValues, res) => {
-    Users.findOneAndUpdate(
+    var updateFunction = () => Users.findOneAndUpdate(
         { email: email },
         updateValues,
         (err) => {
@@ -95,6 +122,18 @@ exports.updateUserDataFromEmail = (email, updateValues, res) => {
             }
         }
     );
+
+    if(updateValues.email){
+        Users.findOne({email: updateValues.email}, (err, user) => {
+            if(err || user == null){
+                updateFunction();
+            } else {
+                network.badRequestJSON(res, {description: "This email is already registered to another user."});
+            }
+        });
+    } else {
+        updateFunction();
+    }
 };
 
 /**

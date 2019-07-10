@@ -51,11 +51,28 @@ exports.badRequest = (res) => {
 };
 
 /**
+ * Send a bad request message over the network
+ * @param {*} res where to send the message
+ * @param {Object} msg the message to send 
+ */
+exports.badRequestJSON = (res, msg) => {
+    res.status(400).json(msg);
+};
+
+/**
  * Send a user not found request message over the network
  * @param {*} res where to send the message
  */
 exports.userNotFound = (res) => {
     exports.notFound(res,{ description: 'User not found.'});
+};
+
+/**
+ * Send a group not found request message over the network
+ * @param {*} res where to send the message
+ */
+exports.groupNotFound = (res) => {
+    exports.notFound(res,{ description: 'Group not found.'});
 };
 
 exports.notContentRetrieved = (res) => {
