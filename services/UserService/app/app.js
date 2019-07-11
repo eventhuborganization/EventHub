@@ -2,7 +2,7 @@ const express = require('express');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
-var Event = require('./src/models/model');
+var User = require('./src/models/model');
 
 const app = express();
 const port = 3000;
@@ -45,7 +45,7 @@ function runApp() {
         res.status(404).send({url: req.originalUrl + ' not found'})
     })
 
-    app.listen(port, () => console.log(`Event service now listening on port ${port}!`))
+    app.listen(port, () => console.log(`User service now listening on port ${port}!`))
 }
 
 connect(reconnectTries, reconnectInterval)
