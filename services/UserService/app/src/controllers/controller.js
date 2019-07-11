@@ -79,6 +79,7 @@ exports.userLogin = (req, res) => {
 };
 
 exports.getUserInformations = (req, res) => {
+    console.log("pappa")
     getUserById(req.params.uuid, (err, user) => {
         if(err){
             network.internalError(res);
@@ -107,10 +108,8 @@ exports.updateUserInformations = (req, res) => {
 };
 
 exports.updateUserCredentials = (req, res) => {
-    console.log("hellooooo");
     let data = req.body;    
     if(!commons.isLoginDataWellFormed(data)) {
-        console.log("addioooo");
         network.badRequest(res);
     } else {
         Users.findOne({ email: data.email }, (err, user) => {
@@ -143,8 +142,6 @@ exports.updateUserCredentials = (req, res) => {
                     if(Object.keys(dataToUpdate).length > 0) {
                         commons.updateUserDataFromEmail(user.email, dataToUpdate, res);
                     } else {
-                        console.log("ciaooooo");
-                        
                         network.badRequest(res);
                     }
                 } else {

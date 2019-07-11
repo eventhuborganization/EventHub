@@ -4,14 +4,18 @@ module.exports = function(app) {
     app.route("/users")
         .post(controller.createNewUser);
 
-    app.route("/users/:uuid")
-        .get(controller.getUserInformations)
-        .put(controller.updateUserInformations)
-        .delete(controller.deleteUser);
+    app.route("/users/linkedUsers")
+        .post(controller.addLinkedUser)
+        .delete(controller.removeLinkedUser);
 
     app.route("/users/credentials")
         .post(controller.userLogin)
         .put(controller.updateUserCredentials);
+
+    app.route("/users/:uuid")
+        .get(controller.getUserInformations)
+        .put(controller.updateUserInformations)
+        .delete(controller.deleteUser);
 
     app.route("/users/:uuid/notifications/:fromIndex")
         .get(controller.getUserNotifications);
@@ -21,12 +25,6 @@ module.exports = function(app) {
 
     app.route("/users/:userUuid/notifications/:notUuid")
         .put(controller.notificationRead);
-
-    app.route("/users/linkedUsers/add")
-        .post(controller.addLinkedUser);
-
-    app.route("/users/linkedUsers/remove")
-        .post(controller.removeLinkedUser);
 
     app.route("/users/:uuid/linkedUsers")
         .get(controller.getLinkedUser);
