@@ -194,15 +194,9 @@ exports.notificationRead = (req, res) => {
         if (err) {
             network.userNotFound(res);
         } else if(user.notifications.length > 0){
-            var found = false;
-            let length = user.notifications.length;
-            for(var x = 0; x < length && !found; x++){
-                if(user.notifications[x]._id == req.params.notUuid){
-                    user.notifications[x].read = true;
-                    found = true;
-                }
-            }
-            if(found){
+            let index = user.notifications.findIndex(not => not._id == req.params.notUuid);
+            if(index >= 0){
+                user.notifications[index].read = true;
                 user.save((err) => {
                     if(err){
                         network.internalError(res, err);
@@ -217,7 +211,7 @@ exports.notificationRead = (req, res) => {
             network.notFound(res, {description: "Notification not found"});
         }
     });
-}
+};
 
 exports.addLinkedUser = (req, res) => {
     if(commons.isLinkWellFormed(req.body)) {
