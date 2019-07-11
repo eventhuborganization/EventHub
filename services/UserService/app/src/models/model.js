@@ -125,7 +125,7 @@ var BadgeSchema = new Schema({
 });
 
 var ActionSchema = new Schema({
-    type: {
+    tipology: {
         type: Number,
         required: true
     },

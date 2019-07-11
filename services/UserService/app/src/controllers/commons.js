@@ -45,8 +45,7 @@ exports.retrieveEventsToUpdate = (body) => {
 
 exports.isNewActionWellFormed = (action) => {
     return action != null 
-        && typeof(action.type) == "number"
-        && typeof(action.points) == "number";
+        && typeof(action.tipology) == "number";
 };
 
 exports.isNewReviewWellFormed = (review) => {

@@ -403,24 +403,29 @@ exports.addUserAction = (req, res) => {
     if(!commons.isNewActionWellFormed(newAction)) {
         network.badRequest(res);
     } else {
-        let dbAction = new Actions(newAction);
-        dbAction.save(function(err, action) {
-            if (err) {
+        Users.findById(req.params.uuid, (err, user) => {
+            if (err)
                 network.internalError(res, err);
-            } else {
-                Users.findById(req.params.uuid, (err, user) => {
-                    if (err)
+            else if (!user)
+                network.userNotFound(res);
+            else {
+                Actions.findOne({tipology: newAction.tipology}, (err, action) => {
+                    if(err){
                         network.internalError(res, err);
-                    else if (!user)
-                        network.userNotFound(res);
-                    else {
-                        user.actions = user.actions.push(action);
+                    } else if(!action){
+                        network.notFound(res, {description: "Action not found"});
+                    } else {
+                        user.actions.push({
+                            action: action._id,
+                            date: Date.now()
+                        });
+                        user.points += action.points;
                         Badges.find({}, function(err, badges) {
                             if(err)
                                 network.internalError(res, err);
                             else if (badges) {
                                 //removing already acquired badges
-                                let badgesDiff = badges.filter((elem) => user.badges.indexOf(elem._id) < 0);
+                                let badgesDiff = badges.filter(elem => user.badges.indexOf(elem._id) < 0);
 
                                 // count all user's actions
                                 let map = new Map();
@@ -439,18 +444,17 @@ exports.addUserAction = (req, res) => {
                                     }
                                 });
 
-                                user.save(function(err, user){
+                                user.save(err => {
                                     if(err){
                                         network.internalError(res, err);
                                     } else {
-                                        network.result();
+                                        network.result(res);
                                     }
                                 });
 
                             }
                         });
                     }
-                        
                 });
             }
         });
