@@ -80,7 +80,6 @@ exports.userLogin = (req, res) => {
 };
 
 exports.getUserInformations = (req, res) => {
-    console.log("pappa")
     getUserById(req.params.uuid, (err, user) => {
         if(err){
             network.internalError(res);
@@ -137,9 +136,7 @@ exports.updateUserCredentials = (req, res) => {
                             password: newPassword.pwd,
                             salt: newPassword.salt
                         };
-                    }
-                    console.log(dataToUpdate);
-                    
+                    }                    
                     if(Object.keys(dataToUpdate).length > 0) {
                         commons.updateUserDataFromEmail(user.email, dataToUpdate, res);
                     } else {
