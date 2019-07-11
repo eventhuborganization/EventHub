@@ -297,27 +297,9 @@ exports.getUserEvents = (req, res) => {
         else if (!user)
             network.userNotFound(res);
         else {
-            var eventsToBeRequested = user.eventsSubscribed.concat(user.eventsFollowed);
-            request.get('https://localhost/events?uuids=' + JSON.stringify(eventsToBeRequested), { json: true },
-                (err, eventRes, body) => {
-                if (err || !body)
-                    network.notContentRetrieved(res);
-                else {
-                    var eventsSubscribed = [];
-                    var eventsFollowed = [];
-                    //body dovrebbe già essere un array, speriamooooo ahahah
-                    body.forEach((e,index) => {
-                        if (user.eventsSubscribed.contains(e._id)) {
-                            eventsSubscribed.push(e);
-                        } else if (user.eventsFollowed.contains(e._id)) {
-                            eventsFollowed.push(e);
-                        }
-                    });
-                    network.resultWithJSON(res, {
-                        eventsSubscribed: eventsSubscribed,
-                        eventsFollowed: eventsFollowed
-                    });
-                }
+            network.resultWithJSON(res, {
+                eventsSubscribed: user.eventsSubscribed,
+                eventsFollowed: user.eventsFollowed
             });
         }
     });
@@ -328,7 +310,7 @@ exports.addEventToUser = (req, res) => {
 };
 
 exports.removeEventToUser = (req, res) => {
-    commons.updateUserEvents(req, res,{$pull: retrieveEventsToUpdate(req.body)});
+    commons.updateUserEvents(req, res,{$pullAll: retrieveEventsToUpdate(req.body)});
 };
 
 exports.getWrittenReviews = (req, res) => {
