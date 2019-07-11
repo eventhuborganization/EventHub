@@ -1,5 +1,4 @@
 let mongoose = require('mongoose');
-let request = require('request');
 let commons = require('./commons');
 let security = require('./security');
 let network = require('./network');
@@ -466,7 +465,7 @@ exports.getUserGroups = (req, res) => {
 };
 
 exports.addUserInGroup = (req, res) => {
-    if (req.body.group instanceof Schema.Types.ObjectId) {
+    if (req.body && typeof(req.body.group) == "string") {
         Users.findById(req.param.uuid, (err, user) => {
             if (err) {
                 network.userNotFound(res);
@@ -488,7 +487,7 @@ exports.addUserInGroup = (req, res) => {
 };
 
 exports.removeUserFromGroup = (req, res) => {
-    if (req.body.group instanceof Schema.Types.ObjectId) {
+    if (req.body && typeof(req.body.group) == "string") {
         Users.findById(req.param.uuid, (err, user) => {
             if (err) {
                 network.userNotFound(res);
@@ -516,7 +515,7 @@ exports.removeUserFromGroup = (req, res) => {
 };
 
 exports.createGroup = (req, res) => {
-    if(typeof req.body.name === "string" && req.body.user instanceof Schema.Types.ObjectId) {
+    if(req.body && typeof(req.body.user) == "string" && typeof req.body.name === "string") {
         let newGroup = {};
         newGroup.name = req.body.name;
         newGroup.members = [req.body.user];
