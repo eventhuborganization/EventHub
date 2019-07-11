@@ -9,10 +9,10 @@ const port = 3000;
 
 function pausecomp(millis)
 {
-    var date = new Date();
-    var curDate = null;
-    do { curDate = new Date(); }
-    while(curDate-date < millis);
+    var date = new Date()
+    var curDate = null
+    do { curDate = new Date() }
+    while(curDate-date < millis)
 }
 
 let reconnectTries = 10
