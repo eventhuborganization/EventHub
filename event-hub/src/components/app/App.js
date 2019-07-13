@@ -1,7 +1,7 @@
 import React from 'react';
-import logo from '../assets/images/logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Home from "../home/Home";
 
 /*function App() {
   return (
@@ -48,9 +48,17 @@ class Users extends React.Component {
       <input type="text" onChange={this.inputChanged} value={this.state.name}/>
     </div>
   }
-}*/
+}
 
-class AppRouter extends React.Component {
+
+<Route path="/profile" component={Profile} />
+<Route path="/notifications" component={Notifications} />
+<Route path="/friends" component={Friends} />
+<Route path="/map" component={EventsMap} />
+
+*/
+
+class App extends React.Component {
 
   constructor(props) {
     super(props)
@@ -60,14 +68,15 @@ class AppRouter extends React.Component {
     }
   }
 
+  onError = (message) => {
+      console.log(message)
+  }
+
   render() {
     return (
         <Router>
-            <Route path="/" exact component={Home} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/notifications" component={Notifications} />
-            <Route path="/friends" component={Friends} />
-            <Route path="/map" component={EventsMap} />
+            <Route path="/" exact render={() => <Home isLogged={this.state.isLogged} mainServer={this.props.mainServer} onError={this.onError} />} />
+
             <footer className={(this.state.showNavbar ? "" : "d-none ") + "row fixed-bottom bg-light border-top border-primary mx-0 py-2"}>
                 <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
                 <div className="col text-center my-auto"><Link to="/profile"><em className="fas fa-user fa-lg" /></Link></div>
@@ -80,4 +89,4 @@ class AppRouter extends React.Component {
   }
 }
 
-export default AppRouter;
+export default App;
