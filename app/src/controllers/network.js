@@ -1,6 +1,6 @@
 /**
  * Send an internal error over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  * @param {*} err the error
  */
 exports.internalError = (res, err) => {
@@ -9,7 +9,7 @@ exports.internalError = (res, err) => {
 
 /**
  * Send an ok message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  */
 exports.result = (res) => {
     res.status(200).end();
@@ -17,7 +17,7 @@ exports.result = (res) => {
 
 /**
  * Send an ok message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  * @param {Object} data the JSON data to send
  */
 exports.resultWithJSON = (res, data) => {
@@ -26,7 +26,7 @@ exports.resultWithJSON = (res, data) => {
 
 /**
  * Send a created message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  * @param {Object} item the user's data
  */
 exports.itemCreated = (res, item) => {
@@ -35,7 +35,7 @@ exports.itemCreated = (res, item) => {
 
 /**
  * Send a created message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  * @param {Object} user the user's data
  */
 exports.userCreated = (res, user) => {
@@ -44,7 +44,7 @@ exports.userCreated = (res, user) => {
 
 /**
  * Send a bad request message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  */
 exports.badRequest = (res) => {
     res.status(400).end();
@@ -52,7 +52,7 @@ exports.badRequest = (res) => {
 
 /**
  * Send a bad request message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  * @param {Object} msg the message to send 
  */
 exports.badRequestJSON = (res, msg) => {
@@ -61,7 +61,7 @@ exports.badRequestJSON = (res, msg) => {
 
 /**
  * Send a user not found request message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  */
 exports.userNotFound = (res) => {
     exports.notFound(res,{ description: 'User not found.'});
@@ -69,19 +69,23 @@ exports.userNotFound = (res) => {
 
 /**
  * Send a group not found request message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  */
 exports.groupNotFound = (res) => {
     exports.notFound(res,{ description: 'Group not found.'});
 };
 
+/**
+ * 
+ * @param {Response} res where to send the message
+ */
 exports.notContentRetrieved = (res) => {
     res.status(204).end();
 };
 
 /**
  * Send a not found request message over the network
- * @param {*} res where to send the message
+ * @param {Response} res where to send the message
  * @param {*} jsonData the message to sen<d
  */
 exports.notFound = (res, jsonData) => {
