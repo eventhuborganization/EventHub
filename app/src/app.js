@@ -13,6 +13,9 @@ mongoose.connect('mongodb://localhost/db', { useNewUrlParser: true, useFindAndMo
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
+var path = require('path');
+global.appRoot = path.resolve(__dirname);
+
 //app.use(session({secret: '343ji43j4n3jn4jk3n'}))
 
 var routes = require('./src/routes/route_a.js');
