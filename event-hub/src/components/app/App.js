@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/images/logo.svg';
+import logo from '../../assets/images/logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
@@ -63,7 +63,7 @@ class AppRouter extends React.Component {
   render() {
     return (
         <Router>
-            <Route path="/" exact component={Home} />
+            <Route path="/" exact component={EventCard} />
             <Route path="/profile" component={Profile} />
             <Route path="/notifications" component={Notifications} />
             <Route path="/friends" component={Friends} />
