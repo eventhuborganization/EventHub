@@ -13,7 +13,7 @@ exports.login = (req, res) => {
         UserServicePort + '/users/credential', req.body)
     .then((response) => {
         req.session.user = response._id
-        network.resultWithJSON(res, {data: 'user logged'})
+        network.resultWithJSON(res, {data: 'user logged', _id: response._id})
     })
     .catch((err) => {
         network.internalError(res, err)
