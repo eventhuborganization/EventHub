@@ -2,10 +2,10 @@ const network = require('./network');
 const axios = require('axios');
 const event = require('../EventService.js')
 
-const EventService = new event.EventService(EventServiceHost, EventServicePort);
+const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
 exports.getLogin = (req, res) => {
-    res.sendFile(appRoot  + '/views/login.html');
+    res.sendFile(appRoot  + '/views/login.html')
 }
 
 exports.login = (req, res) => {
@@ -13,20 +13,16 @@ exports.login = (req, res) => {
         UserServicePort + '/users/credential', req.body)
     .then((response) => {
         req.session.user = response._id
-        res.redirect('/')
+        network.resultWithJSON(res, {data: 'user logged'})
     })
     .catch((err) => {
-        network.internalError(res, err);
+        network.internalError(res, err)
     });
 }
 
 exports.logout = (req, res) => {
-    if (req.session.user && req.cookies.user_sid) {
-        res.clearCookie('user_sid');
-        res.redirect('/');
-    } else {
-        res.redirect('/login');
-    }
+    res.clearCookie('user_sid');
+    network.resultWithJSON(res, {data: 'user logout'})
 }
 
 exports.addEventUser = (req, res) => {
@@ -51,10 +47,10 @@ exports.userFriendRequest = (req, res) => {
     axios.post('http://' + UserServiceHost + ':' + 
         UserServicePort + `/users/${req.body.user}`, data)
     .then((response) => {
-        network.result(res);
+        network.result(res)
     })
     .catch((err) => {
-        network.internalError(res, err);
+        network.internalError(res, err)
     });
 }
 

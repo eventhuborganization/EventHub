@@ -5,5 +5,5 @@ module.exports = (app) => {
         .post(controller.login)
         
     app.route("/logout")
-        .post(controller.logout)
+        .get(sessionChecker, controller.logout)
 }

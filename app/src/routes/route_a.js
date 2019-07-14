@@ -13,13 +13,13 @@ module.exports = (app) => {
         .post(controller.friendshipAnswer);
 
     app.route("/notification/friendposition")
-        .post(controller.getFriendPosition);
+        .post(sessionChecker, controller.getFriendPosition);
 
     app.route("/registration")
         .post(controller.registration);
 
     app.route("/profile")
-        .put(controller.updateProfile);
+        .put(sessionChecker, controller.updateProfile);
 
     app.route("/profile/credentiels")
         .put(controller.updateCredentials);
