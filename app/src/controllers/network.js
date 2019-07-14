@@ -92,24 +92,29 @@ exports.notFound = (res, jsonData) => {
     res.status(404).send(jsonData);
 };
 
-exports.replayResponse = (res) => {
-    if (res.status === 200) {
+/**
+ * Replay response from UserServise or EventService
+ * @param {response} response response to replay
+ * @param {res} res where send response
+ */
+exports.replayResponse = (response, res) => {
+    if (response.status === 200) {
         exports.result(res);
-    } else if (res.status === 201) {
-        exports.itemCreated(res, res.data);
-    } else if (res.status === 204) {
+    } else if (response.status === 201) {
+        exports.itemCreated(res, response.data);
+    } else if (response.status === 204) {
         exports.notContentRetrieved(res);
     } else {
-        exports.replayError(res);
+        exports.replayError(response, res);
     }
 }
 
-exports.replayError = (res) => {
-    if (res.status === 404){
-        exports.notFound(res, res.data);
-    } else if (res.status === 500) {
-        exports.internalError(res, res.data);
-    } else if (res.status === 400) {
-        exports.badRequestJSON(res, res.data);
+exports.replayError = (response,res) => {
+    if (response.status === 404){
+        exports.notFound(res, response.data);
+    } else if (response.status === 500) {
+        exports.internalError(res, response.data);
+    } else if (response.status === 400) {
+        exports.badRequestJSON(res, response.data);
     }
 }
