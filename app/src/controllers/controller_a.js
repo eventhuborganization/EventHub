@@ -29,17 +29,13 @@ exports.registration = (req, res) => {
 }
 
 exports.updateProfile = (req, res) => {
-    if (req.params.uuid === req.session.user) {
-        axios.put('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid, req.body)
-            .then((response) => {
-                network.replayResponse(response);
-            })
-            .catch((err) => {
-                network.internalError(res, err);
-            });
-    } else {
-        network.badRequestJSON(res, {description: "have to do login"})
-    }
+    axios.put('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid, req.body)
+        .then((response) => {
+            network.replayResponse(response);
+        })
+        .catch((err) => {
+            network.internalError(res, err);
+        });
 }
 
 exports.updateCredentials = (req, res) => {

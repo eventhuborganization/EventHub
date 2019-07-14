@@ -1,0 +1,17 @@
+.buttonEvent {
+    width: 30%;
+}
+
+.contactInfo p {
+    font-size: larger;
+}
+
+.contactInfo div.row {
+    margin-top: 1%;
+}
+
+@media screen and (min-width: 800px) {
+    .btn {
+        width: 10%;
+    }
+}

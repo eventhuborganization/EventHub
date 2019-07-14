@@ -13,11 +13,22 @@ global.UserServiceHost = '127.0.0.1'
 global.EventServicePort = 3002
 global.EventServiceHost = '127.0.0.1'
 //port di questo servizio
-app.set('port', 3000)
+global.port = 3000
 
 global.appRoot = path.resolve(__dirname)
+/** 
+ * Funzione che ci permette di controllare se un utente è loggato o meno.
+ * Se non è loggato risponde con un errore
+ */
+global.sessionChecker = (req, res, next) => {
+    if (req.session.user && req.cookies.user_sid) {
+        next()
+    } else {
+        res.status(400).json({error: 'User not logged'})
+    }      
+}
 
-//mongoose.connect('mongodb://localhost/db', { useNewUrlParser: true, useFindAndModify: false })
+mongoose.connect('mongodb://localhost/db', { useNewUrlParser: true, useFindAndModify: false })
 
 /**
  *  * MIDDLEWARE FLOW
@@ -47,28 +58,11 @@ app.use(bodyParser.json())
  */
 
 app.use((req, res, next) => {
-    console.log('Mid 1')
     if (req.cookies.user_sid && !req.session.user) {
         res.clearCookie('user_sid')       
     }
     next()
 })
-
-/** 
- * Middleware che permette di continuare il flusso dei middleware 
- * se l'utente è loggato, altrimenti ridireziona alla pagina di login
- */
-global.sessionChecker = (req, res, next) => {
-    console.log('Mid 2')
-    if (req.session.user && req.cookies.user_sid) {
-        console.log('Mid 2 next')
-        console.log(req.session.user)
-        console.log(req.cookies.user_sid)
-        next()
-    } else {
-        res.redirect('/login')
-    }      
-}
 
 var routes = require('./src/routes/route_a.js')
 routes(app)
@@ -77,4 +71,4 @@ app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'})
 });
   
-app.listen(app.get('port'), () => console.log(`Event service now listening on port ${app.get('port')}!`))
+app.listen(port, () => console.log(`Event service now listening on port ${port}!`))

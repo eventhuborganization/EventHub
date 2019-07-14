@@ -13,7 +13,7 @@ module.exports = (app) => {
         .post(sessionChecker,controller.friendshipAnswer);
 
     app.route("/notification/friendposition")
-        .post(sessionChecker,controller.getFriendPosition);
+        .post(sessionChecker, controller.getFriendPosition);
 
     app.route("/registration")
         .post(controller.registration);
