@@ -99,7 +99,13 @@ exports.replayResponse = (res) => {
         exports.itemCreated(res, res.data);
     } else if (res.status === 204) {
         exports.notContentRetrieved(res);
-    } else if (res.status === 404){
+    } else {
+        exports.replayError(res);
+    }
+}
+
+exports.replayError = (res) => {
+    if (res.status === 404){
         exports.notFound(res, res.data);
     } else if (res.status === 500) {
         exports.internalError(res, res.data);
