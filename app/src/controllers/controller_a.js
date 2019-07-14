@@ -19,7 +19,7 @@ exports.getFriendPosition = (req, res) => {
 }
 
 exports.registration = (req, res) => {
-    axios.post('http://event-hub_userService/users', req.body)
+    axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users', req.body)
         .then((response) => {
             network.replayResponse(response);
         })
@@ -30,7 +30,7 @@ exports.registration = (req, res) => {
 
 exports.updateProfile = (req, res) => {
     if (req.params.uuid === req.session.user) {
-        axios.put('http://event-hub_userService/users/' + req.params.uuid, req.body)
+        axios.put('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid, req.body)
             .then((response) => {
                 network.replayResponse(response);
             })
@@ -43,7 +43,7 @@ exports.updateProfile = (req, res) => {
 }
 
 exports.updateCredentials = (req, res) => {
-    axios.put('http://event-hub_userService/users/credentials' + req.params.uuid, req.body)
+    axios.put('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/credentials' + req.params.uuid, req.body)
         .then((response) => {
             network.replayResponse(response);
         })
