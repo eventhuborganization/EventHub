@@ -36,7 +36,7 @@ class EventCard extends React.Component {
     renderRedirect = () => {
         if (this.state.redirect) {
             this.setRedirect(false)
-            return <Redirect from='/' to='/profile' />
+            return <Redirect from='/' to='/login' />
         }
     }
 
