@@ -1,6 +1,7 @@
 import React from 'react';
+import axios from 'axios';
 import styles from './Login.module.css';
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 class Login extends React.Component {
 
@@ -10,7 +11,8 @@ class Login extends React.Component {
             width: 0, 
             height: 0,
             email: "",
-            password: ""
+            password: "",
+            redirect: false
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
@@ -20,10 +22,12 @@ class Login extends React.Component {
     componentDidMount = () => {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
+        this.setState({email: "", password: ""});
     }
     
     componentWillUnmount = () => {
         window.removeEventListener('resize', this.updateWindowDimensions);
+        this.setState({email: "", password: "", redirect: false});
     }
     
     updateWindowDimensions = () => {
@@ -39,8 +43,33 @@ class Login extends React.Component {
     }
 
     submitLogin = (event) => {
-        this.setState({password: this.security.sha512(this.state.password)})        
+        if(!this.state.email.includes("@")){
+            this.props.onError("Inserisci una mail valida");
+        } else {
+            let hashedPwd = this.security.sha512(this.state.password);
+            let message = {
+                email: this.state.email,
+                password: hashedPwd 
+            };
+            axios.post(this.props.mainServer + "/login", message)
+                .then(response => {
+                    let status = response.status
+                    if (status === 200) {
+                        this.props.onLoginSuccessfull(response.data._id);
+                        this.renderRedirect();
+                    } else if(status === 404) {
+                        this.props.onError("Credenziali inserite non corrette");
+                    }
+                });
+        }
         event.preventDefault();
+    }
+
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            this.setState({redirect: true})
+            return <Redirect from='/' to='/profile' />
+        }
     }
 
     render() {
@@ -86,6 +115,8 @@ class Login extends React.Component {
                         </div>
                     </form>
                 </main>
+
+                {this.renderRedirect()}
             </div>
         )
     }

@@ -1,57 +1,12 @@
 import React from 'react';
-import './App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+import './App.css';
 import Home from "../home/Home";
 import Login from "../login/Login";
 import EventInfo from "../event_info/EventInfo";
 
-/*function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-function About() {
-  return <h2>About</h2>;
-}
-
-class Users extends React.Component {
-  state = {
-    name: "pippo"
-  }
-
-  change = () =>{
-    this.setState({name: "paolo"})
-  }
-
-  inputChanged = (event) => {
-    this.setState({name: event.target.value})
-  }
-
-  render() {
-    return <div>
-      <h2>{this.state.name}</h2>
-      <button onClick={this.change}>CHANGE</button>
-      <input type="text" onChange={this.inputChanged} value={this.state.name}/>
-    </div>
-  }
-}
-
+/*
 
 <Route path="/profile" component={Profile} />
 <Route path="/notifications" component={Notifications} />
@@ -74,18 +29,43 @@ class App extends React.Component {
     console.log(message)
   }
 
+  onLoginSuccessfull = (userId) => {
+    this.setState({
+      isLogged: true, 
+      userId: userId
+    });
+  }
+
   render() {
     return (
         <Router>
-            <Route path="/" exact render={(props) => <Home {...props} isLogged={this.state.isLogged} mainServer={this.props.mainServer} onError={this.onError} />} />
-            <Route path="/event/:id" exact render={(props) => <EventInfo {...props} isLogged={this.state.isLogged} mainServer={this.props.mainServer} onError={this.onError} />} />
-            <Route path="/login" component={Login} />
+            <Route path="/" exact render={(props) => 
+                <Home {...props} 
+                  isLogged={this.state.isLogged} 
+                  mainServer={this.props.mainServer} 
+                  onError={this.onError} 
+                />} 
+            />
+            <Route path="/event/:id" exact render={(props) => 
+                <EventInfo {...props} 
+                  isLogged={this.state.isLogged} 
+                  mainServer={this.props.mainServer} 
+                  onError={this.onError} 
+                />} 
+            />
+            <Route path="/login" exact render={(props) => 
+                <Login {...props} 
+                  mainServer={this.props.mainServer} 
+                  onError={this.onError} 
+                  onLoginSuccessfull={this.onLoginSuccessfull} 
+                />} 
+            />
 
             <footer className={(this.state.showNavbar ? "" : "d-none ") + "row fixed-bottom bg-light border-top border-primary mx-0 py-2"}>
                 <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
                 <div className="col text-center my-auto"><Link to={this.state.isLogged ? "/profile" : "/login"}><em className="fas fa-user fa-lg" /></Link></div>
                 <div className="col text-center my-auto"><Link to="/"><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
-                <div className="col text-center my-auto"><Link to="/event"><em className="fas fa-users fa-lg" /></Link></div>
+                <div className="col text-center my-auto"><Link to="/friends"><em className="fas fa-users fa-lg" /></Link></div>
                 <div className="col text-center my-auto"><Link to="/notifications"><em className="fas fa-bell fa-lg" /></Link></div>
             </footer>
         </Router>
