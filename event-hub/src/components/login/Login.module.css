@@ -1,0 +1,41 @@
+.loginContainer {
+    width:100%;
+    box-sizing: border-box;
+}
+
+.loginContainer * {
+  box-sizing: border-box;
+}
+
+.bgImage {
+  background-image: url("../../assets/images/background.jpeg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  height: 100%;
+}
+
+.bgText {
+  background-color: rgba(0,0,0, 0.4);
+  color: white;
+  position: absolute;
+  border: 3px solid #f1f1f1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  padding: 20px;
+  text-align: center;
+}
+
+.btn {
+  width: 40%;
+}
+
+@media screen and (min-width: 800px) {
+  .btn {
+    width: 20%;
+  }
+}

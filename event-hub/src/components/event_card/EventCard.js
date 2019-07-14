@@ -12,6 +12,10 @@ class EventCard extends React.Component {
         }
     }
 
+    componentWillUnmount = () => {
+        this.setRedirect(false);
+    }
+
     participate = () => {
         this.interactWithEvent({participant: true, event: this.props.eventInfo._id}, "Errore durante la partecipazione ad un evento. Riprovare.")
     }
@@ -35,8 +39,7 @@ class EventCard extends React.Component {
 
     renderRedirect = () => {
         if (this.state.redirect) {
-            this.setRedirect(false)
-            return <Redirect from='/' to='/profile' />
+            return <Redirect from='/' to='/login' />
         }
     }
 

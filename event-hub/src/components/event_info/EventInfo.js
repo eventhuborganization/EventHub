@@ -30,18 +30,18 @@ class EventInfo extends React.Component {
                 else
                     this.setState({
                         eventInfo: {
-                            name: response.name,
-                            thumbnail: response.thumbnail,
-                            date: response.date.toString(),
-                            address: response.location,
-                            numParticipants: response.numParticipants,
-                            maxParticipants: response.maxParticipants,
-                            description: response.description,
+                            name: response.data.name,
+                            thumbnail: response.data.thumbnail,
+                            date: response.data.date.toString(),
+                            address: response.data.location,
+                            numParticipants: response.data.numParticipants,
+                            maxParticipants: response.data.maxParticipants,
+                            description: response.data.description,
                             organizator: {
-                                phoneNumber: response.organizator.phone,
-                                email: response.organizator.email,
+                                phoneNumber: response.data.organizator.phone,
+                                email: response.data.organizator.email,
                             },
-                            typology: response.typology
+                            typology: response.data.typology
                         }
                     })
             })
