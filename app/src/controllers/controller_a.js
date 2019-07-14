@@ -3,7 +3,7 @@ let axios = require("axios");
 
 
 exports.getHome = (req, res) => {
-    res.sendFile(appRoot  + '/view/home.html');
+    res.sendFile(appRoot  + '/views/home.html');
 }
 
 exports.getEvents = (req, res) => {
