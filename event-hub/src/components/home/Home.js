@@ -8,6 +8,7 @@ class Home extends React.Component {
         super(props)
         this.state = {
             eventsLoaded: [{
+                _id: "1",
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
                 typology: "sport",
@@ -19,6 +20,7 @@ class Home extends React.Component {
                 numParticipants: 37
             },
             {
+                _id: "2",
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
                 typology: "incontro",
@@ -30,6 +32,7 @@ class Home extends React.Component {
                 numParticipants: 37
             },
             {
+                _id: "3",
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
                 typology: "festa",
@@ -41,6 +44,7 @@ class Home extends React.Component {
                 numParticipants: 37
             },
             {
+                _id: "4",
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
                 typology: "sport",
@@ -60,14 +64,14 @@ class Home extends React.Component {
                 <nav className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
                     <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold">EH</h1>
                     <form className="col-10 form-inline container-fluid px-1">
-                        <div className="row mx-0">
+                        <div className="row w-100 mx-0">
                             <label htmlFor="tf-search" className="d-none">Search field</label>
                             <label htmlFor="btn-search" className="d-none">Search button</label>
                             <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa" className="col-8 form-control"/>
                             <button id="btn-search" name="btn-search" className="col ml-1 btn btn-success" type="submit">
                                 <em className="fas fa-search" aria-hidden="true"></em>
                             </button>
-                            <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="submit">
+                            <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button">
                                 <em className="fas fa-sliders-h" aria-hidden="true"></em>
                             </button>
                         </div>
@@ -81,10 +85,12 @@ class Home extends React.Component {
                 <main className="main-container">
                     {
                         this.state.eventsLoaded.map(event =>
-                            <EventCard mainServer={this.props.mainServer}
+                            <EventCard key={event._id}
+                                       mainServer={this.props.mainServer}
                                        eventInfo={event}
                                        onError={this.props.onError}
                                        isLogged={this.props.isLogged}
+                                       location={this.props.location}
                             />)
                     }
                 </main>

@@ -69,7 +69,7 @@ exports.userLogin = (req, res) => {
             } else {
                 let pwd = security.sha512(data.password, user.salt);
                 if(pwd === user.password) {
-                    network.result(res);
+                    network.resultWithJSON(res, {_id: user._id});
                 } else {
                     network.userNotFound(res);
                 }

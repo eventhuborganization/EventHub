@@ -1,7 +1,7 @@
 import React from 'react';
 import Axios from 'axios';
 import './EventCard.css';
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from "react-router-dom";
 
 class EventCard extends React.Component {
 
@@ -50,7 +50,7 @@ class EventCard extends React.Component {
             <div className="row">
                 {this.renderRedirect()}
                 <div className="col-11 card shadow my-2 mx-auto px-0">
-                    <div className="card bg-dark" id={this.props.eventInfo._id}>
+                    <Link className="card bg-dark" id={this.props.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.props.eventInfo._id }>
                         <img src={this.props.mainServer + this.props.eventInfo.thumbnail} className="card-img" alt="locandina evento" />
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
@@ -74,7 +74,7 @@ class EventCard extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                     <div className="card-body container-fluid py-2">
                         <div className="row">
                             <div className="col-3 my-auto">

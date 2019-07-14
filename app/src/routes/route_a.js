@@ -10,7 +10,7 @@ module.exports = (app) => {
         .get(controller.getEvents)
 
     app.route("/notification/friendship")
-        .post(controller.friendshipAnswer);
+        .post(sessionChecker,controller.friendshipAnswer);
 
     app.route("/notification/friendposition")
         .post(sessionChecker, controller.getFriendPosition);
