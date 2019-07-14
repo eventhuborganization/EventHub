@@ -51,6 +51,21 @@ exports.userFriendRequest = (req, res) => {
     })
     .catch((err) => {
         network.internalError(res, err)
-    });
+    })
+}
+
+exports.markNotificationAsReaded = (req, res) => {
+    axios.post('http://' + UserServiceHost + ':' + 
+        UserServicePort + `/users/${req.session.user}/notifications/${req.body._id}`, data)
+    .then((response) => {
+        network.result(res)
+    })
+    .catch((err) => {
+        network.internalError(res, err)
+    })
+}
+
+exports.searchEventByName = (req, res) => {
+    
 }
 
