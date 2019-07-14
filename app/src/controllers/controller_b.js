@@ -2,11 +2,15 @@ const network = require('./network');
 const axios = require('axios');
 const event = require('../EventService.js')
 
-const EventService = new Event.EventService(app.get('EventServiceHost'), app.get('EventServicePort'));
+const EventService = new event.EventService(EventServiceHost, EventServicePort);
+
+exports.getLogin = (req, res) => {
+    res.sendFile(appRoot  + '/views/login.html');
+}
 
 exports.login = (req, res) => {
-    axios.post('http://' + app.get('UserServiceHost') + ':' + 
-        app.get('UserServiceHost') + '/users/credential', req.body)
+    axios.post('http://' + UserServiceHost + ':' + 
+        UserServicePort + '/users/credential', req.body)
     .then((response) => {
         req.session.user = response._id
         res.redirect('/')
@@ -44,8 +48,8 @@ exports.eventInfo = (req, res) => {
  */
 exports.userFriendRequest = (req, res) => {
     var data = {tipology: 1, sender: req.session.user}
-    axios.post('http://' + app.get('UserServiceHost') + ':' + 
-        app.get('UserServiceHost') + `/users/${req.body.user}`, data)
+    axios.post('http://' + UserServiceHost + ':' + 
+        UserServicePort + `/users/${req.body.user}`, data)
     .then((response) => {
         network.result(res);
     })
