@@ -60,17 +60,14 @@ class Home extends React.Component {
                 <nav className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
                     <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold">EH</h1>
                     <form className="col-10 form-inline container-fluid px-1">
-                        <div className="row w-100 mx-0">
+                        <div className="row mx-0">
                             <label htmlFor="tf-search" className="d-none">Search field</label>
                             <label htmlFor="btn-search" className="d-none">Search button</label>
-                            <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa"
-                                   className="col-9 form-control"/>
-                            <button id="btn-search" name="btn-search" className="col-auto ml-auto btn btn-success "
-                                    type="submit">
+                            <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa" className="col-8 form-control"/>
+                            <button id="btn-search" name="btn-search" className="col ml-1 btn btn-success" type="submit">
                                 <em className="fas fa-search" aria-hidden="true"></em>
                             </button>
-                            <button id="btn-filter" name="btn-filter" className="col-auto ml-auto btn btn-link"
-                                    type="submit">
+                            <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="submit">
                                 <em className="fas fa-sliders-h" aria-hidden="true"></em>
                             </button>
                         </div>
