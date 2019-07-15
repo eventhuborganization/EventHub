@@ -8,6 +8,9 @@ module.exports = function(app) {
         .post(controller.addLinkedUser)
         .delete(controller.removeLinkedUser);
 
+    app.route("/users/search/:name")
+        .get(controller.searchUser);
+
     app.route("/users/credentials")
         .post(controller.userLogin)
         .put(controller.updateUserCredentials);
