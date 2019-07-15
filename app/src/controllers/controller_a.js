@@ -1,5 +1,8 @@
 let network = require('./network');
 let axios = require("axios");
+const event = require('../EventService.js')
+
+const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
 
 exports.getHome = (req, res) => {
@@ -7,7 +10,13 @@ exports.getHome = (req, res) => {
 }
 
 exports.getEvents = (req, res) => {
-    
+    var query = "?";
+    for (key in req.query) {
+        query = query + key + "=" + req.query[key] + "&"        
+      }
+    EventService.getEvent(query, response => {
+        network.replayResponse(response, res);
+    })
 }
 
 exports.friendshipAnswer = (req, res) => {
