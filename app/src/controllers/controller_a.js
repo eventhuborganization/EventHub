@@ -83,5 +83,13 @@ exports.getInfoUser = (req, res) => {
 }
 
 exports.searchUser = (req, res) => {
-    
+    exports.registration = (req, res) => {
+        axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/search/' + req.params.name, req.body)
+            .then((response) => {
+                network.replayResponse(response, res);
+            })
+            .catch((err) => {
+                network.internalError(res, err);
+            });
+    }
 }
