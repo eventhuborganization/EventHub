@@ -78,8 +78,38 @@ exports.updateCredentials = (req, res) => {
         });
 }
 
+
+/* user: {name, surname, gender, birthdate, phone, email, organization, 
+    linkedUsers: [{_id, name, surname, avatar}], groups:[{_id, name}], 
+    badges(last 3): [{name, icon, _id}], points, n.reviewDone, n.reviewReceived, 
+    eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
-    
+    axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid)
+        .then( response => {
+            linkedUsersPromise = []
+            response.linkedUsers.forEach(function(user) {
+                linkedUsersPromise.push(exports.getLinkedUserInfo(user))
+            })
+            groupsPromise = []
+            response.groups.forEach(function(group) {
+                groupsPromise.push(exports.getGroupInfo(group))
+            })
+            //axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid + '/events);
+            Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), exports.getReviewsWritten(req.params.uuid), exports.getReviewsReceived(req.params.uuid)])
+                .then( result => {
+                    response.linkedUsers = []
+                    result[0].forEach(function(user) {
+                        response.linkedUsers.push({name: user.name, surname: user.surname, avatar: user.profilePicture, _id: user._id })
+                    })
+                    response.groups = []
+                    result[1].forEach(function(group) {
+                        response.linkedUsers.push({ _id: group._id, name: group.name })
+                    })
+                })
+        })
+        .catch(err => {
+            network.internalError(res, err);
+        })
 }
 
 exports.searchUser = (req, res) => {
@@ -92,4 +122,24 @@ exports.searchUser = (req, res) => {
                 network.internalError(res, err);
             });
     }
+}
+
+exports.getLinkedUserInfo = (uuid) => {
+    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid);
+}
+
+exports.getGroupInfo = (uuid) => {
+    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/group/' + uuid);
+}
+
+exports.getBadgePoints = (uuid) => {
+    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/levels');
+}
+
+exports.getReviewsWritten = (uuid) => {
+    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/reviews/written');
+}
+
+exports.getReviewsReceived = (uuid) => {
+    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/reviews/received');
 }
