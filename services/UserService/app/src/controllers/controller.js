@@ -559,6 +559,11 @@ exports.searchUser = (req, res) => {
             network.notContentRetrieved(res);
         else
         let fuse = new Fuse(users, options);
-        network.resultWithJSON(res,fuse.search(req.params.name));
+        let list = fuse.search(req.params.name)
+        let result = []
+        for (user in list) {
+            result.push(commons.deleteUserPrivateInformations(list[user]))
+        };
+        network.resultWithJSON(res,result);
     });
 }
