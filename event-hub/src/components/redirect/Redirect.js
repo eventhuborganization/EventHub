@@ -29,9 +29,8 @@ class RedirectComponent extends CallableComponent {
     }
 
     renderRedirect() {
-        if (this.state.redirect) {
+        if (this.state.redirect)
             return <Redirect from={this.props.from} to={this.props.to} />
-        }
     }
 
     setRedirect(value) {
@@ -44,6 +43,7 @@ class RedirectComponent extends CallableComponent {
 }
 
 class LoginRedirect extends CallableComponent {
+
     constructor(props) {
         super(props)
         this.state = {
@@ -51,15 +51,29 @@ class LoginRedirect extends CallableComponent {
         }
     }
 
+    componentDidMount() {}
+
     doIfLogged(toDo) {
         if (this.props.isLogged)
             toDo()
-        else if (this.state.redirectComponent)
+        else
+            this.redirectToLogin()
+    }
+
+    redirectIfNotLogged() {
+        if (!this.props.isLogged)
+            this.redirectToLogin()
+    }
+
+    redirectToLogin() {
+        if (this.state.redirectComponent)
             this.state.redirectComponent.setRedirect(true)
     }
 
     saveRedirectComponentRef(ref) {
         this.setState({redirectComponent: ref})
+        if (this.props.onRef)
+            this.props.onRef(this)
     }
 
     render() {

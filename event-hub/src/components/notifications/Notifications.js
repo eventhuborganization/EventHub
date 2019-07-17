@@ -1,6 +1,7 @@
 import React from 'react';
 import Axios from 'axios';
 import Notification from "./Notification";
+import {LoginRedirect} from "../redirect/Redirect";
 
 class Notifications extends React.Component {
 
