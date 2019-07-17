@@ -21,4 +21,7 @@ module.exports = (app) => {
 
     app.route('/notification')
         .post(sessionChecker, controller.markNotificationAsReaded)
+    
+    app.route('/notification/:fromIndex')
+        .post(sessionChecker, controller.getNotification)
 }

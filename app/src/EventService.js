@@ -1,4 +1,4 @@
-const httpsClient = require('http')
+const axios = require('axios');
 
 exports.EventService = class EventService{
     constructor(host, port){
@@ -8,6 +8,19 @@ exports.EventService = class EventService{
         this.port = port
         this.hostport = 'http://' + host + ':' + port
 
+    }
+
+    /**
+     * Restituisce una lista di eventi che metchano con la stringa
+     * 
+     * @param {String} data stringa di ricerca
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
+     */
+    searchEvent(data,  successCallback = null, errorCallback = null) {
+        axios.get(`${this.hostport}/events/search/${data}`)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -21,11 +34,13 @@ exports.EventService = class EventService{
      *  - 404: errore nella query
      * 
      * @param {Object} query dell'evento da selezionare. 
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEvent(query = "", callback = null){
-        //let requestData = JSON.stringify(query)
-        httpsClient.get(`${this.hostport}/events`+ query, callback)
+    getEvent(query = "", successCallback = null, errorCallback = null){
+        axios.get(`${this.hostport}/events`+ query)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -37,10 +52,13 @@ exports.EventService = class EventService{
      *  - 404: errore nella query
      * 
      * @param {ObjectId} eventUuid dell'evento da selezionare.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEventById(eventUuid, callback = null){
-        httpsClient.get(`${this.hostport}/events/${eventUuid}`, callback)
+    getEventById(eventUuid,  successCallback = null, errorCallback = null){
+        axios.get(`${this.hostport}/events/${eventUuid}`)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -52,10 +70,13 @@ exports.EventService = class EventService{
      *  - 404: errore nella query
      * 
      * @param {ObjectId} eventUuid uuid dell'evento.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEventReviews(eventUuid, callback = null){
-        httpsClient.get(`${this.hostport}/events/${eventUuid}/reviews`, callback)
+    getEventReviews(eventUuid,  successCallback = null, errorCallback = null){
+        axios.get(`${this.hostport}/events/${eventUuid}/reviews`)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -67,23 +88,14 @@ exports.EventService = class EventService{
      * 
      * @param {ObjectId} eventUuid uuid dell'evento.
      * @param {ObjectId} reviewsUuid uuid della recensione da aggiungere.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    addEventReviews(eventUuid, reviewsUuid, callback = null){
+    addEventReviews(eventUuid, reviewsUuid,  successCallback = null, errorCallback = null){
         let data = JSON.stringify({reviews:{reviews: [reviewsUuid]}})
-        const option = {  
-            hostname: this.host,
-            port: this.port,
-            path: `/events/${eventUuid}/reviews`,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }
-        let postRequest = httpsClient.request(option, callback)
-        postRequest.write(data)
-        postRequest.end()
+        axios.post(`${this.hostport}/events/${eventUuid}/reviews`, data)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -95,23 +107,15 @@ exports.EventService = class EventService{
      * @param {ObjectId} eventUuid uuid dell'evento che si vuole assegnare l'aggiunta delle persone.
      * @param {Object} dataToUpdate oggetto con dento i valori da assegnare per aggiornare l'evento. L'oggetto
      * deve avere la seguiente struttura {event : {name: '', location:{}, etc...}}.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    updateEventById(eventUuid, dataToUpdate, callback = null){
+    updateEventById(eventUuid, dataToUpdate,  successCallback = null, errorCallback = null){
         let data = JSON.stringify(dataToUpdate)
-        const option = {  
-            hostname: this.host,
-            port: this.port,
-            path: `/events/${eventUuid}`,
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }
-        let postRequest = httpsClient.request(option, callback)
-        postRequest.write(data)
-        postRequest.end()
+
+        axios.put(`${this.hostport}/events/${eventUuid}`, data)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     
@@ -124,23 +128,14 @@ exports.EventService = class EventService{
      * @param {ObjectId} eventUuid uuid dell'evento che si vuole assegnare l'aggiunta delle persone.
      * @param {Object} users oggetto con dento i valori da assegnare per aggiornare l'evento. L'oggetto
      * deve avere la seguiente struttura {user : {participants: value, followers: value}}.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    addUserToEvent(eventUuid, users, callback = null){
+    addUserToEvent(eventUuid, users,  successCallback = null, errorCallback = null){
         let data = JSON.stringify(users)
-        const option = {  
-            hostname: this.host,
-            port: this.port,
-            path: `/events/${eventUuid}/users`,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }
-        let postRequest = httpsClient.request(option, callback)
-        postRequest.write(data)
-        postRequest.end()
+        axios.post(`${this.hostport}/events/${eventUuid}/users`, data)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -152,23 +147,14 @@ exports.EventService = class EventService{
      * @param {ObjectId} eventUuid uuid dell'evento a cui si vogliono eliminare gli utenti
      * @param {Object} users oggetto con dento i valori da assegnare per aggiornare l'evento. L'oggetto
      * deve avere la seguiente struttura {user : {participants: value, followers: value}}.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    removeUserToEvent(eventUuid, users, callback = null){
+    removeUserToEvent(eventUuid, users, successCallback = null, errorCallback = null){
         let data = JSON.stringify(users)
-        const option = {  
-            hostname: this.host,
-            port: this.port,
-            path: `/events/${eventUuid}/users`,
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }
-        let postRequest = httpsClient.request(option, callback)
-        postRequest.write(data)
-        postRequest.end()
+        axios.delete(`${this.hostport}/events/${eventUuid}/users`, data)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 
     /**
@@ -178,24 +164,14 @@ exports.EventService = class EventService{
      *  - 400: errore nell'inserimento
      * 
      * @param {Object} event da aggiungere nel db.
-     * @param {Function} callback viene assegnata alla funzione request del modulo 'https' di nodejs.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
      */
-    newEvent(event, callback){
+    newEvent(event, successCallback = null, errorCallback = null){
         let data = JSON.stringify(event)
-        const option = {  
-            hostname: this.host,
-            port: this.port,
-            path: '/events',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }
-        
-        let postRequest = httpsClient.request(option, callback)
-        postRequest.write(data)
-        postRequest.end()
+        axios.post(`${this.hostport}/events`, data)
+        .then(successCallback)
+        .catch(errorCallback);
     }
 }
 
