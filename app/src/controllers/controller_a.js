@@ -94,8 +94,15 @@ exports.getInfoUser = (req, res) => {
             response.groups.forEach(function(group) {
                 groupsPromise.push(exports.getGroupInfo(group))
             })
-            //axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid + '/events);
-            Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), exports.getReviewsWritten(req.params.uuid), exports.getReviewsReceived(req.params.uuid)])
+            eventsSubscribedPromise = []
+            response.eventsSubscribed.forEach(function(event) {
+                eventsSubscribedPromise.push(exports.getEventInfo(event))
+            })
+            eventsFollowedPromise = []
+            response.eventsFollowed.forEach(function(event) {
+                eventsFollowedPromise.push(exports.getEventInfo(event))
+            })
+            Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
                 .then( result => {
                     response.linkedUsers = []
                     result[0].forEach(function(user) {
@@ -105,6 +112,36 @@ exports.getInfoUser = (req, res) => {
                     result[1].forEach(function(group) {
                         response.linkedUsers.push({ _id: group._id, name: group.name })
                     })
+                    response.badges = result[2];
+                    response.reviewsDone = response.reviewsDone.length;
+                    response.reviewsReceived = response.reviewsReceived.length;
+                    function sortFunction(a,b) {  
+                        var keyA = new Date(a.EventDate),
+                            keyB = new Date(b.EventDate);
+                        if(keyA < keyB) return -1;
+                        if(keyA > keyB) return 1;
+                        return 0;
+                    }
+                    result[3].sort(sortFunction);
+                    result[4].sort(sortFunction);
+                    let indexSub = 0;
+                    let indexFol = 0;
+                    for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++)
+                    for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++)
+                    let k = 3 //numero di eventi da mostrare
+                    response.lastEventSubscribed = [];
+                    response.nextEventSubscribed = [];
+                    response.nextEventSubscribed = [];
+                    for (var count=1; count<=k && (indexSub-count)>=0; count++) {
+                        response.lastEventSubscribed.push(result[3][indexSub-count]);
+                    }
+                    for (var count=0; count<k && (indexSub+count)<result[3].length; count++) {
+                        response.nextEventSubscribed.push(result[3][indexSub+count]);
+                    }
+                    for (var count=0; count<k && (indexFol+count)<result[4].length; count++) {
+                        response.nextEventFollowed.push(result[4][indexFol+count]);
+                    }
+                    network.resultWithJSON(res, response);
                 })
         })
         .catch(err => {
@@ -133,7 +170,7 @@ exports.getGroupInfo = (uuid) => {
 }
 
 exports.getBadgePoints = (uuid) => {
-    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/levels');
+    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/levels')
 }
 
 exports.getReviewsWritten = (uuid) => {
@@ -142,4 +179,8 @@ exports.getReviewsWritten = (uuid) => {
 
 exports.getReviewsReceived = (uuid) => {
     return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/reviews/received');
+}
+
+exports.getEventInfo = (uuid) => {
+    return axios.get('http://' + app.get('EventServiceHost') + ':' + app.get('EventServicePort') + '/events/' + uuid);
 }
