@@ -61,7 +61,7 @@ let FollowButton = (props) => {
 
     let onClick = () => {
         if (loginRedirect)
-            loginRedirect.doIfLogged(() => follow(props.mainServer, props.event._id, props.onError))
+            loginRedirect.doIfLoggedOrElseRedirect(() => follow(props.mainServer, props.event._id, props.onError))
     }
 
     return (
@@ -79,7 +79,7 @@ let ParticipateButton = (props) => {
 
     let onClick = () => {
         if (loginRedirect)
-            loginRedirect.doIfLogged(() => participate(props.mainServer, props.event._id, props.onError))
+            loginRedirect.doIfLoggedOrElseRedirect(() => participate(props.mainServer, props.event._id, props.onError))
     }
 
     return (
