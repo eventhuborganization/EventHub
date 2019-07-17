@@ -23,11 +23,13 @@ class Login extends React.Component {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
         this.setState({email: "", password: ""});
+        document.getElementById("root").classList.add("p-0")
     }
     
     componentWillUnmount = () => {
         window.removeEventListener('resize', this.updateWindowDimensions);
         this.setState({email: "", password: "", redirect: false});
+        document.getElementById("root").classList.remove("p-0")
     }
     
     updateWindowDimensions = () => {
@@ -76,10 +78,8 @@ class Login extends React.Component {
         return (
             <div className={styles.loginContainer} style={{height: this.state.height}}>
                 
-                <div className={"row " + styles.bgImage}></div>
-                
-                <main className="row">
-                    <form onSubmit={this.submitLogin} className={"col-10 col-md-4 " + styles.bgText}>
+                <main className={"d-flex align-items-center " + styles.bgImage}>
+                    <form onSubmit={this.submitLogin} className={"col-10 col-md-4 mx-auto " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">
                                 <h3>EventHub</h3>
