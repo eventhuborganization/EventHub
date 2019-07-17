@@ -109,12 +109,12 @@ exports.addEventReviews = (req, res) => {
 exports.newEvent = (req, res) => {
     console.log(req.body)
     var event = new Event(req.body.event)
-    event.save((err) => {
+    event.save((err, newEvent) => {
         if(err) {
             console.log("[ERRORE] - " + err);
             res.status(400).send(err)
         } else {
-            res.status(201).send("User added")
+            res.status(201).send(newEvent)
         }
     })
 }

@@ -79,7 +79,17 @@ exports.updateCredentials = (req, res) => {
 }
 
 exports.createEvent = (req, res) => {
-    EventService.newEvent(req.body, (response)=>{
+    var event = req.body;
+    event.organizator = req.session.user;
+    EventService.newEvent(event, (response)=>{
+        if (event.public) {
+            axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.session.user + '/linkedUsers')
+                .then(resLinkedUsers => {
+                    resLinkedUsers.forEach(function(user) {
+                        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + user + '/notifications', {tipology: 6, sender: req.session.user})
+                    })
+                })
+        }
         network.resultWithJSON(res,response)
     }, (err) => {
         network.internalError(res, err)
