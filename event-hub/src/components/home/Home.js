@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import EventCard from "../event_card/EventCard";
+import {CreateNewEventButton} from "../floating_button/FloatingButton";
 
 class Home extends React.Component {
 
@@ -78,9 +79,7 @@ class Home extends React.Component {
                     </form>
                 </nav>
 
-                <button className="btn btn-lg btn-primary rounded-circle floating-button fixed-bottom" type="submit">
-                    <em className="fas fa-plus" aria-hidden="true"></em>
-                </button>
+                <CreateNewEventButton />
 
                 <main className="main-container">
                     {
