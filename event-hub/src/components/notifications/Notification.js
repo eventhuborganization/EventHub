@@ -1,5 +1,6 @@
 import React from 'react'
 import './Notification.css'
+import {EventInteractionPanel} from '../event/Event'
 let images = require.context("../../assets/images", true)
 
 class Notification extends React.Component {
@@ -32,11 +33,11 @@ class Notification extends React.Component {
                                    imageFolderPath={this.props.imageFolderPath}
                                    event={this.props.notification.event} />
             case 1:
-                return <UserNotificationInteractionPanel
-                    buttons={[<RejectFriendshipButton />, <AcceptFriendshipButton />]} />
+                return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
+                    buttons={[<RejectFriendshipButton key={this.props.notification._id + "rejectFriend"} />, <AcceptFriendshipButton key={this.props.notification._id + "acceptFriend"} />]} />
             case 4:
-                return <UserNotificationInteractionPanel
-                    buttons={[<RejectSharePositionButton />, <SharePositionButton />]} />
+                return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
+                    buttons={[<RejectSharePositionButton key={this.props.notification._id + "rejectPos"} />, <SharePositionButton key={this.props.notification._id + "sharePos"} />]} />
             case 9:
                 return <LocationMap notification={this.props.notification} />
             case 3:
@@ -70,12 +71,14 @@ class Notification extends React.Component {
 
     getBottomBarByType(type) {
         if (this.isEventType(type)) {
-            return <EventNotificationInteractionPanel buttons={[]} />
+            return <EventInteractionPanel {...this.props}
+                                          key={this.props.notification._id}
+                                          event={this.props.notification.event} />
         }
     }
 
     isEventType = (type) => {
-        return type == 0 || type == 5 || type == 6 || type == 7
+        return type === 0 || type === 5 || type === 6 || type === 7
     }
 
     render() {
@@ -126,19 +129,6 @@ let UserNotificationInteractionPanel = (props) => {
     return (
         <div className="h-100 d-flex justify-content-between align-items-center">
             {props.buttons}
-        </div>
-    )
-}
-
-let EventNotificationInteractionPanel = (props) => {
-    return (
-        <div className="row mt-2">
-            <div className="col-3 my-auto">
-                <div className="badge badge-pill festa festaBadge">#Festa</div>
-            </div>
-            <div className="col-9 d-flex justify-content-end">
-                {props.buttons}
-            </div>
         </div>
     )
 }

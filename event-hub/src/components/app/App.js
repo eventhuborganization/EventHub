@@ -65,7 +65,7 @@ class App extends React.Component {
             <Route path="/notification" exact render={(props) =>
                 <Notifications {...props}
                                mainServer={this.props.mainServer}
-                               imageFolderPath={this.props.imageFolderPath}
+                               isLogged={this.state.isLogged}
                                onError={this.onError}
                 />}
             />

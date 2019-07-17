@@ -22,7 +22,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -39,7 +39,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -56,7 +56,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -73,7 +73,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -90,7 +90,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -107,7 +107,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -124,7 +124,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -141,7 +141,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -158,7 +158,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 },
@@ -175,7 +175,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        tipology: "festa"
+                        typology: "festa"
                     },
                     timestamp: timestamp
                 }
@@ -185,10 +185,11 @@ class Notifications extends React.Component {
             .then(response => {
                 let status = response.status
                 if (status !== 200)
-                    this.props.onError("Errore durante il caricamento dei dati di un evento.")
+                    props.onError("Errore durante il caricamento dei dati di un evento.")
                 else
                     this.setState({ notifications: response })
             })
+            .catch(error => props.onError("Errore durante il caricamento dei dati di un evento."))
     }
 
     render() {
@@ -201,9 +202,8 @@ class Notifications extends React.Component {
                 <main className="main-container">
                     {
                         this.state.notifications.map(notification =>
-                            <Notification key={notification._id}
-                                          mainServer={this.props.mainServer}
-                                          imageFolderPath="../../assets/images"
+                            <Notification {...this.props}
+                                          key={notification._id}
                                           notification={notification}
                             />)
                     }
