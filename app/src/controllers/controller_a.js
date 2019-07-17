@@ -78,6 +78,13 @@ exports.updateCredentials = (req, res) => {
         });
 }
 
+exports.createEvent = (req, res) => {
+    EventService.newEvent(req.body, (response)=>{
+        network.resultWithJSON(res,response)
+    }, (err) => {
+        network.internalError(res, err)
+    })
+}
 
 /* user: {name, surname, gender, birthdate, phone, email, organization, 
     linkedUsers: [{_id, name, surname, avatar}], groups:[{_id, name}], 

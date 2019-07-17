@@ -7,7 +7,7 @@ module.exports = (app) => {
     app.route('/logout')
         .get(sessionChecker, controller.logout)
 
-    app.route('/events')
+    app.route('/user/event')
         .post(sessionChecker, controller.addEventUser)
 
     app.route('/events/info/:uuid')

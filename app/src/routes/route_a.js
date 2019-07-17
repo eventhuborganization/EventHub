@@ -21,6 +21,9 @@ module.exports = (app) => {
     app.route("/profile")
         .put(sessionChecker, controller.updateProfile);
 
+    app.route("/event")
+        .put(sessionChecker, controller.createEvent);
+
     app.route("/profile/credentiels")
         .put(controller.updateCredentials);
 
