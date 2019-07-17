@@ -30,7 +30,7 @@ let interactWithEvent = (server, message, onError) => {
         })
 }
 
-let party = "festa"
+let party = "party"
 let sport = "sport"
 let meeting = "meeting"
 let FOLLOW = 0
@@ -119,10 +119,10 @@ let EventInteractionPanel = (props) => {
             <div className="col-9 d-flex justify-content-end">
                 <FollowButton {...props}
                               key={props.event._id + "followbutton"}
-                              event={props.notification.event} />
+                              event={props.event} />
                 <ParticipateButton {...props}
                                    key={props.event._id + "participatebutton"}
-                                   event={props.notification.event} />
+                                   event={props.event} />
             </div>
         </div>
     )

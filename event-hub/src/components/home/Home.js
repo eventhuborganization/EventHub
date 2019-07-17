@@ -12,7 +12,7 @@ class Home extends React.Component {
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
                 typology: "sport",
-                thumbnail: "",
+                thumbnail: "campo-calcio.png",
                 organizator: {
                     name: "Pippo"
                 },
@@ -23,8 +23,8 @@ class Home extends React.Component {
                 _id: "2",
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
-                typology: "incontro",
-                thumbnail: "",
+                typology: "meeting",
+                thumbnail: "concerto.jpeg",
                 organizator: {
                     name: "Pippo"
                 },
@@ -35,8 +35,8 @@ class Home extends React.Component {
                 _id: "3",
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
-                typology: "festa",
-                thumbnail: "",
+                typology: "party",
+                thumbnail: "party.jpg",
                 organizator: {
                     name: "Pippo"
                 },
@@ -48,7 +48,7 @@ class Home extends React.Component {
                 name: "Evento della madonna",
                 description: "Una madonna madonnesca",
                 typology: "sport",
-                thumbnail: "",
+                thumbnail: "campo-calcio.png",
                 organizator: {
                     name: "Pippo"
                 },
