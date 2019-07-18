@@ -5,6 +5,7 @@ import './App.css';
 import Home from "../home/Home";
 import Login from "../login/Login";
 import EventInfo from "../event_info/EventInfo";
+import Registration from "../registration/Registration";
 
 /*
 
@@ -55,6 +56,13 @@ class App extends React.Component {
             />
             <Route path="/login" exact render={(props) => 
                 <Login {...props} 
+                  mainServer={this.props.mainServer} 
+                  onError={this.onError} 
+                  onLoginSuccessfull={this.onLoginSuccessfull} 
+                />} 
+            />
+            <Route path="/register" exact render={(props) => 
+                <Registration {...props} 
                   mainServer={this.props.mainServer} 
                   onError={this.onError} 
                   onLoginSuccessfull={this.onLoginSuccessfull} 
