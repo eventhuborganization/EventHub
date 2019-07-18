@@ -64,7 +64,7 @@ app.use((req, res, next) => {
     next()
 })
 
-var routes = require('./src/routes/route_a.js')
+var routes = require('./src/routes/routes.js')
 routes(app)
 
 app.use(function(req, res) {

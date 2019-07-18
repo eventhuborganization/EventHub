@@ -63,7 +63,7 @@ class Login extends React.Component {
     }
 
     renderRedirect = () => {
-        if (this.state.redirect) {
+        if (this.state.redirectToLogin) {
             this.setState({redirect: true})
             return <Redirect from='/' to='/profile' />
         }
