@@ -58,7 +58,7 @@ class EventInfo extends React.Component {
                     </div>
                 </section>
 
-                <section className={"row sticky-top " + type + "Banner pt-2"}>
+                <section className={"row sticky-top " + Styles[type + "Banner"] + " pt-2"}>
                     <div className="col container-fluid">
                         <div className="row d-flex align-items-center">
                             <div className="col-9 mb-1">
