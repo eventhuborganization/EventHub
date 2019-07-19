@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import styles from './Login.module.css';
-import { Link, Redirect } from 'react-router-dom'
+import { LoginSuccessfullRedirect } from '../redirect/Redirect'
+import { Link } from 'react-router-dom'
 
 class Login extends React.Component {
 
@@ -40,6 +41,7 @@ class Login extends React.Component {
     }
 
     submitLogin = (event) => {
+        event.preventDefault()
         if(!this.state.email.includes("@")){
             this.props.onError("Inserisci una mail valida");
         } else {
@@ -52,21 +54,19 @@ class Login extends React.Component {
                 .then(response => {
                     let status = response.status
                     if (status === 200) {
-                        this.props.onLoginSuccessfull(response.data._id);
-                        this.renderRedirect();
+                        this.props.onLoginSuccessfull(response.data._id)
+                        this.state.redirectComponent.redirectAfterLogin()
                     } else if(status === 404) {
-                        this.props.onError("Credenziali inserite non corrette");
+                        this.props.onError("Credenziali inserite non corrette")
                     }
                 });
         }
-        event.preventDefault();
     }
 
-    renderRedirect = () => {
-        if (this.state.redirectToLogin) {
-            this.setState({redirect: true})
-            return <Redirect from='/' to='/profile' />
-        }
+    redirect = (redirectComponent) => {
+        this.setState({
+            redirectComponent: redirectComponent
+        })
     }
 
     render() {
@@ -111,7 +111,10 @@ class Login extends React.Component {
                     </form>
                 </main>
 
-                {this.renderRedirect()}
+                <LoginSuccessfullRedirect
+                    {...this.props} 
+                    onRef={this.redirect}
+                />
             </div>
         )
     }

@@ -84,4 +84,36 @@ class LoginRedirect extends CallableComponent {
     }
 }
 
-export {LoginRedirect, RedirectComponent}
+class LoginSuccessfullRedirect extends CallableComponent {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            redirectComponent: undefined
+        }
+    }
+
+    redirectAfterLogin() {
+        if (this.state.redirectComponent)
+            this.state.redirectComponent.setRedirect(true)
+    }
+
+    saveRedirectComponentRef(ref) {
+        this.setState({redirectComponent: ref})
+        if (this.props.onRef)
+            this.props.onRef(this)
+    }
+
+    render() {
+        return (
+            <div>
+                <RedirectComponent {...this.props}
+                                   to={"/"}
+                                   redirectNow={false}
+                                   onRef={ref => this.saveRedirectComponentRef(ref)}/>
+            </div>
+        )
+    }
+}
+
+export {RedirectComponent, LoginRedirect, LoginSuccessfullRedirect}

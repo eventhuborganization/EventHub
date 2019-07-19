@@ -2,15 +2,15 @@ import React from 'react';
 import axios from 'axios';
 import styles from '../login/Login.module.css';
 import RegistrationForm from './RegistrationForm'
+import {LoginSuccessfullRedirect} from '../redirect/Redirect'
 
 
 class Registration extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
-            width: 0, 
-            height: 0
+        this.state = {
+            redirectComponent : undefined
         };
     }
 
@@ -22,6 +22,12 @@ class Registration extends React.Component {
 
     componentWillUnmount = () => {
         document.getElementById("root").classList.remove("p-0", styles.bgImage)
+    }
+
+    redirect = (redirectComponent) => {
+        this.setState({
+            redirectComponent: redirectComponent
+        })
     }
 
     onRegistration = (data, privateUser) => {
@@ -46,17 +52,17 @@ class Registration extends React.Component {
                 address: data[data.componentIds.address]
             }
         }
-        console.log(message)
-        /*axios.post(this.props.mainServer + "/login", message)
+        axios.post(this.props.mainServer + "/registration", message)
             .then(response => {
                 let status = response.status
-                if (status === 200) {
-                    this.props.onLoginSuccessfull(response.data._id);
-                    this.renderRedirect();
-                } else if(status === 404) {
-                    this.props.onError("Credenziali inserite non corrette");
+                if (status === 201) {
+                    this.props.onRegistration(response.data._id)
+                    this.state.redirectComponent.redirectAfterLogin()
+                } else {
+                    this.props.onError(response.data.description)
                 }
-            });*/
+            })
+            .catch(this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova"));
     }
 
     render() {
@@ -83,14 +89,18 @@ class Registration extends React.Component {
                         </ul>
                         <div className="tab-content" id="user-selection-content">
                             <div className="tab-pane fade show active h-100" id="private-user" role="tabpanel" aria-labelledby="private-user-tab">
-                                <RegistrationForm privateUser={true} onRegistration={this.onRegistration} />
+                                <RegistrationForm privateUser={true} onRegistration={this.onRegistration} onError={this.props.onError}/>
                             </div>
                             <div className="tab-pane fade" id="organization" role="tabpanel" aria-labelledby="organization-tab">
-                                <RegistrationForm privateUser={false} onRegistration={this.onRegistration}/>
+                                <RegistrationForm privateUser={false} onRegistration={this.onRegistration} onError={this.props.onError}/>
                             </div>
                         </div>
                     </div>
                 </main>
+                <LoginSuccessfullRedirect
+                    {...this.props} 
+                    onRef={this.redirect}
+                />
             </div>
         );
     }
