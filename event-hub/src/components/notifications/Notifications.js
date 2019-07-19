@@ -182,21 +182,24 @@ class Notifications extends React.Component {
                 }
             ]
         }
-        Axios.get(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
-            .then(response => {
-                let status = response.status
-                if (status !== 200)
-                    props.onError("Errore durante il caricamento dei dati di un evento.")
-                else
-                    this.setState({ notifications: response })
-            })
-            .catch(error => props.onError("Errore durante il caricamento dei dati di un evento."))
+        console.log(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
+        if (true)
+            Axios.get(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
+                .then(response => {
+                    let status = response.status
+                    if (status !== 200) {
+                        props.onError("Errore durante il caricamento delle notifiche.")
+                    }
+                    else
+                        this.setState({ notifications: response })
+                })
+                .catch(error => props.onError("Errore durante il caricamento delle notifiche."))
     }
 
     render() {
         return (
             <div>
-                {<LoginRedirect {...this.props} redirectIfNotLogged={true} />}
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <section className="row sticky-top shadow bg-white border-bottom border-primary text-center">
                     <h1 className="col ml-1">Notifiche</h1>
                 </section>

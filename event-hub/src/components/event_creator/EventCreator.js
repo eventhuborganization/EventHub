@@ -2,6 +2,8 @@ import React from 'react';
 import Styles from '../event_info/EventInfo.module.css';
 import Axios from 'axios';
 import {EventBadge, PARTY, SPORT, MEETING} from "../event/Event";
+import MapComponent from '../map/MapComponent'
+import {GoogleMaps} from '../../services/google_cloud/GoogleMaps'
 
 let images = require.context("../../assets/images", true)
 
@@ -16,13 +18,14 @@ class EventCreator extends React.Component {
                 date: undefined,
                 time: undefined,
                 address: "",
-                location: {lat: undefined, long: undefined},
+                place: undefined,
                 public: true,
                 typology: undefined,
                 thumbnail: undefined,
                 thumbnailPreview: undefined,
                 maxParticipants: undefined
-            }
+            },
+            mapsApi: new GoogleMaps()
         }
     }
 
@@ -75,9 +78,15 @@ class EventCreator extends React.Component {
     }
 
     updateAddress = (event) => {
-        let state = this.state
-        state.event.address = event.target.value
-        this.setState(state)
+        let address = event.target.value
+        this.state.mapsApi.getLocationByAddress(address,
+            error => console.log(error),
+            places => {
+                let state = this.state
+                state.event.address = address
+                state.event.place = places[0]
+                this.setState(state)
+            })
     }
 
     updateThumbnailPreview = (event) => {
@@ -292,15 +301,12 @@ class EventCreator extends React.Component {
                 </section>
 
                 <section className="row mt-2">
-                    <div className="col col-md-6">
+                    <div className="col-12 col-md-6">
                         <h5>Luogo dell'evento</h5>
                         <div className="embed-responsive embed-responsive-16by9">
-                            <iframe
-                                title={this.props.match.params.id + " loaction"}
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2862.8552303608158!2d12.235158712371355!3d44.14822954462452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132ca55098146cbf%3A0x6de70b93cd4aed53!2sUniversit%C3%A0+di+Bologna+-+Campus+di+Cesena!5e0!3m2!1sit!2sit!4v1561908171773!5m2!1sit!2sit"
-                                className="embed-responsive-item"
-                                style={{border: 0}} allowFullScreen>
-                            </iframe>
+                            <div className={"embed-responsive-item"}>
+                                <MapComponent place={this.state.event.place} />
+                            </div>
                         </div>
                     </div>
                 </section>
