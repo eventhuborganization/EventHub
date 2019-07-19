@@ -101,138 +101,116 @@ class RegistrationForm extends React.Component {
     render = () => {
         return (
             <form onSubmit={this.onRegistration}>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Nome" 
-                        componentId={this.getIdBasedOnType(this.state.componentIds.name)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.name)}
-                        componentType="text"
-                        placeholder="Mario"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={true}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Cognome"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.surname)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.surname)}
-                        componentType="text"
-                        placeholder="Rossi"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={this.props.privateUser}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationRadioComponent
-                        label="Sesso"
-                        labelA="Maschio"
-                        labelB="Femmina"
-                        valueA="male"
-                        valueB="female"   
-                        componentIdA={this.getIdBasedOnType("radioMale")}
-                        componentIdB={this.getIdBasedOnType("radioFemale")}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.sex)}
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={this.props.privateUser}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Data di nascita"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.birthdate)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.birthdate)}
-                        componentType="date"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={this.props.privateUser}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Città"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.city)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.city)}
-                        componentType="text"
-                        placeholder="Imola"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={!this.props.privateUser}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Provincia"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.province)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.province)}
-                        componentType="text"
-                        placeholder="Bologna"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={!this.props.privateUser}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Indirizzo"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.address)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.address)}
-                        componentType="text"
-                        placeholder="Via Tal dei Tali, 15"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={!this.props.privateUser}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Numero di telefono"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.phone)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.phone)}
-                        componentType="tel"
-                        placeholder="333 4444444"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={!this.props.privateUser}
-                        show={true}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Email"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.email)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.email)}
-                        componentType="email"
-                        placeholder="prova@mail.com"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={true}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Password"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.password)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.password)}
-                        componentType="password"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={true}
-                    />
-                </div>
-                <div className="form-group">
-                    <RegistrationComponent
-                        label="Conferma password"  
-                        componentId={this.getIdBasedOnType(this.state.componentIds.confirmPassword)}
-                        componentName={this.getIdBasedOnType(this.state.componentIds.confirmPassword)}
-                        componentType="password"
-                        onChangeHandler={this.handleChangeEvent}
-                        mandatory={true}
-                        show={true}
-                    />
-                </div>
+                <RegistrationComponent
+                    label="Nome" 
+                    componentId={this.getIdBasedOnType(this.state.componentIds.name)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.name)}
+                    componentType="text"
+                    placeholder="Mario"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={true}
+                />
+                <RegistrationComponent
+                    label="Cognome"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.surname)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.surname)}
+                    componentType="text"
+                    placeholder="Rossi"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={this.props.privateUser}
+                />
+                <RegistrationRadioComponent
+                    label="Sesso"
+                    labelA="Maschio"
+                    labelB="Femmina"
+                    valueA="male"
+                    valueB="female"   
+                    componentIdA={this.getIdBasedOnType("radioMale")}
+                    componentIdB={this.getIdBasedOnType("radioFemale")}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.sex)}
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={this.props.privateUser}
+                />
+                <RegistrationComponent
+                    label="Data di nascita"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.birthdate)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.birthdate)}
+                    componentType="date"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={this.props.privateUser}
+                />
+                <RegistrationComponent
+                    label="Città"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.city)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.city)}
+                    componentType="text"
+                    placeholder="Imola"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={!this.props.privateUser}
+                />
+                <RegistrationComponent
+                    label="Provincia"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.province)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.province)}
+                    componentType="text"
+                    placeholder="Bologna"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={!this.props.privateUser}
+                />
+                <RegistrationComponent
+                    label="Indirizzo"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.address)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.address)}
+                    componentType="text"
+                    placeholder="Via Tal dei Tali, 15"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={!this.props.privateUser}
+                />
+                <RegistrationComponent
+                    label="Numero di telefono"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.phone)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.phone)}
+                    componentType="tel"
+                    placeholder="333 4444444"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={!this.props.privateUser}
+                    show={true}
+                />
+                <RegistrationComponent
+                    label="Email"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.email)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.email)}
+                    componentType="email"
+                    placeholder="prova@mail.com"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={true}
+                />
+                <RegistrationComponent
+                    label="Password"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.password)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.password)}
+                    componentType="password"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={true}
+                />
+                <RegistrationComponent
+                    label="Conferma password"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.confirmPassword)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.confirmPassword)}
+                    componentType="password"
+                    onChangeHandler={this.handleChangeEvent}
+                    mandatory={true}
+                    show={true}
+                />
                 <div className="row">
                     <div className="col d-flex justify-content-start">
                         <label className="p-0 text-danger">*obbligatorio</label>
@@ -252,7 +230,7 @@ class RegistrationForm extends React.Component {
 
 function RegistrationComponent(props) {
     return props.show ? (
-        <div>
+        <div className="form-group">
             <label htmlFor={props.componentId} className={labelClass}>
                 {props.label} <span className={(props.mandatory ? "" : "d-none ") + "text-danger"}>*</span>
             </label>
@@ -273,7 +251,7 @@ function RegistrationComponent(props) {
 
 function RegistrationRadioComponent(props){
     return props.show ? (
-        <div>
+        <div className="form-group">
             <label className={labelClass}>
                 {props.label} <span className={(props.mandatory ? "" : "d-none ") + "text-danger"}>*</span>
             </label>
