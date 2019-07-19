@@ -79,7 +79,7 @@ class Home extends React.Component {
                     </form>
                 </nav>
 
-                <CreateNewEventButton />
+                <CreateNewEventButton location={this.props.location} />
 
                 <main className="main-container">
                     {

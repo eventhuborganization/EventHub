@@ -10,6 +10,21 @@
     margin-top: 1%;
 }
 
+.partyBanner {
+    background-color:#e69200;
+    color: white;
+}
+
+.sportBanner {
+    background-color:#2b8e00;
+    color: white;
+}
+
+.meetingBanner {
+    background-color:#03406a;
+    color: white;
+}
+
 @media screen and (min-width: 800px) {
     .btn {
         width: 10%;

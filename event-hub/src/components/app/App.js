@@ -1,20 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 import './App.css';
 import Home from "../home/Home";
 import Login from "../login/Login";
 import EventInfo from "../event_info/EventInfo";
 import Notifications from "../notifications/Notifications";
-
-/*
-
-<Route path="/profile" component={Profile} />
-<Route path="/notifications" component={Notification} />
-<Route path="/friends" component={Friends} />
-<Route path="/map" component={EventsMap} />
-
-*/
+import EventCreator from '../event_creator/EventCreator'
 
 class App extends React.Component {
 
@@ -40,12 +32,27 @@ class App extends React.Component {
   render() {
     return (
         <Router>
+            <Switch>
             <Route path="/" exact render={(props) => 
                 <Home {...props} 
                   isLogged={this.state.isLogged} 
                   mainServer={this.props.mainServer} 
                   onError={this.onError} 
                 />} 
+            />
+            <Route path="/event/new" exact render={(props) =>
+                <EventCreator {...props}
+                              isLogged={this.state.isLogged}
+                              mainServer={this.props.mainServer}
+                              onError={this.onError}
+                              loggedUser={{
+                                  name: "Stefano",
+                                  surname: "Righini",
+                                  email: "rigo96.imola@gmail.com",
+                                  phoneNumber: "+39 3472284853",
+                                  avatar: "user-profile-image.jpg"
+                              }}
+                />}
             />
             <Route path="/event/:id" exact render={(props) => 
                 <EventInfo {...props} 
@@ -69,6 +76,7 @@ class App extends React.Component {
                                onError={this.onError}
                 />}
             />
+            </Switch>
 
             <footer className={(this.state.showNavbar ? "" : "d-none ") + "row fixed-bottom bg-light border-top border-primary mx-0 py-2"}>
                 <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>

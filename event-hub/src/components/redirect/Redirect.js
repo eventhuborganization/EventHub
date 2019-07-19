@@ -84,4 +84,4 @@ class LoginRedirect extends CallableComponent {
     }
 }
 
-export {LoginRedirect}
+export {LoginRedirect, RedirectComponent}

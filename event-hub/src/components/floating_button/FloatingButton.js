@@ -1,4 +1,5 @@
 import React from 'react'
+import {RedirectComponent} from '../redirect/Redirect'
 
 let FloatingButton = (props) => {
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
@@ -12,7 +13,17 @@ let FloatingButton = (props) => {
 }
 
 let CreateNewEventButton = (props) => {
-    return (<FloatingButton iconName={"plus"} onClick={() => {}} />)
+    let redirect = undefined
+    return (
+        <div>
+            <FloatingButton iconName={"plus"} onClick={() => redirect.setRedirect(true)} />
+            <RedirectComponent {...props}
+                               from={props.location.pathname}
+                               to={"/event/new"}
+                               redirectNow={false}
+                               onRef={ref => redirect = ref}/>
+        </div>
+        )
 }
 
 export {CreateNewEventButton}

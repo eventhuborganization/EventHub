@@ -30,9 +30,9 @@ let interactWithEvent = (server, message, onError) => {
         })
 }
 
-let party = "party"
-let sport = "sport"
-let meeting = "meeting"
+let PARTY = "party"
+let SPORT = "sport"
+let MEETING = "meeting"
 let FOLLOW = 0
 let PARTICIPATE = 1
 
@@ -47,11 +47,11 @@ let getButtonClassName = (eventType, buttonType) => {
             break
         default: break
     }
-    if (eventType === party)
+    if (eventType === PARTY)
         return "btn partyButton partyButton" + buttonClass + " ml-2"
-    else if (eventType === meeting)
+    else if (eventType === MEETING)
         return "btn meetingButton meetingButton" + buttonClass + " ml-2"
-    else if (eventType === sport)
+    else if (eventType === SPORT)
         return "btn sportButton sportButton" + buttonClass + " ml-2"
 }
 
@@ -94,14 +94,14 @@ let ParticipateButton = (props) => {
 let EventBadge = (props) => {
     var typeClass = ""
     var label = ""
-    if (props.event.typology === party) {
+    if (props.event.typology === PARTY) {
         typeClass = "party partyBadge"
         label = "Festa"
-    } else if (props.event.typology === meeting) {
+    } else if (props.event.typology === MEETING) {
         typeClass = "meeting meetingBadge"
         label = "Incontro"
     }
-    else if (props.event.typology === sport) {
+    else if (props.event.typology === SPORT) {
         typeClass = "sport sportBadge"
         label = "Sport"
     }
@@ -128,4 +128,4 @@ let EventInteractionPanel = (props) => {
     )
 }
 
-export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel}
+export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel, PARTY, SPORT, MEETING}
