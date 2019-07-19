@@ -14,24 +14,21 @@ class Login extends React.Component {
             password: "",
             redirect: false
         };
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     security = require('js-sha512');
       
     componentDidMount = () => {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-        this.setState({email: "", password: ""});
+        document.getElementById("root").classList.add("p-0", "h-100")
+        document.body.classList.add("h-100")
+        document.getElementsByTagName("html")[0].classList.add("h-100")
     }
     
     componentWillUnmount = () => {
-        window.removeEventListener('resize', this.updateWindowDimensions);
         this.setState({email: "", password: "", redirect: false});
-    }
-    
-    updateWindowDimensions = () => {
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
+        document.getElementById("root").classList.remove("p-0", "h-100")
+        document.body.classList.remove("h-100")
+        document.getElementsByTagName("html")[0].classList.remove("h-100")
     }
 
     emailChanged = (event) => {
@@ -74,12 +71,10 @@ class Login extends React.Component {
 
     render() {
         return (
-            <div className={styles.loginContainer} style={{height: this.state.height}}>
+            <div className={styles.loginContainer}>
                 
-                <div className={"row " + styles.bgImage}></div>
-                
-                <main className="row">
-                    <form onSubmit={this.submitLogin} className={"col-10 col-md-4 " + styles.bgText}>
+                <main className={"d-flex align-items-center " + styles.bgImage}>
+                    <form onSubmit={this.submitLogin} className={"col-10 col-md-4 mx-auto " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">
                                 <h3>EventHub</h3>

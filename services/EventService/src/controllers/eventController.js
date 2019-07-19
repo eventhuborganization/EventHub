@@ -1,5 +1,7 @@
-var mongoose = require('mongoose');
-var Event = mongoose.model('Events');
+const mongoose = require('mongoose');
+const fuse = require('fuse.js')
+
+const Event = mongoose.model('Events');
 
 exports.getEvent = (req, res) => {
     if(req.query && Object.keys(req.query).length > 0){
@@ -14,6 +16,36 @@ exports.getEvent = (req, res) => {
         res.status(400).send('nope')
     }
 };
+
+exports.searchEvent = (req, res) => {
+    let searchOption = {
+        shouldSort: true,
+        includeScore: true,
+        includeMatches: true,
+        threshold: 0.6,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys:[{
+            name: 'name',
+            weight: 0.6
+        },{
+            name: 'description',
+            weight: 0.2
+        },{
+            name: 'tipology.name',
+            weight: 0.2
+        }]
+    }
+    Event.find({}, (err,event) => {
+        var fuses = new fuse(event,searchOption)
+
+        console.log(event)
+        
+        res.status(201).json(fuses.search(req.params.data))
+    })
+}
 
 exports.getEventById = (req, res) => {
     Event.findById(req.params.uuid, (err, event) => {
@@ -77,12 +109,12 @@ exports.addEventReviews = (req, res) => {
 exports.newEvent = (req, res) => {
     console.log(req.body)
     var event = new Event(req.body.event)
-    event.save((err) => {
+    event.save((err, newEvent) => {
         if(err) {
             console.log("[ERRORE] - " + err);
             res.status(400).send(err)
         } else {
-            res.status(201).send("User added")
+            res.status(201).send(newEvent)
         }
     })
 }

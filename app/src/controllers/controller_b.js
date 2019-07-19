@@ -38,10 +38,7 @@ exports.addEventUser = (req, res) => {
 exports.eventInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, event.defaultCallback)
 }
-/**
- * 
- * TODO: da capire la richiesta di amicizia che tipologia di notifica è
- */
+
 exports.userFriendRequest = (req, res) => {
     var data = {tipology: 1, sender: req.session.user}
     axios.post('http://' + UserServiceHost + ':' + 
@@ -65,7 +62,22 @@ exports.markNotificationAsReaded = (req, res) => {
     })
 }
 
+exports.getNotification = (req,res) => {
+    axios.get('http://' + UserServiceHost + ':' + 
+        UserServicePort + `/users/${req.session.user}/notifications/${req.params.fromIndex}`)
+    .then((response) => {
+        network.resultWithJSON(res, response)
+    })
+    .catch((err) => {
+        network.internalError(res, err)
+    })
+}
+
 exports.searchEventByName = (req, res) => {
-    
+    EventService.searchEvent(req.params.data,(response)=>{
+        network.resultWithJSON(res,response)
+    }, (err) => {
+        network.internalError(res, err)
+    })
 }
 

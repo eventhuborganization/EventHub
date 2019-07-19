@@ -81,7 +81,7 @@ exports.userLogin = (req, res) => {
             } else {
                 let pwd = security.sha512(data.password, user.salt);
                 if(pwd === user.password) {
-                    network.resultWithJSON(res, {_id: user._id});
+                    network.resultWithJSON(res, {_id: user._id, name: user.name, surname: user.surname, phoneNumber: user.phoneNumber,avatar: user.profilePicture});
                 } else {
                     network.userNotFound(res);
                 }
@@ -286,6 +286,17 @@ exports.getBadgePoints = (req, res) => {
         if(err){
             network.userNotFound(res);
         }
+        let badges = [];
+        user.badges.forEach(function(badgeId) {
+            Badges.findById(badgeId, (err, badge) => {
+                if (err) {
+                    network.notFound(res, {description: "badge not found"})
+                }
+                badge.id = badgeId;
+                badges.push(badge);
+            })
+        })
+        user.badges = badges;
         network.resultWithJSON(res, {badge: user.badges, points: user.points});
     })
 };
