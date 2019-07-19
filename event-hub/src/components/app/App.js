@@ -34,55 +34,55 @@ class App extends React.Component {
     return (
         <Router>
             <Switch>
-            <Route path="/" exact render={(props) => 
-                <Home {...props} 
-                  isLogged={this.state.isLogged} 
-                  mainServer={this.props.mainServer} 
-                  onError={this.onError} 
-                />} 
-            />
-            <Route path="/event/new" exact render={(props) =>
-                <EventCreator {...props}
-                              isLogged={this.state.isLogged}
-                              mainServer={this.props.mainServer}
-                              onError={this.onError}
-                              loggedUser={{
-                                  name: "Stefano",
-                                  surname: "Righini",
-                                  email: "rigo96.imola@gmail.com",
-                                  phoneNumber: "+39 3472284853",
-                                  avatar: "user-profile-image.jpg"
-                              }}
-                />}
-            />
-            <Route path="/event/:id" exact render={(props) => 
-                <EventInfo {...props} 
-                  isLogged={this.state.isLogged} 
-                  mainServer={this.props.mainServer} 
-                  onError={this.onError} 
-                />} 
-            />
-            <Route path="/login" exact render={(props) => 
-                <Login {...props} 
-                  mainServer={this.props.mainServer} 
-                  onError={this.onError} 
-                  onLoginSuccessfull={this.onLoginSuccessfull} 
-                />} 
-            />
-            <Route path="/register" exact render={(props) => 
-                <Registration {...props} 
-                  mainServer={this.props.mainServer} 
-                  onError={this.onError} 
-                  onLoginSuccessfull={this.onLoginSuccessfull} 
-                />} 
-            />
-            <Route path="/notification" exact render={(props) =>
-                <Notifications {...props}
-                               mainServer={this.props.mainServer}
-                               isLogged={this.state.isLogged}
-                               onError={this.onError}
-                />}
-            />
+              <Route path="/" exact render={(props) => 
+                  <Home {...props} 
+                    isLogged={this.state.isLogged} 
+                    mainServer={this.props.mainServer} 
+                    onError={this.onError} 
+                  />} 
+              />
+              <Route path="/event/new" exact render={(props) =>
+                  <EventCreator {...props}
+                                isLogged={this.state.isLogged}
+                                mainServer={this.props.mainServer}
+                                onError={this.onError}
+                                loggedUser={{
+                                    name: "Stefano",
+                                    surname: "Righini",
+                                    email: "rigo96.imola@gmail.com",
+                                    phoneNumber: "+39 3472284853",
+                                    avatar: "user-profile-image.jpg"
+                                }}
+                  />}
+              />
+              <Route path="/event/:id" exact render={(props) => 
+                  <EventInfo {...props} 
+                    isLogged={this.state.isLogged} 
+                    mainServer={this.props.mainServer} 
+                    onError={this.onError} 
+                  />} 
+              />
+              <Route path="/login" exact render={(props) => 
+                  <Login {...props} 
+                    mainServer={this.props.mainServer} 
+                    onError={this.onError} 
+                    onLoginSuccessfull={this.onLoginSuccessfull} 
+                  />} 
+              />
+              <Route path="/register" exact render={(props) => 
+                  <Registration {...props} 
+                    mainServer={this.props.mainServer} 
+                    onError={this.onError} 
+                    onRegistration={this.onLoginSuccessfull} 
+                  />} 
+              />
+              <Route path="/notification" exact render={(props) =>
+                  <Notifications {...props}
+                                mainServer={this.props.mainServer}
+                                isLogged={this.state.isLogged}
+                                onError={this.onError}
+                  />}
+              />
             </Switch>
 
             <footer className={(this.state.showNavbar ? "" : "d-none ") + "row fixed-bottom bg-light border-top border-primary mx-0 py-2"}>

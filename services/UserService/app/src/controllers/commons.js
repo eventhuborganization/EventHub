@@ -6,7 +6,6 @@ let Users = mongoose.model('Users');
 exports.deleteUserPrivateInformations = (user) => {
     delete user.password;
     delete user.salt;
-    delete user._id;
     return user;
 }
 
