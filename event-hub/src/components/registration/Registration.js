@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import styles from '../login/Login.module.css';
 import RegistrationForm from './RegistrationForm'
+import RegistrationTab from './RegistrationTab'
 import {LoginSuccessfullRedirect} from '../redirect/Redirect'
 
 
@@ -75,26 +76,24 @@ class Registration extends React.Component {
                                 <h3>EventHub</h3>
                             </div>
                         </div>
-                        <ul className="nav nav-pills mb-3 d-flex justify-content-center" id="user-selection" role="tablist">
-                            <li className="nav-item">
-                                <a className="nav-link active" id="private-user-tab" data-toggle="pill" href="#private-user" role="tab" aria-controls="private-user" aria-selected="true">
-                                    Utente privato
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" id="organization-tab" data-toggle="pill" href="#organization" role="tab" aria-controls="organization" aria-selected="false">
-                                    Organizzazione
-                                </a>
-                            </li>
-                        </ul>
-                        <div className="tab-content" id="user-selection-content">
-                            <div className="tab-pane fade show active h-100" id="private-user" role="tabpanel" aria-labelledby="private-user-tab">
-                                <RegistrationForm privateUser={true} onRegistration={this.onRegistration} onError={this.props.onError}/>
-                            </div>
-                            <div className="tab-pane fade" id="organization" role="tabpanel" aria-labelledby="organization-tab">
-                                <RegistrationForm privateUser={false} onRegistration={this.onRegistration} onError={this.props.onError}/>
-                            </div>
-                        </div>
+                        <RegistrationTab tabs={[
+                            Object.freeze({
+                                tag: "Utente privato", 
+                                elem: <RegistrationForm 
+                                            privateUser={true} 
+                                            onRegistration={this.onRegistration} 
+                                            onError={this.props.onError}
+                                        />
+                            }),
+                            Object.freeze({
+                                tag: "Organizzazione", 
+                                elem: <RegistrationForm 
+                                            privateUser={false}
+                                            onRegistration={this.onRegistration}
+                                            onError={this.props.onError}
+                                        />
+                            })
+                        ]} />
                     </div>
                 </main>
                 <LoginSuccessfullRedirect
@@ -102,48 +101,8 @@ class Registration extends React.Component {
                     onRef={this.redirect}
                 />
             </div>
-        );
+        )
     }
 }
-
-/*
-function RegistrationTab(props) {
-    let count = -1
-    let navigationBar = props.tabs.map(element => {
-        count++
-        return (
-            <li className="nav-item">
-                <a  className={(count == 0 ? "active " : "") + "nav-link"} 
-                    id={count + "-tab"} 
-                    data-toggle="pill" 
-                    href={"#" + count + "-elem"} 
-                    role="tab" aria-controls={count + "-elem"} aria-selected={count == 0 ? true : false}>
-                    {element.tag}
-                </a>
-            </li>
-        )
-    })
-    count = -1
-    let tabBar = props.tabs.map(element => {
-        count ++
-        return (
-            <div className={(count == 0 ? "active show " : "") + "tab-pane fade h-100"} 
-                 id={count + "-elem"} 
-                 role="tabpanel" aria-labelledby={count + "-tab"}>
-                {element.elem}
-            </div>
-        )
-    })
-    return (
-        <div>
-            <ul className="nav nav-pills mb-3 d-flex justify-content-center" id="user-selection" role="tablist">
-                {navigationBar}
-            </ul>
-            <div className="tab-content" id="user-selection-content">
-                {tabBar}
-            </div>
-        </div>
-    );
-}*/
 
 export default Registration;
