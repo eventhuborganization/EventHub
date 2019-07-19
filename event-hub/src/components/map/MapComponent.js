@@ -25,6 +25,7 @@ class GoogleMap extends React.Component {
                 lng: -79.387054
             },
             disableDefaultUI: true,
+            fullscreenControl: true
         })
     }
 

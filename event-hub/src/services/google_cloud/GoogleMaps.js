@@ -8,10 +8,10 @@ class GoogleMaps {
         Axios.get(Properties.mapsApiServer + "/maps/api/geocode/json?address=" + address + "&key=" + Properties.key)
             .catch(error => onError(error))
             .then(response => {
-                if (response.status !== 200 || !response.results)
+                if (!response || response.status !== 200)
                     onError(response)
                 else
-                    onSuccess(response.results)
+                    onSuccess(response.data.results)
             })
     }
 }

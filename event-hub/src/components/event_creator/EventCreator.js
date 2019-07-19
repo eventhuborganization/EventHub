@@ -1,9 +1,8 @@
-import React from 'react';
-import Styles from '../event_info/EventInfo.module.css';
-import Axios from 'axios';
-import {EventBadge, PARTY, SPORT, MEETING} from "../event/Event";
-import MapComponent from '../map/MapComponent'
+import React from 'react'
+import Styles from '../event_info/EventInfo.module.css'
+import {EventBadge, PARTY, SPORT, MEETING} from "../event/Event"
 import {GoogleMaps} from '../../services/google_cloud/GoogleMaps'
+import GoogleMapsProperties from "../../services/google_cloud/Properties"
 
 let images = require.context("../../assets/images", true)
 
@@ -26,6 +25,30 @@ class EventCreator extends React.Component {
                 maxParticipants: undefined
             },
             mapsApi: new GoogleMaps()
+        }
+    }
+
+    componentDidMount() {
+        let googleMapScript = document.createElement('script')
+        googleMapScript.src = "https://maps.googleapis.com/maps/api/js?key=" + GoogleMapsProperties.key + "&libraries=places"
+        window.document.body.appendChild(googleMapScript)
+        googleMapScript.onload = () => {
+            let inputAddress = document.getElementById('address')
+            let searchBox = new window.google.maps.places.SearchBox(inputAddress)
+            searchBox.addListener('places_changed', () => {
+                let places = searchBox.getPlaces()
+                if (places && places.length) {
+                    let place = places[0]
+                    let streetNumber = place.address_components[0].short_name
+                    let streetAddress = place.address_components[1].short_name
+                    let city = place.address_components[2].short_name
+                    let address = streetAddress + ", " + streetNumber + ", " + city
+                    let state = this.state
+                    state.event.address = address
+                    state.event.place = place
+                    this.setState(state)
+                }
+            })
         }
     }
 
@@ -77,27 +100,13 @@ class EventCreator extends React.Component {
         this.setState(state)
     }
 
-    updateAddress = (event) => {
-        let address = event.target.value
-        this.state.mapsApi.getLocationByAddress(address,
-            error => console.log(error),
-            places => {
-                let state = this.state
-                state.event.address = address
-                state.event.place = places[0]
-                this.setState(state)
-            })
-    }
-
     updateThumbnailPreview = (event) => {
         let reader = new FileReader()
         reader.onload = e => {
-            console.log(e.target.result)
             let state = this.state
             state.event.thumbnailPreview = e.target.result
             this.setState(state)
         }
-        console.log(event.target.files[0])
         reader.readAsDataURL(event.target.files[0])
     }
 
@@ -128,12 +137,15 @@ class EventCreator extends React.Component {
         else if (type === SPORT)
             return Styles.sportBanner
         else
-            return ""
+            return "bg-white"
     }
 
 
 
     render() {
+        var mapSrc = ""
+        if (this.state.event.place)
+            mapSrc = "https://www.google.com/maps/embed/v1/place?q=place_id:" + (this.state.event.place ? this.state.event.place.place_id : "") + "&zoom=18&key=AIzaSyBgO5HuSUcxIIEqj4tN4edLO-89sr6dOOs"
         return (
             <form onSubmit={this.createEvent} className="main-container">
 
@@ -252,7 +264,7 @@ class EventCreator extends React.Component {
                                     name="address"
                                     type="text"
                                     className="form-control"
-                                    onChange={this.updateAddress}
+
                                 />
                             </div>
                             <div className="col-5 pl-2">
@@ -301,11 +313,15 @@ class EventCreator extends React.Component {
                 </section>
 
                 <section className="row mt-2">
-                    <div className="col-12 col-md-6">
+                    <div className="col-12">
                         <h5>Luogo dell'evento</h5>
-                        <div className="embed-responsive embed-responsive-16by9">
+                        <div className={"embed-responsive embed-responsive-16by9 " + (this.state.event.place ? "" : " d-none ")}>
                             <div className={"embed-responsive-item"}>
-                                <MapComponent place={this.state.event.place} />
+                                <iframe title={"event-location"}
+                                        width="100%" height="100%" style={{border: 0}}
+                                        src={mapSrc}
+                                        allowFullScreen
+                                />
                             </div>
                         </div>
                     </div>
