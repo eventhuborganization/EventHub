@@ -1,6 +1,7 @@
 import React from 'react';
 import Styles from './EventInfo.module.css';
 import Axios from 'axios';
+import {EventHeaderBanner, FollowButton, ParticipateButton} from "../event/Event";
 
 class EventInfo extends React.Component {
 
@@ -10,7 +11,8 @@ class EventInfo extends React.Component {
             eventInfo: {
                 name: "Evento della madonna",
                 thumbnail: "",
-                date: "26 Luglio 2019 - 21:00",
+                date: "26 Luglio 2019",
+                time: "21:00",
                 address: "Via tal dei tali, 33",
                 numParticipants: 37,
                 maxParticipants: 100,
@@ -58,32 +60,12 @@ class EventInfo extends React.Component {
                     </div>
                 </section>
 
-                <section className={"row sticky-top " + type + "Banner pt-2"}>
-                    <div className="col container-fluid">
-                        <div className="row d-flex align-items-center">
-                            <div className="col-9 mb-1">
-                                <h4 className="m-0">{this.state.eventInfo.name}</h4>
-                            </div>
-                            <div className="col-3 d-flex justify-content-center">
-                                <div className={"badge badge-pill " + type + " " + type + "Badge"}>#{type.charAt(0).toUpperCase() + type.slice(1)}</div>
-                            </div>
-                        </div>
-                        <div className="row d-flex align-items-center">
-                            <div className="col-9 mb-1">
-                                <h6 className="m-0">{this.state.eventInfo.date}</h6>
-                                <h6 className="m-0">{this.state.eventInfo.address}</h6>
-                            </div>
-                            <div className="col-3 d-flex justify-content-end">
-                                <p className="m-0">{this.state.eventInfo.numParticipants}/{this.state.eventInfo.maxParticipants}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <EventHeaderBanner event={this.state.eventInfo} />
 
                 <section className="row mt-2">
                     <div className="col-12 d-flex justify-content-end">
-                        <button className={"btn " + type + "Button " + type + "ButtonSecondary " + Styles.buttonEvent}>Segui</button>
-                        <button className={"btn " + type + "Button " + type + "ButtonPrimary ml-2 " + Styles.buttonEvent}>Partecipa</button>
+                        <FollowButton {...this.props} event={this.state.eventInfo}/>
+                        <ParticipateButton {...this.props} event={this.state.eventInfo}/>
                     </div>
                 </section>
 

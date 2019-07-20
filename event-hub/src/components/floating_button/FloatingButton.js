@@ -1,6 +1,5 @@
 import React from 'react'
 import {RedirectComponent} from '../redirect/Redirect'
-let ApiService = require("../../services/api/Api")
 
 let FloatingButton = (props) => {
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""

@@ -1,6 +1,6 @@
 import React from 'react'
 import Styles from '../event_info/EventInfo.module.css'
-import {EventBadge, PARTY, SPORT, MEETING} from "../event/Event"
+import {EventBadge, PARTY, SPORT, MEETING, EventHeaderBanner} from "../event/Event"
 import {GoogleMaps} from '../../services/google_cloud/GoogleMaps'
 import GoogleMapsProperties from "../../services/google_cloud/Properties"
 
@@ -172,33 +172,7 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <section className={"row sticky-top pt-2 " + this.getBannerClass()}>
-                    <div className="col container-fluid">
-                        <div className="row d-flex align-items-center">
-                            <div className="col-8 mb-1">
-                                <h4 className={"m-0 " + (this.state.event.name ? "" : " d-none ")}>
-                                    {this.state.event.name}
-                                </h4>
-                            </div>
-                            <div className="col-4 d-flex justify-content-end">
-                                {this.renderBadge()}
-                            </div>
-                        </div>
-                        <div className="row d-flex align-items-center">
-                            <div className="col-8 mb-1">
-                                <h6 className={"m-0 " + (this.state.event.date || this.state.event.time ? "" : " d-none ")}>
-                                    {this.state.event.date} - {this.state.event.time}
-                                </h6>
-                                <h6 className={"m-0 " + (this.state.event.address ? "" : " d-none ")}>
-                                    {this.state.event.address}
-                                </h6>
-                            </div>
-                            <div className="col-4 d-flex justify-content-end">
-                                <p className={"m-0 " + (this.state.event.maxParticipants ? "" : " d-none ")}>0/{this.state.event.maxParticipants}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <EventHeaderBanner event={this.state.event} />
 
                 <section className={"row mt-2"}>
                     <div className="col container-fluid">
@@ -253,6 +227,7 @@ class EventCreator extends React.Component {
                                     type="time"
                                     className="form-control"
                                     onChange={this.updateTime}
+
                                 />
                             </div>
                         </div>
@@ -292,7 +267,7 @@ class EventCreator extends React.Component {
                                 <div className="col-12 px-0">
                                     <h6>Organizzatore</h6>
                                 </div>
-                                <div className="col-2 p-0">
+                                <div className="col-2 px-0">
                                     <img src={(this.props.loggedUser.avatar ? images(`./${this.props.loggedUser.avatar}`) : '')}
                                          className="img-fluid border rounded-circle"
                                          alt="Immagine profilo utente"
