@@ -1,0 +1,7 @@
+.empty-list{
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    border-width: 2pt !important;
+    background-color: rgba(0,0,180, 0.3);
+}
