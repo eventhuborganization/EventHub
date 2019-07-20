@@ -220,7 +220,6 @@ let EventLocation = props => {
 }
 
 let EventOrganizatorInfo = props => {
-    let images = require.context("../../assets/images", true)
     return (
         <div className="row">
             <div className="col-12 px-0">
