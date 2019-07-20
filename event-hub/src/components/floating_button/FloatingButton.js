@@ -1,8 +1,23 @@
 import React from 'react'
 import {RedirectComponent} from '../redirect/Redirect'
 
+
+/**
+ *
+ * @param props: {
+ *     icon: {
+ *         name: String,
+ *         size: String
+ *     },
+ *     onClick: event => {}
+ * }
+ * @returns {*}
+ * @constructor
+ */
 let FloatingButton = (props) => {
-    let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
+    var iconClass = ""
+    if (props.icon && props.icon.name)
+        iconClass = "fas fa-" + props.icon.name + (props.icon.size ? " fa-" + props.icon.size : "")
     return (
         <button className="btn btn-lg btn-primary rounded-circle floating-button fixed-bottom"
                 type="button"
@@ -16,7 +31,7 @@ let CreateNewEventButton = (props) => {
     let redirect = undefined
     return (
         <div>
-            <FloatingButton iconName={"plus"} onClick={() => redirect.setRedirect(true)} />
+            <FloatingButton icon={{name: "plus"}} onClick={() => redirect.setRedirect(true)} />
             <RedirectComponent {...props}
                                from={props.location.pathname}
                                to={"/event/new"}
@@ -27,4 +42,16 @@ let CreateNewEventButton = (props) => {
         )
 }
 
-export {CreateNewEventButton}
+/**
+ *
+ * @param props: {
+ *     onClick: event => {}
+ * }
+ * @returns {*}
+ * @constructor
+ */
+let ConfirmButton = (props) => {
+    return (<FloatingButton icon={{name: "check-circle"}} onClick={props.onClick} />)
+}
+
+export {CreateNewEventButton, ConfirmButton}

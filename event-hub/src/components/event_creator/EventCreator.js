@@ -1,7 +1,8 @@
 import React from 'react'
-import {EventBadge, PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation} from "../event/Event"
+import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation} from "../event/Event"
 import GoogleMapsProperties from "../../services/google_cloud/Properties"
 import Contacts from "../contacts/Contacts";
+import {ConfirmButton} from "../floating_button/FloatingButton";
 
 let images = require.context("../../assets/images", true)
 
@@ -49,19 +50,6 @@ class EventCreator extends React.Component {
                 }
             })
         }
-    }
-
-    canCreate() {
-        let state = this.state
-        return state.event.name
-            && state.event.description
-            && state.event.address
-            && state.event.location
-            && state.event.typology
-            && state.event.maxParticipants
-            && state.event.thumbnail
-            && state.event.date
-            && state.event.time
     }
 
     updateName = (event) => {
@@ -114,23 +102,59 @@ class EventCreator extends React.Component {
         this.setState(state)
     }
 
-    createEvent = (event) => {
-        if (this.canCreate()) {
-            //create event
-        } else {
-            //show errors
+    canCreate() {
+        let state = this.state
+        return state.event.name
+            && state.event.description
+            && state.event.address
+            && state.event.location
+            && state.event.typology
+            && state.event.maxParticipants
+            && state.event.thumbnail
+            && state.event.date
+            && state.event.time
+    }
+
+    createEvent = () => {
+        let event = this.state.event
+        var errorFound = false
+        let addErrorClassAndfocus = name => {
+            let element = document.getElementById(name)
+            element.classList.add("border")
+            element.classList.add("border-danger")
+            if (!errorFound) {
+                errorFound = true
+                element.focus()
+                element.scrollIntoView()
+            }
+        }
+        if (!event.thumbnailPreview)
+            addErrorClassAndfocus("thumbnail-preview")
+        if (!event.name)
+            addErrorClassAndfocus("name")
+        if (!event.typology)
+            addErrorClassAndfocus("typology")
+        if (!event.date)
+            addErrorClassAndfocus("date")
+        if (!event.time)
+            addErrorClassAndfocus("time")
+        if (!event.address || event.place)
+            addErrorClassAndfocus("address")
+        if (!event.maxParticipants)
+            addErrorClassAndfocus("max-participants")
+        if (!event.description)
+            addErrorClassAndfocus("description")
+        if (!errorFound) {
+            //backend
         }
     }
 
     render() {
-        var mapSrc = ""
-        if (this.state.event.place)
-            mapSrc = "https://www.google.com/maps/embed/v1/place?q=place_id:" + (this.state.event.place ? this.state.event.place.place_id : "") + "&zoom=18&key=AIzaSyBgO5HuSUcxIIEqj4tN4edLO-89sr6dOOs"
         return (
-            <form onSubmit={this.createEvent} className="main-container">
+            <form className="main-container">
 
                 <section className="row">
-                    <div className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
+                    <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
                         <div className={"text-secondary " + (this.state.event.thumbnailPreview ? " d-none " : "" )}>
                             <em className="far fa-image fa-9x"></em>
                             <h4>Clicca per aggiungere un'immagine</h4>
@@ -180,7 +204,7 @@ class EventCreator extends React.Component {
                                         Festa
                                     </option>
                                     <option value={MEETING}>
-                                        Incontro
+                                        Incontro, size: ""
                                     </option>
                                     <option value={SPORT}>
                                         Sport
@@ -219,7 +243,7 @@ class EventCreator extends React.Component {
                                     name="address"
                                     type="text"
                                     className="form-control"
-
+                                    placeholder="Indirizzo"
                                 />
                             </div>
                             <div className="col-5 pl-2">
@@ -260,16 +284,20 @@ class EventCreator extends React.Component {
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6>Descrizione</h6>
-                                    <textarea className="w-75 text-justify" onChange={this.updateDescription} />
+                                    <textarea id="description" className="w-75 text-justify" onChange={this.updateDescription} />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <EventLocation event={this.state.event} />
+                <div className={this.state.event.place ? "" : " d-none "}>
+                    <EventLocation event={this.state.event} />
+                </div>
 
                 <Contacts event={this.state.event}/>
+
+                <ConfirmButton onClick={this.createEvent} />
 
             </form>
         )

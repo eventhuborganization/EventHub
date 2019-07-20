@@ -7,7 +7,7 @@ class GoogleMap extends React.Component {
 
     updateMapRef = () => {
         this.googleMapRef = this.createGoogleMap()
-        let marker = this.createMarker()
+        this.createMarker()
     }
 
     componentDidMount() {
