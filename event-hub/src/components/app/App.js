@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
-import './App.css';
-import Home from "../home/Home";
-import Login from "../login/Login";
-import EventInfo from "../event_info/EventInfo";
-import Registration from "../registration/Registration";
-import Notifications from "../notifications/Notifications";
+import './App.css'
+import Home from '../home/Home'
+import Login from '../login/Login'
+import EventInfo from '../event_info/EventInfo'
+import Registration from '../registration/Registration'
+import Notifications from '../notifications/Notifications'
 import EventCreator from '../event_creator/EventCreator'
+import UserProfile from '../profile/UserProfile'
 
 class App extends React.Component {
 
@@ -27,7 +28,7 @@ class App extends React.Component {
     this.setState({
       isLogged: true, 
       userId: userId
-    });
+    })
   }
 
   render() {
@@ -78,10 +79,26 @@ class App extends React.Component {
               />
               <Route path="/notification" exact render={(props) =>
                   <Notifications {...props}
-                                mainServer={this.props.mainServer}
-                                isLogged={this.state.isLogged}
-                                onError={this.onError}
+                      mainServer={this.props.mainServer}
+                      isLogged={this.state.isLogged}
+                      onError={this.onError}
                   />}
+              />
+              <Route path="/profile" exact render={(props) =>
+                  <UserProfile {...props}
+                      mainServer={this.props.mainServer}
+                      userId={this.state.userId}
+                      onError={this.onError}
+                      isLocalUser={true}
+                  />}
+              />
+              <Route path="/users/:id" exact render={(props) => 
+                  <UserProfile {...props}
+                      mainServer={this.props.mainServer}
+                      userId={this.state.userId}
+                      onError={this.onError}
+                      isLocalUser={false}
+                  />} 
               />
             </Switch>
 

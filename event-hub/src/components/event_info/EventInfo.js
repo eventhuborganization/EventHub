@@ -66,9 +66,7 @@ class EventInfo extends React.Component {
                              className="img-fluid" />
                     </div>
                 </section>
-
                 <EventHeaderBanner event={this.state.eventInfo} />
-
                 <section className="row mt-2">
                     <div className="col-12 d-flex justify-content-end">
                         <FollowButton {...this.props} event={this.state.eventInfo}/>

@@ -1,0 +1,19 @@
+.profileBadge {
+    border-width: 2px !important;
+    background-color: rgba(0,0,0, 0.4);
+    text-shadow: -1px 0 darkblue, 0 1px darkblue, 1px 0 darkblue, 0 -1px darkblue;
+}
+
+.friendRemove {
+    border-width: 2px !important;
+    background-color: rgba(0,0,0, 0.4);
+    text-shadow: -1px 0 darkred, 0 1px darkred, 1px 0 darkred, 0 -1px darkred;
+}
+
+.personalBadge {
+    border-width: medium !important;
+}
+
+.friendsIcon {
+    border-width: 2px !important;
+}
