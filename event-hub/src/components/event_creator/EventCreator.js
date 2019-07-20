@@ -1,10 +1,10 @@
 import React from 'react'
-import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation} from "../event/Event"
+import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizatorInfo} from "../event/Event"
 import GoogleMapsProperties from "../../services/google_cloud/Properties"
 import Contacts from "../contacts/Contacts";
 import {ConfirmButton} from "../floating_button/FloatingButton";
-
-let images = require.context("../../assets/images", true)
+import ApiService from "../../services/api/Api";
+import {RedirectComponent} from "../redirect/Redirect";
 
 class EventCreator extends React.Component {
 
@@ -24,7 +24,9 @@ class EventCreator extends React.Component {
                 thumbnailPreview: undefined,
                 maxParticipants: undefined,
                 organizator: props.loggedUser
-            }
+            },
+            eventCreated: false,
+            eventId: undefined
         }
     }
 
@@ -145,14 +147,30 @@ class EventCreator extends React.Component {
         if (!event.description)
             addErrorClassAndfocus("description")
         if (!errorFound) {
-            //backend
+            ApiService.createNewEvent(this.state.event,
+                    error => console.log(error),
+                    response => {
+                        let state = this.state
+                        state.eventCreated = true
+                        state.eventId = response.event._id
+                        this.setState(state)
+                    })
         }
+    }
+
+    renderRedirect() {
+        if (this.state.eventCreated)
+            return <RedirectComponent {...this.props}
+                                      from={"/"}
+                                      to={"/event/" + this.state.eventId}
+                                      redirectNow={true}
+            />
     }
 
     render() {
         return (
             <form className="main-container">
-
+                {this.renderRedirect()}
                 <section className="row">
                     <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
                         <div className={"text-secondary " + (this.state.event.thumbnailPreview ? " d-none " : "" )}>
@@ -161,7 +179,7 @@ class EventCreator extends React.Component {
                         </div>
                         <img src={this.state.event.thumbnailPreview}
                              alt="Event thumbnail"
-                             className={"img-fluid " + (this.state.event.thumbnailPreview ? "" : "d-none")}
+                             className={"img-fluid " + (this.state.event.thumbnailPreview ? "" : " d-none ")}
                         />
                     </div>
                     <div className="d-none">
@@ -267,20 +285,7 @@ class EventCreator extends React.Component {
                     <div className="col-12">
                         <h5>Dettagli</h5>
                         <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-12 px-0">
-                                    <h6>Organizzatore</h6>
-                                </div>
-                                <div className="col-2 px-0">
-                                    <img src={(this.props.loggedUser.avatar ? images(`./${this.props.loggedUser.avatar}`) : '')}
-                                         className="img-fluid border rounded-circle"
-                                         alt="Immagine profilo utente"
-                                    />
-                                </div>
-                                <div className="col-10 d-flex justify-content-start align-items-center">
-                                    <span className="text-invited font-weight-bold">{this.props.loggedUser.name} {this.props.loggedUser.surname}</span>
-                                </div>
-                            </div>
+                            <EventOrganizatorInfo organizator={this.state.event.organizator}/>
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6>Descrizione</h6>
@@ -291,7 +296,7 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <div className={this.state.event.place ? "" : " d-none "}>
+                <div className={"mt-2" + (this.state.event.place ? "" : " d-none ")}>
                     <EventLocation event={this.state.event} />
                 </div>
 

@@ -3,6 +3,7 @@ import Axios from 'axios'
 import { LoginRedirect } from '../redirect/Redirect';
 import './Event.css'
 import {LocationMap} from '../map/Map'
+import UserAvatar from "../user_avatar/UserAvatar";
 
 let participate = (server, eventId, onError) => {
     interactWithEvent(
@@ -209,7 +210,7 @@ let EventHeaderBanner = props => {
  */
 let EventLocation = props => {
     return (
-        <section className="row mt-2">
+        <section className="row">
             <div className="col-12">
                 <h5>Luogo dell'evento</h5>
                 <LocationMap place={props.event.place}/>
@@ -218,4 +219,32 @@ let EventLocation = props => {
     )
 }
 
-export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel, EventHeaderBanner, EventLocation, PARTY, SPORT, MEETING}
+let EventOrganizatorInfo = props => {
+    let images = require.context("../../assets/images", true)
+    return (
+        <div className="row">
+            <div className="col-12 px-0">
+                <h6>Organizzatore</h6>
+            </div>
+            <div className="col-2 px-0">
+                <UserAvatar user={props.organizator}/>
+            </div>
+            <div className="col-10 d-flex justify-content-start align-items-center">
+                <span className="text-invited font-weight-bold">{props.organizator.name} {props.organizator.surname}</span>
+            </div>
+        </div>
+    )
+}
+
+export {
+    FollowButton,
+    ParticipateButton,
+    EventBadge,
+    EventInteractionPanel,
+    EventHeaderBanner,
+    EventLocation,
+    EventOrganizatorInfo,
+    PARTY,
+    SPORT,
+    MEETING
+}

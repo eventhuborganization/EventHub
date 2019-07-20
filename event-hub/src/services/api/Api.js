@@ -12,4 +12,4 @@ let createNewEvent = (event, onError, onSuccess) => {
         })
 }
 
-export {createNewEvent}
+export default {createNewEvent}
