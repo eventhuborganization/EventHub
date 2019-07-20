@@ -9,7 +9,7 @@ services:
     container_name: event-hub_user-service
     hostname: event-hub_user-service
     ports:
-      - 3000:3000
+      - 3001:3001
     networks:
       - internal
   mongodb:
@@ -21,6 +21,28 @@ services:
     hostname: event-hub_mongodb
     ports:
       - 27017-27019:27017-27019
+    networks:
+      - internal
+  event-service:
+    build:
+      context: ./services/EventService
+      dockerfile: Dockerfile
+    image: event-hub_event-service
+    container_name: event-hub_event-service
+    hostname: event-hub_event-service
+    ports:
+      - 3002:3002
+    networks:
+      - internal
+  controller-service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: event-hub_controller-service
+    container_name: event-hub_controller-service
+    hostname: event-hub_controller-service
+    ports:
+      - 3000:3000
     networks:
       - internal
 

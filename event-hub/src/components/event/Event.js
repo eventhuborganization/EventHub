@@ -2,6 +2,7 @@ import React from 'react'
 import Axios from 'axios'
 import { LoginRedirect } from '../redirect/Redirect';
 import './Event.css'
+import {LocationMap} from '../map/Map'
 
 let participate = (server, eventId, onError) => {
     interactWithEvent(
@@ -128,4 +129,93 @@ let EventInteractionPanel = (props) => {
     )
 }
 
-export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel, PARTY, SPORT, MEETING}
+/**
+ *
+ * @param props {
+ *     event: {
+ *         typology: String,
+ *         name: String,
+ *         date: String,
+ *         time: String,
+ *         address: String,
+ *         numParticipants: Integer,
+ *         maxParticipants: Integer
+ *     }
+ * }
+ * @returns {*}
+ * @constructor
+ */
+let EventHeaderBanner = props => {
+
+    let getBannerClassName = () => {
+        let type = props.event.typology
+        if (type === PARTY)
+            return "partyBanner"
+        else if (type === MEETING)
+            return "meetingBanner"
+        else if (type === SPORT)
+            return "sportBanner"
+        else
+            return "bg-white"
+    }
+
+    let renderBadge = () => {
+        if (props.event.typology)
+            return <EventBadge event={props.event} />
+    }
+
+    return (
+        <section className={"row sticky-top pt-2 " + getBannerClassName()}>
+            <div className="col container-fluid">
+                <div className="row d-flex align-items-center">
+                    <div className="col-8 mb-1 px-1">
+                        <h5 className={"m-0 " + (props.event.name ? "" : " d-none ")}>
+                            {props.event.name}
+                        </h5>
+                    </div>
+                    <div className="col-4 d-flex justify-content-end px-1">
+                        {renderBadge()}
+                    </div>
+                </div>
+                <div className="row d-flex align-items-center">
+                    <div className="col-8 mb-1 px-1">
+                        <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
+                            {props.event.date} - {props.event.time}
+                        </h6>
+                        <h6 className={"m-0 " + (props.event.address ? "" : " d-none ")}>
+                            {props.event.address}
+                        </h6>
+                    </div>
+                    <div className="col-4 d-flex justify-content-end px-1">
+                        <p className={"m-0 " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+/**
+ *
+ * @param props: {
+ *     event: {
+ *         place: {
+ *             place_id: String
+ *         }
+ *     }
+ * }
+ * @returns {*}
+ * @constructor
+ */
+let EventLocation = props => {
+    return (
+        <section className="row mt-2">
+            <div className="col-12">
+                <h5>Luogo dell'evento</h5>
+                <LocationMap place={props.event.place}/>
+            </div>
+        </section>
+    )
+}
+
+export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel, EventHeaderBanner, EventLocation, PARTY, SPORT, MEETING}

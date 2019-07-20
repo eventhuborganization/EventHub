@@ -1,6 +1,7 @@
 import React from 'react';
-import Styles from './EventInfo.module.css';
 import Axios from 'axios';
+import {EventHeaderBanner, EventLocation, FollowButton, ParticipateButton} from "../event/Event";
+import Contacts from '../contacts/Contacts'
 
 class EventInfo extends React.Component {
 
@@ -10,8 +11,10 @@ class EventInfo extends React.Component {
             eventInfo: {
                 name: "Evento della madonna",
                 thumbnail: "",
-                date: "26 Luglio 2019 - 21:00",
+                date: "26 Luglio 2019",
+                time: "21:00",
                 address: "Via tal dei tali, 33",
+                place: { place_id: "ChIJtYuu0V25j4ARwu5e4wwRYgE"},
                 numParticipants: 37,
                 maxParticipants: 100,
                 description: "Una madonna madonnesca",
@@ -57,33 +60,11 @@ class EventInfo extends React.Component {
                         <img src={this.props.mainServer + this.state.eventInfo.thumbnail} alt="" className="img-fluid" />
                     </div>
                 </section>
-
-                <section className={"row sticky-top " + Styles[type + "Banner"] + " pt-2"}>
-                    <div className="col container-fluid">
-                        <div className="row d-flex align-items-center">
-                            <div className="col-9 mb-1">
-                                <h4 className="m-0">{this.state.eventInfo.name}</h4>
-                            </div>
-                            <div className="col-3 d-flex justify-content-center">
-                                <div className={"badge badge-pill " + type + " " + type + "Badge"}>#{type.charAt(0).toUpperCase() + type.slice(1)}</div>
-                            </div>
-                        </div>
-                        <div className="row d-flex align-items-center">
-                            <div className="col-9 mb-1">
-                                <h6 className="m-0">{this.state.eventInfo.date}</h6>
-                                <h6 className="m-0">{this.state.eventInfo.address}</h6>
-                            </div>
-                            <div className="col-3 d-flex justify-content-end">
-                                <p className="m-0">{this.state.eventInfo.numParticipants}/{this.state.eventInfo.maxParticipants}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
+                <EventHeaderBanner event={this.state.eventInfo} />
                 <section className="row mt-2">
                     <div className="col-12 d-flex justify-content-end">
-                        <button className={"btn " + type + "Button " + type + "ButtonSecondary " + Styles.buttonEvent}>Segui</button>
-                        <button className={"btn " + type + "Button " + type + "ButtonPrimary ml-2 " + Styles.buttonEvent}>Partecipa</button>
+                        <FollowButton {...this.props} event={this.state.eventInfo}/>
+                        <ParticipateButton {...this.props} event={this.state.eventInfo}/>
                     </div>
                 </section>
 
@@ -96,43 +77,9 @@ class EventInfo extends React.Component {
                     </div>
                 </section>
 
-                <section className="row mt-2">
-                    <div className="col col-md-6">
-                        <h5>Luogo dell'evento</h5>
-                        <div className="embed-responsive embed-responsive-16by9">
-                            <iframe
-                                title={this.props.match.params.id + " loaction"}
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2862.8552303608158!2d12.235158712371355!3d44.14822954462452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132ca55098146cbf%3A0x6de70b93cd4aed53!2sUniversit%C3%A0+di+Bologna+-+Campus+di+Cesena!5e0!3m2!1sit!2sit!4v1561908171773!5m2!1sit!2sit"
-                                className="embed-responsive-item"
-                                style={{border: 0}} allowFullScreen>
-                            </iframe>
-                        </div>
-                    </div>
-                </section>
+                <EventLocation event={this.state.eventInfo} />
 
-                <section className="row mt-2">
-                    <div className={"col d-flex flex-column " + Styles.buttonEvent}>
-                        <h5>Contatti</h5>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-phone fa-2x text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.state.eventInfo.organizator.phoneNumber}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-envelope fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.state.eventInfo.organizator.email}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-comments fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">Facci una domanda!</p>
-                        </div>
-                    </div>
-                </section>
+                <Contacts event={this.state.eventInfo}/>
 
             </main>
         )

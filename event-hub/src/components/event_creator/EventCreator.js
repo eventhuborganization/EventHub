@@ -1,7 +1,7 @@
-import React from 'react';
-import Styles from '../event_info/EventInfo.module.css';
-import Axios from 'axios';
-import {EventBadge, PARTY, SPORT, MEETING} from "../event/Event";
+import React from 'react'
+import {EventBadge, PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation} from "../event/Event"
+import GoogleMapsProperties from "../../services/google_cloud/Properties"
+import Contacts from "../contacts/Contacts";
 
 let images = require.context("../../assets/images", true)
 
@@ -16,13 +16,38 @@ class EventCreator extends React.Component {
                 date: undefined,
                 time: undefined,
                 address: "",
-                location: {lat: undefined, long: undefined},
+                place: undefined,
                 public: true,
                 typology: undefined,
                 thumbnail: undefined,
                 thumbnailPreview: undefined,
-                maxParticipants: undefined
+                maxParticipants: undefined,
+                organizator: props.loggedUser
             }
+        }
+    }
+
+    componentDidMount() {
+        let googleMapScript = document.createElement('script')
+        googleMapScript.src = "https://maps.googleapis.com/maps/api/js?key=" + GoogleMapsProperties.key + "&libraries=places"
+        window.document.body.appendChild(googleMapScript)
+        googleMapScript.onload = () => {
+            let inputAddress = document.getElementById('address')
+            let searchBox = new window.google.maps.places.SearchBox(inputAddress)
+            searchBox.addListener('places_changed', () => {
+                let places = searchBox.getPlaces()
+                if (places && places.length) {
+                    let place = places[0]
+                    let streetNumber = place.address_components[0].short_name
+                    let streetAddress = place.address_components[1].short_name
+                    let city = place.address_components[2].short_name
+                    let address = streetAddress + ", " + streetNumber + ", " + city
+                    let state = this.state
+                    state.event.address = address
+                    state.event.place = place
+                    this.setState(state)
+                }
+            })
         }
     }
 
@@ -37,11 +62,6 @@ class EventCreator extends React.Component {
             && state.event.thumbnail
             && state.event.date
             && state.event.time
-    }
-
-    renderBadge() {
-        if (this.state.event.typology)
-            return <EventBadge event={this.state.event} />
     }
 
     updateName = (event) => {
@@ -74,21 +94,13 @@ class EventCreator extends React.Component {
         this.setState(state)
     }
 
-    updateAddress = (event) => {
-        let state = this.state
-        state.event.address = event.target.value
-        this.setState(state)
-    }
-
     updateThumbnailPreview = (event) => {
         let reader = new FileReader()
         reader.onload = e => {
-            console.log(e.target.result)
             let state = this.state
             state.event.thumbnailPreview = e.target.result
             this.setState(state)
         }
-        console.log(event.target.files[0])
         reader.readAsDataURL(event.target.files[0])
     }
 
@@ -110,21 +122,10 @@ class EventCreator extends React.Component {
         }
     }
 
-    getBannerClass = () => {
-        let type = this.state.event.typology
-        if (type === PARTY)
-            return Styles.partyBanner
-        else if (type === MEETING)
-            return Styles.meetingBanner
-        else if (type === SPORT)
-            return Styles.sportBanner
-        else
-            return ""
-    }
-
-
-
     render() {
+        var mapSrc = ""
+        if (this.state.event.place)
+            mapSrc = "https://www.google.com/maps/embed/v1/place?q=place_id:" + (this.state.event.place ? this.state.event.place.place_id : "") + "&zoom=18&key=AIzaSyBgO5HuSUcxIIEqj4tN4edLO-89sr6dOOs"
         return (
             <form onSubmit={this.createEvent} className="main-container">
 
@@ -151,33 +152,7 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <section className={"row sticky-top pt-2 " + this.getBannerClass()}>
-                    <div className="col container-fluid">
-                        <div className="row d-flex align-items-center">
-                            <div className="col-8 mb-1">
-                                <h4 className={"m-0 " + (this.state.event.name ? "" : " d-none ")}>
-                                    {this.state.event.name}
-                                </h4>
-                            </div>
-                            <div className="col-4 d-flex justify-content-end">
-                                {this.renderBadge()}
-                            </div>
-                        </div>
-                        <div className="row d-flex align-items-center">
-                            <div className="col-8 mb-1">
-                                <h6 className={"m-0 " + (this.state.event.date || this.state.event.time ? "" : " d-none ")}>
-                                    {this.state.event.date} - {this.state.event.time}
-                                </h6>
-                                <h6 className={"m-0 " + (this.state.event.address ? "" : " d-none ")}>
-                                    {this.state.event.address}
-                                </h6>
-                            </div>
-                            <div className="col-4 d-flex justify-content-end">
-                                <p className={"m-0 " + (this.state.event.maxParticipants ? "" : " d-none ")}>0/{this.state.event.maxParticipants}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <EventHeaderBanner event={this.state.event} />
 
                 <section className={"row mt-2"}>
                     <div className="col container-fluid">
@@ -232,6 +207,7 @@ class EventCreator extends React.Component {
                                     type="time"
                                     className="form-control"
                                     onChange={this.updateTime}
+
                                 />
                             </div>
                         </div>
@@ -243,7 +219,7 @@ class EventCreator extends React.Component {
                                     name="address"
                                     type="text"
                                     className="form-control"
-                                    onChange={this.updateAddress}
+
                                 />
                             </div>
                             <div className="col-5 pl-2">
@@ -271,7 +247,7 @@ class EventCreator extends React.Component {
                                 <div className="col-12 px-0">
                                     <h6>Organizzatore</h6>
                                 </div>
-                                <div className="col-2 p-0">
+                                <div className="col-2 px-0">
                                     <img src={(this.props.loggedUser.avatar ? images(`./${this.props.loggedUser.avatar}`) : '')}
                                          className="img-fluid border rounded-circle"
                                          alt="Immagine profilo utente"
@@ -291,43 +267,9 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <section className="row mt-2">
-                    <div className="col col-md-6">
-                        <h5>Luogo dell'evento</h5>
-                        <div className="embed-responsive embed-responsive-16by9">
-                            <iframe
-                                title={this.props.match.params.id + " loaction"}
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2862.8552303608158!2d12.235158712371355!3d44.14822954462452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132ca55098146cbf%3A0x6de70b93cd4aed53!2sUniversit%C3%A0+di+Bologna+-+Campus+di+Cesena!5e0!3m2!1sit!2sit!4v1561908171773!5m2!1sit!2sit"
-                                className="embed-responsive-item"
-                                style={{border: 0}} allowFullScreen>
-                            </iframe>
-                        </div>
-                    </div>
-                </section>
+                <EventLocation event={this.state.event} />
 
-                <section className="row mt-2">
-                    <div className={"col d-flex flex-column " + Styles.buttonEvent}>
-                        <h5>Contatti</h5>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-phone fa-2x text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.props.loggedUser.phoneNumber}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-envelope fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.props.loggedUser.email}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-comments fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">Facci una domanda!</p>
-                        </div>
-                    </div>
-                </section>
+                <Contacts event={this.state.event}/>
 
             </form>
         )

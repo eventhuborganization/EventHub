@@ -1,0 +1,3 @@
+{
+  "apiServer": "http://event-hub_controller-service:3000"
+}

@@ -21,7 +21,8 @@ let CreateNewEventButton = (props) => {
                                from={props.location.pathname}
                                to={"/event/new"}
                                redirectNow={false}
-                               onRef={ref => redirect = ref}/>
+                               onRef={ref => redirect = ref}
+            />
         </div>
         )
 }
