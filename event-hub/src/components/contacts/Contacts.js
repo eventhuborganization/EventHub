@@ -1,4 +1,3 @@
-import Styles from "../event_info/EventInfo.module.css";
 import React from "react";
 
 let Contacts = props => {

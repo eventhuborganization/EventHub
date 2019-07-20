@@ -51,7 +51,6 @@ class EventInfo extends React.Component {
     }
 
     render() {
-        let type = this.state.eventInfo.typology
         return (
             <main className="main-container">
 
