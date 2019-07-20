@@ -1,8 +1,7 @@
 import React from 'react'
-import Styles from '../event_info/EventInfo.module.css'
-import {EventBadge, PARTY, SPORT, MEETING, EventHeaderBanner} from "../event/Event"
-import {GoogleMaps} from '../../services/google_cloud/GoogleMaps'
+import {EventBadge, PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation} from "../event/Event"
 import GoogleMapsProperties from "../../services/google_cloud/Properties"
+import Contacts from "../contacts/Contacts";
 
 let images = require.context("../../assets/images", true)
 
@@ -22,9 +21,9 @@ class EventCreator extends React.Component {
                 typology: undefined,
                 thumbnail: undefined,
                 thumbnailPreview: undefined,
-                maxParticipants: undefined
-            },
-            mapsApi: new GoogleMaps()
+                maxParticipants: undefined,
+                organizator: props.loggedUser
+            }
         }
     }
 
@@ -63,11 +62,6 @@ class EventCreator extends React.Component {
             && state.event.thumbnail
             && state.event.date
             && state.event.time
-    }
-
-    renderBadge() {
-        if (this.state.event.typology)
-            return <EventBadge event={this.state.event} />
     }
 
     updateName = (event) => {
@@ -127,20 +121,6 @@ class EventCreator extends React.Component {
             //show errors
         }
     }
-
-    getBannerClass = () => {
-        let type = this.state.event.typology
-        if (type === PARTY)
-            return Styles.partyBanner
-        else if (type === MEETING)
-            return Styles.meetingBanner
-        else if (type === SPORT)
-            return Styles.sportBanner
-        else
-            return "bg-white"
-    }
-
-
 
     render() {
         var mapSrc = ""
@@ -287,44 +267,9 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <section className="row mt-2">
-                    <div className="col-12">
-                        <h5>Luogo dell'evento</h5>
-                        <div className={"embed-responsive embed-responsive-16by9 " + (this.state.event.place ? "" : " d-none ")}>
-                            <div className={"embed-responsive-item"}>
-                                <iframe title={"event-location"}
-                                        width="100%" height="100%" style={{border: 0}}
-                                        src={mapSrc}
-                                        allowFullScreen
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <EventLocation event={this.state.event} />
 
-                <section className="row mt-2">
-                    <div className={"col d-flex flex-column " + Styles.buttonEvent}>
-                        <h5>Contatti</h5>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-phone fa-2x text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.props.loggedUser.phoneNumber}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-envelope fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.props.loggedUser.email}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-comments fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">Facci una domanda!</p>
-                        </div>
-                    </div>
-                </section>
+                <Contacts event={this.state.event}/>
 
             </form>
         )

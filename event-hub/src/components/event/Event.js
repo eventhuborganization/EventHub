@@ -2,7 +2,7 @@ import React from 'react'
 import Axios from 'axios'
 import { LoginRedirect } from '../redirect/Redirect';
 import './Event.css'
-import Styles from "../event_info/EventInfo.module.css";
+import {LocationMap} from '../map/Map'
 
 let participate = (server, eventId, onError) => {
     interactWithEvent(
@@ -195,4 +195,27 @@ let EventHeaderBanner = props => {
     )
 }
 
-export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel, EventHeaderBanner, PARTY, SPORT, MEETING}
+/**
+ *
+ * @param props: {
+ *     event: {
+ *         place: {
+ *             place_id: String
+ *         }
+ *     }
+ * }
+ * @returns {*}
+ * @constructor
+ */
+let EventLocation = props => {
+    return (
+        <section className="row mt-2">
+            <div className="col-12">
+                <h5>Luogo dell'evento</h5>
+                <LocationMap place={props.event.place}/>
+            </div>
+        </section>
+    )
+}
+
+export {FollowButton, ParticipateButton, EventBadge, EventInteractionPanel, EventHeaderBanner, EventLocation, PARTY, SPORT, MEETING}
