@@ -116,4 +116,4 @@ class LoginSuccessfullRedirect extends CallableComponent {
     }
 }
 
-export {RedirectComponent, LoginRedirect, LoginSuccessfullRedirect}
+export {CallableComponent, RedirectComponent, LoginRedirect, LoginSuccessfullRedirect}
