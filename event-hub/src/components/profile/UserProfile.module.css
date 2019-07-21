@@ -17,3 +17,7 @@
 .friendsIcon {
     border-width: 2px !important;
 }
+
+.settingsIcon {
+    text-shadow: -1px 0 darkblue, 0 1px darkblue, 1px 0 darkblue, 0 -1px darkblue;
+}

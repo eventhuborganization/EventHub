@@ -50,7 +50,7 @@ class Login extends React.Component {
                 email: this.state.email,
                 password: hashedPwd 
             };
-            axios.post(this.props.mainServer + "/login", message)
+            /*axios.post(this.props.mainServer + "/login", message)
                 .then(response => {
                     let status = response.status
                     if (status === 200) {
@@ -59,7 +59,9 @@ class Login extends React.Component {
                     } else if(status === 404) {
                         this.props.onError("Credenziali inserite non corrette")
                     }
-                });
+                });*/
+            this.props.onLoginSuccessfull("my_id")
+            this.state.redirectComponent.redirectAfterLogin()
         }
     }
 

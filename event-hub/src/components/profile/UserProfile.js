@@ -1,11 +1,12 @@
 import React from 'react';
-
+import axios from 'axios';
 import MultipleEventCard from '../multiple_event_card/MultipleEventCard'
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, ProfileControls} from './Profiles'
 import { RedirectComponent } from '../redirect/Redirect';
 
-let images = require.context("../../assets/images", true)
-
+/**
+ * I badge sono ancora da gestire!!!
+ */
 class UserProfile extends React.Component {
 
     constructor(props) {
@@ -13,59 +14,47 @@ class UserProfile extends React.Component {
         
         this.state = {
             _id: props.isLocalUser ? props.userId : props.match.params.id,
-            name: "Grant Gustin",
-            avatar: "user-profile-image.jpg",
-            organizator: false,
-            points: 346,
-            linkedUsers: [
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao1"
-                },
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao2"
-                },
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao3"
-                },
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao4"
-                },
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao5"
-                },
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao6"
-                },
-                {
-                    avatar: "gatto.jpeg",
-                    _id: "ciao7"
-                }
-            ],
-            pastEvents: [{
-                _id: "1",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "sport",
-                thumbnail: "campo-calcio.png",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37
-            }],
+            name: "",
+            avatar: undefined,
+            organization: false,
+            points: 0,
+            linkedUsers: [],
+            pastEvents: [],
             futureEvents: []
         }
+
+        this.getUserInformation()
+    }
+
+    getUserInformation = () => {
+        axios.get(this.props.mainServer + "/users/" + this.state._id)
+            .then(response => {
+                if(response.status === 200){
+                    let name = response.data.name + (response.data.organization ? "" : " " + response.data.surname)
+                    let futureEvents =  response.data.eventsSubscribed.filter(x => x.date > Date.now())
+                    let pastEvents =  response.data.eventsSubscribed.filter(x => x.date < Date.now())
+                    this.setState({
+                        name: name,
+                        avatar: response.data.avatar,
+                        organization: response.data.organization,
+                        linkedUsers: response.data.linkedUsers,
+                        badges: response.data.badges,
+                        points: response.data.points,
+                        futureEvents: futureEvents,
+                        pastEvents: pastEvents,
+                        groups: response.data.groups
+                    })
+                } else {
+                    let errorMsg = response.data.description ? response.data.description : "Si è verificato un errore durante l'ottenimento dei dati"
+                    this.props.onError(errorMsg)
+                }
+            })
+            .catch(() => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"))
     }
 
     getEventsByUserTypology = () => {
         let initialString = "Non " + (this.props.isLocalUser ? "hai" : "ha")
-        return this.state.organizator ? 
+        return this.state.organization ? 
             (<div>
                 <section className="mt-3">
                     <MultipleEventCard
@@ -99,6 +88,54 @@ class UserProfile extends React.Component {
             </div>)
     }
 
+    selectAvatar = (event) => {
+        console.log(event.target.name)
+        if(this.props.isLocalUser && event.target.name !== "ciaooo")
+            document.getElementById("chooseAvatar").click()
+    }
+
+    addFriend = () => {
+        if(!this.props.isLocalUser){
+            this.sendRequest("/users/friendship", "Si è verificato un errore durante la richiesta, riprova")
+        }
+    }
+
+    requestPosition = () => {
+        if(!this.props.isLocalUser){
+            this.sendRequest("/users/friendposition", "Si è verificato un errore durante la richiesta di posizione, riprova")
+        }
+    }
+
+    sendRequest = (link, errorMessage) => {
+        if(!this.props.isLocalUser){
+            axios.post(this.props.mainServer + link, {friend: this.state._id})
+                .then(result => {
+                    if(result.status !== 200){
+                        this.props.onError(result.data.description ? 
+                            result.data.description
+                            : errorMessage)
+                    }
+                })
+                .catch(() => this.props.onError(errorMessage))
+        }
+    }
+
+    removeFriend = () => {
+        if(!this.props.isLocalUser){
+            axios.delete(this.props.mainServer + "/users/friendship", {friend: this.state._id})
+                .then(result => {
+                    if(result.status === 200){
+                        this.setState({linkedUsers: linkedUsers.filter(elem => elem._id != this.props.userId)})
+                    } else {
+                        this.props.onError(result.data.description ? 
+                            result.data.description
+                            : "Si è verificato un errore durante la richiesta, riprova")
+                    }
+                })
+                .catch(() => this.props.onError("Si è verificato un errore durante la richiesta, riprova"))
+        }
+    }
+
     render() {
         let isMyFriend = !this.props.isLocalUser && 
             this.state.linkedUsers.findIndex(elem => elem._id === this.props.userId) >= 0
@@ -114,7 +151,15 @@ class UserProfile extends React.Component {
 
                 <section className="row">
                     <div className="col card bg-dark px-0">
-                        <img src={images(`./${this.state.avatar}`)} className="card-img img-fluid" alt="Immagine profilo utente"/>
+                        <div className="card-img px-0 text-center bg-dark" >
+                            <div className={"text-secondary" + (this.state.avatar ? " d-none" : "" )}>
+                                <em className="far fa-image fa-10x"></em>
+                            </div>
+                            <img src={this.state.avatar} 
+                                className={"img-fluid"  + (this.state.avatar ? "" : " d-none")} 
+                                alt="Immagine profilo utente"
+                            />
+                        </div>
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
                                 <ProfileControls 
@@ -122,6 +167,8 @@ class UserProfile extends React.Component {
                                     isLocalUser={this.props.isLocalUser}
                                     isMyFriend={isMyFriend} 
                                     _id={this.state._id}
+                                    settingsClicked={this.settings}
+                                    removeClicked={this.removeFriend}
                                 />
                                 <div className="container-fluid mt-auto">
                                     <div className="row">
@@ -132,11 +179,14 @@ class UserProfile extends React.Component {
                                             />
                                             <ProfileAction
                                                 iconName={"plus"}
+                                                id="ciaooo"
                                                 show={!this.props.isLocalUser && !isMyFriend}
+                                                actionSelected={this.addFriend}
                                             />
                                             <ProfileAction
                                                 iconName={"street-view"}
-                                                show={!this.props.isLocalUser && isMyFriend}
+                                                show={!this.props.isLocalUser && isMyFriend && !this.state.organization}
+                                                actionSelected={this.requestPosition}
                                             />
                                             <ProfileBadge
                                                 iconName={"address-card"}
@@ -164,7 +214,8 @@ class UserProfile extends React.Component {
                 <section className="mt-3">
                     <LinkedUsersBanner 
                         linkedUsers={this.state.linkedUsers}
-                        typology={this.state.organizator ? "Followers" : "Amici"}
+                        emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.organization ? "follower" : "amico")}
+                        typology={this.state.organization ? "Followers" : "Amici"}
                     />
                 </section>
 
