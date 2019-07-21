@@ -26,6 +26,13 @@ export function MoreLinkedUsers(){
 }
 
 export function LinkedUsersBanner(props) {
+    let linkedUsers = props.linkedUsers.map(elem => <LinkedUserAvatar linkedUser={elem} />)
+    let more = linkedUsers.length > 3 ? 
+        <MoreLinkedUsers /> : 
+        <div className="col-11 col-md-6 mx-auto border border-primary p-2 empty-list"> 
+            {props.emptyLabel}
+        </div>
+
     return (
         <div>
             <div className="row">
@@ -34,10 +41,8 @@ export function LinkedUsersBanner(props) {
                 </div>
             </div>
             <div className="row">
-                <LinkedUserAvatar linkedUser={props.linkedUsers[0]} />
-                <LinkedUserAvatar linkedUser={props.linkedUsers[1]} />
-                <LinkedUserAvatar linkedUser={props.linkedUsers[2]} />
-                <MoreLinkedUsers />
+                {linkedUsers.slice(0, 3)}
+                {more}
             </div>
         </div>
     )
@@ -56,8 +61,8 @@ export function ProfileBadge(props){
 export function ProfileAction(props){
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
     return (
-        <div className={props.show ? "" : "d-none"}>
-            <button className="btn btn-lg btn-primary rounded-circle">
+        <div id={props.id} className={props.show ? " " : "d-none"}>
+            <button className="btn btn-lg btn-primary rounded-circle" onClick={props.actionSelected}>
                 <em className={iconClass} aria-hidden="true"></em>
             </button>
         </div>
@@ -90,12 +95,12 @@ export function ProfileControls(props){
         <div className="container-fluid">
             <div className="row">
                 <div className="col d-flex justify-content-start align-items-center px-2">
-                    <div className={props.isMyFriend ? "border border-danger rounded-pill px-2 py-1 " + styles.friendRemove : "d-none"}>
+                    <div className={props.isMyFriend ? "border border-danger rounded-pill px-2 py-1 " + styles.friendRemove : "d-none"} onClick={props.removeClicked}>
                         <em className="fas fa-minus"></em> Rimuovi
                     </div>
                 </div>
                 <div className={props.isLocalUser ? "col d-flex justify-content-end align-items-center px-2" : "d-none"}>
-                    <em className="fas fa-cog fa-lg"></em>
+                    <em className={"fas fa-cog fa-lg " + styles.settingsIcon} onClick={props.settingsClicked}></em>
                 </div>
             </div>
         </div>

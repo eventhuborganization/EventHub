@@ -96,13 +96,15 @@ exports.createEvent = (req, res) => {
     })
 }
 
-/* user: {name, surname, gender, birthdate, phone, email, organization, 
+/* user: {name, surname, avatar, gender, birthdate, phone, email, organization, 
     linkedUsers: [{_id, name, surname, avatar}], groups:[{_id, name}], 
     badges(last 3): [{name, icon, _id}], points, n.reviewDone, n.reviewReceived, 
     eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
     axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid)
         .then( response => {
+            response.avatar = response.profilePicture
+            delete response.profilePicture
             linkedUsersPromise = []
             response.linkedUsers.forEach(function(user) {
                 linkedUsersPromise.push(exports.getLinkedUserInfo(user))
@@ -127,7 +129,7 @@ exports.getInfoUser = (req, res) => {
                     })
                     response.groups = []
                     result[1].forEach(function(group) {
-                        response.linkedUsers.push({ _id: group._id, name: group.name })
+                        response.groups.push({ _id: group._id, name: group.name })
                     })
                     response.badges = result[2];
                     response.reviewsDone = response.reviewsDone.length;
