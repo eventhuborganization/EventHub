@@ -23,7 +23,30 @@ class UserProfile extends React.Component {
             futureEvents: []
         }
 
+        let toShow = this.displayWindowSize()
+        this.state.avatarsToShow = toShow[0]
+        this.state.emptyAvatarSize = toShow[1]
         this.getUserInformation()
+    }
+
+    displayWindowSize = () => {
+        let width = window.innerWidth;
+        if(width < 767.98){
+            return [3,4]
+        } else if (width > 767.98 && width < 991.98){
+            return [7,5]
+        } else if (width > 991.98 && width < 1199.98){
+            return [10,6]
+        } else {
+            return [12,7]
+        }
+    };
+
+    componentDidMount = () => {
+        window.onresize = () => {
+            let toShow = this.displayWindowSize()
+            this.setState({avatarsToShow: toShow[0], emptyAvatarSize: toShow[1]})
+        }
     }
 
     getUserInformation = () => {
@@ -196,6 +219,8 @@ class UserProfile extends React.Component {
                         linkedUsers={this.state.linkedUsers}
                         emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.organization ? "follower" : "amico")}
                         typology={this.state.organization ? "Followers" : "Amici"}
+                        numberToShow={this.state.avatarsToShow}
+                        emptyAvatarSize={this.state.emptyAvatarSize}
                     />
                 </section>
 

@@ -5,13 +5,18 @@ import {Link} from "react-router-dom";
 let images = require.context("../../assets/images", true)
 
 export function LinkedUserAvatar(props){
+    let avatar = props.linkedUser.avatar && props.linkedUser.avatar !== "" ? 
+        <img 
+            src={images(`./${props.linkedUser.avatar}`)} 
+            className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
+            alt={"Immagine profilo utente"}
+        /> : 
+        <div className={styles.friendsIcon}>
+            <em className={"fas fa-user-circle fa-" + props.emptyAvatarSize + "x"}></em>
+        </div>
     return (
-        <Link className={"col " + (!!props.margin ? "" : "pr-0")} to={"/users/" + props.linkedUser._id}>
-            <img 
-                src={images(`./${props.linkedUser.avatar}`)} 
-                className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
-                alt={"Immagine profilo utente"}
-            />
+        <Link className={"col d-flex align-items-center justify-content-center " + (!!props.margin ? "" : "pr-0")} to={"/users/" + props.linkedUser._id}>
+            {avatar}
         </Link>
     )
 }
@@ -36,17 +41,20 @@ export function MoreLinkedUsers(){
 
 export function LinkedUsersBanner(props) {
     let linkedUsers = props.linkedUsers
+    let limit = props.numberToShow
     let avatars = []
     if(linkedUsers.length > 0){
-        for(let x = 0; x < 3; x++){
-            avatars.push(x >= linkedUsers.length ? <EmptyUserAvatar /> : <LinkedUserAvatar linkedUser={linkedUsers[x]}/>)
+        for(let x = 0; x < limit; x++){
+            avatars.push(x >= linkedUsers.length ? 
+                <EmptyUserAvatar key={"av" + x}/> 
+                : <LinkedUserAvatar linkedUser={linkedUsers[x]} key={"av" + x} emptyAvatarSize={props.emptyAvatarSize}/>)
         }
-        if(linkedUsers.length > 4){
-            avatars.push(<MoreLinkedUsers />)
-        } else if(linkedUsers.length == 4){
-            avatars.push(<LinkedUserAvatar linkedUser={linkedUsers[3]} margin={true} />)
+        if(linkedUsers.length > limit + 1){
+            avatars.push(<MoreLinkedUsers key={"av" + (limit + 1)}/>)
+        } else if(linkedUsers.length === limit + 1){
+            avatars.push(<LinkedUserAvatar linkedUser={linkedUsers[3]} margin={true} key={"av" + (limit + 1)} emptyAvatarSize={props.emptyAvatarSize}/>)
         } else {
-            avatars.push(<EmptyUserAvatar margin={true}/>)
+            avatars.push(<EmptyUserAvatar margin={true} key={"av" + (limit + 1)}/>)
         }
     } else {
         avatars = 
