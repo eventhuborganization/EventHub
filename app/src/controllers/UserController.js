@@ -1,30 +1,25 @@
-let network = require('./network');
-let axios = require("axios");
-const event = require('../EventService.js')
+const network = require('./network');
+const axios = require('axios');
 
-const EventService = new event.EventService(EventServiceHost, EventServicePort)
+const UserServiceHostPort = 'http://' + UserServiceHost + ':' + UserServicePort
 
-
-exports.getHome = (req, res) => {
-    res.sendFile(appRoot  + '/views/home.html');
-}
-
-exports.getEvents = (req, res) => {
-    var query = "?";
-    for (key in req.query) {
-        query = query + key + "=" + req.query[key] + "&"        
-      }
-    EventService.getEvent(query, response => {
-        network.replayResponse(response, res);
+exports.userFriendRequest = (req, res) => {
+    var data = {typology: 1, sender: req.session.user}
+    axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)
+    .then((response) => {
+        network.result(res)
+    })
+    .catch((err) => {
+        network.internalError(res, err)
     })
 }
 
 exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
-        axios.post('http://' + UserServiceHost + ':' + app.get('UserServicePort') + '/users/linkedUsers', {uuid1: req.body.friend, uuid2: req.session.user})
+        axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.session.user})
             .then( response => {
                 network.replayError(response, res);
-                axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.body.friend + '/notifications', {typology: 8, sender: req.session.user})
+                axios.post(UserServiceHostPort + '/users/' + req.body.friend + '/notifications', {typology: 8, sender: req.session.user})
                     .catch (error => {
                         network.internalError(res, error);
                     });
@@ -38,7 +33,7 @@ exports.friendshipAnswer = (req, res) => {
 
 exports.getFriendPosition = (req, res) => {
     if (req.body.accepted) {
-        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.body.friend + '/notifications', {typology: 9, sender: req.session.user, position: {lat: req.body.position.lat, lon: req.body.position.lon}})
+        axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {typology: 9, sender: req.session.user, position: {lat: req.body.position.lat, lon: req.body.position.lon}})
             .then( response => {
                 network.replayResponse(response, res);
             })
@@ -48,18 +43,8 @@ exports.getFriendPosition = (req, res) => {
     }
 }
 
-exports.registration = (req, res) => {
-    axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users', req.body)
-        .then((response) => {
-            network.replayResponse(response, res);
-        })
-        .catch((err) => {
-            network.internalError(res, err);
-        });
-}
-
 exports.updateProfile = (req, res) => {
-    axios.put('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid, req.body)
+    axios.put(`${UserServiceHostPort}/users/${req.params.uuid}`, req.body)
         .then((response) => {
             network.replayResponse(response, res);
         })
@@ -69,7 +54,7 @@ exports.updateProfile = (req, res) => {
 }
 
 exports.updateCredentials = (req, res) => {
-    axios.put('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/credentials' + req.params.uuid, req.body)
+    axios.put(`${UserServiceHostPort}/users/credentials`, req.body)
         .then((response) => {
             network.replayResponse(response, res);
         })
@@ -78,30 +63,12 @@ exports.updateCredentials = (req, res) => {
         });
 }
 
-exports.createEvent = (req, res) => {
-    var event = req.body;
-    event.organizator = req.session.user;
-    EventService.newEvent(event, (response)=>{
-        if (event.public) {
-            axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.session.user + '/linkedUsers')
-                .then(resLinkedUsers => {
-                    resLinkedUsers.forEach(user => {
-                        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + user + '/notifications', {typology: 6, sender: req.session.user})
-                    })
-                })
-        }
-        network.resultWithJSON(res,response)
-    }, (err) => {
-        network.internalError(res, err)
-    })
-}
-
 /* user: {name, surname, avatar, gender, birthdate, phone, email, organization, 
     linkedUsers: [{_id, name, surname, avatar}], groups:[{_id, name}], 
     badges(last 3): [{name, icon, _id}], points, n.reviewDone, n.reviewReceived, 
     eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
-    axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.params.uuid)
+    axios.get(`${UserServiceHostPort}/users/${req.params.uuid}`)
         .then( response => {
             response.avatar = response.profilePicture
             delete response.profilePicture
@@ -170,7 +137,7 @@ exports.getInfoUser = (req, res) => {
 
 exports.searchUser = (req, res) => {
     exports.registration = (req, res) => {
-        axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/search/' + req.params.name, req.body)
+        axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
             .then((response) => {
                 network.replayResponse(response, res);
             })
@@ -181,25 +148,21 @@ exports.searchUser = (req, res) => {
 }
 
 exports.getLinkedUserInfo = (uuid) => {
-    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid);
+    return axios.get(`${UserServiceHostPort}/users/${uuid}`);
 }
 
 exports.getGroupInfo = (uuid) => {
-    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/group/' + uuid);
+    return axios.get(`${UserServiceHostPort}/group/${uuid}`);
 }
 
 exports.getBadgePoints = (uuid) => {
-    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/levels')
+    return axios.get(`${UserServiceHostPort}/users/${uuid}/levels`)
 }
 
 exports.getReviewsWritten = (uuid) => {
-    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/reviews/written');
+    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/written`);
 }
 
 exports.getReviewsReceived = (uuid) => {
-    return axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + uuid + '/reviews/received');
-}
-
-exports.getEventInfo = (uuid) => {
-    return axios.get('http://' + app.get('EventServiceHost') + ':' + app.get('EventServicePort') + '/events/' + uuid);
+    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/received`);
 }
