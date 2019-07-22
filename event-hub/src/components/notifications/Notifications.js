@@ -23,7 +23,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -40,7 +40,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -57,7 +57,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -74,7 +74,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -91,7 +91,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -108,7 +108,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -125,7 +125,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -142,7 +142,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -159,7 +159,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 },
@@ -176,7 +176,7 @@ class Notifications extends React.Component {
                         name: "Evento della madonna",
                         thumbnail: "party.jpg",
                         _id: "3",
-                        typology: "festa"
+                        typology: "party"
                     },
                     timestamp: timestamp
                 }
