@@ -11,7 +11,7 @@ exports.login = (req, res) => {
     axios.post(`${UserServiceHostPort}/users/credential`, req.body)
     .then((response) => {
         req.session.user = response._id
-        network.resultWithJSON(res, {data: 'user logged', _id: response._id})
+        network.replayResponse(response, res);
     })
     .catch((err) => {
         network.internalError(res, err)
