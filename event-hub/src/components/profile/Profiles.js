@@ -6,12 +6,21 @@ let images = require.context("../../assets/images", true)
 
 export function LinkedUserAvatar(props){
     return (
-        <Link className="col pr-0" to={"/users/" + props.linkedUser._id}>
+        <Link className={"col " + (!!props.margin ? "" : "pr-0")} to={"/users/" + props.linkedUser._id}>
             <img 
                 src={images(`./${props.linkedUser.avatar}`)} 
                 className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
-                alt="Immagine profilo utente"/>
+                alt={"Immagine profilo utente"}
+            />
         </Link>
+    )
+}
+
+export function EmptyUserAvatar(props){
+    return (
+        <div className={"col " + (!!props.margin ? "" : "pr-0")}>
+            <div className={"h-100 border border-primary rounded-circle " + styles.friendsIcon} ></div>
+        </div>
     )
 }
 
@@ -26,12 +35,25 @@ export function MoreLinkedUsers(){
 }
 
 export function LinkedUsersBanner(props) {
-    let linkedUsers = props.linkedUsers.map(elem => <LinkedUserAvatar linkedUser={elem} />)
-    let more = linkedUsers.length > 3 ? 
-        <MoreLinkedUsers /> : 
-        <div className="col-11 col-md-6 mx-auto border border-primary p-2 empty-list"> 
-            {props.emptyLabel}
-        </div>
+    let linkedUsers = props.linkedUsers
+    let avatars = []
+    if(linkedUsers.length > 0){
+        for(let x = 0; x < 3; x++){
+            avatars.push(x >= linkedUsers.length ? <EmptyUserAvatar /> : <LinkedUserAvatar linkedUser={linkedUsers[x]}/>)
+        }
+        if(linkedUsers.length > 4){
+            avatars.push(<MoreLinkedUsers />)
+        } else if(linkedUsers.length == 4){
+            avatars.push(<LinkedUserAvatar linkedUser={linkedUsers[3]} margin={true} />)
+        } else {
+            avatars.push(<EmptyUserAvatar margin={true}/>)
+        }
+    } else {
+        avatars = 
+            <div className="col-11 col-md-6 mx-auto border border-primary p-2 empty-list"> 
+                {props.emptyLabel}
+            </div>
+    }
 
     return (
         <div>
@@ -41,8 +63,7 @@ export function LinkedUsersBanner(props) {
                 </div>
             </div>
             <div className="row">
-                {linkedUsers.slice(0, 3)}
-                {more}
+                {avatars}
             </div>
         </div>
     )
