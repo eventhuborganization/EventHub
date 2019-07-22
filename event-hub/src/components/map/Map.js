@@ -7,7 +7,7 @@ class GoogleMap extends React.Component {
 
     updateMapRef = () => {
         this.googleMapRef = this.createGoogleMap()
-        let marker = this.createMarker()
+        this.createMarker()
     }
 
     componentDidMount() {
@@ -25,6 +25,7 @@ class GoogleMap extends React.Component {
                 lng: -79.387054
             },
             disableDefaultUI: true,
+            fullscreenControl: true
         })
     }
 
@@ -49,4 +50,31 @@ class GoogleMap extends React.Component {
     }
 }
 
-export default GoogleMap
+/**
+ *
+ * @param props: {
+ *     place: {
+ *         place_id: String
+ *     }
+ * }
+ * @returns {*}
+ * @constructor
+ */
+let LocationMap = props => {
+    var mapSrc = ""
+    if (props.place)
+        mapSrc = "https://www.google.com/maps/embed/v1/place?q=place_id:" + (props.place ? props.place.place_id : "") + "&zoom=18&key=" + GoogleMapsProperties.key
+    return (
+            <div className={"embed-responsive embed-responsive-16by9 " + (props.place ? "" : " d-none ")}>
+                <div className={"embed-responsive-item"}>
+                    <iframe title={"location"}
+                            width="100%" height="100%" style={{border: 0}}
+                            src={mapSrc}
+                            allowFullScreen
+                    />
+                </div>
+            </div>
+    )
+}
+
+export {GoogleMap, LocationMap}

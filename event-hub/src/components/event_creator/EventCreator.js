@@ -1,11 +1,10 @@
-import React from 'react';
-import Styles from '../event_info/EventInfo.module.css';
-import Axios from 'axios';
-import {EventBadge, PARTY, SPORT, MEETING} from "../event/Event";
-import MapComponent from '../map/MapComponent'
-import {GoogleMaps} from '../../services/google_cloud/GoogleMaps'
-
-let images = require.context("../../assets/images", true)
+import React from 'react'
+import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizatorInfo} from "../event/Event"
+import GoogleMapsProperties from "../../services/google_cloud/Properties"
+import Contacts from "../contacts/Contacts";
+import {ConfirmButton} from "../floating_button/FloatingButton";
+import ApiService from "../../services/api/Api";
+import {RedirectComponent} from "../redirect/Redirect";
 
 class EventCreator extends React.Component {
 
@@ -23,28 +22,36 @@ class EventCreator extends React.Component {
                 typology: undefined,
                 thumbnail: undefined,
                 thumbnailPreview: undefined,
-                maxParticipants: undefined
+                maxParticipants: undefined,
+                organizator: props.loggedUser
             },
-            mapsApi: new GoogleMaps()
+            eventCreated: false,
+            eventId: undefined
         }
     }
 
-    canCreate() {
-        let state = this.state
-        return state.event.name
-            && state.event.description
-            && state.event.address
-            && state.event.location
-            && state.event.typology
-            && state.event.maxParticipants
-            && state.event.thumbnail
-            && state.event.date
-            && state.event.time
-    }
-
-    renderBadge() {
-        if (this.state.event.typology)
-            return <EventBadge event={this.state.event} />
+    componentDidMount() {
+        let googleMapScript = document.createElement('script')
+        googleMapScript.src = "https://maps.googleapis.com/maps/api/js?key=" + GoogleMapsProperties.key + "&libraries=places"
+        window.document.body.appendChild(googleMapScript)
+        googleMapScript.onload = () => {
+            let inputAddress = document.getElementById('address')
+            let searchBox = new window.google.maps.places.SearchBox(inputAddress)
+            searchBox.addListener('places_changed', () => {
+                let places = searchBox.getPlaces()
+                if (places && places.length) {
+                    let place = places[0]
+                    let streetNumber = place.address_components[0].short_name
+                    let streetAddress = place.address_components[1].short_name
+                    let city = place.address_components[2].short_name
+                    let address = streetAddress + ", " + streetNumber + ", " + city
+                    let state = this.state
+                    state.event.address = address
+                    state.event.place = place
+                    this.setState(state)
+                }
+            })
+        }
     }
 
     updateName = (event) => {
@@ -77,27 +84,13 @@ class EventCreator extends React.Component {
         this.setState(state)
     }
 
-    updateAddress = (event) => {
-        let address = event.target.value
-        this.state.mapsApi.getLocationByAddress(address,
-            error => console.log(error),
-            places => {
-                let state = this.state
-                state.event.address = address
-                state.event.place = places[0]
-                this.setState(state)
-            })
-    }
-
     updateThumbnailPreview = (event) => {
         let reader = new FileReader()
         reader.onload = e => {
-            console.log(e.target.result)
             let state = this.state
             state.event.thumbnailPreview = e.target.result
             this.setState(state)
         }
-        console.log(event.target.files[0])
         reader.readAsDataURL(event.target.files[0])
     }
 
@@ -111,41 +104,82 @@ class EventCreator extends React.Component {
         this.setState(state)
     }
 
-    createEvent = (event) => {
-        if (this.canCreate()) {
-            //create event
-        } else {
-            //show errors
+    canCreate() {
+        let state = this.state
+        return state.event.name
+            && state.event.description
+            && state.event.address
+            && state.event.location
+            && state.event.typology
+            && state.event.maxParticipants
+            && state.event.thumbnail
+            && state.event.date
+            && state.event.time
+    }
+
+    createEvent = () => {
+        let event = this.state.event
+        var errorFound = false
+        let addErrorClassAndfocus = name => {
+            let element = document.getElementById(name)
+            element.classList.add("border")
+            element.classList.add("border-danger")
+            if (!errorFound) {
+                errorFound = true
+                element.focus()
+                element.scrollIntoView()
+            }
+        }
+        if (!event.thumbnailPreview)
+            addErrorClassAndfocus("thumbnail-preview")
+        if (!event.name)
+            addErrorClassAndfocus("name")
+        if (!event.typology)
+            addErrorClassAndfocus("typology")
+        if (!event.date)
+            addErrorClassAndfocus("date")
+        if (!event.time)
+            addErrorClassAndfocus("time")
+        if (!event.address || event.place)
+            addErrorClassAndfocus("address")
+        if (!event.maxParticipants)
+            addErrorClassAndfocus("max-participants")
+        if (!event.description)
+            addErrorClassAndfocus("description")
+        if (!errorFound) {
+            ApiService.createNewEvent(this.state.event,
+                    error => console.log(error),
+                    response => {
+                        let state = this.state
+                        state.eventCreated = true
+                        state.eventId = response.event._id
+                        this.setState(state)
+                    })
         }
     }
 
-    getBannerClass = () => {
-        let type = this.state.event.typology
-        if (type === PARTY)
-            return Styles.partyBanner
-        else if (type === MEETING)
-            return Styles.meetingBanner
-        else if (type === SPORT)
-            return Styles.sportBanner
-        else
-            return ""
+    renderRedirect() {
+        if (this.state.eventCreated)
+            return <RedirectComponent {...this.props}
+                                      from={"/"}
+                                      to={"/event/" + this.state.eventId}
+                                      redirectNow={true}
+            />
     }
-
-
 
     render() {
         return (
-            <form onSubmit={this.createEvent} className="main-container">
-
+            <form className="main-container">
+                {this.renderRedirect()}
                 <section className="row">
-                    <div className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
+                    <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
                         <div className={"text-secondary " + (this.state.event.thumbnailPreview ? " d-none " : "" )}>
                             <em className="far fa-image fa-9x"></em>
                             <h4>Clicca per aggiungere un'immagine</h4>
                         </div>
                         <img src={this.state.event.thumbnailPreview}
                              alt="Event thumbnail"
-                             className={"img-fluid " + (this.state.event.thumbnailPreview ? "" : "d-none")}
+                             className={"img-fluid " + (this.state.event.thumbnailPreview ? "" : " d-none ")}
                         />
                     </div>
                     <div className="d-none">
@@ -160,33 +194,7 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <section className={"row sticky-top pt-2 " + this.getBannerClass()}>
-                    <div className="col container-fluid">
-                        <div className="row d-flex align-items-center">
-                            <div className="col-8 mb-1">
-                                <h4 className={"m-0 " + (this.state.event.name ? "" : " d-none ")}>
-                                    {this.state.event.name}
-                                </h4>
-                            </div>
-                            <div className="col-4 d-flex justify-content-end">
-                                {this.renderBadge()}
-                            </div>
-                        </div>
-                        <div className="row d-flex align-items-center">
-                            <div className="col-8 mb-1">
-                                <h6 className={"m-0 " + (this.state.event.date || this.state.event.time ? "" : " d-none ")}>
-                                    {this.state.event.date} - {this.state.event.time}
-                                </h6>
-                                <h6 className={"m-0 " + (this.state.event.address ? "" : " d-none ")}>
-                                    {this.state.event.address}
-                                </h6>
-                            </div>
-                            <div className="col-4 d-flex justify-content-end">
-                                <p className={"m-0 " + (this.state.event.maxParticipants ? "" : " d-none ")}>0/{this.state.event.maxParticipants}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <EventHeaderBanner event={this.state.event} />
 
                 <section className={"row mt-2"}>
                     <div className="col container-fluid">
@@ -214,7 +222,7 @@ class EventCreator extends React.Component {
                                         Festa
                                     </option>
                                     <option value={MEETING}>
-                                        Incontro
+                                        Incontro, size: ""
                                     </option>
                                     <option value={SPORT}>
                                         Sport
@@ -241,6 +249,7 @@ class EventCreator extends React.Component {
                                     type="time"
                                     className="form-control"
                                     onChange={this.updateTime}
+
                                 />
                             </div>
                         </div>
@@ -252,7 +261,7 @@ class EventCreator extends React.Component {
                                     name="address"
                                     type="text"
                                     className="form-control"
-                                    onChange={this.updateAddress}
+                                    placeholder="Indirizzo"
                                 />
                             </div>
                             <div className="col-5 pl-2">
@@ -276,64 +285,24 @@ class EventCreator extends React.Component {
                     <div className="col-12">
                         <h5>Dettagli</h5>
                         <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-12 px-0">
-                                    <h6>Organizzatore</h6>
-                                </div>
-                                <div className="col-2 p-0">
-                                    <img src={(this.props.loggedUser.avatar ? images(`./${this.props.loggedUser.avatar}`) : '')}
-                                         className="img-fluid border rounded-circle"
-                                         alt="Immagine profilo utente"
-                                    />
-                                </div>
-                                <div className="col-10 d-flex justify-content-start align-items-center">
-                                    <span className="text-invited font-weight-bold">{this.props.loggedUser.name} {this.props.loggedUser.surname}</span>
-                                </div>
-                            </div>
+                            <EventOrganizatorInfo organizator={this.state.event.organizator}/>
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6>Descrizione</h6>
-                                    <textarea className="w-75 text-justify" onChange={this.updateDescription} />
+                                    <textarea id="description" className="w-75 text-justify" onChange={this.updateDescription} />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section className="row mt-2">
-                    <div className="col-12 col-md-6">
-                        <h5>Luogo dell'evento</h5>
-                        <div className="embed-responsive embed-responsive-16by9">
-                            <div className={"embed-responsive-item"}>
-                                <MapComponent place={this.state.event.place} />
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <div className={"mt-2" + (this.state.event.place ? "" : " d-none ")}>
+                    <EventLocation event={this.state.event} />
+                </div>
 
-                <section className="row mt-2">
-                    <div className={"col d-flex flex-column " + Styles.buttonEvent}>
-                        <h5>Contatti</h5>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-phone fa-2x text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.props.loggedUser.phoneNumber}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-envelope fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">{this.props.loggedUser.email}</p>
-                        </div>
-                        <div className="row">
-                            <div className="col-2 d-flex align-items-center justify-content-center">
-                                <em className="fas fa-comments fa-2x rounded text-secondary"></em>
-                            </div>
-                            <p className="col my-0 d-flex align-items-center">Facci una domanda!</p>
-                        </div>
-                    </div>
-                </section>
+                <Contacts event={this.state.event}/>
+
+                <ConfirmButton onClick={this.createEvent} />
 
             </form>
         )
