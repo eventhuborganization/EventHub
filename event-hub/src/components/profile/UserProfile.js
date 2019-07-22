@@ -49,6 +49,10 @@ class UserProfile extends React.Component {
         }
     }
 
+    componentWillUnmount = () => {
+        window.onresize = undefined
+    }
+
     getUserInformation = () => {
         Api.getUserInformation(
             this.state._id,

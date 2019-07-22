@@ -57,7 +57,9 @@ class Registration extends React.Component {
             message, 
             () => this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova"),
             response => {
-                this.props.onRegistration(response.data._id)
+                delete message.password
+                message._id = response.data._id
+                this.props.onRegistration(message)
                 this.state.redirectComponent.redirectAfterLogin()
             }
         )

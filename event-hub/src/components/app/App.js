@@ -1,7 +1,8 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import React from 'react'
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
 
 import './App.css'
+import Api from '../../services/api/Api'
 import Home from '../home/Home'
 import Login from '../login/Login'
 import EventInfo from '../event_info/EventInfo'
@@ -9,7 +10,8 @@ import Registration from '../registration/Registration'
 import Notifications from '../notifications/Notifications'
 import EventCreator from '../event_creator/EventCreator'
 import UserProfile from '../profile/UserProfile'
-import { CallableComponent } from '../redirect/Redirect';
+import { CallableComponent } from '../redirect/Redirect'
+
 
 class App extends React.Component {
 
@@ -17,7 +19,10 @@ class App extends React.Component {
     super(props)
     this.state = {
       isLogged: false,
-      showNavbar: true
+      showNavbar: true,
+      userId: undefined,
+      user: undefined,
+      errorElement: undefined
     }
   }
 
@@ -34,6 +39,16 @@ class App extends React.Component {
       isLogged: true, 
       userId: userId
     })
+    Api.getUserInformation(userId, () => {}, response => {
+      delete response._id
+      this.setState({user: response})
+    })
+  }
+
+  onRegistrationSuccessfull = (data) => {
+    let id = data._id
+    delete data._id
+    this.setState({user: data, userId: id})
   }
 
   render() {
@@ -63,7 +78,7 @@ class App extends React.Component {
                                     email: "rigo96.imola@gmail.com",
                                     phoneNumber: "+39 3472284853",
                                     avatar: "user-profile-image.jpg"
-                                }}
+                                }/*this.state.user*/}
                   />}
               />
               <Route path="/event/:id" exact render={(props) => 
@@ -84,7 +99,7 @@ class App extends React.Component {
                   <Registration {...props} 
                     mainServer={this.props.mainServer} 
                     onError={this.onError} 
-                    onRegistration={this.onLoginSuccessfull} 
+                    onRegistration={this.onRegistrationSuccessfull} 
                   />} 
               />
               <Route path="/notification" exact render={(props) =>
