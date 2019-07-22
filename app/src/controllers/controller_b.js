@@ -40,7 +40,7 @@ exports.eventInfo = (req, res) => {
 }
 
 exports.userFriendRequest = (req, res) => {
-    var data = {tipology: 1, sender: req.session.user}
+    var data = {typology: 1, sender: req.session.user}
     axios.post('http://' + UserServiceHost + ':' + 
         UserServicePort + `/users/${req.body.user}`, data)
     .then((response) => {

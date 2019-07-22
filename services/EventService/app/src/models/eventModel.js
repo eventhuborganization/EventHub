@@ -25,9 +25,9 @@ var EventSchema = new Schema({
         type: Boolean,
         default: false
     },
-    tipology:{
-        type: {name: String, subtipology: String},
-        required: 'A tipology is required'
+    typology:{
+        type: {name: String, subtypology: String},
+        required: 'A typology is required'
     },
     participants: [Schema.Types.ObjectId],
     followers: [Schema.Types.ObjectId],

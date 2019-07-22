@@ -193,7 +193,7 @@ exports.Event = {
         eventDate: Date.now(),
         location: {maps:'', coordinate:{lat: 0, long: 0}},
         public: false,
-        tipology: {name:'', subtipology:''},
+        typology: {name:'', subtypology:''},
         maximumParticipants:0,
         participants: [],
         followers:[],

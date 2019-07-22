@@ -49,6 +49,6 @@ db.events.insert({
     "date": "2019-07-10",
     "organizator": uuid,
     "public": true,
-    "tipology": {"name": "sport", "subtipology": "calcetto"},
+    "typology": {"name": "sport", "subtypology": "calcetto"},
     "maximumParticipants": 10
 });
