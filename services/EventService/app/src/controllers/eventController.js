@@ -8,9 +8,9 @@ exports.getEvent = (req, res) => {
         console.log(req.query)
         Event.find(req.query, (err, event) => {
             if(err){
-                res.status(404).send(err)
+                res.status(500).send(err)
             }
-            res.status(event.length > 0 ? 201 : 204).json(event)
+            res.status(event.length > 0 ? 201 : 404).json(event)
         })
     } else {
         res.status(400).send('nope')
@@ -34,7 +34,7 @@ exports.searchEvent = (req, res) => {
             name: 'description',
             weight: 0.2
         },{
-            name: 'tipology.name',
+            name: 'typology.name',
             weight: 0.2
         }]
     }
@@ -49,33 +49,39 @@ exports.searchEvent = (req, res) => {
 
 exports.getEventById = (req, res) => {
     Event.findById(req.params.uuid, (err, event) => {
-        if(err){
-            res.status(404).send(err)
-        } else {
-            res.status(Object.keys(event).length > 0 ? 201 : 204).json(event)
-        }
+        if(err)
+            res.status(500).send(err)
+        else if(event)
+                res.status(201).json(event)
+            else
+                res.status(404)
+        
     })
-};
+}
 
 exports.updateEventById = (req, res) => {
     if(req.body.event){
         Event.findByIdAndUpdate(req.params.uuid, req.body.event, (err, event) => {
-            if(err){
-                res.status(400).send(err)
-            }
-            else {
-                res.status(200).send('ok')
-            }
+            if(err)
+                res.status(500).send(err)
+            else if(event)
+                res.status(200).send('ok') 
+            else 
+                res.status(404)
         })
     }
-};
+}
 
 exports.addUserToEvent = (req, res) => {
     if(req.body.user){
         console.log(req.body)
         Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.user}, (err, event) => {
-            console.log(err)
-            err ? res.status(400).send(err): res.status(200).send('ok')
+            if(err)
+                res.status(500).send(err)
+            else if(event)
+                res.status(200).send('ok') 
+            else 
+                res.status(404)
         })
     }
 }
@@ -83,25 +89,36 @@ exports.addUserToEvent = (req, res) => {
 exports.removeUserToEvent = (req, res) => {
     if(req.body.user){
         Event.findByIdAndUpdate(req.params.uuid, {$pullAll : req.body.user}, (err, event) => {
-            err ? res.status(400).send(err): res.status(200).send('ok')
+            if(err)
+                res.status(500).send(err)
+            else if(event)
+                res.status(200).send('ok') 
+            else 
+                res.status(404)
         })
     }
 }
 
 exports.getEventReviews = (req, res) => {
     Event.findById(req.params.uuid, (err, event) => {
-        if(err){
-            res.status(404).send(err)
-        } else {
+        if(err)
+            res.status(500).send(err)
+        else if(event)
             res.status(event.reviews.length > 0 ? 201 : 204).json(event.reviews)
-        }
+        else 
+            res.status(404)
     })
 }
 
 exports.addEventReviews = (req, res) => {
     if(req.params.uuid && req.body.reviews){
         Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.reviews}, (err, event) => {
-            err ? res.status(400).send(err): res.status(200).send('ok')
+            if(err)
+                res.status(500).send(err)
+            else if(event)
+                res.status(200).send('ok') 
+            else 
+                res.status(404)
         })
     }
 }
@@ -110,11 +127,11 @@ exports.newEvent = (req, res) => {
     console.log(req.body)
     var event = new Event(req.body.event)
     event.save((err, newEvent) => {
-        if(err) {
-            console.log("[ERRORE] - " + err);
-            res.status(400).send(err)
-        } else {
-            res.status(201).send(newEvent)
-        }
+        if(err)
+            res.status(500).send(err)
+        else if(event)
+            res.status(200).send('ok') 
+        else 
+            res.status(404)
     })
 }

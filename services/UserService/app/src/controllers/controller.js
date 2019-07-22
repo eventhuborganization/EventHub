@@ -182,7 +182,7 @@ exports.addUserNotification = (req, res) => {
         let data = {};
         data.read = false;
         data.timestamp = Date.now();
-        data.tipology = req.body.tipology;
+        data.typology = req.body.typology;
         data.sender = req.body.sender;
         Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {
             if (err) {
@@ -426,7 +426,7 @@ exports.addUserAction = (req, res) => {
             else if (!user)
                 network.userNotFound(res);
             else {
-                Actions.findOne({tipology: newAction.tipology}, (err, action) => {
+                Actions.findOne({typology: newAction.typology}, (err, action) => {
                     if(err){
                         network.internalError(res, err);
                     } else if(!action){

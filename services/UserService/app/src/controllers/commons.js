@@ -44,7 +44,7 @@ exports.retrieveEventsToUpdate = (body) => {
 
 exports.isNewActionWellFormed = (action) => {
     return action != null 
-        && typeof(action.tipology) == "number";
+        && typeof(action.typology) == "number";
 };
 
 exports.isNewReviewWellFormed = (review) => {
@@ -57,7 +57,7 @@ exports.isNewReviewWellFormed = (review) => {
 };
 
 exports.isNewNotificationWellFormed = (notification) => {
-    return typeof notification.tipology === "number" 
+    return typeof notification.typology === "number" 
         && typeof notification.sender === "string";
 };
 

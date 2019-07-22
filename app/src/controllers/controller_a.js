@@ -21,10 +21,10 @@ exports.getEvents = (req, res) => {
 
 exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
-        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/linkedUsers', {uuid1: req.body.friend, uuid2: req.session.user})
+        axios.post('http://' + UserServiceHost + ':' + app.get('UserServicePort') + '/users/linkedUsers', {uuid1: req.body.friend, uuid2: req.session.user})
             .then( response => {
                 network.replayError(response, res);
-                axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.body.friend + '/notifications', {tipology: 8, sender: req.session.user})
+                axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.body.friend + '/notifications', {typology: 8, sender: req.session.user})
                     .catch (error => {
                         network.internalError(res, error);
                     });
@@ -38,7 +38,7 @@ exports.friendshipAnswer = (req, res) => {
 
 exports.getFriendPosition = (req, res) => {
     if (req.body.accepted) {
-        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.body.friend + '/notifications', {tipology: 9, sender: req.session.user, position: {lat: req.body.position.lat, lon: req.body.position.lon}})
+        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.body.friend + '/notifications', {typology: 9, sender: req.session.user, position: {lat: req.body.position.lat, lon: req.body.position.lon}})
             .then( response => {
                 network.replayResponse(response, res);
             })
@@ -85,8 +85,8 @@ exports.createEvent = (req, res) => {
         if (event.public) {
             axios.get('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + req.session.user + '/linkedUsers')
                 .then(resLinkedUsers => {
-                    resLinkedUsers.forEach(function(user) {
-                        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + user + '/notifications', {tipology: 6, sender: req.session.user})
+                    resLinkedUsers.forEach(user => {
+                        axios.post('http://' + app.get('UserServiceHost') + ':' + app.get('UserServicePort') + '/users/' + user + '/notifications', {typology: 6, sender: req.session.user})
                     })
                 })
         }
@@ -106,35 +106,35 @@ exports.getInfoUser = (req, res) => {
             response.avatar = response.profilePicture
             delete response.profilePicture
             linkedUsersPromise = []
-            response.linkedUsers.forEach(function(user) {
+            response.linkedUsers.forEach(user => {
                 linkedUsersPromise.push(exports.getLinkedUserInfo(user))
             })
             groupsPromise = []
-            response.groups.forEach(function(group) {
+            response.groups.forEach(group => {
                 groupsPromise.push(exports.getGroupInfo(group))
             })
             eventsSubscribedPromise = []
-            response.eventsSubscribed.forEach(function(event) {
+            response.eventsSubscribed.forEach(event => {
                 eventsSubscribedPromise.push(exports.getEventInfo(event))
             })
             eventsFollowedPromise = []
-            response.eventsFollowed.forEach(function(event) {
+            response.eventsFollowed.forEach(event => {
                 eventsFollowedPromise.push(exports.getEventInfo(event))
             })
             Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
                 .then( result => {
                     response.linkedUsers = []
-                    result[0].forEach(function(user) {
-                        response.linkedUsers.push({name: user.name, surname: user.surname, avatar: user.profilePicture, _id: user._id })
+                    result[0].forEach(user => {
+                        response.linkedUsers.push({name: user.name, surname: user.surname, avatar: user.profilePicture, _id: user._id, organizator: user.organizator })
                     })
                     response.groups = []
-                    result[1].forEach(function(group) {
+                    result[1].forEach(group => {
                         response.groups.push({ _id: group._id, name: group.name })
                     })
                     response.badges = result[2];
                     response.reviewsDone = response.reviewsDone.length;
                     response.reviewsReceived = response.reviewsReceived.length;
-                    function sortFunction(a,b) {  
+                    let sortFunction = (a,b) => {  
                         var keyA = new Date(a.EventDate),
                             keyB = new Date(b.EventDate);
                         if(keyA < keyB) return -1;

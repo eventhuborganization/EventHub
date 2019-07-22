@@ -42,7 +42,7 @@ var UserSchema = new Schema({
     },
     groups: [Schema.Types.ObjectId],
     notifications: [{
-        tipology: Number,
+        typology: Number,
         sender: Schema.Types.ObjectId,
         timestamp: Date,
         read: Boolean
@@ -125,7 +125,7 @@ var BadgeSchema = new Schema({
 });
 
 var ActionSchema = new Schema({
-    tipology: {
+    typology: {
         type: Number,
         required: true
     },
