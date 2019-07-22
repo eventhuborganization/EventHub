@@ -198,6 +198,7 @@ class RegistrationForm extends React.Component {
                     componentId={this.getIdBasedOnType(this.state.componentIds.password)}
                     componentName={this.getIdBasedOnType(this.state.componentIds.password)}
                     componentType="password"
+                    invalidFeedback={"Le password non coincidono"}
                     onChangeHandler={this.handleChangeEvent}
                     mandatory={true}
                     show={true}
@@ -208,6 +209,7 @@ class RegistrationForm extends React.Component {
                     componentName={this.getIdBasedOnType(this.state.componentIds.confirmPassword)}
                     componentType="password"
                     onChangeHandler={this.handleChangeEvent}
+                    invalidFeedback={"Le password non coincidono"}
                     mandatory={true}
                     show={true}
                 />
@@ -243,7 +245,10 @@ function RegistrationComponent(props) {
                     placeholder={props.placeholder ? props.placeholder : null}
                     onChange={props.onChangeHandler} 
                     required={props.mandatory}
-                />
+                /> 
+                <div className="invalid-feedback text-left">
+                    {props.invalidFeedback}
+                </div>
             </div>
         </div>
     ) : "";
