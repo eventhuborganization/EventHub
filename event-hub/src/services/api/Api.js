@@ -9,13 +9,13 @@ import Properties from '../../utils/Properties'
  */
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
-        .catch(error => onError(error))
         .then(response => {
             if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
             else
                 onSuccess(response)
         })
+        .catch(error => onError(error))
 }
 
 /**
@@ -35,7 +35,7 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
 let getEvents = (data, onError, onSuccess) => {
     let config = {
         params: {
-            typoloy: data.typology,
+            typology: data.typology,
             location: data.location,
             date: data.date
         }
@@ -65,7 +65,7 @@ let getEvents = (data, onError, onSuccess) => {
 let searchEvents = (data, onError, onSuccess) => {
     let config = {
         params: {
-            typoloy: data.event.typology,
+            typology: data.event.typology,
             location: data.event.location,
             date: data.event.date
         }
@@ -97,7 +97,7 @@ let createNewEvent = (event, onError, onSuccess) => {
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
-let participateToAnEvent = (eventId, onError, onSuccess) => {
+let participateToEvent = (eventId, onError, onSuccess) => {
     interactWithEvent(
         {participant: true, event: eventId},
         () => onError("Errore durante la partecipazione ad un evento. Riprovare."),
@@ -110,7 +110,7 @@ let participateToAnEvent = (eventId, onError, onSuccess) => {
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
-let followAnEvent = (eventId, onError, onSuccess) => {
+let followEvent = (eventId, onError, onSuccess) => {
     interactWithEvent(
         {follower: true, event: eventId},
         () => onError("Errore nel tentativo di seguire un evento. Riprovare."),
@@ -197,7 +197,7 @@ let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
 let notificationRead = (notificationId, onError, onSuccess) => {
     let data = { _id: notificationId}
     managePromise(
-        Axios.post(Properties.apiServer + '/notifications/friendposition', data),
+        Axios.post(Properties.apiServer + '/notification', data),
         [200, 201],
         onError,
         onSuccess
@@ -244,10 +244,8 @@ let login = (email, password, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let register = (data, onError, onSuccess) => {
-    let user_data = data
-    user_data.password = data.password //hash password
     managePromise(
-        Axios.post(Properties.apiServer + '/registration', user_data),
+        Axios.post(Properties.apiServer + '/registration', data),
         [200],
         onError,
         onSuccess
@@ -278,10 +276,12 @@ let updateUserProfile = (data, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let updateUserCredentials = (data, onError, onSuccess) => {
-    let user_data = data
-    user_data.password = data.password //hash password
-    user_data.newPassword = data.newPassword //hash password
-    managePromise(Axios.put(Properties.apiServer + '/profile/credentials', user_data),[200], onError, onSuccess)
+    managePromise(
+        Axios.put(Properties.apiServer + '/profile/credentials', data),
+        [200],
+        onError,
+        onSuccess
+    )
 }
 
 /**
@@ -303,7 +303,7 @@ let updateUserSettings = (data, onError, onSuccess) => {
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
-let getUserInformations = (userId, onError, onSuccess) => {
+let getUserInformation = (userId, onError, onSuccess) => {
     managePromise(
         Axios.get(Properties.apiServer + '/users/' + userId),
         [200],
@@ -375,8 +375,8 @@ export default {
     createNewEvent,
     getEvents,
     searchEvents,
-    participateToAnEvent,
-    followAnEvent,
+    participateToEvent,
+    followEvent,
     getNotifications,
     sendFriendshipResponse,
     sendFriendPositionResponse,
@@ -387,7 +387,7 @@ export default {
     updateUserProfile,
     updateUserCredentials,
     updateUserSettings,
-    getUserInformations,
+    getUserInformation,
     searchUsers,
     sendFriendshipRequest,
     sendFriendPositionRequest,
