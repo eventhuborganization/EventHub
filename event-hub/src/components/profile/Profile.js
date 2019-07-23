@@ -1,79 +1,30 @@
 import React from 'react'
 import Api from '../../services/api/Api'
+
 import MultipleEventCard from '../multiple_event_card/MultipleEventCard'
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, ProfileControls} from './Profiles'
-import { RedirectComponent } from '../redirect/Redirect';
 
 /**
  * I badge sono ancora da gestire!!!
  */
-class UserProfile extends React.Component {
+class Profile extends React.Component {
 
-    constructor(props) {
+    constructor(props){
         super(props)
-        
-        this.state = {
-            _id: props.isLocalUser ? props.userId : props.match.params.id,
-            name: "",
-            avatar: undefined,
-            organization: false,
-            points: 0,
-            linkedUsers: [],
-            pastEvents: [],
-            futureEvents: []
-        }
-
-        let toShow = this.displayWindowSize()
-        this.state.avatarsToShow = toShow[0]
-        this.state.emptyAvatarSize = toShow[1]
-        this.getUserInformation()
-    }
-
-    displayWindowSize = () => {
-        let width = window.innerWidth;
-        if(width < 767.98){
-            return [3,4]
-        } else if (width > 767.98 && width < 991.98){
-            return [7,5]
-        } else if (width > 991.98 && width < 1199.98){
-            return [10,6]
-        } else {
-            return [12,7]
-        }
-    };
-
-    componentDidMount = () => {
-        window.onresize = () => {
-            let toShow = this.displayWindowSize()
-            this.setState({avatarsToShow: toShow[0], emptyAvatarSize: toShow[1]})
-        }
-    }
-
-    componentWillUnmount = () => {
-        window.onresize = undefined
-    }
-
-    getUserInformation = () => {
-        Api.getUserInformation(
-            this.state._id,
-            () => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"),
-            response => {
-                let name = response.data.name + (response.data.organization ? "" : " " + response.data.surname)
-                let futureEvents =  response.data.eventsSubscribed.filter(x => x.date > Date.now())
-                let pastEvents =  response.data.eventsSubscribed.filter(x => x.date < Date.now())
-                this.setState({
-                    name: name,
-                    avatar: response.data.avatar,
-                    organization: response.data.organization,
-                    linkedUsers: response.data.linkedUsers,
-                    badges: response.data.badges,
-                    points: response.data.points,
-                    futureEvents: futureEvents,
-                    pastEvents: pastEvents,
-                    groups: response.data.groups
-                })
-            }
-        )
+        this.state = props.state
+        this.state.name =  "Giancarlo"
+        this.state.avatar = "gatto.jpeg"
+        this.state.organization = false
+        this.state.points =  320
+        this.state.linkedUsers = [{
+            _id: "ciao12345",
+            name: "Francesco Manara",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao1235",
+            name: "Luca Giurato",
+            avatar: "gatto.jpeg"
+        }]
     }
 
     getEventsByUserTypology = () => {
@@ -138,7 +89,7 @@ class UserProfile extends React.Component {
                 this.state._id, 
                 () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
                 () => 
-                    this.setState({linkedUsers: this.state.linkedUsers.filter(elem => elem._id !== this.props.userId)})
+                    this.props.updateState({linkedUsers: this.state.linkedUsers.filter(elem => elem._id !== this.props.userId)})
             )
         }
     }
@@ -151,14 +102,9 @@ class UserProfile extends React.Component {
         return (
             <main className="main-container">
 
-                <RedirectComponent {...this.props}
-                    to={'/profile'}
-                    redirectNow={!this.props.isLocalUser && this.props.userId === this.state._id}
-                />
-
                 <section className="row">
                     <div className="col card bg-dark px-0">
-                        <div className="card-img px-0 text-center bg-dark" >
+                        <div className="card-img px-0 text-center bg-dark" style={{minHeight: 150}}>
                             <div className={"text-secondary" + (this.state.avatar ? " d-none" : "" )}>
                                 <em className="far fa-image fa-10x"></em>
                             </div>
@@ -187,12 +133,12 @@ class UserProfile extends React.Component {
                                             <ProfileAction
                                                 iconName={"plus"}
                                                 id="ciaooo"
-                                                show={!this.props.isLocalUser && !isMyFriend}
+                                                show={!this.props.isLocalUser && !isMyFriend && this.props.isLogged}
                                                 actionSelected={this.addFriend}
                                             />
                                             <ProfileAction
                                                 iconName={"street-view"}
-                                                show={!this.props.isLocalUser && isMyFriend && !this.state.organization}
+                                                show={!this.props.isLocalUser && isMyFriend && !this.state.organization && this.props.isLogged}
                                                 actionSelected={this.requestPosition}
                                             />
                                             <ProfileBadge
@@ -232,6 +178,13 @@ class UserProfile extends React.Component {
             </main>
         )
     }
+
 }
 
-export default UserProfile
+function Ciao(props) {
+    console.log(props);
+    return ""
+    
+}
+
+export {Profile, Ciao}

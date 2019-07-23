@@ -1,6 +1,9 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
 
+import { CallableComponent } from '../redirect/Redirect'
+import ScrollToTop from '../scroll_to_top/ScrollToTop'
+
 import './App.css'
 import Api from '../../services/api/Api'
 import Home from '../home/Home'
@@ -9,10 +12,7 @@ import EventInfo from '../event_info/EventInfo'
 import Registration from '../registration/Registration'
 import Notifications from '../notifications/Notifications'
 import EventCreator from '../event_creator/EventCreator'
-import UserProfile from '../profile/UserProfile'
-import { CallableComponent } from '../redirect/Redirect'
-import ScrollToTop from '../scroll_to_top/ScrollToTop'
-
+import { PersonalProfile, UserProfile } from '../profile/ProfileType'
 
 class App extends React.Component {
 
@@ -112,26 +112,26 @@ class App extends React.Component {
                 />}
             />
             <Route path="/profile" exact render={(props) =>
-                <UserProfile {...props}
+                <PersonalProfile {...props}
                     mainServer={this.props.mainServer}
+                    isLogged={this.state.isLogged}
                     userId={this.state.userId}
                     onError={this.onError}
-                    isLocalUser={true}
                 />}
             />
-            <Route path="/users/:id" exact render={(props) => 
+            <Route path="/users/:id" render={(props) => 
                 <UserProfile {...props}
                     mainServer={this.props.mainServer}
+                    isLogged={this.state.isLogged}
                     userId={this.state.userId}
                     onError={this.onError}
-                    isLocalUser={false}
                 />} 
             />
           </Switch>
 
           <footer className={(this.state.showNavbar ? "" : "d-none ") + "row fixed-bottom bg-light border-top border-primary mx-0 py-2"}>
               <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to={this.state.isLogged ? "/profile" : "/login"}><em className="fas fa-user fa-lg" /></Link></div>
+              <div className="col text-center my-auto"><Link to="/profile"><em className="fas fa-user fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/"><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
               <div className="col text-center my-auto"><Link to="/friends"><em className="fas fa-users fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/notification"><em className="fas fa-bell fa-lg" /></Link></div>
