@@ -91,7 +91,9 @@ class EventCreator extends React.Component {
             state.event.thumbnailPreview = e.target.result
             this.setState(state)
         }
-        reader.readAsDataURL(event.target.files[0])
+        if(event.target.files.length > 0){
+            reader.readAsDataURL(event.target.files[0])
+        }
     }
 
     selectThumbnail = () => {
@@ -188,6 +190,7 @@ class EventCreator extends React.Component {
                             id="thumbnail"
                             name="thumbnail"
                             type="file"
+                            accept="image/*"
                             className=""
                             onChange={this.updateThumbnailPreview}
                         />
