@@ -125,7 +125,7 @@ class UserProfile extends React.Component {
             axios.delete(this.props.mainServer + "/users/friendship", {friend: this.state._id})
                 .then(result => {
                     if(result.status === 200){
-                        this.setState({linkedUsers: linkedUsers.filter(elem => elem._id != this.props.userId)})
+                        this.setState({linkedUsers: result.linkedUsers.filter(elem => elem._id != this.props.userId)})
                     } else {
                         this.props.onError(result.data.description ? 
                             result.data.description
