@@ -2,9 +2,8 @@ import React from 'react'
 import styles from '../login/Login.module.css'
 import Api from '../../services/api/Api'
 import RegistrationForm from './RegistrationForm'
-import RegistrationTab from './RegistrationTab'
+import { RegistrationTab } from '../menu_tab/MenuTab'
 import {LoginSuccessfullRedirect} from '../redirect/Redirect'
-
 
 class Registration extends React.Component {
 

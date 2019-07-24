@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function RegistrationTab(props) {
+function MenuTab(props) {
     let count = -1
     let navigationBar = props.tabs.map(element => {
         count++
@@ -30,7 +30,7 @@ export default function RegistrationTab(props) {
     })
     return (
         <div>
-            <ul className="nav nav-pills mb-3 d-flex justify-content-center" id="user-selection" role="tablist">
+            <ul className={"row nav " + props.styleOptions} id="user-selection" role="tablist">
                 {navigationBar}
             </ul>
             <div className="tab-content" id="user-selection-content">
@@ -39,3 +39,13 @@ export default function RegistrationTab(props) {
         </div>
     );
 }
+
+function RegistrationTab(props) {
+    return <MenuTab {...props} styleOptions="nav-pills justify-content-center mb-3" />
+}
+
+function FriendsTab(props) {
+    return <MenuTab {...props} styleOptions="nav-pills justify-content-center mb-1" />
+}
+
+export {RegistrationTab, FriendsTab, MenuTab}

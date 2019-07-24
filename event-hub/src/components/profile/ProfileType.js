@@ -3,7 +3,7 @@ import {Route} from 'react-router-dom'
 import Api from '../../services/api/Api'
 
 import { RedirectComponent, LoginRedirect } from '../redirect/Redirect'
-import { Profile, Ciao } from './Profile'
+import { Profile, UserFriends } from './Profile'
 
 class AbstractProfile extends React.Component {
 
@@ -11,7 +11,6 @@ class AbstractProfile extends React.Component {
         super(props)
         
         this.state = {
-            _id: props.isLocalUser ? props.userId : props.match.params.id,
             name: "",
             avatar: undefined,
             organization: false,
@@ -24,6 +23,292 @@ class AbstractProfile extends React.Component {
         let toShow = this.displayWindowSize()
         this.state.avatarsToShow = toShow[0]
         this.state.emptyAvatarSize = toShow[1]
+
+        this.state.name =  "Giancarlo"
+        this.state.avatar = "gatto.jpeg"
+        this.state.organization = false
+        this.state.points =  320
+        this.state.linkedUsers = [{
+            _id: "ciao11",
+            name: "Francesco Manara",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao2",
+            name: "Luca Giurato",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao3",
+            name: "Grant Gustin",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao4",
+            name: "Mimmo Calabro",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "ciao5",
+            name: "Sasuke Uchiha",
+            avatar: "gatto.jpeg"
+        }, {
+            _id: "my_id",
+            name: "Ciccio maliccio",
+            avatar: "gatto.jpeg"
+        }]
     }
 
     displayWindowSize = () => {
@@ -88,6 +373,7 @@ class PersonalProfile extends AbstractProfile {
     constructor(props){
         super(props)
         if(!!props.isLogged){
+            this.state._id = props.userId
             this.getUserInformation()
         }
     }
@@ -104,18 +390,45 @@ class PersonalProfile extends AbstractProfile {
 }
 
 class UserProfile extends AbstractProfile {
+
+    constructor(props){
+        super(props)
+        this.updateInformation()
+    }
+
+    updateInformation = () => {
+        this.state._id = this.props.match.params.id
+        this.getUserInformation()
+    }
+
     render = () => {
         return (
             <div>
-                <Route path={"/users/:id/friends"} exact render={(props) => <Ciao {...props}/>} />
+                <Route 
+                    path={"/users/:id/friends"}
+                    exact 
+                    render={() => {
+                        return <UserFriends {...this.props}
+                            linkedUsers={this.state.linkedUsers}
+                        />
+                    }} 
+                />
                 <Route
                     exact
                     path={this.props.match.path}
-                    render={(props) => <Profile {...props} isLocalUser={false} updateState={this.changeState} state={this.state}/>}
+                    render={() =>{
+                        return <Profile {...this.props}
+                            updateInfo={this.updateInformation} 
+                            isLocalUser={false} 
+                            updateState={this.changeState} 
+                            state={this.state}
+                            userId={this.props.user._id}
+                        />
+                    }}
                 />
                 <RedirectComponent {...this.props}
                     to={'/profile'}
-                    redirectNow={this.props.userId === this.state._id}
+                    redirectNow={this.props.isLogged && this.props.user._id === this.state._id}
                 />
             </div>
         )

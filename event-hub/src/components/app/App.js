@@ -123,7 +123,10 @@ class App extends React.Component {
                 <UserProfile {...props}
                     mainServer={this.props.mainServer}
                     isLogged={this.state.isLogged}
-                    userId={this.state.userId}
+                    user={{
+                      _id: this.state.userId,
+                      linkedUsers: this.state.user ? this.state.user.linkedUsers : []
+                    }}
                     onError={this.onError}
                 />} 
             />

@@ -3,6 +3,8 @@ import Api from '../../services/api/Api'
 
 import MultipleEventCard from '../multiple_event_card/MultipleEventCard'
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, ProfileControls} from './Profiles'
+import UserBanner from '../user_banner/UserBanner'
+import {FriendsTab} from '../menu_tab/MenuTab'
 
 /**
  * I badge sono ancora da gestire!!!
@@ -12,19 +14,12 @@ class Profile extends React.Component {
     constructor(props){
         super(props)
         this.state = props.state
-        this.state.name =  "Giancarlo"
-        this.state.avatar = "gatto.jpeg"
-        this.state.organization = false
-        this.state.points =  320
-        this.state.linkedUsers = [{
-            _id: "ciao12345",
-            name: "Francesco Manara",
-            avatar: "gatto.jpeg"
-        }, {
-            _id: "ciao1235",
-            name: "Luca Giurato",
-            avatar: "gatto.jpeg"
-        }]
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if(prevProps.location.pathname !== this.props.location.pathname) {
+            this.props.updateInfo()
+        }
     }
 
     getEventsByUserTypology = () => {
@@ -171,6 +166,7 @@ class Profile extends React.Component {
                         typology={this.state.organization ? "Followers" : "Amici"}
                         numberToShow={this.state.avatarsToShow}
                         emptyAvatarSize={this.state.emptyAvatarSize}
+                        moreLinkedUsersLink={this.props.isLocalUser ? "/friends" : `${this.props.match.url}/friends`}
                     />
                 </section>
 
@@ -181,10 +177,100 @@ class Profile extends React.Component {
 
 }
 
-function Ciao(props) {
-    console.log(props);
-    return ""
-    
+class UserFriends extends React.Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            filter: ""
+        }
+    }
+
+    onFilter = (event) => {
+        this.setState({filter: event.target.value})
+    }
+
+    addFriend = (friend) => {
+        Api.sendFriendshipRequest(
+            friend._id,
+            () => this.props.onError("Si è verificato un errore durante la richesta, riprova"),
+            () => {}
+        )
+    }
+
+    cantAddFriend = (friend) => {
+        return !this.props.isLogged || this.props.user.linkedUsers.includes(friend) || friend._id === this.props.user._id
+    }
+
+    getAllFriends = () => {
+        return this.getFriends(
+            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()),
+            elem => !this.cantAddFriend(elem),
+            elem => this.addFriend(elem)
+        )
+    }
+
+    getAllCommonFriends = () => {
+        return this.getFriends(
+            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()) && this.cantAddFriend(elem),
+            () => false,
+            () => {}
+        )
+    }
+
+    getAllUncommonFriends = () => {
+        return this.getFriends(
+            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()) && !this.cantAddFriend(elem),
+            () => true,
+            elem => this.addFriend(elem)
+        )
+    }
+
+    getFriends = (filterFun, showFun, onAddFriendFun) => {
+        let x = 0;
+        return this.props.linkedUsers
+                   .filter(elem => filterFun(elem))
+                   .map(elem => {
+                        let id = "friend" + x++
+                        return (
+                            <UserBanner key={id}
+                                user={elem}
+                                showAddFriendButton={showFun(elem)}
+                                onAddFriend={() => onAddFriendFun(elem)}
+                            />
+                        )
+                    })
+    }
+
+    createSingleTab = (tag, elem) => {
+        return Object.freeze({ tag: tag, elem: elem})
+    }
+
+    render = () => {
+        let tabs = [this.createSingleTab("Tutti", this.getAllFriends())]
+        if(this.props.isLogged){
+            tabs.push(
+                this.createSingleTab("In Comune", this.getAllCommonFriends()),
+                this.createSingleTab("Non in Comune", this.getAllUncommonFriends())
+            )
+        }
+        return (
+            <div className="main-container">
+                <form className="row mb-2 sticky-top bg-white py-2">
+                    <label htmlFor="tf-search" className="d-none">Cerca amico</label>
+                    <input 
+                        className="col-11 mx-auto form-control"
+                        id="tf-search" 
+                        name="tf-search" 
+                        type="search" 
+                        placeholder="Cerca amico"
+                        value={this.state.filter}
+                        onChange={this.onFilter}/>
+                </form>
+                <FriendsTab tabs={tabs} />
+            </div>
+        )
+    }
 }
 
-export {Profile, Ciao}
+export {Profile, UserFriends}

@@ -29,12 +29,14 @@ export function EmptyUserAvatar(props){
     )
 }
 
-export function MoreLinkedUsers(){
+export function MoreLinkedUsers(props){
     return (
         <div className="col d-flex justify-content-center align-items-center">
-            <div className={"border border-primary rounded-circle w-100 h-100 d-flex justify-content-center align-items-center " + styles.friendsIcon}>
-                <em className="fas fa-ellipsis-h"></em>
-            </div>
+            <Link 
+                to={props.moreLinkedUsersLink}
+                className={"border border-primary rounded-circle w-100 h-100 d-flex justify-content-center align-items-center " + styles.friendsIcon}>
+                    <em className="fas fa-ellipsis-h text-dark"></em>
+            </Link>
         </div>
     )
 }
@@ -50,7 +52,7 @@ export function LinkedUsersBanner(props) {
                 : <LinkedUserAvatar linkedUser={linkedUsers[x]} key={"av" + x} emptyAvatarSize={props.emptyAvatarSize}/>)
         }
         if(linkedUsers.length > limit + 1){
-            avatars.push(<MoreLinkedUsers key={"av" + (limit + 1)}/>)
+            avatars.push(<MoreLinkedUsers key={"av" + (limit + 1)} moreLinkedUsersLink={props.moreLinkedUsersLink}/>)
         } else if(linkedUsers.length === limit + 1){
             avatars.push(<LinkedUserAvatar linkedUser={linkedUsers[3]} margin={true} key={"av" + (limit + 1)} emptyAvatarSize={props.emptyAvatarSize}/>)
         } else {
