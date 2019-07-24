@@ -183,7 +183,7 @@ class Notifications extends React.Component {
             ]
         }
         console.log(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
-        if (true)
+        if (!!props.isLogged)
             Axios.get(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
                 .then(response => {
                     let status = response.status
