@@ -1,5 +1,6 @@
-import React from 'react';
-import myStyles from './Registration.module.css';
+import React from 'react'
+import myStyles from './Registration.module.css'
+import Resizer from 'react-image-file-resizer'
 
 let common = "col-10 col-md-8 mx-auto px-0 "
 let labelClass = common + "text-left"
@@ -19,12 +20,24 @@ class RegistrationForm extends React.Component {
                 province: "province",
                 address: "address",
                 phone: "tel",
+                avatar: "avatar",
                 email: "email",
                 password: "pwd",
                 confirmPassword: "pwd-conf"
-            },
-            sex: "male"
+            }
         }
+        this.state[this.state.componentIds.name] = ""
+        this.state[this.state.componentIds.surname] = ""
+        this.state[this.state.componentIds.sex] = "Male"
+        this.state[this.state.componentIds.birthdate] = ""
+        this.state[this.state.componentIds.city] = ""
+        this.state[this.state.componentIds.province] = ""
+        this.state[this.state.componentIds.address] = ""
+        this.state[this.state.componentIds.phone] = ""
+        this.state[this.state.componentIds.avatar] = undefined
+        this.state[this.state.componentIds.email] = ""
+        this.state[this.state.componentIds.password] = ""
+        this.state[this.state.componentIds.confirmPassword] = ""
     }
 
     getShownOrPrivateClass = (classLabel) => {
@@ -81,6 +94,42 @@ class RegistrationForm extends React.Component {
                 this.passwordConvalidation(target, false)
             } else if (name === this.state.componentIds.confirmPassword && value === this.state.pwd) {
                 this.passwordConvalidation(target, true)
+            } else if (name === this.state.componentIds.avatar) {
+                /*let reader = new FileReader()
+                reader.onload = e => {
+                    let img = new Image()
+                    img.src = e.target.result
+                    img.onload = () => {
+                        let elem = document.createElement("canvas")
+                        let width = 300
+                        let scaleFactor = width / img.width;
+                        elem.width = width;
+                        elem.height = img.height * scaleFactor;
+                        let ctx = elem.getContext("2d")
+                        ctx.drawImage(img, 0, 0, width, img.height * scaleFactor)
+                        const data = ctx.canvas.toDataURL(img, "image/jpeg", 0.6)
+                        console.log(data);
+                        
+                        this.setState({[name]: data})
+                    }
+                }
+                if(event.target.files.length > 0){
+                    reader.readAsDataURL(event.target.files[0])
+                }*/
+                if(event.target.files.length > 0){
+                    Resizer.imageFileResizer(
+                        event.target.files[0],
+                        200,
+                        200,
+                        'JPEG',
+                        100,
+                        0,
+                        uri => {
+                            this.setState({[name]: uri})
+                        },
+                        'base64'
+                    )
+                }
             } else {
                 this.setState({
                     [name]: value
@@ -183,6 +232,15 @@ class RegistrationForm extends React.Component {
                     mandatory={!this.props.privateUser}
                     show={true}
                 />
+                <RegistrationFileComponent
+                    label="Immagine di profilo"  
+                    componentId={this.getIdBasedOnType(this.state.componentIds.avatar)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.avatar)}
+                    onChangeHandler={this.handleChangeEvent}
+                    image={this.state[this.state.componentIds.avatar]}
+                    mandatory={false}
+                    show={true}
+                />
                 <RegistrationComponent
                     label="Email"  
                     componentId={this.getIdBasedOnType(this.state.componentIds.email)}
@@ -198,6 +256,7 @@ class RegistrationForm extends React.Component {
                     componentId={this.getIdBasedOnType(this.state.componentIds.password)}
                     componentName={this.getIdBasedOnType(this.state.componentIds.password)}
                     componentType="password"
+                    invalidFeedback={"Le password non coincidono"}
                     onChangeHandler={this.handleChangeEvent}
                     mandatory={true}
                     show={true}
@@ -208,6 +267,7 @@ class RegistrationForm extends React.Component {
                     componentName={this.getIdBasedOnType(this.state.componentIds.confirmPassword)}
                     componentType="password"
                     onChangeHandler={this.handleChangeEvent}
+                    invalidFeedback={"Le password non coincidono"}
                     mandatory={true}
                     show={true}
                 />
@@ -243,7 +303,10 @@ function RegistrationComponent(props) {
                     placeholder={props.placeholder ? props.placeholder : null}
                     onChange={props.onChangeHandler} 
                     required={props.mandatory}
-                />
+                /> 
+                <div className="invalid-feedback text-left">
+                    {props.invalidFeedback}
+                </div>
             </div>
         </div>
     ) : "";
@@ -268,6 +331,32 @@ function RegistrationRadioComponent(props){
                     onChange={props.onChangeHandler} 
                 />
                 <label htmlFor={props.componentIdB}>{props.labelB}</label>
+            </div>
+        </div>
+    ) : "";
+}
+
+function RegistrationFileComponent(props) {
+    return props.show ? (
+        <div>
+            <div className="form-group">
+                <label htmlFor={props.componentId} className={labelClass}>
+                    {props.label} <span className={(props.mandatory ? "" : "d-none ") + "text-danger"}>*</span>
+                </label>
+                <div className={labelInputClass}>
+                    <input 
+                        type="file"
+                        accept="image/*" 
+                        id={props.componentId} 
+                        className="form-control-file" 
+                        name={props.componentName}
+                        onChange={props.onChangeHandler} 
+                        required={props.mandatory}
+                    />
+                </div>
+            </div>
+            <div className={props.image ? "form-group" : "d-none"}>
+                <img src={props.image} alt="immagine profilo" className={myStyles.avatarImage}/>
             </div>
         </div>
     ) : "";

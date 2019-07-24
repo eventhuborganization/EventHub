@@ -1,60 +1,65 @@
 module.exports = (app) => {    
-    var controllerA = require("../controllers/controller_a.js");
-    var controllerB = require("../controllers/controller_b.js");
+    var eventController = require('../controllers/EventController')
+    var userController = require('../controllers/UserController')
+    var notificationController = require('../controllers/NotificationController')
+    var loginController = require('../controllers/LoginController')
+
     app.route("/")
-        .get(sessionChecker,controllerA.getHome);
+        .get(sessionChecker,(req, res) => {
+            res.sendFile(`${appRoot}/views/home.html`);
+        });
 
     app.route("/events/:fromIndex")
-        .get(controllerA.getEvents)
+        .get(eventController.getEvents)
 
     app.route("/notification/friendship")
-        .post(sessionChecker,controllerA.friendshipAnswer);
+        .post(sessionChecker,userController.friendshipAnswer);
 
     app.route("/notification/friendposition")
-        .post(sessionChecker, controllerA.getFriendPosition);
+        .post(sessionChecker, userController.getFriendPosition);
 
     app.route("/registration")
-        .post(controllerA.registration);
+        .post(loginController.registration);
 
     app.route("/profile")
-        .put(sessionChecker, controllerA.updateProfile);
+        .put(sessionChecker, userController.updateProfile);
 
     app.route("/event")
-        .put(sessionChecker, controllerA.createEvent);
+        .put(sessionChecker, eventController.createEvent);
 
     app.route("/profile/credentiels")
-        .put(controllerA.updateCredentials);
+        .put(userController.updateCredentials);
 
     app.route("/user/:uuid")
-        .get(controllerA.getInfoUser);
+        .get(userController.getInfoUser);
 
     app.route("/user/search/:name")
-        .get(controllerA.searchUser);
+        .get(userController.searchUser);
 
 // *-------------------------------------------------------------------------
 
     app.route('/login')
-        .get(controllerB.getLogin) //ritronare la pagina di login
-        .post(controllerB.login)
+        .get(loginController.getLogin)
+        .post(loginController.login)
         
     app.route('/logout')
-        .get(sessionChecker, controllerB.logout)
+        .get(sessionChecker, loginController.logout)
 
     app.route('/user/event')
-        .post(sessionChecker, controllerB.addEventUser)
+        .post(sessionChecker, eventController.addUserToEvent)
 
     app.route('/events/info/:uuid')
-        .get(sessionChecker, controllerB.eventInfo)
+        .get(sessionChecker, eventController.eventInfo)
 
     app.route('/events/search/:name')
-        .get(sessionChecker, controllerB.searchEventByName)
+        .get(sessionChecker, eventController.searchEventByName)
 
     app.route('/users/friendship')
-        .post(sessionChecker, controllerB.userFriendRequest)
+        .post(sessionChecker, userController.userFriendRequest)
 
     app.route('/notification')
-        .post(sessionChecker, controllerB.markNotificationAsReaded)
+        .post(sessionChecker, notificationController.markNotificationAsReaded)
     
     app.route('/notification/:fromIndex')
-        .post(sessionChecker, controllerB.getNotification)
+        .post(sessionChecker, notificationController.getNotification)
 }

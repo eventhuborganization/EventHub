@@ -1,6 +1,6 @@
-import React from 'react';
-import axios from 'axios';
-import styles from '../login/Login.module.css';
+import React from 'react'
+import styles from '../login/Login.module.css'
+import Api from '../../services/api/Api'
 import RegistrationForm from './RegistrationForm'
 import RegistrationTab from './RegistrationTab'
 import {LoginSuccessfullRedirect} from '../redirect/Redirect'
@@ -53,17 +53,16 @@ class Registration extends React.Component {
                 address: data[data.componentIds.address]
             }
         }
-        axios.post(this.props.mainServer + "/registration", message)
-            .then(response => {
-                let status = response.status
-                if (status === 201) {
-                    this.props.onRegistration(response.data._id)
-                    this.state.redirectComponent.redirectAfterLogin()
-                } else {
-                    this.props.onError(response.data.description)
-                }
-            })
-            .catch(this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova"));
+        Api.register(
+            message, 
+            () => this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova"),
+            response => {
+                delete message.password
+                message._id = response.data._id
+                this.props.onRegistration(message)
+                this.state.redirectComponent.redirectAfterLogin()
+            }
+        )
     }
 
     render() {

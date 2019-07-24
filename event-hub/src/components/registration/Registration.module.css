@@ -2,6 +2,10 @@
      background-color: white !important;
      color: black !important;
  }
+
+ .avatarImage {
+   width: 80%;
+ }
  
  /* TOGGLE STYLING */
 .toggle {
@@ -70,5 +74,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .avatarImage {
+      width: 30%;
     }
   }

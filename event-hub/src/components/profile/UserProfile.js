@@ -1,5 +1,5 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
+import Api from '../../services/api/Api'
 import MultipleEventCard from '../multiple_event_card/MultipleEventCard'
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, ProfileControls} from './Profiles'
 import { RedirectComponent } from '../redirect/Redirect';
@@ -23,33 +23,57 @@ class UserProfile extends React.Component {
             futureEvents: []
         }
 
+        let toShow = this.displayWindowSize()
+        this.state.avatarsToShow = toShow[0]
+        this.state.emptyAvatarSize = toShow[1]
         this.getUserInformation()
     }
 
+    displayWindowSize = () => {
+        let width = window.innerWidth;
+        if(width < 767.98){
+            return [3,4]
+        } else if (width > 767.98 && width < 991.98){
+            return [7,5]
+        } else if (width > 991.98 && width < 1199.98){
+            return [10,6]
+        } else {
+            return [12,7]
+        }
+    };
+
+    componentDidMount = () => {
+        window.onresize = () => {
+            let toShow = this.displayWindowSize()
+            this.setState({avatarsToShow: toShow[0], emptyAvatarSize: toShow[1]})
+        }
+    }
+
+    componentWillUnmount = () => {
+        window.onresize = undefined
+    }
+
     getUserInformation = () => {
-        axios.get(this.props.mainServer + "/users/" + this.state._id)
-            .then(response => {
-                if(response.status === 200){
-                    let name = response.data.name + (response.data.organization ? "" : " " + response.data.surname)
-                    let futureEvents =  response.data.eventsSubscribed.filter(x => x.date > Date.now())
-                    let pastEvents =  response.data.eventsSubscribed.filter(x => x.date < Date.now())
-                    this.setState({
-                        name: name,
-                        avatar: response.data.avatar,
-                        organization: response.data.organization,
-                        linkedUsers: response.data.linkedUsers,
-                        badges: response.data.badges,
-                        points: response.data.points,
-                        futureEvents: futureEvents,
-                        pastEvents: pastEvents,
-                        groups: response.data.groups
-                    })
-                } else {
-                    let errorMsg = response.data.description ? response.data.description : "Si è verificato un errore durante l'ottenimento dei dati"
-                    this.props.onError(errorMsg)
-                }
-            })
-            .catch(() => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"))
+        Api.getUserInformation(
+            this.state._id,
+            () => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"),
+            response => {
+                let name = response.data.name + (response.data.organization ? "" : " " + response.data.surname)
+                let futureEvents =  response.data.eventsSubscribed.filter(x => x.date > Date.now())
+                let pastEvents =  response.data.eventsSubscribed.filter(x => x.date < Date.now())
+                this.setState({
+                    name: name,
+                    avatar: response.data.avatar,
+                    organization: response.data.organization,
+                    linkedUsers: response.data.linkedUsers,
+                    badges: response.data.badges,
+                    points: response.data.points,
+                    futureEvents: futureEvents,
+                    pastEvents: pastEvents,
+                    groups: response.data.groups
+                })
+            }
+        )
     }
 
     getEventsByUserTypology = () => {
@@ -88,51 +112,34 @@ class UserProfile extends React.Component {
             </div>)
     }
 
-    selectAvatar = (event) => {
-        console.log(event.target.name)
-        if(this.props.isLocalUser && event.target.name !== "ciaooo")
-            document.getElementById("chooseAvatar").click()
-    }
-
     addFriend = () => {
         if(!this.props.isLocalUser){
-            this.sendRequest("/users/friendship", "Si è verificato un errore durante la richiesta, riprova")
+            Api.sendFriendshipRequest(
+                this.state._id,
+                () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
+                () => {}
+            )
         }
     }
 
     requestPosition = () => {
-        if(!this.props.isLocalUser){
-            this.sendRequest("/users/friendposition", "Si è verificato un errore durante la richiesta di posizione, riprova")
-        }
-    }
-
-    sendRequest = (link, errorMessage) => {
-        if(!this.props.isLocalUser){
-            axios.post(this.props.mainServer + link, {friend: this.state._id})
-                .then(result => {
-                    if(result.status !== 200){
-                        this.props.onError(result.data.description ? 
-                            result.data.description
-                            : errorMessage)
-                    }
-                })
-                .catch(() => this.props.onError(errorMessage))
+        if(!this.props.isLocalUser && !this.state.organization){
+            Api.sendFriendPositionRequest(
+                this.state._id,
+                () => this.props.onError("Si è verificato un errore durante la richiesta di posizione, riprova"),
+                () => {}
+            )
         }
     }
 
     removeFriend = () => {
         if(!this.props.isLocalUser){
-            axios.delete(this.props.mainServer + "/users/friendship", {friend: this.state._id})
-                .then(result => {
-                    if(result.status === 200){
-                        this.setState({linkedUsers: result.linkedUsers.filter(elem => elem._id != this.props.userId)})
-                    } else {
-                        this.props.onError(result.data.description ? 
-                            result.data.description
-                            : "Si è verificato un errore durante la richiesta, riprova")
-                    }
-                })
-                .catch(() => this.props.onError("Si è verificato un errore durante la richiesta, riprova"))
+            Api.removeFriend(
+                this.state._id, 
+                () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
+                () => 
+                    this.setState({linkedUsers: this.state.linkedUsers.filter(elem => elem._id !== this.props.userId)})
+            )
         }
     }
 
@@ -216,6 +223,8 @@ class UserProfile extends React.Component {
                         linkedUsers={this.state.linkedUsers}
                         emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.organization ? "follower" : "amico")}
                         typology={this.state.organization ? "Followers" : "Amici"}
+                        numberToShow={this.state.avatarsToShow}
+                        emptyAvatarSize={this.state.emptyAvatarSize}
                     />
                 </section>
 

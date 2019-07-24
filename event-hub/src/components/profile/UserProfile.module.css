@@ -16,6 +16,7 @@
 
 .friendsIcon {
     border-width: 2px !important;
+    color: rgba(0,0,180, 0.8);
 }
 
 .settingsIcon {

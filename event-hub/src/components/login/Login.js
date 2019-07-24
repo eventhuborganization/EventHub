@@ -1,6 +1,6 @@
-import React from 'react';
-import axios from 'axios';
-import styles from './Login.module.css';
+import React from 'react'
+import styles from './Login.module.css'
+import Api from '../../services/api/Api'
 import { LoginSuccessfullRedirect } from '../redirect/Redirect'
 import { Link } from 'react-router-dom'
 
@@ -45,21 +45,16 @@ class Login extends React.Component {
         if(!this.state.email.includes("@")){
             this.props.onError("Inserisci una mail valida");
         } else {
-            let hashedPwd = this.security.sha512(this.state.password);
-            let message = {
-                email: this.state.email,
-                password: hashedPwd 
-            };
-            /*axios.post(this.props.mainServer + "/login", message)
-                .then(response => {
-                    let status = response.status
-                    if (status === 200) {
-                        this.props.onLoginSuccessfull(response.data._id)
-                        this.state.redirectComponent.redirectAfterLogin()
-                    } else if(status === 404) {
-                        this.props.onError("Credenziali inserite non corrette")
-                    }
-                });*/
+            /*let hashedPwd = this.security.sha512(this.state.password);
+            Api.login(
+                this.state.email, 
+                hashedPwd,
+                () => this.props.onError("Credenziali inserite non corrette"),
+                response => {
+                    this.props.onLoginSuccessfull(response.data._id)
+                    this.state.redirectComponent.redirectAfterLogin()
+                }
+            )*/
             this.props.onLoginSuccessfull("my_id")
             this.state.redirectComponent.redirectAfterLogin()
         }
@@ -90,7 +85,8 @@ class Login extends React.Component {
                                 className="form-control col-7 col-md-9 ml-md-3" 
                                 name="email" 
                                 placeholder="prova@mail.com"
-                                onChange={this.emailChanged} 
+                                onChange={this.emailChanged}
+                                value={this.state.email} 
                                 required
                             />
                         </div>
@@ -103,6 +99,7 @@ class Login extends React.Component {
                                 name="pwd" 
                                 placeholder="Password" 
                                 onChange={this.passwordChanged}
+                                value={this.state.password} 
                                 required
                             />
                         </div>

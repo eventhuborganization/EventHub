@@ -5,13 +5,27 @@ import {Link} from "react-router-dom";
 let images = require.context("../../assets/images", true)
 
 export function LinkedUserAvatar(props){
+    let avatar = props.linkedUser.avatar && props.linkedUser.avatar !== "" ? 
+        <img 
+            src={images(`./${props.linkedUser.avatar}`)} 
+            className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
+            alt={"Immagine profilo utente"}
+        /> : 
+        <div className={styles.friendsIcon}>
+            <em className={"fas fa-user-circle fa-" + props.emptyAvatarSize + "x"}></em>
+        </div>
     return (
-        <Link className="col pr-0" to={"/users/" + props.linkedUser._id}>
-            <img 
-                src={images(`./${props.linkedUser.avatar}`)} 
-                className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
-                alt="Immagine profilo utente"/>
+        <Link className={"col d-flex align-items-center justify-content-center " + (!!props.margin ? "" : "pr-0")} to={"/users/" + props.linkedUser._id}>
+            {avatar}
         </Link>
+    )
+}
+
+export function EmptyUserAvatar(props){
+    return (
+        <div className={"col " + (!!props.margin ? "" : "pr-0")}>
+            <div className={"h-100 border border-primary rounded-circle " + styles.friendsIcon} ></div>
+        </div>
     )
 }
 
@@ -26,12 +40,28 @@ export function MoreLinkedUsers(){
 }
 
 export function LinkedUsersBanner(props) {
-    let linkedUsers = props.linkedUsers.map(elem => <LinkedUserAvatar linkedUser={elem} />)
-    let more = linkedUsers.length > 3 ? 
-        <MoreLinkedUsers /> : 
-        <div className="col-11 col-md-6 mx-auto border border-primary p-2 empty-list"> 
-            {props.emptyLabel}
-        </div>
+    let linkedUsers = props.linkedUsers
+    let limit = props.numberToShow
+    let avatars = []
+    if(linkedUsers.length > 0){
+        for(let x = 0; x < limit; x++){
+            avatars.push(x >= linkedUsers.length ? 
+                <EmptyUserAvatar key={"av" + x}/> 
+                : <LinkedUserAvatar linkedUser={linkedUsers[x]} key={"av" + x} emptyAvatarSize={props.emptyAvatarSize}/>)
+        }
+        if(linkedUsers.length > limit + 1){
+            avatars.push(<MoreLinkedUsers key={"av" + (limit + 1)}/>)
+        } else if(linkedUsers.length === limit + 1){
+            avatars.push(<LinkedUserAvatar linkedUser={linkedUsers[3]} margin={true} key={"av" + (limit + 1)} emptyAvatarSize={props.emptyAvatarSize}/>)
+        } else {
+            avatars.push(<EmptyUserAvatar margin={true} key={"av" + (limit + 1)}/>)
+        }
+    } else {
+        avatars = 
+            <div className="col-11 col-md-6 mx-auto border border-primary p-2 empty-list"> 
+                {props.emptyLabel}
+            </div>
+    }
 
     return (
         <div>
@@ -41,8 +71,7 @@ export function LinkedUsersBanner(props) {
                 </div>
             </div>
             <div className="row">
-                {linkedUsers.slice(0, 3)}
-                {more}
+                {avatars}
             </div>
         </div>
     )
