@@ -1,80 +1,157 @@
 import React from 'react'
-import GoogleMapsProperties from '../../services/google_cloud/Properties'
+import {EventsMap} from "./Maps";
 
-class GoogleMap extends React.Component {
+class Map extends React.Component {
 
-    googleMapRef = React.createRef()
-
-    updateMapRef = () => {
-        this.googleMapRef = this.createGoogleMap()
-        this.createMarker()
+    constructor(props) {
+        super(props)
+        this.state = {
+            mapContainerHeight: 0,
+            centerPosition: {
+                lat: 0,
+                lng: 0
+            },
+            events: [
+                {
+                    _id: "4",
+                    name: "Evento della madonna",
+                    description: "Una madonna madonnesca",
+                    typology: "party",
+                    thumbnail: "campo-calcio.png",
+                    organizator: {
+                        name: "Pippo"
+                    },
+                    maxParticipants: 100,
+                    numParticipants: 37,
+                    location: {
+                        lat: 44.350613499999996,
+                        lng: 11.7188277
+                    },
+                    date: "12/08/2019",
+                    time: "21:00",
+                    address: "Via Santerno, 3"
+                },
+                {
+                    _id: "4",
+                    name: "Evento della madonna",
+                    description: "Una madonna madonnesca",
+                    typology: "sport",
+                    thumbnail: "campo-calcio.png",
+                    organizator: {
+                        name: "Pippo"
+                    },
+                    maxParticipants: 100,
+                    numParticipants: 37,
+                    location: {
+                        lat: 44.350913499999996,
+                        lng: 11.7182277
+                    },
+                    date: "12/08/2019",
+                    time: "21:00",
+                    address: "Via Santerno, 3"
+                },
+                {
+                    _id: "4",
+                    name: "Evento della madonna",
+                    description: "Una madonna madonnesca",
+                    typology: "meeting",
+                    thumbnail: "campo-calcio.png",
+                    organizator: {
+                        name: "Pippo"
+                    },
+                    maxParticipants: 100,
+                    numParticipants: 37,
+                    location: {
+                        lat: 44.350513499999996,
+                        lng: 11.7182277
+                    },
+                    date: "12/08/2019",
+                    time: "21:00",
+                    address: "Via Santerno, 3"
+                },
+                {
+                    _id: "4",
+                    name: "Evento della madonna",
+                    description: "Una madonna madonnesca",
+                    typology: "sport",
+                    thumbnail: "campo-calcio.png",
+                    organizator: {
+                        name: "Pippo"
+                    },
+                    maxParticipants: 100,
+                    numParticipants: 37,
+                    location: {
+                        lat: 44.350113499999996,
+                        lng: 11.7182277
+                    },
+                    date: "12/08/2019",
+                    time: "21:00",
+                    address: "Via Santerno, 3"
+                }
+            ]
+        }
+        //console.log("construct")
+        this.setCurrentPositionAsCenter()
     }
 
     componentDidMount() {
-        let googleMapScript = document.createElement('script')
-        googleMapScript.src = "https://maps.googleapis.com/maps/api/js?key=" + GoogleMapsProperties.key + "&libraries=places"
-        window.document.body.appendChild(googleMapScript)
-        googleMapScript.onload = this.updateMapRef
+        let searchBarHeight = document.getElementById('search-bar').offsetHeight
+        let footerHeight = document.getElementById('footer').offsetHeight
+        let mapContainerHeight = window.screen.availHeight - searchBarHeight - footerHeight
+        let state = this.state
+        state.mapContainerHeight = mapContainerHeight
+        this.setState(state)
     }
 
-    createGoogleMap = () => {
-        return new window.google.maps.Map(this.googleMapRef.current, {
-            zoom: 16,
-            center: {
-                lat: 43.642567,
-                lng: -79.387054
-            },
-            disableDefaultUI: true,
-            fullscreenControl: true
-        })
+    setCurrentPositionAsCenter = () => {
+        if (window.navigator.geolocation) {
+            window.navigator.geolocation.getCurrentPosition(
+                position => {
+                    this.updateCenterPosition(position.coords.latitude, position.coords.longitude)
+                },
+                error => {
+                    this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione")
+                }
+            )
+        }
     }
 
-    createMarker = () => {
-        return new window.google.maps.Marker({
-            position: {
-                lat: 43.642567,
-                lng: -79.387054
-            },
-            map: this.googleMapRef
-        })
+    updateCenterPosition = (lat, lng) => {
+        let state = this.state
+        state.centerPosition = {
+            lat: lat,
+            lng: lng
+        }
+        this.setState(state)
     }
 
-    render () {
-         return (
-             <div
-               id={"google-map"}
-               ref={this.googleMapRef}
-               style={{width: '100%', height: '100%'}}
-             />
+    render() {
+        return (
+             <div>
+                 <nav id="search-bar" className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
+                     <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold">EH</h1>
+                     <form className="col form-inline container-fluid px-1">
+                         <div className="row w-100 mx-0 d-flex justify-content-between">
+                             <label htmlFor="tf-search" className="d-none">Search field</label>
+                             <label htmlFor="btn-search" className="d-none">Search button</label>
+                             <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa" className="col-7 form-control"/>
+                             <button id="btn-search" name="btn-search" className="col ml-1 btn btn-success" type="submit">
+                                 <em className="fas fa-search" aria-hidden="true"></em>
+                             </button>
+                             <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button">
+                                 <em className="fas fa-sliders-h" aria-hidden="true"></em>
+                             </button>
+                         </div>
+                     </form>
+                 </nav>
+                 <div className="row">
+                     <div id="map-container" className="col-12 px-0" style={{height: this.state.mapContainerHeight}}>
+                         <EventsMap centerPosition={this.state.centerPosition} events={this.state.events} />
+                     </div>
+                 </div>
+             </div>
          )
     }
 }
 
-/**
- *
- * @param props: {
- *     place: {
- *         place_id: String
- *     }
- * }
- * @returns {*}
- * @constructor
- */
-let LocationMap = props => {
-    var mapSrc = ""
-    if (props.place)
-        mapSrc = "https://www.google.com/maps/embed/v1/place?q=place_id:" + (props.place ? props.place.place_id : "") + "&zoom=18&key=" + GoogleMapsProperties.key
-    return (
-            <div className={"embed-responsive embed-responsive-16by9 " + (props.place ? "" : " d-none ")}>
-                <div className={"embed-responsive-item"}>
-                    <iframe title={"location"}
-                            width="100%" height="100%" style={{border: 0}}
-                            src={mapSrc}
-                            allowFullScreen
-                    />
-                </div>
-            </div>
-    )
-}
-
-export {GoogleMap, LocationMap}
+export default Map

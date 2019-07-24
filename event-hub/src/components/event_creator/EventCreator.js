@@ -1,10 +1,10 @@
 import React from 'react'
 import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizatorInfo} from "../event/Event"
-import GoogleMapsProperties from "../../services/google_cloud/Properties"
 import Contacts from "../contacts/Contacts";
 import {ConfirmButton} from "../floating_button/FloatingButton";
 import ApiService from "../../services/api/Api";
 import {RedirectComponent} from "../redirect/Redirect";
+import {loadGoogleMapsScript} from "../../services/google_cloud/GoogleMaps";
 
 class EventCreator extends React.Component {
 
@@ -31,10 +31,7 @@ class EventCreator extends React.Component {
     }
 
     componentDidMount() {
-        let googleMapScript = document.createElement('script')
-        googleMapScript.src = "https://maps.googleapis.com/maps/api/js?key=" + GoogleMapsProperties.key + "&libraries=places"
-        window.document.body.appendChild(googleMapScript)
-        googleMapScript.onload = () => {
+        loadGoogleMapsScript(() => {
             let inputAddress = document.getElementById('address')
             let searchBox = new window.google.maps.places.SearchBox(inputAddress)
             searchBox.addListener('places_changed', () => {
@@ -51,7 +48,7 @@ class EventCreator extends React.Component {
                     this.setState(state)
                 }
             })
-        }
+        })
     }
 
     updateName = (event) => {
@@ -197,7 +194,9 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <EventHeaderBanner event={this.state.event} />
+                <section className={"sticky-top"}>
+                    <EventHeaderBanner event={this.state.event} />
+                </section>
 
                 <section className={"row mt-2"}>
                     <div className="col container-fluid">

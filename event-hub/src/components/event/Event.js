@@ -2,7 +2,7 @@ import React from 'react'
 import Axios from 'axios'
 import { LoginRedirect } from '../redirect/Redirect';
 import './Event.css'
-import {LocationMap} from '../map/Map'
+import {LocationMap} from '../map/Maps'
 import UserAvatar from "../user_avatar/UserAvatar";
 
 let participate = (server, eventId, onError) => {
@@ -166,7 +166,7 @@ let EventHeaderBanner = props => {
     }
 
     return (
-        <section className={"row sticky-top pt-2 " + getBannerClassName()}>
+        <section className={"row pt-2 " + getBannerClassName()}>
             <div className="col container-fluid">
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
