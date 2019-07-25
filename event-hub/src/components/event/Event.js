@@ -1,36 +1,9 @@
 import React from 'react'
-import Axios from 'axios'
 import { LoginRedirect } from '../redirect/Redirect';
 import './Event.css'
 import {LocationMap} from '../map/Maps'
 import UserAvatar from "../user_avatar/UserAvatar";
-
-let participate = (server, eventId, onError) => {
-    interactWithEvent(
-        server,
-        {participant: true, event: eventId},
-        () => onError("Errore durante la partecipazione ad un evento. Riprovare.")
-    )
-}
-
-let follow = (server, eventId, onError) => {
-    interactWithEvent(
-        server,
-        {follower: true, event: eventId},
-        () => onError("Errore nel tentativo di seguire ad un evento. Riprovare.")
-    )
-}
-
-let interactWithEvent = (server, message, onError) => {
-    Axios.post(server + "/events", message)
-        .catch(error => onError())
-        .then(response => {
-            let status = (response ? response.status : null)
-            if (status !== 200) {
-                onError()
-            }
-        })
-}
+import ApiService from '../../services/api/Api'
 
 let PARTY = "party"
 let SPORT = "sport"
@@ -63,7 +36,7 @@ let FollowButton = (props) => {
 
     let onClick = () => {
         if (loginRedirect)
-            loginRedirect.doIfLoggedOrElseRedirect(() => follow(props.mainServer, props.event._id, props.onError))
+            loginRedirect.doIfLoggedOrElseRedirect(() => ApiService.followEvent(props.mainServer, props.event._id, props.onError))
     }
 
     return (
@@ -81,7 +54,7 @@ let ParticipateButton = (props) => {
 
     let onClick = () => {
         if (loginRedirect)
-            loginRedirect.doIfLoggedOrElseRedirect(() => participate(props.mainServer, props.event._id, props.onError))
+            loginRedirect.doIfLoggedOrElseRedirect(() => ApiService.participateToEvent(props.mainServer, props.event._id, props.onError))
     }
 
     return (
