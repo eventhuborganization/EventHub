@@ -1,7 +1,7 @@
-import React from 'react';
-import Axios from 'axios';
-import Notification from "./Notification";
-import {LoginRedirect} from "../redirect/Redirect";
+import React from 'react'
+import Notification from "./Notification"
+import {LoginRedirect} from "../redirect/Redirect"
+import ApiService from '../../services/api/Api'
 
 class Notifications extends React.Component {
 
@@ -184,16 +184,12 @@ class Notifications extends React.Component {
         }
         console.log(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
         if (!!props.isLogged)
-            Axios.get(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
-                .then(response => {
-                    let status = response.status
-                    if (status !== 200) {
-                        props.onError("Errore durante il caricamento delle notifiche.")
-                    }
-                    else
-                        this.setState({ notifications: response })
-                })
-                .catch(error => props.onError("Errore durante il caricamento delle notifiche."))
+            ApiService.getNotifications(props.match.params.fromIndex, props.onError,
+                    response => {
+                        let state = this.state
+                        state.notifications = response.data
+                        this.setState(state)
+                    })
     }
 
     render() {

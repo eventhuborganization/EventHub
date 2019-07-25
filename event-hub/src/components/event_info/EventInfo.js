@@ -1,7 +1,7 @@
 import React from 'react';
-import Axios from 'axios';
 import {EventHeaderBanner, EventLocation, EventOrganizatorInfo, FollowButton, ParticipateButton} from "../event/Event";
 import Contacts from '../contacts/Contacts'
+import ApiService from '../../services/api/Api'
 
 let images = require.context("../../assets/images", true)
 
@@ -30,29 +30,24 @@ class EventInfo extends React.Component {
                 typology: "sport"
             }
         }
-        Axios.get(this.props.mainServer + "/events/info/" + this.props.match.params.id)
-            .then(response => {
-                let status = response.status
-                if (status !== 200)
-                    this.props.onError("Errore durante il caricamento dei dati di un evento.")
-                else
-                    this.setState({
-                        eventInfo: {
-                            name: response.data.name,
-                            thumbnail: response.data.thumbnail,
-                            date: response.data.date.toString(),
-                            address: response.data.location,
-                            numParticipants: response.data.numParticipants,
-                            maxParticipants: response.data.maxParticipants,
-                            description: response.data.description,
-                            organizator: {
-                                phoneNumber: response.data.organizator.phone,
-                                email: response.data.organizator.email,
-                            },
-                            typology: response.data.typology
-                        }
-                    })
-            })
+        ApiService.getEventInformation(props.match.params.id, props.onError,
+                response => {
+                    let state = this.state
+                    state.eventInfo = {
+                        name: response.data.name,
+                        thumbnail: response.data.thumbnail,
+                        date: response.data.date.toString(),
+                        address: response.data.location,
+                        numParticipants: response.data.numParticipants,
+                        maxParticipants: response.data.maxParticipants,
+                        description: response.data.description,
+                        organizator: {
+                            phoneNumber: response.data.organizator.phone,
+                            email: response.data.organizator.email,
+                        },
+                        typology: response.data.typology
+                    }
+                })
     }
 
     render() {
