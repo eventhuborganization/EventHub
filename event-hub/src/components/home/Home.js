@@ -85,7 +85,6 @@ class Home extends React.Component {
                     {
                         this.state.eventsLoaded.map(event =>
                             <EventCard key={event._id}
-                                       mainServer={this.props.mainServer}
                                        eventInfo={event}
                                        onError={this.props.onError}
                                        isLogged={this.props.isLogged}

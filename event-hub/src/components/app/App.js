@@ -66,14 +66,12 @@ class App extends React.Component {
             <Route path="/" exact render={(props) => 
                 <Home {...props} 
                   isLogged={this.state.isLogged} 
-                  mainServer={this.props.mainServer} 
                   onError={this.onError} 
                 />} 
             />
             <Route path="/event/new" exact render={(props) =>
                 <EventCreator {...props}
                               isLogged={this.state.isLogged}
-                              mainServer={this.props.mainServer}
                               onError={this.onError}
                               loggedUser={{
                                   name: "Stefano",
@@ -86,35 +84,30 @@ class App extends React.Component {
             />
             <Route path="/event/:id" exact render={(props) => 
                 <EventInfo {...props} 
-                  isLogged={this.state.isLogged} 
-                  mainServer={this.props.mainServer} 
+                  isLogged={this.state.isLogged}
                   onError={this.onError} 
                 />} 
             />
             <Route path="/login" exact render={(props) => 
-                <Login {...props} 
-                  mainServer={this.props.mainServer} 
+                <Login {...props}
                   onError={this.onError} 
                   onLoginSuccessfull={this.onLoginSuccessfull} 
                 />} 
             />
             <Route path="/register" exact render={(props) => 
                 <Registration {...props} 
-                  mainServer={this.props.mainServer} 
                   onError={this.onError} 
                   onRegistration={this.onRegistrationSuccessfull} 
                 />} 
             />
             <Route path="/notification" exact render={(props) =>
                 <Notifications {...props}
-                    mainServer={this.props.mainServer}
                     isLogged={this.state.isLogged}
                     onError={this.onError}
                 />}
             />
             <Route path="/profile" exact render={(props) =>
                 <PersonalProfile {...props}
-                    mainServer={this.props.mainServer}
                     isLogged={this.state.isLogged}
                     userId={this.state.userId}
                     onError={this.onError}
@@ -122,7 +115,6 @@ class App extends React.Component {
             />
             <Route path="/users/:id" render={(props) => 
                 <UserProfile {...props}
-                    mainServer={this.props.mainServer}
                     isLogged={this.state.isLogged}
                     user={{
                       _id: this.state.userId,
@@ -134,7 +126,6 @@ class App extends React.Component {
             <Route path="/map" exact render={(props) =>
                 <Map {...props}
                       onError={this.onError}
-                      isLocalUser={false}
                 />}
               />
           </Switch>

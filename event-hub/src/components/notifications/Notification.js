@@ -29,8 +29,7 @@ class Notification extends React.Component {
             case 5:
             case 6:
             case 7:
-                return <EventImage mainServer={this.props.mainServer}
-                                   imageFolderPath={this.props.imageFolderPath}
+                return <EventImage imageFolderPath={this.props.imageFolderPath}
                                    event={this.props.notification.event} />
             case 1:
                 return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
@@ -89,8 +88,7 @@ class Notification extends React.Component {
                     <div className="card-body container-fluid py-2">
                         <div className="row">
                             <div className="col-8">
-                                <NotificationSenderInformation mainServer={this.props.mainServer}
-                                                               notification={this.props.notification}
+                                <NotificationSenderInformation notification={this.props.notification}
                                                                description={(this.isEventType(type) ? this.state.notificationTypes[type].toString() : "")} />
                                 <div className="row mt-2">
                                     <div className="col-12">

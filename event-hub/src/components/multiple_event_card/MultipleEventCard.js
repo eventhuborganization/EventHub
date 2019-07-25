@@ -6,7 +6,6 @@ export default function MultipleEventCard(props) {
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
     let events = props.events.map(event =>
         <EventCard  key={event._id}
-                    mainServer={props.mainServer}
                     eventInfo={event}
                     onError={props.onError}
                     isLogged={props.isLogged}

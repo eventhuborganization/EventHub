@@ -182,7 +182,8 @@ class UserFriends extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            filter: ""
+            filter: "",
+            linkedUsers: props.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
         }
     }
 
@@ -228,7 +229,7 @@ class UserFriends extends React.Component {
 
     getFriends = (filterFun, showFun, onAddFriendFun) => {
         let x = 0;
-        return this.props.linkedUsers
+        return this.state.linkedUsers
                    .filter(elem => filterFun(elem))
                    .map(elem => {
                         let id = "friend" + x++
