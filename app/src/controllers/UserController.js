@@ -3,6 +3,13 @@ const axios = require('axios');
 
 const UserServiceHostPort = 'http://' + UserServiceHost + ':' + UserServicePort
 
+exports.removeLinkedUser = (req, res) => {
+    axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.session.user})
+    .then((response) => {
+        network.replayResponse(res)
+    })
+}
+
 exports.userFriendRequest = (req, res) => {
     var data = {typology: 1, sender: req.session.user}
     axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)

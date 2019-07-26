@@ -56,10 +56,29 @@ module.exports = (app) => {
 
     app.route('/users/friendship')
         .post(sessionChecker, userController.userFriendRequest)
+        .delete(sessionChecker, userController.removeLinkedUser)
 
     app.route('/notification')
         .post(sessionChecker, notificationController.markNotificationAsReaded)
     
     app.route('/notification/:fromIndex')
         .post(sessionChecker, notificationController.getNotification)
+
+    app.route('/images/:name')
+        .get((req, res) => {
+            res.sendFile(`${appRoot}/public/images/events/${req.params.name}`);
+        })
+
+    app.route('/avatars/:name')
+    .get((req, res) => {
+        res.sendFile(`${appRoot}/public/images/users/${req.params.name}`);
+    })
+    
+    app.route('/users/friendposition')
+        .post() // * esegue la richiesta della posizione
+
+    // TODO invito a eventi
+    // ? ma con quale struttura? 
+    app.route()
+
 }
