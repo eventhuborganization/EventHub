@@ -3,7 +3,7 @@ import Api from '../../services/api/Api'
 
 import './Friends.css'
 import UserBanner from '../user_banner/UserBanner'
-import UserCard from '../user_card/UserCard'
+import MultipleElementsCard from '../multiple_elements_card/MultipleElementsCard'
 
 class Friends extends React.Component {
 
@@ -134,20 +134,20 @@ class Friends extends React.Component {
                 {
                     this.props.isLogged || this.state.searchComplete ? 
                         <div className="mt-1">
-                            <UserCard
+                            <MultipleElementsCard
                                 title="I tuoi amici"
                                 users={this.state.friends}
                                 showAll={!this.state.searchComplete}
                                 show={this.props.isLogged}
                             />
-                            <UserCard
+                            <MultipleElementsCard
                                 title="Persone"
                                 users={this.state.users}
                                 margin={"mt-2"}
                                 showAll={false}
                                 show={this.state.searchComplete}
                             />
-                            <UserCard
+                            <MultipleElementsCard
                                 title="Organizzazioni"
                                 users={this.state.organizations}
                                 margin={"mt-2"}

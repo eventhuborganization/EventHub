@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default class UserCard extends React.Component {
+export default class MultipleElementsCard extends React.Component {
     
     constructor(props){
         super(props)
