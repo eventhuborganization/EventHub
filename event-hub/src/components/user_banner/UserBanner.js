@@ -10,7 +10,7 @@ export default function UserBanner(props) {
         </button> : ""
 
     return (
-        <div className="row py-2 border-bottom d-flex align-items-center">
+        <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link to={"/users/" + props.user._id} className="col-3 col-md-1">
                 <img src={(props.user.avatar ? images(`./${props.user.avatar}`) : '')}
                     className="img-fluid border rounded-circle"
