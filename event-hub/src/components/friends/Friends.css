@@ -1,7 +1,13 @@
-.empty-list{
+.empty-friend-list{
     text-align: center;
     font-weight: bold;
     color: black;
+}
+
+.empty-friend-custom-list{
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    border: 2pt solid darkblue !important;
     background-color: rgba(0,0,180, 0.3);
-    border: 2pt darkblue solid !important;
 }

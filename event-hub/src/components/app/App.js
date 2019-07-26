@@ -27,6 +27,10 @@ class App extends React.Component {
       user: undefined,
       errorElement: undefined
     }
+
+    /*this.state.isLogged = true
+    this.state.userId = "my_id"
+    this.state.user = {linkedUsers: require("../../utils/Utils").dummyLinkedUserList}*/
   }
 
   errorElement = (elem) => {
@@ -127,6 +131,7 @@ class App extends React.Component {
             <Route path="/friends" exact render={(props) =>
                 <Friends {...props}
                     isLogged={this.state.isLogged}
+                    userId={this.state.userId}
                     friends={this.state.user ? this.state.user.linkedUsers : []}    
                     onError={this.onError} 
                 />}
