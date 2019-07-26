@@ -58,13 +58,12 @@ class RegistrationForm extends React.Component {
     }
 
     /*
-     * if it's a private user it can't insert address,city,province
+     * if it's a private user it can't insert address,province
      * otherwise if it's an organization it can't insert surname,sex,birthdate
      */ 
     isFieldAllowed = (name) => {
         return (this.props.privateUser && (
-                    name !== this.state.componentIds.address && 
-                    name !== this.state.componentIds.city &&
+                    name !== this.state.componentIds.address &&
                     name !== this.state.componentIds.province
                 )) || 
                 (!this.props.privateUser && (
@@ -200,7 +199,7 @@ class RegistrationForm extends React.Component {
                     placeholder="Imola"
                     onChangeHandler={this.handleChangeEvent}
                     mandatory={true}
-                    show={!this.props.privateUser}
+                    show={true}
                 />
                 <RegistrationComponent
                     label="Provincia"  
