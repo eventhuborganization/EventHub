@@ -91,13 +91,13 @@ export function ProfileBadge(props){
 
 export function ProfileAction(props){
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
-    return (
-        <div id={props.id} className={props.show ? " " : "d-none"}>
+    return props.show ? (
+        <div id={props.id}>
             <button className="btn btn-lg btn-primary rounded-circle" onClick={props.actionSelected}>
                 <em className={iconClass} aria-hidden="true"></em>
             </button>
         </div>
-    )
+    ) : ""
 }
 
 export function BadgeBanner(props) {
@@ -125,14 +125,26 @@ export function ProfileControls(props){
     return !props.isLocalUser && !props.isMyFriend ? "" : (
         <div className="container-fluid">
             <div className="row">
-                <div className="col d-flex justify-content-start align-items-center px-2">
-                    <div className={props.isMyFriend ? "border border-danger rounded-pill px-2 py-1 " + styles.friendRemove : "d-none"} onClick={props.removeClicked}>
-                        <em className="fas fa-minus"></em> Rimuovi
-                    </div>
-                </div>
-                <div className={props.isLocalUser ? "col d-flex justify-content-end align-items-center px-2" : "d-none"}>
-                    <em className={"fas fa-cog fa-lg " + styles.settingsIcon} onClick={props.settingsClicked}></em>
-                </div>
+                {
+                    props.isMyFriend ? 
+                        <div className="col d-flex justify-content-start align-items-center px-2">
+                            <div className={"border border-danger rounded-pill px-2 py-1 " + styles.friendRemove} onClick={props.removeClicked}>
+                                <em className="fas fa-minus"></em> Rimuovi
+                            </div>
+                        </div>
+                    : ""
+                }
+                
+                {
+                    props.isLocalUser ? 
+                        <Link
+                            to={props.settingsLink} 
+                            className={"col d-flex justify-content-end align-items-center px-2"} 
+                        >
+                            <em className={"fas fa-cog fa-lg " + styles.settingsIcon}></em>
+                        </Link>
+                    : ""
+                }
             </div>
         </div>
     )

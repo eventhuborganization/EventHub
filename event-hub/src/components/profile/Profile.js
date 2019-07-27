@@ -115,7 +115,7 @@ class Profile extends React.Component {
                                     isLocalUser={this.props.isLocalUser}
                                     isMyFriend={isMyFriend} 
                                     _id={this.state._id}
-                                    settingsClicked={this.settings}
+                                    settingsLink={"/settings"}
                                     removeClicked={this.removeFriend}
                                 />
                                 <div className="container-fluid mt-auto">

@@ -15,6 +15,7 @@ import EventCreator from '../event_creator/EventCreator'
 import { PersonalProfile, UserProfile } from '../profile/ProfileType'
 import Friends from '../friends/Friends'
 import Map from '../map/Map'
+import Settings from '../settings/Settings'
 
 class App extends React.Component {
 
@@ -23,14 +24,14 @@ class App extends React.Component {
     this.state = {
       isLogged: false,
       showNavbar: true,
-      userId: undefined,
-      user: undefined,
+      user: {
+        _id: ""
+      },
       errorElement: undefined
     }
 
-    /*this.state.isLogged = true
-    this.state.userId = "my_id"
-    this.state.user = {linkedUsers: require("../../utils/Utils").dummyLinkedUserList}*/
+    this.state.isLogged = true
+    this.state.user = require("../../utils/Utils").dummyLoggedUser
   }
 
   errorElement = (elem) => {
@@ -44,18 +45,17 @@ class App extends React.Component {
   onLoginSuccessfull = (userId) => {
     this.setState({
       isLogged: true, 
-      userId: userId
+      user: {
+        _id: userId
+      }
     })
     Api.getUserInformation(userId, () => {}, response => {
-      delete response._id
       this.setState({user: response})
     })
   }
 
   onRegistrationSuccessfull = (data) => {
-    let id = data._id
-    delete data._id
-    this.setState({user: data, userId: id})
+    this.setState({user: data, isLogged: true})
   }
 
   render() {
@@ -114,7 +114,7 @@ class App extends React.Component {
             <Route path="/profile" exact render={(props) =>
                 <PersonalProfile {...props}
                     isLogged={this.state.isLogged}
-                    userId={this.state.userId}
+                    userId={this.state.user._id}
                     onError={this.onError}
                 />}
             />
@@ -122,8 +122,8 @@ class App extends React.Component {
                 <UserProfile {...props}
                     isLogged={this.state.isLogged}
                     user={{
-                      _id: this.state.userId,
-                      linkedUsers: this.state.user ? this.state.user.linkedUsers : []
+                      _id: this.state.user._id,
+                      linkedUsers: this.state.user.linkedUsers ? this.state.user.linkedUsers : []
                     }}
                     onError={this.onError}
                 />} 
@@ -131,13 +131,20 @@ class App extends React.Component {
             <Route path="/friends" exact render={(props) =>
                 <Friends {...props}
                     isLogged={this.state.isLogged}
-                    userId={this.state.userId}
-                    friends={this.state.user ? this.state.user.linkedUsers : []}    
+                    userId={this.state.user._id}
+                    friends={this.state.user.linkedUsers ? this.state.user.linkedUsers : []}    
                     onError={this.onError} 
                 />}
               />
             <Route path="/map" exact render={(props) =>
                 <Map {...props}
+                    onError={this.onError}
+                />}
+              />
+            <Route path="/settings" exact render={(props) =>
+                <Settings {...props}
+                    isLogged={this.state.isLogged}
+                    user={this.state.user}
                     onError={this.onError}
                 />}
               />
