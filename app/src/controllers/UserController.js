@@ -10,6 +10,18 @@ exports.removeLinkedUser = (req, res) => {
     })
 }
 
+exports.inviteFriends = (req, res) => {
+    var data = {typology: 0, sender: req.session.user}
+    axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)
+    .then((response) => {
+        network.result(res)
+    })
+    .catch((err) => {
+        network.internalError(res, err)
+    })
+}
+
+
 exports.userFriendRequest = (req, res) => {
     var data = {typology: 1, sender: req.session.user}
     axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)
@@ -38,17 +50,40 @@ exports.friendshipAnswer = (req, res) => {
     }
 }
 
-exports.getFriendPosition = (req, res) => {
+exports.requestFriendPosition = (req, res) => {
     if (req.body.accepted) {
-        axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {typology: 9, sender: req.session.user, position: {lat: req.body.position.lat, lon: req.body.position.lon}})
-            .then( response => {
-                network.replayResponse(response, res);
-            })
-            .catch (error => {
-                network.internalError(res, error);
-            });
+        axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {
+            typology: 4, 
+            sender: req.session.user, 
+        })
+        .then( response => {
+            network.replayResponse(response, res);
+        })
+        .catch (error => {
+            network.internalError(res, error);
+        });
     }
 }
+
+exports.responseFriendPosition = (req, res) => {
+    if (req.body.accepted) {
+        axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {
+            typology: 9, 
+            sender: req.session.user, 
+            data: {
+                lat: req.body.position.lat, 
+                lon: req.body.position.lon
+            }
+        })
+        .then( response => {
+            network.replayResponse(response, res);
+        })
+        .catch (error => {
+            network.internalError(res, error);
+        });
+    }
+}
+
 
 exports.updateProfile = (req, res) => {
     axios.put(`${UserServiceHostPort}/users/${req.params.uuid}`, req.body)
