@@ -419,3 +419,24 @@ exports.dummyLinkedUserList = [{
     organization: false,
     avatar: "gatto.jpeg"
 }]
+
+exports.dummyLoggedUser = {
+    _id: "my_id",
+    linkedUsers: exports.dummyLinkedUserList,
+    name: "Francesco",
+    surname: "Grandinetti",
+    organization: false,
+    city: "Imola",
+    gender: "Male",
+    birthdate: "1996-04-27",
+    phone: "3474864891",
+    email: "francesco.grandinett@gmail.com",
+    avatar: "gatto.jpeg",
+    groups: [],
+    badges: [],
+    points: 27,
+    nReviewDone: 15,
+    nReviewReceived: 0,
+    eventsSubscribed: [],
+    eventsFollowed: []
+}
