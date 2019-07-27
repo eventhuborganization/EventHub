@@ -134,7 +134,13 @@ exports.getInfoUser = (req, res) => {
                 .then( result => {
                     response.linkedUsers = []
                     result[0].forEach(user => {
-                        response.linkedUsers.push({name: user.name, surname: user.surname, avatar: user.profilePicture, _id: user._id, organizator: user.organizator })
+                        response.linkedUsers.push({
+                            name: `${user.name} ${user.surname}`, 
+                            avatar: user.profilePicture, 
+                            _id: user._id, 
+                            organizator: user.organizator,
+                            city: user.address.city
+                        })
                     })
                     response.groups = []
                     result[1].forEach(group => {
