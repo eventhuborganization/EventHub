@@ -35,6 +35,9 @@ class Registration extends React.Component {
         let message = {
             name: data[data.componentIds.name],
             email: data[data.componentIds.email],
+            address: {
+                city: data[data.componentIds.city]
+            },
             organization: !privateUser,
             password: hashedPwd 
         };
@@ -46,11 +49,8 @@ class Registration extends React.Component {
             message.gender = data[data.componentIds.sex]
             message.birthdate = data[data.componentIds.birthdate]
         } else {
-            message.address = {
-                city: data[data.componentIds.city],
-                province: data[data.componentIds.province],
-                address: data[data.componentIds.address]
-            }
+            message.address.province = data[data.componentIds.province]
+            message.address.address = data[data.componentIds.address]
         }
         Api.register(
             message, 

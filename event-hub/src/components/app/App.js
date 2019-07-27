@@ -13,6 +13,7 @@ import Registration from '../registration/Registration'
 import Notifications from '../notifications/Notifications'
 import EventCreator from '../event_creator/EventCreator'
 import { PersonalProfile, UserProfile } from '../profile/ProfileType'
+import Friends from '../friends/Friends'
 import Map from '../map/Map'
 
 class App extends React.Component {
@@ -26,6 +27,10 @@ class App extends React.Component {
       user: undefined,
       errorElement: undefined
     }
+
+    /*this.state.isLogged = true
+    this.state.userId = "my_id"
+    this.state.user = {linkedUsers: require("../../utils/Utils").dummyLinkedUserList}*/
   }
 
   errorElement = (elem) => {
@@ -123,9 +128,17 @@ class App extends React.Component {
                     onError={this.onError}
                 />} 
             />
+            <Route path="/friends" exact render={(props) =>
+                <Friends {...props}
+                    isLogged={this.state.isLogged}
+                    userId={this.state.userId}
+                    friends={this.state.user ? this.state.user.linkedUsers : []}    
+                    onError={this.onError} 
+                />}
+              />
             <Route path="/map" exact render={(props) =>
                 <Map {...props}
-                      onError={this.onError}
+                    onError={this.onError}
                 />}
               />
           </Switch>

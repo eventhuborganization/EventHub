@@ -235,6 +235,7 @@ class UserFriends extends React.Component {
                         let id = "friend" + x++
                         return (
                             <UserBanner key={id}
+                                border={true}
                                 user={elem}
                                 showAddFriendButton={showFun(elem)}
                                 onAddFriend={() => onAddFriendFun(elem)}
