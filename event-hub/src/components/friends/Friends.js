@@ -140,20 +140,20 @@ class Friends extends React.Component {
                         <div className="mt-1">
                             <MultipleElementsCard
                                 title="I tuoi amici"
-                                users={this.state.friends}
+                                elements={this.state.friends}
                                 showAll={!this.state.searchComplete}
                                 show={this.props.isLogged}
                             />
                             <MultipleElementsCard
                                 title="Persone"
-                                users={this.state.users}
+                                elements={this.state.users}
                                 margin={"mt-2"}
                                 showAll={false}
                                 show={this.state.searchComplete}
                             />
                             <MultipleElementsCard
                                 title="Organizzazioni"
-                                users={this.state.organizations}
+                                elements={this.state.organizations}
                                 margin={"mt-2"}
                                 showAll={false}
                                 show={this.state.searchComplete}

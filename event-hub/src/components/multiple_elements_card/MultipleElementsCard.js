@@ -5,19 +5,19 @@ export default class MultipleElementsCard extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            lastUser: this.numberOfUsersToShow
+            lastElement: this.numberOfElementsToShow
         }
     }
 
-    incrementUsers = () => {
+    incrementElements = () => {
         this.setState((prevState) => {
             return {
-                lastUser: prevState.lastUser + this.numberOfUsersToShow
+                lastElement: prevState.lastElement + this.numberOfElementsToShow
             }
         })
     }
 
-    numberOfUsersToShow = 6
+    numberOfElementsToShow = 6
 
     render() { 
         return !!this.props.show ? (
@@ -25,10 +25,10 @@ export default class MultipleElementsCard extends React.Component {
                 <div className="card border-primary shadow mx-auto col-11">
                     <div className="card-body">
                         <h5 className="card-title">{this.props.title}</h5>
-                        {this.props.showAll ? this.props.users : this.props.users.slice(0,this.state.lastUser)}
+                        {this.props.showAll ? this.props.elements : this.props.elements.slice(0,this.state.lastElement)}
                         {
-                            !this.props.showAll && this.props.users.length > this.state.lastUser ? 
-                                <div className="text-right small text-primary" onClick={this.incrementUsers}>
+                            !this.props.showAll && this.props.elements.length > this.state.lastElement ? 
+                                <div className="text-right small text-primary" onClick={this.incrementElements}>
                                     Mostra altri
                                 </div> : ""
                         }
