@@ -8,6 +8,17 @@ module.exports = (app) => {
         .get(sessionChecker,(req, res) => {
             res.sendFile(`${appRoot}/views/home.html`);
         });
+    
+        app.route('/images/:name')
+    .get((req, res) => {
+        res.sendFile(`${appRoot}/public/images/events/${req.params.name}`);
+    })
+
+    app.route('/avatars/:name')
+    .get((req, res) => {
+        res.sendFile(`${appRoot}/public/images/users/${req.params.name}`);
+    })
+
 
     app.route("/events/:fromIndex")
         .get(eventController.getEvents)
@@ -16,7 +27,7 @@ module.exports = (app) => {
         .post(sessionChecker,userController.friendshipAnswer);
 
     app.route("/notification/friendposition")
-        .post(sessionChecker, userController.getFriendPosition);
+        .post(sessionChecker, userController.responseFriendPosition);
 
     app.route("/registration")
         .post(loginController.registration);
@@ -63,22 +74,13 @@ module.exports = (app) => {
     
     app.route('/notification/:fromIndex')
         .post(sessionChecker, notificationController.getNotification)
-
-    app.route('/images/:name')
-        .get((req, res) => {
-            res.sendFile(`${appRoot}/public/images/events/${req.params.name}`);
-        })
-
-    app.route('/avatars/:name')
-    .get((req, res) => {
-        res.sendFile(`${appRoot}/public/images/users/${req.params.name}`);
-    })
     
+    // ! notifica livello 4
     app.route('/users/friendposition')
-        .post() // * esegue la richiesta della posizione
-
-    // TODO invito a eventi
-    // ? ma con quale struttura? 
-    app.route()
+        .post(sessionChecker, userController.requestFriendPosition);
+        
+    // ! Notifica livello 0 
+    app.route('/invite/:uuid')
+        .get(sessionChecker, userController.inviteFriends)
 
 }
