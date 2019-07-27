@@ -111,87 +111,87 @@ exports.updateCredentials = (req, res) => {
     eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
     axios.get(`${UserServiceHostPort}/users/${req.params.uuid}`)
-        .then( response => {
-            response.avatar = response.profilePicture
-            delete response.profilePicture
-            linkedUsersPromise = []
-            response.linkedUsers.forEach(user => {
-                linkedUsersPromise.push(exports.getLinkedUserInfo(user))
-            })
-            groupsPromise = []
-            response.groups.forEach(group => {
-                groupsPromise.push(exports.getGroupInfo(group))
-            })
-            eventsSubscribedPromise = []
-            response.eventsSubscribed.forEach(event => {
-                eventsSubscribedPromise.push(exports.getEventInfo(event))
-            })
-            eventsFollowedPromise = []
-            response.eventsFollowed.forEach(event => {
-                eventsFollowedPromise.push(exports.getEventInfo(event))
-            })
-            Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
-                .then( result => {
-                    response.linkedUsers = []
-                    result[0].forEach(user => {
-                        response.linkedUsers.push({
-                            name: `${user.name} ${user.surname}`, 
-                            avatar: user.profilePicture, 
-                            _id: user._id, 
-                            organizator: user.organizator,
-                            city: user.address.city
-                        })
-                    })
-                    response.groups = []
-                    result[1].forEach(group => {
-                        response.groups.push({ _id: group._id, name: group.name })
-                    })
-                    response.badges = result[2];
-                    response.reviewsDone = response.reviewsDone.length;
-                    response.reviewsReceived = response.reviewsReceived.length;
-                    let sortFunction = (a,b) => {  
-                        var keyA = new Date(a.EventDate),
-                            keyB = new Date(b.EventDate);
-                        if(keyA < keyB) return -1;
-                        if(keyA > keyB) return 1;
-                        return 0;
-                    }
-                    result[3].sort(sortFunction);
-                    result[4].sort(sortFunction);
-                    let indexSub = 0;
-                    let indexFol = 0;
-                    for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++)
-                    for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++)
-                    let k = 3 //numero di eventi da mostrare
-                    response.lastEventSubscribed = [];
-                    response.nextEventSubscribed = [];
-                    response.nextEventSubscribed = [];
-                    for (var count=1; count<=k && (indexSub-count)>=0; count++) {
-                        response.lastEventSubscribed.push(result[3][indexSub-count]);
-                    }
-                    for (var count=0; count<k && (indexSub+count)<result[3].length; count++) {
-                        response.nextEventSubscribed.push(result[3][indexSub+count]);
-                    }
-                    for (var count=0; count<k && (indexFol+count)<result[4].length; count++) {
-                        response.nextEventFollowed.push(result[4][indexFol+count]);
-                    }
-                    network.resultWithJSON(res, response);
+    .then( response => {
+        response.avatar = response.profilePicture
+        delete response.profilePicture 
+        linkedUsersPromise = []
+        response.linkedUsers.forEach(user => {
+            linkedUsersPromise.push(exports.getLinkedUserInfo(user))
+        })
+        groupsPromise = []
+        response.groups.forEach(group => {
+            groupsPromise.push(exports.getGroupInfo(group))
+        })
+        eventsSubscribedPromise = []
+        response.eventsSubscribed.forEach(event => {
+            eventsSubscribedPromise.push(exports.getEventInfo(event))
+        })
+        eventsFollowedPromise = []
+        response.eventsFollowed.forEach(event => {
+            eventsFollowedPromise.push(exports.getEventInfo(event))
+        })
+        Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
+        .then( result => {
+            response.linkedUsers = []
+            result[0].forEach(user => {
+                response.linkedUsers.push({
+                    name: `${user.name} ${user.surname}`, 
+                    avatar: user.profilePicture, 
+                    _id: user._id, 
+                    organization: user.organization,
+                    city: user.address.city
                 })
+            })
+            response.groups = []
+            result[1].forEach(group => {
+                response.groups.push({ _id: group._id, name: group.name })
+            })
+            response.badges = result[2];
+            response.reviewsDone = response.reviewsDone.length;
+            response.reviewsReceived = response.reviewsReceived.length;
+            let sortFunction = (a,b) => {  
+                var keyA = new Date(a.EventDate),
+                    keyB = new Date(b.EventDate);
+                if(keyA < keyB) return -1;
+                if(keyA > keyB) return 1;
+                return 0;
+            }
+            result[3].sort(sortFunction);
+            result[4].sort(sortFunction);
+            let indexSub = 0;
+            let indexFol = 0;
+            for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++)
+            for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++)
+            let k = 3 //numero di eventi da mostrare
+            response.lastEventSubscribed = [];
+            response.nextEventSubscribed = [];
+            response.nextEventSubscribed = [];
+            for (var count=1; count<=k && (indexSub-count)>=0; count++) {
+                response.lastEventSubscribed.push(result[3][indexSub-count]);
+            }
+            for (var count=0; count<k && (indexSub+count)<result[3].length; count++) {
+                response.nextEventSubscribed.push(result[3][indexSub+count]);
+            }
+            for (var count=0; count<k && (indexFol+count)<result[4].length; count++) {
+                response.nextEventFollowed.push(result[4][indexFol+count]);
+            }
+            network.resultWithJSON(res, response);
         })
-        .catch(err => {
-            network.internalError(res, err);
-        })
+    })
+    .catch(err => {
+        network.internalError(res, err);
+    })
 }
 
 exports.searchUser = (req, res) => {
     exports.registration = (req, res) => {
         axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
-            .then((response) => {
-                network.replayResponse(response, res);
-            })
-            .catch((err) => {
-                network.internalError(res, err);
-            });
+        .then((response) => {
+            network.replayResponse(response, res);
+        })
+        .catch((err) => {
+            network.internalError(res, err);
+        });
     }
 }
 
