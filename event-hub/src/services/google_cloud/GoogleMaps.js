@@ -19,8 +19,14 @@ let loadGoogleMapsScript = (onload) => {
         let googleMapScript = document.createElement('script')
         googleMapScript.id = googleMapScriptId
         googleMapScript.src = Properties.mapsApiServer + "/maps/api/js?key=" + Properties.key + "&libraries=places"
-        window.document.body.appendChild(googleMapScript)
         googleMapScript.onload = onload
+        window.document.body.appendChild(googleMapScript)
+    } else if (!window.google) {
+        let oldLoad = document.getElementById(googleMapScriptId).onload
+        document.getElementById(googleMapScriptId).onload = () => {
+            oldLoad()
+            onload()
+        }
     } else {
         onload()
     }

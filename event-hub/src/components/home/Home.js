@@ -2,6 +2,7 @@ import React from 'react';
 import './Home.css';
 import EventCard from "../event_card/EventCard";
 import {CreateNewEventButton} from "../floating_button/FloatingButton";
+import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar";
 
 class Home extends React.Component {
 
@@ -59,25 +60,28 @@ class Home extends React.Component {
         }
     }
 
+    onSearchResults = response => {
+        if (response && response.events)
+            this.setState((prevState, props) => {
+                let state = prevState
+                state.eventsLoaded = response.events
+                return state
+            })
+    }
+
     render() {
         return (
             <div>
-                <nav className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
-                    <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold">EH</h1>
-                    <form className="col form-inline container-fluid px-1">
-                        <div className="row w-100 mx-0 d-flex justify-content-between">
-                            <label htmlFor="tf-search" className="d-none">Search field</label>
-                            <label htmlFor="btn-search" className="d-none">Search button</label>
-                            <input id="tf-search" name="tf-search" type="search" placeholder="Cerca qualcosa" className="col-7 form-control"/>
-                            <button id="btn-search" name="btn-search" className="col ml-1 btn btn-success" type="submit">
-                                <em className="fas fa-search" aria-hidden="true"></em>
-                            </button>
-                            <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button">
-                                <em className="fas fa-sliders-h" aria-hidden="true"></em>
-                            </button>
-                        </div>
-                    </form>
-                </nav>
+
+                <SearchBar searchBy={SEARCH_BY_EVENT}
+                           onChange={this.onSearchResults}
+                           filters={{
+                               typology: true,
+                               date: true,
+                               city: true
+                           }}
+                           onError={this.props.onError}
+                />
 
                 <CreateNewEventButton location={this.props.location} />
 

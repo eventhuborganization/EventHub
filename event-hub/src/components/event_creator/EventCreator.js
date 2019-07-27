@@ -103,19 +103,6 @@ class EventCreator extends React.Component {
         this.setState(state)
     }
 
-    canCreate() {
-        let state = this.state
-        return state.event.name
-            && state.event.description
-            && state.event.address
-            && state.event.location
-            && state.event.typology
-            && state.event.maxParticipants
-            && state.event.thumbnail
-            && state.event.date
-            && state.event.time
-    }
-
     createEvent = () => {
         let event = this.state.event
         var errorFound = false
