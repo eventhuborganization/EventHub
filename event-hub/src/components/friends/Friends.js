@@ -40,7 +40,11 @@ class Friends extends React.Component {
         event.preventDefault()
         Api.searchUsers(
             this.state.filter,
-            () => this.props.onError("Si è verificato un errore durante la ricerca, riprovare."),
+            () => {
+                let friends = this.getAllFriends(elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+                this.setState({friends: friends})
+                this.props.onError("Si è verificato un errore durante la ricerca, riprovare.")
+            },
             result => {
                 let users = []
                 let organizations = []
