@@ -182,14 +182,16 @@ class Notifications extends React.Component {
                 }
             ]
         }
-        console.log(this.props.mainServer + "/notifications/" + this.props.match.params.fromIndex)
         if (!!props.isLogged)
-            ApiService.getNotifications(props.match.params.fromIndex, props.onError,
-                    response => {
-                        let state = this.state
-                        state.notifications = response.data
-                        this.setState(state)
-                    })
+            ApiService.getNotifications(
+                props.match.params.fromIndex, 
+                () => this.props.onError("Si è verificato un errore durante il reperimento delle notifiche, riprova"),
+                response => {
+                    let state = this.state
+                    state.notifications = response.data
+                    this.setState(state)
+                }
+            )
     }
 
     render() {
