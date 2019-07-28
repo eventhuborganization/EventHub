@@ -27,19 +27,23 @@ class App extends React.Component {
       user: {
         _id: ""
       },
-      errorElement: undefined
+      showMessageElement: undefined
     }
 
     this.state.isLogged = true
     this.state.user = require("../../utils/Utils").dummyLoggedUser
   }
 
-  errorElement = (elem) => {
-    this.setState({errorElement: elem})
+  showMessageElement = (elem) => {
+    this.setState({showMessageElement: elem})
   }
 
   onError = (message) => {
-    this.state.errorElement.showModal(message)
+    this.state.showMessageElement.showModal({body: message, title: "Errore"})
+  }
+
+  onSuccess = (message) => {
+    this.state.showMessageElement.showModal({body: message, title: "Operazione completata!"})
   }
 
   onLoginSuccessfull = (userId) => {
@@ -57,14 +61,17 @@ class App extends React.Component {
   onRegistrationSuccessfull = (data) => {
     this.setState({user: data, isLogged: true})
   }
+  
+  updateUserInfo = (user) => {
+    this.setState({user: user})
+  }
 
   render() {
     return (
         <Router>
           <ScrollToTop />
-          <ErrorModal
-            onRef={this.errorElement}
-            title="Errore"
+          <Modal
+            onRef={this.showMessageElement}
             closeLabel="Chiudi"
           /> 
           <Switch>
@@ -145,7 +152,9 @@ class App extends React.Component {
                 <Settings {...props}
                     isLogged={this.state.isLogged}
                     user={this.state.user}
+                    onChangeUserInfo={this.updateUserInfo}
                     onError={this.onError}
+                    onSuccess={this.onSuccess}
                 />}
               />
           </Switch>
@@ -162,15 +171,15 @@ class App extends React.Component {
   }
 }
 
-class ErrorModal extends CallableComponent {
+class Modal extends CallableComponent {
 
   constructor(props){
     super(props)
-    this.state = { body: undefined }
+    this.state = { body: undefined, title: undefined }
   }
 
-  showModal = (message) => {
-    this.setState({body: message})
+  showModal = (data) => {
+    this.setState({body: data.body, title: data.title})
     document.getElementById("triggerButton").click()
   }
 
@@ -182,7 +191,7 @@ class ErrorModal extends CallableComponent {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalCenterTitle">{this.props.title}</h5>
+                <h5 className="modal-title" id="exampleModalCenterTitle">{this.state.title}</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>

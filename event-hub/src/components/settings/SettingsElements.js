@@ -7,8 +7,8 @@ class ChangeCredentials extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            oldEmail: props.oldEmail,
-            newEmail: props.oldEmail,
+            oldEmail: props.user.email,
+            newEmail: props.user.email,
             oldPassword: "",
             newPassword: "",
             confirmPassword: "",
@@ -57,11 +57,13 @@ class ChangeCredentials extends React.Component {
                 email: this.state.oldEmail,
                 password: this.security.sha512(this.state.oldPassword)
             }
+            let user = this.props.user
             if(this.state.newPassword !== ""){
                 message.newPassword = this.security.sha512(this.state.newPassword)
             }
             if(this.state.newEmail !== this.state.oldEmail){
                 message.newEmail = this.state.newEmail
+                user.email = this.state.newEmail
             }
             Api.updateUserCredentials(
                 message, 
@@ -75,6 +77,8 @@ class ChangeCredentials extends React.Component {
                         confirmPassword: "",
                         pwdCorrect: false
                     }})
+                    this.props.onChange(user)
+                    this.props.onSuccess("I tuoi dati sono stati aggiornati correttamente!")
                     document.getElementById("oldPassword").value = ""
                     let newPwd = document.getElementById("newPassword")
                     let confirmPwd = document.getElementById("confirmPassword")
@@ -162,42 +166,19 @@ class ChangeInfo extends React.Component {
         let target = event.target
         let name = target.name
         let value = target.value
-        if (name === "avatar") {
-            /*let reader = new FileReader()
-            reader.onload = e => {
-                let img = new Image()
-                img.src = e.target.result
-                img.onload = () => {
-                    let elem = document.createElement("canvas")
-                    let width = 300
-                    let scaleFactor = width / img.width;
-                    elem.width = width;
-                    elem.height = img.height * scaleFactor;
-                    let ctx = elem.getContext("2d")
-                    ctx.drawImage(img, 0, 0, width, img.height * scaleFactor)
-                    const data = ctx.canvas.toDataURL(img, "image/jpeg", 0.6)
-                    console.log(data);
-                    
-                    this.setState({[name]: data})
-                }
-            }
-            if(event.target.files.length > 0){
-                reader.readAsDataURL(event.target.files[0])
-            }*/
-            if(event.target.files.length > 0){
-                Resizer.imageFileResizer(
-                    event.target.files[0],
-                    200,
-                    200,
-                    'JPEG',
-                    100,
-                    0,
-                    uri => {
-                        this.setState({[name]: [true, uri]})
-                    },
-                    'base64'
-                )
-            }
+        if (name === "avatar" && event.target.files.length > 0){
+            Resizer.imageFileResizer(
+                event.target.files[0],
+                200,
+                200,
+                'JPEG',
+                100,
+                0,
+                uri => {
+                    this.setState({[name]: [true, uri]})
+                },
+                'base64'
+            )
         } else {
             this.setState({
                 [name]: [true, value]
@@ -215,31 +196,42 @@ class ChangeInfo extends React.Component {
         event.preventDefault();
         if(this.somethingHasChanged()){
             let message = {}
+            let user = this.props.user
             if(this.state.name[0]){
                 message.name = this.state.name[1]
+                user.name = this.state.name[1]
             }
             if(this.state.surname[0] && !this.props.user.organization){
                 message.surname = this.state.surname[1]
+                user.surname = this.state.surname[1]
             }
             if(this.state.city[0]){
                 message.address.city = this.state.city[1]
+                user.address.city = this.state.city[1]
             }
             if(this.state.province[0] && this.props.user.organization){
                 message.address.province = this.state.province[1]
+                user.address.province = this.state.province[1]
             }
             if(this.state.address[0] && this.props.user.organization){
                 message.address.address = this.state.address[1]
+                user.address.address = this.state.address[1]
             }
             if(this.state.phone[0]){
                 message.phone = this.state.phone[1]
+                user.phone = this.state.phone[1]
             }
             if(this.state.avatar[0]){
                 message.avatar = this.state.avatar[1]
+                user.avatar = this.state.avatar[1]
             }
             Api.updateUserProfile(
                 message, 
                 () => this.props.onError("Qualcosa nell'aggiornamento non ha funzionato correttamente, riprova"),
-                () => {}
+                () => {
+                    this.props.onChange(user)
+                    this.props.onSuccess("I tuoi dati sono stati aggiornati correttamente!")
+                }
             )
         }
     }

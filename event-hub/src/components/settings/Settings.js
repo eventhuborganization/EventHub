@@ -20,8 +20,18 @@ class Settings extends React.Component {
        return (
             <div className="main-container">
                 <ScrollableMenuTab tabs={[
-                    this.createSingleTab("Modifica dati personali", <ChangeInfo {...this.props} user={this.props.user}/>),
-                    this.createSingleTab("Modifica credenziali", <ChangeCredentials {...this.props} oldEmail={this.props.user.email}/>),
+                    this.createSingleTab(
+                        "Modifica dati personali", 
+                        <ChangeInfo {...this.props} 
+                            user={this.props.user}
+                            onChange={this.props.onChangeUserInfo}
+                        />),
+                    this.createSingleTab(
+                        "Modifica credenziali", 
+                        <ChangeCredentials {...this.props} 
+                            user={this.props.user}
+                            onChange={this.props.onChangeUserInfo}
+                        />),
                     this.createSingleTab("Modifica impostazioni privacy", <div>privacy</div>)
                 ]} title="Impostazioni" style={style}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
