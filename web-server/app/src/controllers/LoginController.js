@@ -8,7 +8,7 @@ exports.getLogin = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users/credential`, req.body)
+    axios.post(`${UserServiceHostPort}/users/credentials`, req.body)
     .then((response) => {
         req.session.user = response._id
         network.replayResponse(response, res);
