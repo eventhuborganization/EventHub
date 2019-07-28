@@ -1,7 +1,7 @@
 import React from 'react'
 import { LoginRedirect } from '../redirect/Redirect'
 import { ScrollableMenuTab } from '../menu_tab/MenuTab'
-import { ChangeCredentials } from './SettingsElements'
+import { ChangeCredentials, ChangeInfo } from './SettingsElements'
 
 
 class Settings extends React.Component {
@@ -20,7 +20,7 @@ class Settings extends React.Component {
        return (
             <div className="main-container">
                 <ScrollableMenuTab tabs={[
-                    this.createSingleTab("Modifica dati personali", <div>personali</div>),
+                    this.createSingleTab("Modifica dati personali", <ChangeInfo user={this.props.user} oldEmail={this.props.user.email}/>),
                     this.createSingleTab("Modifica credenziali", <ChangeCredentials oldEmail={this.props.user.email}/>),
                     this.createSingleTab("Modifica impostazioni privacy", <div>privacy</div>)
                 ]} title="Impostazioni" style={style}/>

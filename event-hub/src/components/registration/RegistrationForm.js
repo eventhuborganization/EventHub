@@ -355,7 +355,7 @@ function RegistrationFileComponent(props) {
                 </div>
             </div>
             <div className={props.image ? "form-group" : "d-none"}>
-                <img src={props.image} alt="immagine profilo" className={myStyles.avatarImage}/>
+                <img src={props.image} alt="immagine profilo" className={"img-fluid"}/>
             </div>
         </div>
     ) : "";

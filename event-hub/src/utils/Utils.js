@@ -426,7 +426,6 @@ exports.dummyLoggedUser = {
     name: "Francesco",
     surname: "Grandinetti",
     organization: false,
-    city: "Imola",
     gender: "Male",
     birthdate: "1996-04-27",
     phone: "3474864891",
@@ -438,5 +437,8 @@ exports.dummyLoggedUser = {
     nReviewDone: 15,
     nReviewReceived: 0,
     eventsSubscribed: [],
-    eventsFollowed: []
+    eventsFollowed: [],
+    address: {
+        city: "Imola"
+    }
 }
