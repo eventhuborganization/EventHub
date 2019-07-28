@@ -34,15 +34,15 @@ services:
       - 3002:3002
     networks:
       - internal
-  controller-service:
+  web-server:
     build:
-      context: ./
+      context: ./web-server
       dockerfile: Dockerfile
-    image: event-hub_controller-service
-    container_name: event-hub_controller-service
-    hostname: event-hub_controller-service
+    image: event-hub_web-server
+    container_name: event-hub_web-server
+    hostname: event-hub_web-server
     ports:
-      - 3000:3000
+      - 3003:3000
     networks:
       - internal
 

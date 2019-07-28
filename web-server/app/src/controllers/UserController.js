@@ -160,8 +160,8 @@ exports.getInfoUser = (req, res) => {
             result[4].sort(sortFunction);
             let indexSub = 0;
             let indexFol = 0;
-            for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++)
-            for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++)
+            for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++);
+            for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++);
             let k = 3 //numero di eventi da mostrare
             response.lastEventSubscribed = [];
             response.nextEventSubscribed = [];
