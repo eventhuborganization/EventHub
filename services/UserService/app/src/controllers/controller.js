@@ -2,18 +2,6 @@ let mongoose = require('mongoose');
 let commons = require('./commons');
 let security = require('./security');
 let network = require('./network');
-let optionsFuse = {
-    shouldSort: true,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 3,
-    keys: [
-      "name",
-      "surname"
-    ]
-  };
 
 let Users = mongoose.model('Users');
 let Reviews = mongoose.model('Reviews');
@@ -565,16 +553,29 @@ exports.getGroup = (req, res) => {
 };
 
 exports.searchUser = (req, res) => {
+    let optionsFuse = {
+        shouldSort: true,
+        threshold: 0.6,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 3,
+        keys: [
+          "name",
+          "surname"
+        ]
+    };
     Users.find({}, (err, users) => {
         if (err)
             network.notContentRetrieved(res);
-        else
-        let fuse = new Fuse(users, options);
-        let list = fuse.search(req.params.name)
-        let result = []
-        for (user in list) {
-            result.push(commons.deleteUserPrivateInformations(list[user]))
-        };
-        network.resultWithJSON(res,result);
+        else{
+            let fuse = new Fuse(users, options);
+            let list = fuse.search(req.params.name)
+            let result = []
+            for (user in list) {
+                result.push(commons.deleteUserPrivateInformations(list[user]))
+            };
+            network.resultWithJSON(res,result);
+        }
     });
 }

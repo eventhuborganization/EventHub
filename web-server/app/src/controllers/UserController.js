@@ -146,40 +146,40 @@ exports.getInfoUser = (req, res) => {
             result[1].forEach(group => {
                 response.groups.push({ _id: group._id, name: group.name })
             })
-            response.badges = result[2];
-            response.reviewsDone = response.reviewsDone.length;
-            response.reviewsReceived = response.reviewsReceived.length;
+            response.badges = result[2]
+            response.reviewsDone = response.reviewsDone.length
+            response.reviewsReceived = response.reviewsReceived.length
             let sortFunction = (a,b) => {  
-                var keyA = new Date(a.EventDate),
-                    keyB = new Date(b.EventDate);
-                if(keyA < keyB) return -1;
-                if(keyA > keyB) return 1;
-                return 0;
+                if(a.EventDate < b.EventDate) 
+                    return -1
+                if(a.EventDate > b.EventDate) 
+                    return 1
+                return 0
             }
-            result[3].sort(sortFunction);
-            result[4].sort(sortFunction);
-            let indexSub = 0;
-            let indexFol = 0;
-            for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++)
-            for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++)
+            result[3].sort(sortFunction)
+            result[4].sort(sortFunction)
+            let indexSub = result[3].length
+            let indexFol = result[4].length
+            //for(; new Date(result[3][indexSub].EventDate) < Data.now(); indexSub++);
+            //for(; new Date(result[4][indexFol].EventDate) < Data.now(); indexFol++);
             let k = 3 //numero di eventi da mostrare
-            response.lastEventSubscribed = [];
-            response.nextEventSubscribed = [];
-            response.nextEventSubscribed = [];
+            response.lastEventSubscribed = []
+            response.nextEventSubscribed = []
+            response.nextEventSubscribed = []
             for (var count=1; count<=k && (indexSub-count)>=0; count++) {
-                response.lastEventSubscribed.push(result[3][indexSub-count]);
+                response.lastEventSubscribed.push(result[3][indexSub-count])
             }
             for (var count=0; count<k && (indexSub+count)<result[3].length; count++) {
-                response.nextEventSubscribed.push(result[3][indexSub+count]);
+                response.nextEventSubscribed.push(result[3][indexSub+count])
             }
             for (var count=0; count<k && (indexFol+count)<result[4].length; count++) {
-                response.nextEventFollowed.push(result[4][indexFol+count]);
+                response.nextEventFollowed.push(result[4][indexFol+count])
             }
-            network.resultWithJSON(res, response);
+            network.resultWithJSON(res, response)
         })
     })
     .catch(err => {
-        network.internalError(res, err);
+        network.internalError(res, err)
     })
 }
 
@@ -187,20 +187,20 @@ exports.searchUser = (req, res) => {
     exports.registration = (req, res) => {
         axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
         .then((response) => {
-            network.replayResponse(response, res);
+            network.replayResponse(response, res)
         })
         .catch((err) => {
-            network.internalError(res, err);
+            network.internalError(res, err)
         });
     }
 }
 
 exports.getLinkedUserInfo = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}`);
+    return axios.get(`${UserServiceHostPort}/users/${uuid}`)
 }
 
 exports.getGroupInfo = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/group/${uuid}`);
+    return axios.get(`${UserServiceHostPort}/group/${uuid}`)
 }
 
 exports.getBadgePoints = (uuid) => {
@@ -208,9 +208,9 @@ exports.getBadgePoints = (uuid) => {
 }
 
 exports.getReviewsWritten = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/written`);
+    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/written`)
 }
 
 exports.getReviewsReceived = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/received`);
+    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/received`)
 }

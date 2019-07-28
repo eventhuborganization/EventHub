@@ -40,7 +40,7 @@ function runApp() {
 
     //app.use(session({secret: '343ji43j4n3jn4jk3n'}))
 
-    var routes = require('./src/routes/eventRoutes')
+    var routes = require('./src/routes/routes')
     routes(app)
 
     app.use(function(req, res) {

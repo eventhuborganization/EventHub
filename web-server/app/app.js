@@ -69,7 +69,11 @@ function runApp() {
         resave: false,
         saveUninitialized: false,
         cookie: {
-            expires: 600000
+            path: '/', 
+            httpOnly: true, 
+            secure: false, 
+            maxAge: null,
+            domain: 'eventhub.local'
         }
     }))
 
