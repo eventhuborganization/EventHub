@@ -96,7 +96,7 @@ class RegistrationForm extends React.Component {
                     [name]: value
                 })
             } else if (name === this.state.componentIds.password) {
-                this.passwordConvalidation(target, this.state[this.state.componentIds.confirmPassword])
+                this.passwordConvalidation(value === this.state[this.state.componentIds.confirmPassword])
                 this.setState({
                     [name]: value
                 })
