@@ -73,12 +73,13 @@ class RegistrationForm extends React.Component {
                 )) 
     }
 
-    passwordConvalidation = (target, valid) => {
-        target.classList.remove(valid ? "is-invalid" : "is-valid")
-        target.classList.add(valid ? "is-valid" : "is-invalid")
-        let classList = document.getElementById(this.getIdBasedOnType(this.state.componentIds.password)).classList
-        classList.remove(valid ? "is-invalid" : "is-valid")
-        classList.add(valid ? "is-valid" : "is-invalid")
+    passwordConvalidation = (valid) => {
+        let pwdClassList = document.getElementById(this.getIdBasedOnType(this.state.componentIds.password)).classList
+        let confirmClassList = document.getElementById(this.getIdBasedOnType(this.state.componentIds.confirmPassword)).classList
+        pwdClassList.remove(valid ? "is-invalid" : "is-valid")
+        pwdClassList.add(valid ? "is-valid" : "is-invalid")
+        confirmClassList.remove(valid ? "is-invalid" : "is-valid")
+        confirmClassList.add(valid ? "is-valid" : "is-invalid")
         this.setState({
             pwdCorrect: valid
         })
@@ -89,10 +90,16 @@ class RegistrationForm extends React.Component {
         let name = this.getNameFromComponentId(target.name)
         if(this.isFieldAllowed(name)){
             let value = target.value
-            if(name === this.state.componentIds.confirmPassword && value !== this.state.pwd){
-                this.passwordConvalidation(target, false)
-            } else if (name === this.state.componentIds.confirmPassword && value === this.state.pwd) {
-                this.passwordConvalidation(target, true)
+            if(name === this.state.componentIds.confirmPassword){
+                this.passwordConvalidation(value === this.state[this.state.componentIds.password])
+                this.setState({
+                    [name]: value
+                })
+            } else if (name === this.state.componentIds.password) {
+                this.passwordConvalidation(target, this.state[this.state.componentIds.confirmPassword])
+                this.setState({
+                    [name]: value
+                })
             } else if (name === this.state.componentIds.avatar) {
                 /*let reader = new FileReader()
                 reader.onload = e => {

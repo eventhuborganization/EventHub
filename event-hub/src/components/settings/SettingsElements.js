@@ -2,7 +2,6 @@ import React from 'react'
 import Api from '../../services/api/Api'
 import Resizer from 'react-image-file-resizer'
 
-//svuota i campi una volta fatto l'aggiornamento
 class ChangeCredentials extends React.Component {
 
     constructor(props){
@@ -21,23 +20,25 @@ class ChangeCredentials extends React.Component {
         let target = event.target
         let name = target.name
         let value = target.value
-        if(name === "confirmPassword" && value !== this.state.newPassword){
-            this.passwordConvalidation(target, false)
-        } else if (name === "confirmPassword" && value === this.state.newPassword) {
-            this.passwordConvalidation(target, true)
-        } else {
-            this.setState({
-                [name]: value
-            })
-        }
+        if(name === "confirmPassword"){
+            this.passwordConvalidation(value === this.state.newPassword)
+        } else if (name === "newPassword") {
+            this.passwordConvalidation(value === this.state.confirmPassword)
+        } 
+        this.setState({
+            [name]: value
+        })
     }
 
-    passwordConvalidation = (target, valid) => {
-        target.classList.remove(valid ? "is-invalid" : "is-valid")
-        target.classList.add(valid ? "is-valid" : "is-invalid")
-        let classList = document.getElementById("newPassword").classList
-        classList.remove(valid ? "is-invalid" : "is-valid")
-        classList.add(valid ? "is-valid" : "is-invalid")
+    security = require('js-sha512')
+
+    passwordConvalidation = (valid) => {
+        let pwdClassList = document.getElementById("newPassword").classList
+        let confirmClassList = document.getElementById("confirmPassword").classList
+        pwdClassList.remove(valid ? "is-invalid" : "is-valid")
+        pwdClassList.add(valid ? "is-valid" : "is-invalid")
+        confirmClassList.remove(valid ? "is-invalid" : "is-valid")
+        confirmClassList.add(valid ? "is-valid" : "is-invalid")
         this.setState({
             pwdCorrect: valid
         })
@@ -45,10 +46,12 @@ class ChangeCredentials extends React.Component {
 
     onUpdate = (event) => {
         event.preventDefault();
-        if(!this.state.pwdCorrect){
+        if(!this.state.pwdCorrect && (this.state.newPassword !== "" || this.state.confirmPassword !== "")){
             this.props.onError("Le password non coincidono!")
         } else if(this.state.oldPassword === this.state.newPassword){
             this.props.onError("La nuova password non può essere uguale alla precedente!")
+        } else if (this.state.pwdCorrect && (this.state.newPassword.length === 0 || !this.state.newPassword.trim())){
+            this.props.onError("La nuova password non può essere vuota!")
         } else if(this.state.newEmail !== this.state.oldEmail || this.state.newPassword !== "") {
             let message = {
                 email: this.state.oldEmail,
@@ -63,7 +66,23 @@ class ChangeCredentials extends React.Component {
             Api.updateUserCredentials(
                 message, 
                 () => this.props.onError("Qualcosa nell'aggiornamento non ha funzionato correttamente, riprova"),
-                () => {}
+                () => {
+                    this.setState((prevState) => { return {
+                        oldEmail: prevState.newEmail,
+                        newEmail: prevState.newEmail,
+                        oldPassword: "",
+                        newPassword: "",
+                        confirmPassword: "",
+                        pwdCorrect: false
+                    }})
+                    document.getElementById("oldPassword").value = ""
+                    let newPwd = document.getElementById("newPassword")
+                    let confirmPwd = document.getElementById("confirmPassword")
+                    newPwd.value = ""
+                    confirmPwd.value = ""
+                    newPwd.classList.remove("is-valid")
+                    confirmPwd.classList.remove("is-valid")
+                }
             )
         }
     }
