@@ -58,6 +58,15 @@ class App extends React.Component {
     })
   }
 
+  logout = () => {
+    this.setState({
+      user: {
+        _id: ""
+      },
+      isLogged: false
+    })
+  }
+
   onRegistrationSuccessfull = (data) => {
     this.setState({user: data, isLogged: true})
   }
@@ -155,6 +164,7 @@ class App extends React.Component {
                     onChangeUserInfo={this.updateUserInfo}
                     onError={this.onError}
                     onSuccess={this.onSuccess}
+                    onLogout={this.logout}
                 />}
               />
           </Switch>

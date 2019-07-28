@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 import { LoginRedirect } from '../redirect/Redirect'
 import { ScrollableMenuTab } from '../menu_tab/MenuTab'
 import { ChangeCredentials, ChangeInfo } from './SettingsElements'
@@ -32,7 +33,8 @@ class Settings extends React.Component {
                             user={this.props.user}
                             onChange={this.props.onChangeUserInfo}
                         />),
-                    this.createSingleTab("Modifica impostazioni privacy", <div>privacy</div>)
+                    this.createSingleTab("Modifica impostazioni privacy", <div>privacy</div>),
+                    this.createSingleTab(<Link to="/" className={style.link} onClick={this.props.onLogout}>Logout</Link>, <div></div>)
                 ]} title="Impostazioni" style={style}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>
