@@ -78,6 +78,7 @@ class ChangeCredentials extends React.Component {
                             componentName={"newEmail"}
                             componentType="text"
                             value={this.state.newEmail}
+                            mandatory={true}
                             onChangeHandler={this.handleChangeEvent}
                             show={true}
                         />
@@ -87,6 +88,7 @@ class ChangeCredentials extends React.Component {
                             componentName={"oldPassword"}
                             componentType="password"
                             placeholder=""
+                            mandatory={true}
                             onChangeHandler={this.handleChangeEvent}
                             show={true}
                         />
@@ -141,6 +143,7 @@ function SettingsComponent(props) {
                     placeholder={props.placeholder ? props.placeholder : null}
                     onChange={props.onChangeHandler}
                     value={props.value}
+                    required={props.mandatory}
                 /> 
                 <div className="invalid-feedback text-left">
                     {props.invalidFeedback}
