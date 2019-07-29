@@ -35,8 +35,8 @@ exports.createNewUser = (req, res) => {
                     if (err) {
                         network.internalError(res, err);
                     } else {
-                        user = commons.deleteUserPrivateInformations(user);
-                        network.userCreated(res, user);
+                        let user_data = commons.deleteUserPrivateInformations(user);
+                        network.userCreated(res, user_data);
                     }
                 });
             } else {
@@ -85,8 +85,8 @@ exports.getUserInformations = (req, res) => {
         } else if(user == null){
             network.userNotFound(res);
         } else {
-            user = commons.deleteUserPrivateInformations(user);
-            network.resultWithJSON(res, user);
+            let user_data = commons.deleteUserPrivateInformations(user);
+            network.resultWithJSON(res, user_data);
         }
     });
 };
