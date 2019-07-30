@@ -1,6 +1,7 @@
 const express = require('express')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
@@ -64,16 +65,19 @@ function runApp() {
     app.use(cookieParser())
 
     app.use(session({
-        key: 'user_sid',
+        name: 'user_sid',
+        resave: false,
+        saveUninitialized: false,
         secret: 'EventHubSecret',
         resave: false,
         saveUninitialized: false,
+        store: new MongoStore({ mongooseConnection:  mongoose.connection }),
         cookie: {
             path: '/', 
+            maxAge: 100000000,
+            sameSite: true,
             httpOnly: true, 
-            secure: false, 
-            maxAge: null,
-            domain: 'eventhub.local'
+            secure: false
         }
     }))
 

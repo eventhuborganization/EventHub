@@ -26,7 +26,9 @@ exports.createNewUser = (req, res) => {
         network.badRequest(res);
     } else {
         Users.findOne({email: newUser.email}, (err, user) => {
-            if(err || user == null){
+            if(err){
+                network.internalError(res, err);
+            } else if (user == null){
                 let password = security.hashPassword(newUser.password);
                 newUser.salt = password.salt;
                 newUser.password = password.pwd;
