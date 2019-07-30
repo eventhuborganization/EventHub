@@ -11,7 +11,7 @@ class CallableComponent extends React.Component {
             this.props.onRef(undefined)
     }
     render() {
-        return (<div></div>)
+        return (<div />)
     }
 }
 

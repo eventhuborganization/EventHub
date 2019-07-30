@@ -29,20 +29,25 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  * @param data.event.location.place_id {string}
  * @param data.event.location.address {string}
  * @param data.event.date {Date}
- * @param onError: {function(error)}
+ * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
 let getEvents = (data, onError, onSuccess) => {
-    let config = {
-        params: {
-            typology: data.typology,
-            location: data.location,
-            date: data.date
-        }
+    let config = {}
+    let index = 0
+    if (data) {
+        if (data.event)
+            config.params = {
+                typology: data.event.typology,
+                location: data.event.location,
+                date: data.event.date
+            }
+        if (data.fromIndex)
+            index = data.fromIndex
     }
     managePromise(
-        Axios.get(Properties.apiServer + '/events/' + data.fromIndex, config),
-        [200],
+        Axios.get('/events/' + index, config),
+        [201, 200],
         onError,
         onSuccess
     )
@@ -71,7 +76,7 @@ let searchEvents = (data, onError, onSuccess) => {
         }
     }
     managePromise(
-        Axios.get(Properties.apiServer + '/events/search/' + data.event.name, config),
+        Axios.get('/events/search/' + data.event.name, config),
         [200],
         onError,
         onSuccess
@@ -85,7 +90,7 @@ let searchEvents = (data, onError, onSuccess) => {
  */
 let createNewEvent = (event, onError, onSuccess) => {
     managePromise(
-        Axios.post(Properties.apiServer + '/event', event),
+        Axios.post('/event', event),
         [201],
         onError,
         onSuccess
@@ -128,7 +133,7 @@ let followEvent = (eventId, onError, onSuccess) => {
  */
 let interactWithEvent = (data, onError, onSuccess) => {
     managePromise(
-        Axios.post(Properties.apiServer + "/users/event", data),
+        Axios.post("/users/event", data),
         [200],
         onError,
         onSuccess
@@ -142,7 +147,7 @@ let interactWithEvent = (data, onError, onSuccess) => {
  */
 let getNotifications = (fromIndex, onError, onSuccess) => {
     managePromise(
-        Axios.get(Properties.apiServer + '/notifications/' + fromIndex),
+        Axios.get('/notifications/' + fromIndex),
         [200],
         onError,
         onSuccess
@@ -161,7 +166,7 @@ let sendFriendshipResponse = (friendId, accepted, onError, onSuccess) => {
         accepted: accepted
     }
     managePromise(
-        Axios.post(Properties.apiServer + '/notifications/friendship', data),
+        Axios.post('/notifications/friendship', data),
         [200],
         onError,
         onSuccess
@@ -182,7 +187,7 @@ let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
         accepted: accepted
     }
     managePromise(
-        Axios.post(Properties.apiServer + '/notifications/friendposition', data),
+        Axios.post('/notifications/friendposition', data),
         [200],
         onError,
         onSuccess
@@ -197,7 +202,7 @@ let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
 let notificationRead = (notificationId, onError, onSuccess) => {
     let data = { _id: notificationId}
     managePromise(
-        Axios.post(Properties.apiServer + '/notification', data),
+        Axios.post('/notification', data),
         [200, 201],
         onError,
         onSuccess
@@ -231,7 +236,7 @@ let login = (email, password, onError, onSuccess) => {
         password: password
     }
     managePromise(
-        Axios.post(Properties.apiServer + '/login', data),
+        Axios.post('/login', data),
         [200],
         onError,
         onSuccess
@@ -245,7 +250,7 @@ let login = (email, password, onError, onSuccess) => {
  */
 let register = (data, onError, onSuccess) => {
     managePromise(
-        Axios.post(Properties.apiServer + '/registration', data),
+        Axios.post('/registration', data),
         [200],
         onError,
         onSuccess
@@ -259,7 +264,7 @@ let register = (data, onError, onSuccess) => {
  */
 let updateUserProfile = (data, onError, onSuccess) => {
     managePromise(
-        Axios.put(Properties.apiServer + '/profile', data),
+        Axios.put('/profile', data),
         [200],
         onError,
         onSuccess
@@ -277,7 +282,7 @@ let updateUserProfile = (data, onError, onSuccess) => {
  */
 let updateUserCredentials = (data, onError, onSuccess) => {
     managePromise(
-        Axios.put(Properties.apiServer + '/profile/credentials', data),
+        Axios.put('/profile/credentials', data),
         [200],
         onError,
         onSuccess
@@ -291,7 +296,7 @@ let updateUserCredentials = (data, onError, onSuccess) => {
  */
 let updateUserSettings = (data, onError, onSuccess) => {
     managePromise(
-        Axios.put(Properties.apiServer + '/profile/settings', data),
+        Axios.put('/profile/settings', data),
         [200],
         onError,
         onSuccess
@@ -305,7 +310,7 @@ let updateUserSettings = (data, onError, onSuccess) => {
  */
 let getUserInformation = (userId, onError, onSuccess) => {
     managePromise(
-        Axios.get(Properties.apiServer + '/users/' + userId),
+        Axios.get('/users/' + userId),
         [200],
         onError,
         onSuccess
@@ -319,7 +324,7 @@ let getUserInformation = (userId, onError, onSuccess) => {
  */
 let searchUsers = (name, onError, onSuccess) => {
     managePromise(
-        Axios.get(Properties.apiServer + '/users/search/' + name),
+        Axios.get('/users/search/' + name),
         [200],
         onError,
         onSuccess
@@ -334,7 +339,7 @@ let searchUsers = (name, onError, onSuccess) => {
 let sendFriendshipRequest = (friendId, onError, onSuccess) => {
     let data = { friend: friendId }
     managePromise(
-        Axios.post(Properties.apiServer + '/users/friendship', data),
+        Axios.post('/users/friendship', data),
         [200],
         onError,
         onSuccess
@@ -349,7 +354,7 @@ let sendFriendshipRequest = (friendId, onError, onSuccess) => {
 let sendFriendPositionRequest = (friendId, onError, onSuccess) => {
     let data = { friend: friendId }
     managePromise(
-        Axios.post(Properties.apiServer + '/users/friendposition', data),
+        Axios.post('/users/friendposition', data),
         [200],
         onError,
         onSuccess
@@ -364,11 +369,19 @@ let sendFriendPositionRequest = (friendId, onError, onSuccess) => {
 let removeFriend = (friendId, onError, onSuccess) => {
     let data = { friend: friendId }
     managePromise(
-        Axios.delete(Properties.apiServer + '/users/friendship', data),
+        Axios.delete('/users/friendship', data),
         [200],
         onError,
         onSuccess
     )
+}
+
+/**
+ * @param imageName {string}
+ * @returns {string}
+ */
+let getImageUrl = (imageName) => {
+    return Properties.apiServer + "/images/" + imageName
 }
 
 export default {
@@ -391,5 +404,6 @@ export default {
     searchUsers,
     sendFriendshipRequest,
     sendFriendPositionRequest,
-    removeFriend
+    removeFriend,
+    getImageUrl
 }

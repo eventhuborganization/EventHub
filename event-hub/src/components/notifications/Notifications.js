@@ -187,9 +187,11 @@ class Notifications extends React.Component {
                 props.match.params.fromIndex, 
                 () => this.props.onError("Si è verificato un errore durante il reperimento delle notifiche, riprova"),
                 response => {
-                    let state = this.state
-                    state.notifications = response.data
-                    this.setState(state)
+                    this.setState((prevState, props) => {
+                        let state = prevState
+                        state.notifications = response.data
+                        return state
+                    })
                 }
             )
     }

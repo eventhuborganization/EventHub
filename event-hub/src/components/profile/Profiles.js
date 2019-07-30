@@ -1,13 +1,12 @@
 import React from 'react';
 import styles from './UserProfile.module.css';
 import {Link} from "react-router-dom";
-
-let images = require.context("../../assets/images", true)
+import ApiService from '../../services/api/Api'
 
 export function LinkedUserAvatar(props){
     let avatar = props.linkedUser.avatar && props.linkedUser.avatar !== "" ? 
         <img 
-            src={images(`./${props.linkedUser.avatar}`)} 
+            src={ApiService.getImageUrl(props.linkedUser.avatar)}
             className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
             alt={"Immagine profilo utente"}
         /> : 

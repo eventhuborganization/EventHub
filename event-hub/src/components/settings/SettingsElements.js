@@ -1,7 +1,6 @@
 import React from 'react'
 import Api from '../../services/api/Api'
 import Resizer from 'react-image-file-resizer'
-import { RedirectComponent } from '../redirect/Redirect';
 
 class ChangeCredentials extends React.Component {
 

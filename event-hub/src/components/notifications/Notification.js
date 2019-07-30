@@ -1,7 +1,7 @@
 import React from 'react'
 import './Notification.css'
 import {EventInteractionPanel} from '../event/Event'
-let images = require.context("../../assets/images", true)
+import ApiService from '../../services/api/Api'
 
 class Notification extends React.Component {
 
@@ -113,7 +113,7 @@ let NotificationSenderInformation = (props) => {
     return (
         <div className="row">
             <div className="col-2 px-0 my-auto">
-                <img src={images(`./${props.notification.sender.avatar}`)} className="img-fluid border rounded-circle" alt="Immagine profilo utente" />
+                <img src={ApiService.getImageUrl(props.notification.sender.avatar)} className="img-fluid border rounded-circle" alt="Immagine profilo utente" />
             </div>
             <div className="col-10 d-flex flex-column justify-content-center">
                 <span className="text-secondary time-passed">{timestamp.getMinutes()} min</span>
@@ -133,7 +133,7 @@ let UserNotificationInteractionPanel = (props) => {
 
 let EventImage = (props) => {
     return (
-        <img src={images(`./${props.event.thumbnail}`)}
+        <img src={ApiService.getImageUrl(props.event.thumbnail)}
              className="img-fluid"
              alt="locandina evento" />
     )

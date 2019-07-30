@@ -1,6 +1,7 @@
 import React from 'react'
 import {EventsMap} from "./Maps"
 import {SearchBar, SEARCH_BY_PLACE} from "../search_bar/SearchBar"
+import ApiService from '../../services/api/Api'
 
 class Map extends React.Component {
 
@@ -12,84 +13,7 @@ class Map extends React.Component {
                 lat: 0,
                 lng: 0
             },
-            events: [
-                {
-                    _id: "1",
-                    name: "Evento della madonna",
-                    description: "Una madonna madonnesca",
-                    typology: "party",
-                    thumbnail: "campo-calcio.png",
-                    organizator: {
-                        name: "Pippo"
-                    },
-                    maxParticipants: 100,
-                    numParticipants: 37,
-                    location: {
-                        lat: 44.350613499999996,
-                        lng: 11.7188277
-                    },
-                    date: "12/08/2019",
-                    time: "21:00",
-                    address: "Via Santerno, 3"
-                },
-                {
-                    _id: "2",
-                    name: "Evento della madonna",
-                    description: "Una madonna madonnesca",
-                    typology: "sport",
-                    thumbnail: "campo-calcio.png",
-                    organizator: {
-                        name: "Pippo"
-                    },
-                    maxParticipants: 100,
-                    numParticipants: 37,
-                    location: {
-                        lat: 44.350913499999996,
-                        lng: 11.7182277
-                    },
-                    date: "12/08/2019",
-                    time: "21:00",
-                    address: "Via Santerno, 3"
-                },
-                {
-                    _id: "3",
-                    name: "Evento della madonna",
-                    description: "Una madonna madonnesca",
-                    typology: "meeting",
-                    thumbnail: "campo-calcio.png",
-                    organizator: {
-                        name: "Pippo"
-                    },
-                    maxParticipants: 100,
-                    numParticipants: 37,
-                    location: {
-                        lat: 44.350513499999996,
-                        lng: 11.7182277
-                    },
-                    date: "12/08/2019",
-                    time: "21:00",
-                    address: "Via Santerno, 3"
-                },
-                {
-                    _id: "4",
-                    name: "Evento della madonna",
-                    description: "Una madonna madonnesca",
-                    typology: "sport",
-                    thumbnail: "campo-calcio.png",
-                    organizator: {
-                        name: "Pippo"
-                    },
-                    maxParticipants: 100,
-                    numParticipants: 37,
-                    location: {
-                        lat: 44.350113499999996,
-                        lng: 11.7182277
-                    },
-                    date: "12/08/2019",
-                    time: "21:00",
-                    address: "Via Santerno, 3"
-                }
-            ]
+            events: []
         }
         this.setCurrentPositionAsCenter()
     }
@@ -107,6 +31,17 @@ class Map extends React.Component {
         if (window.navigator.geolocation) {
             window.navigator.geolocation.getCurrentPosition(
                 position => {
+                    let data = {
+                        event: {
+                            location: {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            }
+                        }
+                    }
+                    ApiService.getEvents(data,
+                        error => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+                        response => this.onSearchResults({response: {events: response.data}}))
                     this.updateCenterPosition(position.coords.latitude, position.coords.longitude)
                 },
                 error => {
@@ -126,7 +61,7 @@ class Map extends React.Component {
     }
 
     onSearchResults = response => {
-        if (response && response.place) {
+        if (response) {
             if (response.place) {
                 let location = response.place.geometry.location
                 this.updateCenterPosition(location.lat(), location.lng())

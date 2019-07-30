@@ -45,7 +45,7 @@ class Login extends React.Component {
         if(!this.state.email.includes("@")){
             this.props.onError("Inserisci una mail valida");
         } else {
-            /*let hashedPwd = this.security.sha512(this.state.password);
+            let hashedPwd = this.security.sha512(this.state.password);
             Api.login(
                 this.state.email, 
                 hashedPwd,
@@ -54,9 +54,7 @@ class Login extends React.Component {
                     this.props.onLoginSuccessfull(response.data._id)
                     this.state.redirectComponent.redirectAfterLogin()
                 }
-            )*/
-            this.props.onLoginSuccessfull("my_id")
-            this.state.redirectComponent.redirectAfterLogin()
+            )
         }
     }
 

@@ -1,6 +1,4 @@
 import React from 'react'
-import {RedirectComponent} from '../redirect/Redirect'
-
 
 /**
  *
@@ -28,25 +26,16 @@ let FloatingButton = (props) => {
 }
 
 let CreateNewEventButton = (props) => {
-    let redirect = undefined
     return (
-        <div>
-            <FloatingButton icon={{name: "plus"}} onClick={() => redirect.setRedirect(true)} />
-            <RedirectComponent {...props}
-                               from={props.location.pathname}
-                               to={"/event/new"}
-                               redirectNow={false}
-                               onRef={ref => redirect = ref}
-            />
-        </div>
+        <a href={"/event/new"}>
+            <FloatingButton icon={{name: "plus"}} />
+        </a>
         )
 }
 
 /**
  *
- * @param props: {
- *     onClick: event => {}
- * }
+ * @param props: {function}
  * @returns {*}
  * @constructor
  */

@@ -3,7 +3,7 @@ import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizato
 import Contacts from "../contacts/Contacts";
 import {ConfirmButton} from "../floating_button/FloatingButton";
 import ApiService from "../../services/api/Api";
-import {RedirectComponent} from "../redirect/Redirect";
+import {LoginRedirect, RedirectComponent} from "../redirect/Redirect";
 import {loadGoogleMapsScript} from "../../services/google_cloud/GoogleMaps";
 
 class EventCreator extends React.Component {
@@ -31,62 +31,83 @@ class EventCreator extends React.Component {
     }
 
     componentDidMount() {
-        loadGoogleMapsScript(() => {
-            let inputAddress = document.getElementById('address')
-            let searchBox = new window.google.maps.places.SearchBox(inputAddress)
-            searchBox.addListener('places_changed', () => {
-                let places = searchBox.getPlaces()
-                if (places && places.length) {
-                    let place = places[0]
-                    let streetNumber = place.address_components[0].short_name
-                    let streetAddress = place.address_components[1].short_name
-                    let city = place.address_components[2].short_name
-                    let address = streetAddress + ", " + streetNumber + ", " + city
-                    let state = this.state
-                    state.event.address = address
-                    state.event.place = place
-                    this.setState(state)
-                }
+        if (this.props.isLogged)
+            loadGoogleMapsScript(() => {
+                let inputAddress = document.getElementById('address')
+                let searchBox = new window.google.maps.places.SearchBox(inputAddress)
+                searchBox.addListener('places_changed', () => {
+                    let places = searchBox.getPlaces()
+                    if (places && places.length) {
+                        let place = places[0]
+                        let streetNumber = place.address_components[0].short_name
+                        let streetAddress = place.address_components[1].short_name
+                        let city = place.address_components[2].short_name
+                        let address = streetAddress + ", " + streetNumber + ", " + city
+                        this.setState((prevState, props) => {
+                            let state = prevState
+                            state.event.address = address
+                            state.event.place = place
+                            return state
+                        })
+                    }
+                })
             })
-        })
     }
 
     updateName = (event) => {
-        let state = this.state
-        state.event.name = event.target.value
-        this.setState(state)
+        event.persist()
+        this.setState((prevState, props) => {
+            let state = prevState
+            state.event.name = event.target.value
+            return state
+        })
     }
 
     updateType = (event) => {
-        let state = this.state
-        state.event.typology = event.target.value
-        this.setState(state)
+        event.persist()
+        this.setState((prevState, props) => {
+            let state = prevState
+            state.event.typology = event.target.value
+            return state
+        })
     }
 
     updateMaxParticipants = (event) => {
-        let state = this.state
-        state.event.maxParticipants = event.target.value
-        this.setState(state)
+        event.persist()
+        this.setState((prevState, props) => {
+            let state = prevState
+            state.event.maxParticipants = event.target.value
+            return state
+        })
     }
 
     updateDate = (event) => {
-        let state = this.state
-        state.event.date = event.target.value
-        this.setState(state)
+        event.persist()
+        this.setState((prevState, props) => {
+            let state = prevState
+            state.event.date = event.target.value
+            return state
+        })
     }
 
     updateTime = (event) => {
-        let state = this.state
-        state.event.time = event.target.value
-        this.setState(state)
+        event.persist()
+        this.setState((prevState, props) => {
+            let state = prevState
+            state.event.time = event.target.value
+            return state
+        })
     }
 
     updateThumbnailPreview = (event) => {
+        event.persist()
         let reader = new FileReader()
         reader.onload = e => {
-            let state = this.state
-            state.event.thumbnailPreview = e.target.result
-            this.setState(state)
+            this.setState((prevState, props) => {
+                let state = prevState
+                state.event.thumbnailPreview = e.target.result
+                return state
+            })
         }
         if(event.target.files.length > 0){
             reader.readAsDataURL(event.target.files[0])
@@ -98,9 +119,12 @@ class EventCreator extends React.Component {
     }
 
     updateDescription = event => {
-        let state = this.state
-        state.event.description = event.target.value
-        this.setState(state)
+        event.persist()
+        this.setState((prevState, props) => {
+            let state = prevState
+            state.event.description = event.target.value
+            return state
+        })
     }
 
     createEvent = () => {
@@ -134,12 +158,14 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("description")
         if (!errorFound) {
             ApiService.createNewEvent(this.state.event,
-                    error => console.log(error),
+                    () => console.log("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
                     response => {
-                        let state = this.state
-                        state.eventCreated = true
-                        state.eventId = response.event._id
-                        this.setState(state)
+                        this.setState((prevState, props) => {
+                            let state = this.state
+                            state.eventCreated = true
+                            state.eventId = response.event._id
+                            return state
+                        })
                     })
         }
     }
@@ -156,6 +182,7 @@ class EventCreator extends React.Component {
     render() {
         return (
             <form className="main-container">
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.renderRedirect()}
                 <section className="row">
                     <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
@@ -207,15 +234,9 @@ class EventCreator extends React.Component {
                                         className="form-control"
                                         id="typology">
                                     <option value="placeholder" disabled hidden>Type</option>
-                                    <option value={PARTY}>
-                                        Festa
-                                    </option>
-                                    <option value={MEETING}>
-                                        Incontro, size: ""
-                                    </option>
-                                    <option value={SPORT}>
-                                        Sport
-                                    </option>
+                                    <option value={PARTY}>Festa</option>
+                                    <option value={MEETING}>Incontro</option>
+                                    <option value={SPORT}>Sport</option>
                                 </select>
                             </div>
                         </div>

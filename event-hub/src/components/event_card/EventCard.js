@@ -2,7 +2,7 @@ import React from 'react'
 import './EventCard.css'
 import { Link } from 'react-router-dom'
 import {EventInteractionPanel} from '../event/Event'
-let images = require.context("../../assets/images", true)
+import ApiService from '../../services/api/Api'
 
 class EventCard extends React.Component {
 
@@ -11,7 +11,7 @@ class EventCard extends React.Component {
             <div className="row">
                 <div className="col-11 card shadow my-2 mx-auto px-0">
                     <Link className="card bg-dark" id={this.props.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.props.eventInfo._id }>
-                        <img src={images(`./${this.props.eventInfo.thumbnail}`)} className="card-img img-fluid myCard" alt="locandina evento" />
+                        <img src={ApiService.getImageUrl(this.props.eventInfo.thumbnail)} className="card-img img-fluid myCard" alt="locandina evento" />
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
                                 <div className="container-fluid">

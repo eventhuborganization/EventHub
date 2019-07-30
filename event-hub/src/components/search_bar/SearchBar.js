@@ -115,72 +115,12 @@ class SearchBar extends React.Component {
                 break
             default: break
         }
-        /*ApiService.searchEvents(data,
+        ApiService.searchEvents(data,
             error => this.props.onError("Errore durante la ricerca. Riprovare."),
             res => {
                 response.events = res.data
                 this.props.onChange(response)
-            })*/
-        response.events = [
-            {
-                _id: "1",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "party",
-                thumbnail: "campo-calcio.png",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37,
-                location: {
-                    lat: 44.350613499999996,
-                    lng: 11.7188277
-                },
-                date: "12/08/2019",
-                time: "21:00",
-                address: "Via Santerno, 3"
-            },
-            {
-                _id: "2",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "sport",
-                thumbnail: "campo-calcio.png",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37,
-                location: {
-                    lat: 44.350913499999996,
-                    lng: 11.7182277
-                },
-                date: "12/08/2019",
-                time: "21:00",
-                address: "Via Santerno, 3"
-            },
-            {
-                _id: "3",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "meeting",
-                thumbnail: "campo-calcio.png",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37,
-                location: {
-                    lat: 44.350513499999996,
-                    lng: 11.7182277
-                },
-                date: "12/08/2019",
-                time: "21:00",
-                address: "Via Santerno, 3"
-            }
-        ]
-        this.props.onChange(response)
+            })
     }
 
     getSearchInputColsByType() {

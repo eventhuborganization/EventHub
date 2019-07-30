@@ -5,7 +5,7 @@ import { CallableComponent } from '../redirect/Redirect'
 import ScrollToTop from '../scroll_to_top/ScrollToTop'
 
 import './App.css'
-import Api from '../../services/api/Api'
+//import Api from '../../services/api/Api'
 import Home from '../home/Home'
 import Login from '../login/Login'
 import EventInfo from '../event_info/EventInfo'
@@ -23,19 +23,17 @@ class App extends React.Component {
     super(props)
     this.state = {
       isLogged: false,
-      showNavbar: true,
-      user: {
-        _id: ""
-      },
+      user: {},
       showMessageElement: undefined
     }
-
-    this.state.isLogged = true
-    this.state.user = require("../../utils/Utils").dummyLoggedUser
   }
 
   showMessageElement = (elem) => {
-    this.setState({showMessageElement: elem})
+      this.setState((prevState, props) => {
+          let state = prevState
+          state.showMessageElement = elem
+          return state
+      })
   }
 
   onError = (message) => {
@@ -46,33 +44,42 @@ class App extends React.Component {
     this.state.showMessageElement.showModal({body: message, title: "Operazione completata!"})
   }
 
-  onLoginSuccessfull = (userId) => {
-    this.setState({
-      isLogged: true, 
-      user: {
-        _id: userId
-      }
+  onLoginSuccessfull = (user_data) => {
+    this.setState((prevState, props) =>{
+        let state = prevState
+        state.isLogged = true
+        state.user = user_data
+        return state
     })
-    Api.getUserInformation(userId, () => {}, response => {
+    /*Api.getUserInformation(userId, () => {}, response => {
       this.setState({user: response})
-    })
+    })*/
   }
 
   logout = () => {
-    this.setState({
-      user: {
-        _id: ""
-      },
-      isLogged: false
-    })
+      this.setState((prevState, props) => {
+          let state = prevState
+          state.user = {}
+          state.isLogged = false
+          return state
+      })
   }
 
   onRegistrationSuccessfull = (data) => {
-    this.setState({user: data, isLogged: true})
+      this.setState((prevState, props) => {
+          let state = prevState
+          state.user = data
+          state.isLogged = true
+          return state
+      })
   }
   
   updateUserInfo = (user) => {
-    this.setState({user: user})
+      this.setState((prevState, props) => {
+          let state = prevState
+          state.user = user
+          return state
+      })
   }
 
   render() {
@@ -94,13 +101,7 @@ class App extends React.Component {
                 <EventCreator {...props}
                               isLogged={this.state.isLogged}
                               onError={this.onError}
-                              loggedUser={{
-                                  name: "Stefano",
-                                  surname: "Righini",
-                                  email: "rigo96.imola@gmail.com",
-                                  phoneNumber: "+39 3472284853",
-                                  avatar: "user-profile-image.jpg"
-                              }/*this.state.user*/}
+                              loggedUser={this.state.user}
                 />}
             />
             <Route path="/event/:id" exact render={(props) => 
@@ -149,7 +150,7 @@ class App extends React.Component {
                     isLogged={this.state.isLogged}
                     userId={this.state.user._id}
                     friends={this.state.user.linkedUsers ? this.state.user.linkedUsers : []}    
-                    onError={this.onError} 
+                    onError={this.onError}
                 />}
               />
             <Route path="/map" exact render={(props) =>
@@ -169,7 +170,7 @@ class App extends React.Component {
               />
           </Switch>
 
-          <footer id="footer" className={(this.state.showNavbar ? "" : "d-none ") + "row fixed-bottom bg-light border-top border-primary mx-0 py-2"}>
+          <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
               <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/profile"><em className="fas fa-user fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/"><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
@@ -189,7 +190,12 @@ class Modal extends CallableComponent {
   }
 
   showModal = (data) => {
-    this.setState({body: data.body, title: data.title})
+      this.setState((prevState, props) => {
+          let state = prevState
+          state.body = data.body
+          state.title = data.title
+          return state
+      })
     document.getElementById("triggerButton").click()
   }
 

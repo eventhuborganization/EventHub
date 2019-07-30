@@ -3,68 +3,44 @@ import './Home.css';
 import EventCard from "../event_card/EventCard";
 import {CreateNewEventButton} from "../floating_button/FloatingButton";
 import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar";
+import ApiService from '../../services/api/Api'
 
 class Home extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            eventsLoaded: [{
-                _id: "1",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "sport",
-                thumbnail: "campo-calcio.png",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37
-            },
-            {
-                _id: "2",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "meeting",
-                thumbnail: "concerto.jpeg",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37
-            },
-            {
-                _id: "3",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "party",
-                thumbnail: "party.jpg",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37
-            },
-            {
-                _id: "4",
-                name: "Evento della madonna",
-                description: "Una madonna madonnesca",
-                typology: "sport",
-                thumbnail: "campo-calcio.png",
-                organizator: {
-                    name: "Pippo"
-                },
-                maxParticipants: 100,
-                numParticipants: 37
-            }]
+            eventsLoaded: []
         }
+    }
+
+    componentDidMount() {
+        ApiService.getEvents({fromIndex: 0},
+            error => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+            response => { console.log(response); this.onSearchResults({events: response.data})})
     }
 
     onSearchResults = response => {
         if (response && response.events)
             this.setState((prevState, props) => {
                 let state = prevState
-                state.eventsLoaded = response.events
+                state.eventsLoaded = response.events.map(event => {
+                    return {
+                        creationDate: event.creationDate,
+                        date: event.date,
+                        description: event.description,
+                        followers: event.followers,
+                        maxParticipants: event.maximumParticipants,
+                        name: event.name,
+                        organizator: event.organizator,
+                        participants: event.participants,
+                        numParticipants: event.participants.length,
+                        public: event.public,
+                        reviews: event.reviews,
+                        typology: event.typology,
+                        _id: event._id
+                    }
+                })
                 return state
             })
     }

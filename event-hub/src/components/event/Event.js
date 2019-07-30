@@ -2,7 +2,6 @@ import React from 'react'
 import { LoginRedirect } from '../redirect/Redirect';
 import './Event.css'
 import {LocationMap} from '../map/Maps'
-import UserAvatar from "../user_avatar/UserAvatar";
 import ApiService from '../../services/api/Api'
 
 let PARTY = "party"
@@ -193,19 +192,26 @@ let EventLocation = props => {
 }
 
 let EventOrganizatorInfo = props => {
-    return (
-        <div className="row">
-            <div className="col-12 px-0">
-                <h6>Organizzatore</h6>
+
+    //if (props.organizator && props.organizator.name && props.organizator.surname && props.organizator.avatar)
+        return (
+            <div className="row">
+                <div className="col-12 px-0">
+                    <h6>Organizzatore</h6>
+                </div>
+                <div className="col-2 px-0">
+                    <img src={ApiService.getImageUrl(props.organizator.avatar)}
+                         className="img-fluid border rounded-circle"
+                         alt="Immagine profilo organizzatore"
+                    />
+                </div>
+                <div className="col-10 d-flex justify-content-start align-items-center">
+                    <span className="text-invited font-weight-bold">{props.organizator.name} {props.organizator.surname}</span>
+                </div>
             </div>
-            <div className="col-2 px-0">
-                <UserAvatar user={props.organizator}/>
-            </div>
-            <div className="col-10 d-flex justify-content-start align-items-center">
-                <span className="text-invited font-weight-bold">{props.organizator.name} {props.organizator.surname}</span>
-            </div>
-        </div>
-    )
+        )
+    /*else
+        return (<div />)*/
 }
 
 export {
