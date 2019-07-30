@@ -19,6 +19,9 @@ exports.login = (req, res) => {
 }
 
 exports.logout = (req, res) => {
+    req.session.destroy(err => {
+        network.internalError(res,err);
+    })
     res.clearCookie('user_sid');
     network.resultWithJSON(res, {data: 'user logout'})
 }
