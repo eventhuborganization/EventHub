@@ -1,21 +1,41 @@
 const mongoose = require('mongoose');
 const fuse = require('fuse.js')
-
+const parser = require('DataParser')
 const Event = mongoose.model('Events');
 
 exports.getEvent = (req, res) => {
-    if(req.query && Object.keys(req.query).length > 0){
-        console.log(req.query)
-        Event.find(req.query, (err, event) => {
-            if(err){
-                res.status(500).send(err)
+    let query =  Event.find({});
+    if(req.query){
+        for (const key in req.query) {
+            if (object.hasOwnProperty(key)) {
+                if(key == 'date')
+                    query.find({key: parser.parseDateObject(req.query[key])})
+                else
+                    query.find({key:req.query[key]})
             }
-            res.status(event.length > 0 ? 201 : 404).json(event)
-        })
-    } else {
-        res.status(400).send('nope')
+        }
     }
+    console.log(query.getFilter())
+    query.exec((err, event) => {
+        if(err){
+            res.status(500).send(err)
+        }
+        res.status(event.length > 0 ? 201 : 404).json(event)
+    })
 };
+
+exports.getEventNear = (req, res) => {
+    var options = {
+        near: [req.body.lon, req.body.lat],
+        maxDistance: 100
+    }
+    Event.geoSearch({type: 'Point'},options, (err, event) => {
+        if(err){
+            res.status(500).send(err)
+        }
+        res.status(event.length > 0 ? 201 : 404).json(event)
+    })
+}
 
 exports.searchEvent = (req, res) => {
     let searchOption = {

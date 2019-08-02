@@ -17,9 +17,20 @@ var EventSchema = new Schema({
         type: Date,
         required: 'A date is required'
     },
-    location:{
-        type: {latitude: String, longitude: String},
-        required: 'A location is required'
+    location: {
+        city: {type: String},
+        geo:{
+            type: {
+                type: String,
+                enum: ['Point'], 
+                required: true,
+                default: 'Point'
+            },
+            coordinates: {
+                type: [Number],
+                required: true
+            }
+        }
     },
     public:{
         type: Boolean,

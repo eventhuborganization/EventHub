@@ -10,7 +10,7 @@ exports.getLogin = (req, res) => {
 exports.login = (req, res) => {
     axios.post(`${UserServiceHostPort}/users/credentials`, req.body)
     .then((response) => {
-        req.session.user = response._id
+        req.session.user = response.data._id
         network.replayResponse(response, res);
     })
     .catch((err) => {

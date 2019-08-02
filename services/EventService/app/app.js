@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
-var Event = require('./src/models/eventModel')
+var Event = require('./src/models/EventModel')
 
 const app = express()
 const port = 3002
