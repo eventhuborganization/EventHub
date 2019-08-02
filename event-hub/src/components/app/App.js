@@ -45,6 +45,7 @@ class App extends React.Component {
   }
 
   onLoginSuccessfull = (user_data) => {
+
     this.setState((prevState, props) =>{
         let state = prevState
         state.isLogged = true
@@ -61,15 +62,6 @@ class App extends React.Component {
           let state = prevState
           state.user = {}
           state.isLogged = false
-          return state
-      })
-  }
-
-  onRegistrationSuccessfull = (data) => {
-      this.setState((prevState, props) => {
-          let state = prevState
-          state.user = data
-          state.isLogged = true
           return state
       })
   }
@@ -118,8 +110,8 @@ class App extends React.Component {
             />
             <Route path="/register" exact render={(props) => 
                 <Registration {...props} 
-                  onError={this.onError} 
-                  onRegistration={this.onRegistrationSuccessfull} 
+                  onError={this.onError}
+                  onLoginSuccessfull={this.onLoginSuccessfull}
                 />} 
             />
             <Route path="/notification" exact render={(props) =>
@@ -172,7 +164,7 @@ class App extends React.Component {
 
           <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
               <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to="/profile"><em className="fas fa-user fa-lg" /></Link></div>
+              <div className="col text-center my-auto"><Link to={"/profile"}><em className="fas fa-user fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/"><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
               <div className="col text-center my-auto"><Link to="/friends"><em className="fas fa-users fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/notification"><em className="fas fa-bell fa-lg" /></Link></div>

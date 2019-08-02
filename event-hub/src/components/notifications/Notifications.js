@@ -2,198 +2,32 @@ import React from 'react'
 import Notification from "./Notification"
 import {LoginRedirect} from "../redirect/Redirect"
 import ApiService from '../../services/api/Api'
+import NoItemsPlaceholder from "../no_item_placeholder/NoItemsPlaceHolder";
 
 class Notifications extends React.Component {
 
     constructor(props) {
         super(props)
-        let timestamp = new Date().toString()
         this.state = {
-            notifications: [
-                {
-                    _id: "0",
-                    typology: 0,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "1",
-                    typology: 1,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "2",
-                    typology: 2,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "3",
-                    typology: 3,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "4",
-                    typology: 4,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "5",
-                    typology: 5,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "6",
-                    typology: 6,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "7",
-                    typology: 7,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "8",
-                    typology: 8,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                },
-                {
-                    _id: "9",
-                    typology: 9,
-                    sender: {
-                        _id: "2",
-                        name: "Stefano",
-                        surname: "Righini",
-                        avatar: "gatto.jpeg"
-                    },
-                    event: {
-                        name: "Evento della madonna",
-                        thumbnail: "party.jpg",
-                        _id: "3",
-                        typology: "party"
-                    },
-                    timestamp: timestamp
-                }
-            ]
+            notifications: []
         }
         if (!!props.isLogged)
             ApiService.getNotifications(
                 props.match.params.fromIndex, 
-                () => this.props.onError("Si è verificato un errore durante il reperimento delle notifiche, riprova"),
-                response => {
-                    this.setState((prevState, props) => {
+                () => this.props.onError("Si è verificato un errore durante il caricamento delle notifiche, riprova."),
+                notifications => {
+                    this.setState((prevState) => {
                         let state = prevState
-                        state.notifications = response.data
+                        state.notifications = notifications
                         return state
                     })
                 }
             )
+    }
+
+    renderNoNotificationPlaceHolder = () => {
+        if (this.state.notifications.length <= 0)
+            return <NoItemsPlaceholder placeholder={"Nessuna notifica ricevuta"} />
     }
 
     render() {
@@ -212,6 +46,7 @@ class Notifications extends React.Component {
                                           notification={notification}
                             />)
                     }
+                    {this.renderNoNotificationPlaceHolder()}
                 </main>
             </div>
         )

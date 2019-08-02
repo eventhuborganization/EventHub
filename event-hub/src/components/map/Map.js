@@ -36,11 +36,15 @@ class Map extends React.Component {
                             location: {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude
+                            },
+                            date: {
+                                value: new Date(),
+                                operator: ">="
                             }
                         }
                     }
                     ApiService.getEvents(data,
-                        error => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+                        error => { console.log(error.body); this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina.")},
                         response => this.onSearchResults({response: {events: response.data}}))
                     this.updateCenterPosition(position.coords.latitude, position.coords.longitude)
                 },
@@ -67,9 +71,25 @@ class Map extends React.Component {
                 this.updateCenterPosition(location.lat(), location.lng())
             }
             if (response.events) {
-                this.setState((prevState, props) => {
+                this.setState((prevState) => {
                     let state = prevState
-                    state.events = response.events
+                    state.events = response.events.map(event => {
+                        return {
+                            creationDate: event.creationDate,
+                            date: event.date,
+                            description: event.description,
+                            followers: event.followers,
+                            maxParticipants: event.maximumParticipants,
+                            name: event.name,
+                            organizator: event.organizator,
+                            participants: event.participants,
+                            numParticipants: event.participants.length,
+                            public: event.public,
+                            reviews: event.reviews,
+                            typology: event.typology,
+                            _id: event._id
+                        }
+                    })
                     return state
                 })
             }

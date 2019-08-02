@@ -4,6 +4,7 @@ import EventCard from "../event_card/EventCard";
 import {CreateNewEventButton} from "../floating_button/FloatingButton";
 import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar";
 import ApiService from '../../services/api/Api'
+import NoItemsPlaceholder from "../no_item_placeholder/NoItemsPlaceHolder";
 
 class Home extends React.Component {
 
@@ -15,34 +16,23 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        ApiService.getEvents({fromIndex: 0},
+        ApiService.getEvents({fromIndex: 0, event: {/*fromDate: new Date(), public: true*/typology: "sport"}},
             error => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
-            response => { console.log(response); this.onSearchResults({events: response.data})})
+            response => this.onSearchResults({events: response}))
     }
 
     onSearchResults = response => {
         if (response && response.events)
             this.setState((prevState, props) => {
                 let state = prevState
-                state.eventsLoaded = response.events.map(event => {
-                    return {
-                        creationDate: event.creationDate,
-                        date: event.date,
-                        description: event.description,
-                        followers: event.followers,
-                        maxParticipants: event.maximumParticipants,
-                        name: event.name,
-                        organizator: event.organizator,
-                        participants: event.participants,
-                        numParticipants: event.participants.length,
-                        public: event.public,
-                        reviews: event.reviews,
-                        typology: event.typology,
-                        _id: event._id
-                    }
-                })
+                //state.eventsLoaded = response.events
                 return state
             })
+    }
+
+    renderNoNotificationPlaceHolder = () => {
+        if (this.state.eventsLoaded.length <= 0)
+            return <NoItemsPlaceholder placeholder={"Non ci sono eventi disponibili"} />
     }
 
     render() {
@@ -71,6 +61,7 @@ class Home extends React.Component {
                                        location={this.props.location}
                             />)
                     }
+                    {this.renderNoNotificationPlaceHolder()}
                 </main>
             </div>
         )

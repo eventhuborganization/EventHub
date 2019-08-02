@@ -1,5 +1,4 @@
 import Axios from 'axios'
-import Properties from '../../utils/Properties'
 
 /**
  * @param promise {Promise}
@@ -10,12 +9,90 @@ import Properties from '../../utils/Properties'
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
+            console.log("RESPONSE: ")
+            console.log(response)
             if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
             else
                 onSuccess(response)
         })
-        .catch(error => onError(error))
+        .catch(error => {
+            console.log("ERROR: ")
+            console.log(error)
+            onError(error)
+        })
+}
+
+/**
+ * Map a received event datas to a well known data structure.
+ * @param event {object}
+ * @returns {{date: *, description: *, creationDate: *, maxParticipants: *, organizator: *, typology: *, followers: *, public: *, reviews: *, name: *, _id: *, participants: *, numParticipants: *}}
+ */
+let mapEvent = (event) => {
+    let address = event.address ? {
+        lat: event.address.lat,
+        lng: event.address.lng,
+        city: event.address.city
+    } : {}
+    return {
+        creationDate: event.creationDate,
+        date: event.date,
+        description: event.description,
+        followers: event.followers ? event.followers : [],
+        maxParticipants: event.maximumParticipants,
+        name: event.name,
+        organizator: mapUser(event.organizator),
+        participants: event.participants ? event.participants : [],
+        numParticipants: event.participants ? event.participants.length : 0,
+        public: event.public,
+        reviews: event.reviews ? event.reviews : [],
+        typology: event.typology,
+        _id: event._id,
+        address: address
+    }
+}
+
+/**
+ * Map a received user data to a well known data structure.
+ * @param user
+ * @returns {{birthdate: *, address: *, gender: *, reviewsReceived: (*|[]), eventsSubscribed: (*|[]), groups: *, avatar: *, reviewsDone: (*|[]), points: *, badges: *, linkedUsers: *, nReviewsReceived: (*|number), eventsFollowed: (*|[]), phone: *, surname: *, organization: *, name: *, _id: *, email: *, nReviewsDone: (*|number)}}
+ */
+let mapUser = (user) => {
+    let address = user.address ? {
+        city: user.address.city
+    } : {}
+    return {
+        _id: user._id,
+        linkedUsers: user.linkedUsers ? user.linkedUsers : [],
+        name: user.name,
+        surname: user.surname,
+        organization: user.organization,
+        gender: user.gender,
+        birthdate: user.birthdate,
+        phone: user.phone,
+        email: user.email,
+        avatar: user.avatar,
+        groups: user.groups ? user.groups : [],
+        badges: user.badges ? user.badges : [],
+        points: user.points,
+        nReviewsDone: user.reviewsDone ? user.reviewsDone.length : 0,
+        reviewsDone: user.reviewsDone ? user.reviewsDone : [],
+        nReviewsReceived: user.reviewsReceived ? user.reviewsReceived.length : 0,
+        reviewsReceived: user.reviewsReceived ? user.reviewsReceived : [],
+        eventsSubscribed: user.eventsSubscribed ? user.eventsSubscribed : [],
+        eventsFollowed: user.eventsFollowed ? user.eventsFollowed : [],
+        address: address
+    }
+}
+
+let mapNotification = (notification) => {
+    return {
+        _id: notification._id,
+        typology: notification.typology,
+        sender: mapUser(notification.sender),
+        event: notification.event ? mapEvent(notification.event) : {},
+        timestamp: notification.timestamp
+    }
 }
 
 /**
@@ -26,9 +103,11 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  * @param data.event.location {object}
  * @param data.event.location.lat {number}
  * @param data.event.location.lng {number}
- * @param data.event.location.place_id {string}
- * @param data.event.location.address {string}
- * @param data.event.date {Date}
+ * @param data.event.location.maxDistanceInMetres {string}
+ * @param data.event.date {object}
+ * @param data.event.date.value {Date}
+ * @param data.event.date.operator {string}
+ * @param data.event.public {boolean}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
@@ -36,12 +115,29 @@ let getEvents = (data, onError, onSuccess) => {
     let config = {}
     let index = 0
     if (data) {
-        if (data.event)
+        if (data.event) {
+            let date = undefined
+            if (data.event.date) {
+                date = {
+                    value: data.event.date.value,
+                    operator: data.event.date.operator
+                }
+            }
+            let location = undefined
+            if (data.event.location) {
+                location = {
+                    lon: data.event.location.lng,
+                    lat: data.event.location.lat,
+                    maxDistance: data.event.location.maxDistanceInMetres
+                }
+            }
             config.params = {
                 typology: data.event.typology,
-                location: data.event.location,
-                date: data.event.date
+                location: location,
+                date: date,
+                public: data.event.public
             }
+        }
         if (data.fromIndex)
             index = data.fromIndex
     }
@@ -49,7 +145,7 @@ let getEvents = (data, onError, onSuccess) => {
         Axios.get('/events/' + index, config),
         [201, 200],
         onError,
-        onSuccess
+        response => onSuccess(response.data.map(mapEvent))
     )
 }
 
@@ -63,7 +159,10 @@ let getEvents = (data, onError, onSuccess) => {
  * @param data.event.location.lng {number}
  * @param data.event.location.place_id {string}
  * @param data.event.location.address {string}
- * @param data.event.date {Date}
+ * @param data.event.date {object}
+ * @param data.event.date.value {boolean}
+ * @param data.event.date.operator {string}
+ * @param data.event.public {boolean}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
@@ -79,7 +178,7 @@ let searchEvents = (data, onError, onSuccess) => {
         Axios.get('/events/search/' + data.event.name, config),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(response.data.map(mapEvent))
     )
 }
 
@@ -93,7 +192,7 @@ let createNewEvent = (event, onError, onSuccess) => {
         Axios.post('/event', event),
         [201],
         onError,
-        onSuccess
+        response => onSuccess(mapEvent(response.data))
     )
 }
 
@@ -134,7 +233,7 @@ let followEvent = (eventId, onError, onSuccess) => {
 let interactWithEvent = (data, onError, onSuccess) => {
     managePromise(
         Axios.post("/users/event", data),
-        [200],
+        [201],
         onError,
         onSuccess
     )
@@ -150,7 +249,7 @@ let getNotifications = (fromIndex, onError, onSuccess) => {
         Axios.get('/notifications/' + fromIndex),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(response.data.map(mapNotification))
     )
 }
 
@@ -216,10 +315,10 @@ let notificationRead = (notificationId, onError, onSuccess) => {
  */
 let getEventInformation = (eventId, onError, onSuccess) => {
     managePromise(
-        Axios.get(Properties.apiServer + '/events/info/' + eventId),
+        Axios.get('/event/info/' + eventId),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(mapEvent(response.data))
     )
 }
 
@@ -239,7 +338,7 @@ let login = (email, password, onError, onSuccess) => {
         Axios.post('/login', data),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(mapUser(response.data))
     )
 }
 
@@ -251,9 +350,9 @@ let login = (email, password, onError, onSuccess) => {
 let register = (data, onError, onSuccess) => {
     managePromise(
         Axios.post('/registration', data),
-        [200],
+        [200, 201],
         onError,
-        onSuccess
+        response => onSuccess(mapUser(response.data))
     )
 }
 
@@ -267,7 +366,7 @@ let updateUserProfile = (data, onError, onSuccess) => {
         Axios.put('/profile', data),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(mapUser(response.data))
     )
 }
 
@@ -285,7 +384,7 @@ let updateUserCredentials = (data, onError, onSuccess) => {
         Axios.put('/profile/credentials', data),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(mapUser(response.data))
     )
 }
 
@@ -299,7 +398,7 @@ let updateUserSettings = (data, onError, onSuccess) => {
         Axios.put('/profile/settings', data),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(mapUser(response.data))
     )
 }
 
@@ -313,7 +412,7 @@ let getUserInformation = (userId, onError, onSuccess) => {
         Axios.get('/users/' + userId),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(mapUser(response.data))
     )
 }
 
@@ -327,7 +426,7 @@ let searchUsers = (name, onError, onSuccess) => {
         Axios.get('/users/search/' + name),
         [200],
         onError,
-        onSuccess
+        response => onSuccess(response.data.map(mapUser))
     )
 }
 
@@ -381,7 +480,7 @@ let removeFriend = (friendId, onError, onSuccess) => {
  * @returns {string}
  */
 let getImageUrl = (imageName) => {
-    return Properties.apiServer + "/images/" + imageName
+    return "/images/" + imageName
 }
 
 export default {
