@@ -15,7 +15,19 @@ exports.addUserToEvent = (req, res) => {
 }
 
 exports.eventInfo = (req, res) => {
-    EventService.getEventById(req.params.uuid, event.defaultCallback)
+    EventService.getEventById(req.params.uuid, response => {
+        let event = response.data;
+        axios.get(`${UserServiceHostPort}/users/${event.organizator}`)
+            .then(organizator => {
+                event.organizator = organizator.data;
+                network.resultWithJSON(res, event)
+            })
+            .catch(err => {
+                network.internalError(res, err)
+            })
+    }, err => {
+        network.internalError(res, err)
+    })
 }
 
 exports.searchEventByName = (req, res) => {
