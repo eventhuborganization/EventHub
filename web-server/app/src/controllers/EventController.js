@@ -38,16 +38,26 @@ exports.searchEventByName = (req, res) => {
     })
 }
 
+// TODO: riordinare il risultato e prendere i primi 10 a partire da :fromIndex
 exports.getEvents = (req, res) => {
-    var query = "?";
-    for (key in req.query) {
-        query += `${key}=${req.query[key]}&`        
-      }
-    EventService.getEvent(query, response => {
-        network.replayResponse(response, res);
+    EventService.getEvent(req.query, response => {
+        response.data.sort((a, b)=>{
+            return a.eventDate - b.eventDate
+        })
+        if(response.data.length > req.params.formIndex){
+            for (let index = 0; index < req.params.formIndex; index++) {
+                response.data.shift()
+            }
+        }
+        // TODO: prendere i primi 10 e restituirli 
     })
 }
 
+exports.getEventsNear = (req, res) => {
+    EventService.getEvent(req.query, response => {
+        network.replayResponse(response, res);
+    })
+}
 exports.createEvent = (req, res) => {
     var event = req.body;
     event.organizator = req.session.user;

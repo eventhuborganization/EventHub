@@ -26,8 +26,6 @@ exports.EventService = class EventService{
     /**
      * Ritorna gli eventi filtrati con i valori dell'oggetto query.
      * 
-     * query = '?eventProperty=property&eventProperty2=property2' 
-     * 
      * Codici di ritorno:
      *  - 201: tutto bene risultati presenti
      *  - 204: tutto bene ma risultati non esistenti
@@ -37,8 +35,8 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEvent(query = "", successCallback = null, errorCallback = null){
-        axios.get(`${this.hostport}/events`+ query)
+    getEvent(query, successCallback = null, errorCallback = null){
+        axios.get(`${this.hostport}/events`, { params: query })
         .then(successCallback)
         .catch(errorCallback);
     }
