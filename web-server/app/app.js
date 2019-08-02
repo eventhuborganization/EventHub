@@ -69,8 +69,6 @@ function runApp() {
         resave: false,
         saveUninitialized: false,
         secret: 'EventHubSecret',
-        resave: false,
-        saveUninitialized: false,
         store: new MongoStore({ mongooseConnection:  mongoose.connection }),
         cookie: {
             path: '/', 

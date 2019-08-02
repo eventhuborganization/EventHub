@@ -1,5 +1,5 @@
 module.exports = function(app) {
-    var eventController = require("../controllers/eventController")
+    var eventController = require("../controllers/EventController")
 
     app.route('/events')
         .get(eventController.getEvent)
