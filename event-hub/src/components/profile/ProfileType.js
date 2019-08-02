@@ -23,12 +23,6 @@ class AbstractProfile extends React.Component {
         let toShow = this.displayWindowSize()
         this.state.avatarsToShow = toShow[0]
         this.state.emptyAvatarSize = toShow[1]
-
-        this.state.name =  "Giancarlo"
-        this.state.avatar = "gatto.jpeg"
-        this.state.organization = false
-        this.state.points =  320
-        this.state.linkedUsers = require("../../utils/Utils").dummyLinkedUserList
     }
 
     displayWindowSize = () => {
@@ -59,20 +53,20 @@ class AbstractProfile extends React.Component {
         Api.getUserInformation(
             this.state._id,
             () => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"),
-            response => {
-                let name = response.data.name + (response.data.organization ? "" : " " + response.data.surname)
-                let futureEvents =  response.data.eventsSubscribed.filter(x => x.date > Date.now())
-                let pastEvents =  response.data.eventsSubscribed.filter(x => x.date < Date.now())
+            user => {
+                let name = user.name + (user.organization ? "" : " " + user.surname)
+                let futureEvents =  user.eventsSubscribed.filter(x => x.date > Date.now())
+                let pastEvents =  user.eventsSubscribed.filter(x => x.date < Date.now())
                 this.setState({
                     name: name,
-                    avatar: response.data.avatar,
-                    organization: response.data.organization,
-                    linkedUsers: response.data.linkedUsers,
-                    badges: response.data.badges,
-                    points: response.data.points,
+                    avatar: user.avatar,
+                    organization: user.organization,
+                    linkedUsers: user.linkedUsers,
+                    badges: user.badges,
+                    points: user.points,
                     futureEvents: futureEvents,
                     pastEvents: pastEvents,
-                    groups: response.data.groups
+                    groups: user.groups
                 })
             }
         )

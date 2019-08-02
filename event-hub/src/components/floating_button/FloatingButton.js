@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from "react-router-dom";
 
 /**
  *
@@ -27,9 +28,9 @@ let FloatingButton = (props) => {
 
 let CreateNewEventButton = (props) => {
     return (
-        <a href={"/event/new"}>
+        <Link to={"/event/new"}>
             <FloatingButton icon={{name: "plus"}} />
-        </a>
+        </Link>
         )
 }
 

@@ -89,6 +89,22 @@ class Profile extends React.Component {
         }
     }
 
+    renderLastBadge = () => {
+        console.log(this.state)
+        if (this.state.badges && this.state.badges.length !== 0) {
+            let lastBadge = this.state.badges[this.state.badges.length - 1]
+            return (
+                <section className="mt-2">
+                    <BadgeBanner badge={{
+                        name: lastBadge.name,
+                        description: lastBadge.description
+                    }}/>
+                </section>
+            )
+        } else
+            return (<div/>)
+    }
+
     render() {
         let isMyFriend = !this.props.isLocalUser && 
             this.state.linkedUsers.findIndex(elem => elem._id === this.props.userId) >= 0
@@ -103,7 +119,7 @@ class Profile extends React.Component {
                             <div className={"text-secondary" + (this.state.avatar ? " d-none" : "" )}>
                                 <em className="far fa-image fa-10x"></em>
                             </div>
-                            <img src={this.state.avatar} 
+                            <img src={Api.getImageUrl(this.state.avatar)}
                                 className={"img-fluid"  + (this.state.avatar ? "" : " d-none")} 
                                 alt="Immagine profilo utente"
                             />
@@ -152,12 +168,7 @@ class Profile extends React.Component {
                     <h2 className="col text-center">{this.state.name}</h2>
                 </section>
 
-                <section className="mt-2">
-                    <BadgeBanner badge={{
-                        name: "Il razzo",
-                        description: "Fai più di 15 recensioni"
-                    }}/>
-                </section>
+                {this.renderLastBadge()}
 
                 <section className="mt-3">
                     <LinkedUsersBanner 

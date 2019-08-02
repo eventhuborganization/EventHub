@@ -3,14 +3,15 @@ import styles from '../login/Login.module.css'
 import Api from '../../services/api/Api'
 import RegistrationForm from './RegistrationForm'
 import { RegistrationTab } from '../menu_tab/MenuTab'
-import {LoginSuccessfullRedirect} from '../redirect/Redirect'
+import {LoginRedirect, LoginSuccessfullRedirect} from '../redirect/Redirect'
 
 class Registration extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            redirectComponent : undefined
+            loginRedirect : undefined,
+            homeRedirect: undefined
         };
     }
 
@@ -24,9 +25,15 @@ class Registration extends React.Component {
         document.getElementById("root").classList.remove("p-0", styles.bgImage)
     }
 
-    redirect = (redirectComponent) => {
+    setRedirectToLoginRef = (redirectComponent) => {
         this.setState({
-            redirectComponent: redirectComponent
+            loginRedirect: redirectComponent
+        })
+    }
+
+    setRedirectToHomeRef = (redirectComponent) => {
+        this.setState({
+            homeRedirect: redirectComponent
         })
     }
 
@@ -54,12 +61,17 @@ class Registration extends React.Component {
         }
         Api.register(
             message, 
-            () => this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova"),
+            () => this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova."),
             response => {
-                delete message.password
-                message._id = response.data._id
-                this.props.onRegistration(message)
-                this.state.redirectComponent.redirectAfterLogin()
+                Api.login(message.email, message.password,
+                    () => {
+                        this.props.onError("La registrazione è stata effettuata correttamente, effettua il login.")
+                        this.state.redirectComponent.redirectToLogin()
+                    },
+                    user => {
+                        this.props.onLoginSuccessfull(user)
+                        this.state.homeRedirect.redirectAfterLogin()
+                    })
             }
         )
     }
@@ -94,9 +106,13 @@ class Registration extends React.Component {
                         ]} />
                     </div>
                 </main>
-                <LoginSuccessfullRedirect
+                <LoginRedirect
                     {...this.props} 
-                    onRef={this.redirect}
+                    onRef={this.setRedirectToLoginRef}
+                />
+                <LoginSuccessfullRedirect
+                    {...this.props}
+                    onRef={this.setRedirectToHomeRef}
                 />
             </div>
         )

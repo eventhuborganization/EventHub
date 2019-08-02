@@ -50,9 +50,9 @@ class Login extends React.Component {
                 this.state.email, 
                 hashedPwd,
                 () => this.props.onError("Credenziali inserite non corrette"),
-                response => {
-                    this.props.onLoginSuccessfull(response.data._id)
-                    this.state.redirectComponent.redirectAfterLogin()
+                user => {
+                    this.props.onLoginSuccessfull(user)
+                    this.state.loginRedirect.redirectAfterLogin()
                 }
             )
         }
@@ -60,7 +60,7 @@ class Login extends React.Component {
 
     redirect = (redirectComponent) => {
         this.setState({
-            redirectComponent: redirectComponent
+            loginRedirect: redirectComponent
         })
     }
 
