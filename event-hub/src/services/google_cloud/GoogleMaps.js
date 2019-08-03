@@ -19,4 +19,23 @@ let loadGoogleMapsScript = (onload) => {
     }
 }
 
-export {loadGoogleMapsScript}
+/**
+ * @param location {{
+ *     lat: number,
+ *     lng: number
+ * }}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let getPlaceInformationByLocation = (location, onError, onSuccess) => {
+    loadGoogleMapsScript(() => {
+        new window.google.maps.Geocoder().geocode({location: location}, (results, status) => {
+            if (status === 'OK' && results && results[0])
+                onSuccess(results[0])
+            else
+                onError(results, status)
+        });
+    })
+}
+
+export default {loadGoogleMapsScript, getPlaceInformationByLocation}

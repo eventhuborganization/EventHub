@@ -1,5 +1,5 @@
 import React from 'react'
-import {loadGoogleMapsScript} from "../../services/google_cloud/GoogleMaps";
+import GoogleApi from "../../services/google_cloud/GoogleMaps";
 import ApiService from '../../services/api/Api'
 import {MEETING, PARTY, SPORT} from "../event/Event";
 
@@ -50,7 +50,7 @@ class SearchBar extends React.Component {
     }
 
     configureSearchByPlace = () => {
-        loadGoogleMapsScript(() => {
+        GoogleApi.loadGoogleMapsScript(() => {
             let searchInput = document.getElementById(this.search_input_id)
             let searchBox = new window.google.maps.places.SearchBox(searchInput)
             searchBox.addListener('places_changed', () => {

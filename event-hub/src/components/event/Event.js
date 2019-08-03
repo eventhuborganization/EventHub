@@ -29,40 +29,56 @@ let getButtonClassName = (eventType, buttonType) => {
         return "btn sportButton sportButton" + buttonClass + " ml-2"
 }
 
-let FollowButton = (props) => {
+class FollowButton extends React.Component {
 
-    let loginRedirect = undefined
-
-    let onClick = () => {
-        if (loginRedirect)
-            loginRedirect.doIfLoggedOrElseRedirect(() => ApiService.followEvent(props.mainServer, props.event._id, props.onError))
+    constructor(props) {
+        super(props)
+        this.state = {
+            loginRedirect: undefined
+        }
     }
 
-    return (
-        <button className={getButtonClassName(props.event.typology, FOLLOW)}
-                onClick={onClick}>
-            {<LoginRedirect {...props} onRef={ref => loginRedirect = ref}/>}
-            Segui
-        </button>
-    )
+    onClick = () => {
+        if (this.state.loginRedirect)
+            this.state.loginRedirect.doIfLoggedOrElseRedirect(
+                () => ApiService.followEvent(this.props.event._id, this.props.onError))
+    }
+
+    render () {
+        return (
+            <button className={getButtonClassName(this.props.event.typology, FOLLOW)}
+                    onClick={this.onClick}>
+                <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
+                Segui
+            </button>
+        )
+    }
 }
 
-let ParticipateButton = (props) => {
+class ParticipateButton extends React.Component {
 
-    let loginRedirect = undefined
-
-    let onClick = () => {
-        if (loginRedirect)
-            loginRedirect.doIfLoggedOrElseRedirect(() => ApiService.participateToEvent(props.mainServer, props.event._id, props.onError))
+    constructor(props) {
+        super(props)
+        this.state = {
+            loginRedirect: undefined
+        }
     }
 
-    return (
-        <button className={getButtonClassName(props.event.typology, PARTICIPATE)}
-                onClick={onClick}>
-            {<LoginRedirect {...props} onRef={ref => loginRedirect = ref}/>}
-            Partecipa
-        </button>
-    )
+    onClick = () => {
+        if (this.state.loginRedirect)
+            this.state.loginRedirect.doIfLoggedOrElseRedirect(
+                () => ApiService.participateToEvent(this.props.event._id, this.props.onError))
+    }
+
+    render () {
+        return (
+            <button className={getButtonClassName(this.props.event.typology, PARTICIPATE)}
+                    onClick={this.onClick}>
+                <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
+                Partecipa
+            </button>
+        )
+    }
 }
 
 let EventBadge = (props) => {
@@ -104,17 +120,19 @@ let EventInteractionPanel = (props) => {
 
 /**
  *
- * @param props {
+ * @param props {{
  *     event: {
- *         typology: String,
- *         name: String,
- *         date: String,
- *         time: String,
- *         address: String,
- *         numParticipants: Integer,
- *         maxParticipants: Integer
+ *         typology: string,
+ *         name: string,
+ *         date: string,
+ *         time: string,
+ *         address: {
+ *             address: string
+ *         },
+ *         numParticipants: number,
+ *         maxParticipants: number
  *     }
- * }
+ * }}
  * @returns {*}
  * @constructor
  */
@@ -137,6 +155,15 @@ let EventHeaderBanner = props => {
             return <EventBadge event={props.event} />
     }
 
+    let renderDate = () => {
+        let date = props.event.date
+        let hours = date ? date.getUTCHours() < 10 ? "0" + date.getUTCHours() : date.getUTCHours() : "00"
+        let minutes = date ? date.getUTCMinutes() < 10 ? "0" + date.getUTCMinutes() : date.getUTCMinutes() : "00"
+        return date
+            ? date.getUTCDate() + "/" + date.getUTCMonth() + "/" + date.getUTCFullYear() + " - " + hours + ":" + minutes
+            : ""
+    }
+
     return (
         <section className={"row pt-2 " + getBannerClassName()}>
             <div className="col container-fluid">
@@ -153,10 +180,10 @@ let EventHeaderBanner = props => {
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
                         <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
-                            {props.event.date} - {props.event.time}
+                            {renderDate()}
                         </h6>
-                        <h6 className={"m-0 " + (props.event.address ? "" : " d-none ")}>
-                            {props.event.address}
+                        <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
+                            {props.event.location.address}
                         </h6>
                     </div>
                     <div className="col-4 d-flex justify-content-end px-1">
@@ -185,7 +212,7 @@ let EventLocation = props => {
         <section className="row">
             <div className="col-12">
                 <h5>Luogo dell'evento</h5>
-                <LocationMap place={props.event.place}/>
+                <LocationMap place={props.event.location}/>
             </div>
         </section>
     )
@@ -199,9 +226,9 @@ let EventOrganizatorInfo = props => {
                 <div className="col-12 px-0">
                     <h6>Organizzatore</h6>
                 </div>
-                <div className="col-2 px-0">
+                <div className="col-2 px-0 ">
                     <img src={ApiService.getImageUrl(props.organizator.avatar)}
-                         className="img-fluid border rounded-circle"
+                         className={"img-fluid border rounded-circle " + (props.organizator.avatar ? "" : " d-none ")}
                          alt="Immagine profilo organizzatore"
                     />
                 </div>

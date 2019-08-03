@@ -4,7 +4,7 @@ import Contacts from "../contacts/Contacts";
 import {ConfirmButton} from "../floating_button/FloatingButton";
 import ApiService from "../../services/api/Api";
 import {LoginRedirect, RedirectComponent} from "../redirect/Redirect";
-import {loadGoogleMapsScript} from "../../services/google_cloud/GoogleMaps";
+import GoogleApi from "../../services/google_cloud/GoogleMaps";
 
 class EventCreator extends React.Component {
 
@@ -15,24 +15,28 @@ class EventCreator extends React.Component {
                 name: "",
                 description: "",
                 date: undefined,
-                time: undefined,
-                address: "",
-                place: undefined,
+                location: {
+                    lat: undefined,
+                    lng: undefined,
+                    address: "",
+                    place_id: undefined
+                },
                 public: true,
                 typology: undefined,
                 thumbnail: undefined,
-                thumbnailPreview: undefined,
                 maxParticipants: undefined,
                 organizator: props.loggedUser
             },
+            dateSet: false,
+            timeSet: false,
             eventCreated: false,
             eventId: undefined
         }
     }
 
     componentDidMount() {
-        if (this.props.isLogged)
-            loadGoogleMapsScript(() => {
+        if (true/*this.props.isLogged*/)
+            GoogleApi.loadGoogleMapsScript(() => {
                 let inputAddress = document.getElementById('address')
                 let searchBox = new window.google.maps.places.SearchBox(inputAddress)
                 searchBox.addListener('places_changed', () => {
@@ -45,8 +49,10 @@ class EventCreator extends React.Component {
                         let address = streetAddress + ", " + streetNumber + ", " + city
                         this.setState((prevState, props) => {
                             let state = prevState
-                            state.event.address = address
-                            state.event.place = place
+                            state.event.location.address = address
+                            state.event.location.place_id = place.place_id
+                            state.event.location.lat = place.geometry.location.lat()
+                            state.event.location.lng = place.geometry.location.lng()
                             return state
                         })
                     }
@@ -85,7 +91,17 @@ class EventCreator extends React.Component {
         event.persist()
         this.setState((prevState, props) => {
             let state = prevState
-            state.event.date = event.target.value
+            state.dateSet = true
+            let date = event.target.valueAsDate
+            if (state.event.date && date) {
+                state.event.date.setUTCFullYear(date.getUTCFullYear())
+                state.event.date.setUTCMonth(date.getUTCMonth() + 1)
+                state.event.date.setUTCDate(date.getUTCDate())
+            }
+            else {
+                state.event.date = date
+                state.event.date.setUTCMonth(date.getUTCMonth() + 1)
+            }
             return state
         })
     }
@@ -94,7 +110,14 @@ class EventCreator extends React.Component {
         event.persist()
         this.setState((prevState, props) => {
             let state = prevState
-            state.event.time = event.target.value
+            state.timeSet = true
+            let time = event.target.valueAsDate
+            if (state.event.date && time) {
+                state.event.date.setUTCHours(time.getUTCHours())
+                state.event.date.setUTCMinutes(time.getUTCMinutes())
+                state.event.date.setUTCSeconds(time.getUTCSeconds())
+            } else
+                state.event.date = time
             return state
         })
     }
@@ -105,7 +128,7 @@ class EventCreator extends React.Component {
         reader.onload = e => {
             this.setState((prevState, props) => {
                 let state = prevState
-                state.event.thumbnailPreview = e.target.result
+                state.event.thumbnail = e.target.result
                 return state
             })
         }
@@ -123,6 +146,24 @@ class EventCreator extends React.Component {
         this.setState((prevState, props) => {
             let state = prevState
             state.event.description = event.target.value
+            return state
+        })
+    }
+
+    updateVisibility = event => {
+        event.persist()
+        this.setState(prevState => {
+            let state = prevState
+            switch(event.target.value) {
+                case "public":
+                    state.event.public = true
+                    break
+                case "private":
+                    state.event.public = false
+                    break
+                default:
+                    break
+            }
             return state
         })
     }
@@ -146,11 +187,11 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("name")
         if (!event.typology)
             addErrorClassAndfocus("typology")
-        if (!event.date)
+        if (!this.state.dateSet)
             addErrorClassAndfocus("date")
-        if (!event.time)
+        if (!this.state.timeSet)
             addErrorClassAndfocus("time")
-        if (!event.address || event.place)
+        if (!event.location.place_id)
             addErrorClassAndfocus("address")
         if (!event.maxParticipants)
             addErrorClassAndfocus("max-participants")
@@ -179,20 +220,29 @@ class EventCreator extends React.Component {
             />
     }
 
+    renderEventLocationMap = () => {
+        if (this.state.event.location.place_id)
+            return (
+                <div className={"mt-2"}>
+                    <EventLocation event={this.state.event} />
+                </div>
+            )
+    }
+
     render() {
         return (
             <form className="main-container">
-                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
+                <LoginRedirect {...this.props} redirectIfNotLogged={false} />
                 {this.renderRedirect()}
                 <section className="row">
                     <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
-                        <div className={"text-secondary " + (this.state.event.thumbnailPreview ? " d-none " : "" )}>
+                        <div className={"text-secondary " + (this.state.event.thumbnail ? " d-none " : "" )}>
                             <em className="far fa-image fa-9x"></em>
                             <h4>Clicca per aggiungere un'immagine</h4>
                         </div>
-                        <img src={this.state.event.thumbnailPreview}
+                        <img src={this.state.event.thumbnail}
                              alt="Event thumbnail"
-                             className={"img-fluid " + (this.state.event.thumbnailPreview ? "" : " d-none ")}
+                             className={"img-fluid " + (this.state.event.thumbnail ? "" : " d-none ")}
                         />
                     </div>
                     <div className="d-none">
@@ -214,6 +264,35 @@ class EventCreator extends React.Component {
 
                 <section className={"row mt-2"}>
                     <div className="col container-fluid">
+                        <div className="row d-flex align-items-center">
+                            <div className="col-12">
+                                <label className="m-0">Visibilità</label>
+                                <div className="custom-control custom-radio">
+                                    <input
+                                        type="radio"
+                                        id="public"
+                                        name="visibility"
+                                        className="custom-control-input"
+                                        value="public"
+                                        onChange={this.updateVisibility}
+                                        defaultChecked={this.state.event.public}
+                                    />
+                                    <label className="m-0 custom-control-label" htmlFor="public">Evento pubblico</label>
+                                </div>
+                                <div className="custom-control custom-radio">
+                                    <input
+                                        type="radio"
+                                        id="private"
+                                        name="visibility"
+                                        className="custom-control-input"
+                                        value="private"
+                                        onChange={this.updateVisibility}
+                                        defaultChecked={!this.state.event.public}
+                                    />
+                                    <label className="m-0 custom-control-label" htmlFor="private">Evento privato</label>
+                                </div>
+                            </div>
+                        </div>
                         <div className="row d-flex align-items-center">
                             <div className="col-7 pr-2">
                                 <label htmlFor="name" className="m-0">Nome dell'evento</label>
@@ -306,9 +385,7 @@ class EventCreator extends React.Component {
                     </div>
                 </section>
 
-                <div className={"mt-2" + (this.state.event.place ? "" : " d-none ")}>
-                    <EventLocation event={this.state.event} />
-                </div>
+                {this.renderEventLocationMap()}
 
                 <Contacts event={this.state.event}/>
 

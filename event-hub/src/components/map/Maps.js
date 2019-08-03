@@ -3,7 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 import GoogleMapsProperties from '../../services/google_cloud/Properties'
 import {EventHeaderBanner} from '../event/Event'
 import {PARTY, MEETING, SPORT} from "../event/Event";
-import {loadGoogleMapsScript} from "../../services/google_cloud/GoogleMaps";
+import GoogleApi from "../../services/google_cloud/GoogleMaps";
 
 let images = require.context("../../assets/images", true)
 
@@ -22,7 +22,7 @@ class EventsMap extends React.Component {
     }
 
     componentDidMount() {
-        loadGoogleMapsScript(this.updateMapRef)
+        GoogleApi.loadGoogleMapsScript(this.updateMapRef)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

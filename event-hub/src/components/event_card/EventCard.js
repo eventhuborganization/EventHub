@@ -10,15 +10,20 @@ class EventCard extends React.Component {
         return (
             <div className="row">
                 <div className="col-11 card shadow my-2 mx-auto px-0">
-                    <Link className="card bg-dark" id={this.props.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.props.eventInfo._id }>
-                        <img src={ApiService.getImageUrl(this.props.eventInfo.thumbnail)} className="card-img img-fluid myCard" alt="locandina evento" />
+                    <Link className="card bg-secondary" id={this.props.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.props.eventInfo._id }>
+                        <div className={"myCard"}>
+                            <img src={ApiService.getImageUrl(this.props.eventInfo.thumbnail)}
+                                 className={"card-img img-fluid" + (this.props.eventInfo.thumbnail ? "" : " d-none ")}
+                                 alt="locandina evento"
+                            />
+                        </div>
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-8">
                                             <h5 className="card-title event-name">{this.props.eventInfo.name}</h5>
-                                            <h6 className="card-subtitle text-muted event-text">{this.props.eventInfo.organizator.name}</h6>
+                                            <h6 className="card-subtitle text-muted event-text">{this.props.eventInfo.organizator.name} {this.props.eventInfo.organizator.surname}</h6>
                                         </div>
                                         <div className="col-4 d-flex justify-content-end">
                                             <h5 className="card-title event-name">{this.props.eventInfo.numParticipants}/{this.props.eventInfo.maxParticipants}</h5>

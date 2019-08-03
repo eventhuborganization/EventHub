@@ -11,7 +11,7 @@ let Contacts = props => {
                             <div className="col-2 d-flex align-items-center justify-content-center">
                                 <em className="fas fa-phone fa-2x text-secondary"></em>
                             </div>
-                            <p className="col my-0 d-flex align-items-center">{props.event.organizator.phoneNumber}</p>
+                            <p className="col my-0 d-flex align-items-center">{props.event.organizator.phone}</p>
                         </div>
                         <div className="row">
                             <div className="col-2 d-flex align-items-center justify-content-center">

@@ -29,10 +29,10 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  * @returns {{date: *, description: *, creationDate: *, maxParticipants: *, organizator: *, typology: *, followers: *, public: *, reviews: *, name: *, _id: *, participants: *, numParticipants: *}}
  */
 let mapEvent = (event) => {
-    let address = event.address ? {
-        lat: event.address.lat,
-        lng: event.address.lng,
-        city: event.address.city
+    let location = event.location ? {
+        lat: event.location.lat,
+        lng: event.location.lng,
+        address: event.location.address
     } : {}
     return {
         creationDate: event.creationDate,
@@ -48,13 +48,13 @@ let mapEvent = (event) => {
         reviews: event.reviews ? event.reviews : [],
         typology: event.typology,
         _id: event._id,
-        address: address
+        location: location
     }
 }
 
 /**
  * Map a received user data to a well known data structure.
- * @param user
+ * @param user {object}
  * @returns {{birthdate: *, address: *, gender: *, reviewsReceived: (*|[]), eventsSubscribed: (*|[]), groups: *, avatar: *, reviewsDone: (*|[]), points: *, badges: *, linkedUsers: *, nReviewsReceived: (*|number), eventsFollowed: (*|[]), phone: *, surname: *, organization: *, name: *, _id: *, email: *, nReviewsDone: (*|number)}}
  */
 let mapUser = (user) => {
@@ -85,62 +85,99 @@ let mapUser = (user) => {
     }
 }
 
+/**
+ * Map a received notification to a well known data structure.
+ * @param notification {{
+ *     _id: string,
+ *     typology: number,
+ *     sender: object,
+ *     event: object,
+ *     timestamp: string
+ * }}
+ * @returns {{typology: *, sender: *, _id: *, event: *, timestamp: *}}
+ */
 let mapNotification = (notification) => {
     return {
         _id: notification._id,
         typology: notification.typology,
-        sender: mapUser(notification.sender),
+        sender: notification.sender ? mapUser(notification.sender) : {},
         event: notification.event ? mapEvent(notification.event) : {},
         timestamp: notification.timestamp
     }
 }
 
 /**
- * @param data {object}
- * @param data.fromIndex {number}
- * @param data.event {object}
- * @param data.event.typology {string}
- * @param data.event.location {object}
- * @param data.event.location.lat {number}
- * @param data.event.location.lng {number}
- * @param data.event.location.maxDistanceInMetres {string}
- * @param data.event.date {object}
- * @param data.event.date.value {Date}
- * @param data.event.date.operator {string}
- * @param data.event.public {boolean}
- * @param onError {function(error)}
- * @param onSuccess {function(response)}
+ * @param data {{
+ *     event: {
+ *         typology: string,
+ *         location: {
+ *             lat: number,
+ *             lng: number,
+ *             maxDistanceInMetres: number,
+ *             place_id: string,
+ *             address: string
+ *         },
+ *         date: {
+ *             value: Date,
+ *             operator: string
+ *         },
+ *         public: boolean,
+ *         name: string
+ *     }
+ * }}
  */
-let getEvents = (data, onError, onSuccess) => {
+let createEventQueryConfigs = (data) => {
     let config = {}
-    let index = 0
     if (data) {
         if (data.event) {
-            let date = undefined
+            config.params = {
+                name: data.event.name,
+                typology: data.event.typology,
+                public: data.event.public
+            }
+            if (data.event.location) {
+                config.params.location = {
+                    lon: data.event.location.lng,
+                    lat: data.event.location.lat,
+                    maxDistance: data.event.location.maxDistanceInMetres,
+                    address: data.event.location.address,
+                    place_id: data.event.location.place_id
+                }
+            }
             if (data.event.date) {
-                date = {
+                config.params.date = {
                     value: data.event.date.value,
                     operator: data.event.date.operator
                 }
             }
-            let location = undefined
-            if (data.event.location) {
-                location = {
-                    lon: data.event.location.lng,
-                    lat: data.event.location.lat,
-                    maxDistance: data.event.location.maxDistanceInMetres
-                }
-            }
-            config.params = {
-                typology: data.event.typology,
-                location: location,
-                date: date,
-                public: data.event.public
-            }
         }
-        if (data.fromIndex)
-            index = data.fromIndex
     }
+    return config
+}
+
+/**
+ * @param data {{
+ *     fromIndex: number,
+ *     event: {
+ *         typology: string,
+ *         location: {
+ *             lat: number,
+ *             lng: number,
+ *             maxDistanceInMetres: number
+ *         },
+ *         date: {
+ *             value: Date,
+ *             operator: string
+ *         },
+ *         public: boolean
+ *     }
+ * }}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let getEvents = (data, onError, onSuccess) => {
+    let config = createEventQueryConfigs(data)
+    let index = data && data.fromIndex ? data.fromIndex : 0
     managePromise(
         Axios.get('/events/' + index, config),
         [201, 200],
@@ -150,30 +187,29 @@ let getEvents = (data, onError, onSuccess) => {
 }
 
 /**
- * @param data {object}
- * @param data.event {object}
- * @param data.event.name {string}
- * @param data.event.typology {string}
- * @param data.event.location {object}
- * @param data.event.location.lat {number}
- * @param data.event.location.lng {number}
- * @param data.event.location.place_id {string}
- * @param data.event.location.address {string}
- * @param data.event.date {object}
- * @param data.event.date.value {boolean}
- * @param data.event.date.operator {string}
- * @param data.event.public {boolean}
+ * @param data {{
+ *     event: {
+ *         typology: string,
+ *         location: {
+ *             lat: number,
+ *             lng: number,
+ *             maxDistanceInMetres: number,
+ *             place_id: string,
+ *             address: string
+ *         },
+ *         date: {
+ *             value: Date,
+ *             operator: string
+ *         },
+ *         public: boolean,
+ *         name: string
+ *     }
+ * }}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
 let searchEvents = (data, onError, onSuccess) => {
-    let config = {
-        params: {
-            typology: data.event.typology,
-            location: data.event.location,
-            date: data.event.date
-        }
-    }
+    let config = createEventQueryConfigs(data)
     managePromise(
         Axios.get('/events/search/' + data.event.name, config),
         [200],
@@ -183,13 +219,41 @@ let searchEvents = (data, onError, onSuccess) => {
 }
 
 /**
- * @param event {object}
+ * @param event {{
+ *     name: string,
+ *     description: string,
+ *     date: Date,
+ *     location: {
+ *         lat: number,
+ *         lng: number
+ *     },
+ *     public: boolean,
+ *     typology: string,
+ *     thumbnail: object,
+ *     maxParticipants: number,
+ *     organizator: object
+ * }}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
 let createNewEvent = (event, onError, onSuccess) => {
+    let data = {
+        name: event.name,
+        description: event.description,
+        date: event.date,
+        location: {
+            lat: event.location.lat,
+            lng: event.location.lng,
+            address: event.location.address
+        },
+        public: event.public,
+        typology: event.typology,
+        thumbnail: event.thumbnail,
+        maxParticipants: event.maxParticipants,
+        organizator: event.organizator._id
+    }
     managePromise(
-        Axios.post('/event', event),
+        Axios.post('/event', data),
         [201],
         onError,
         response => onSuccess(mapEvent(response.data))
