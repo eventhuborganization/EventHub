@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const fuse = require('fuse.js')
-const parser = require('DataParser')
+const parser = require('./DataParser')
 const Event = mongoose.model('Events')
 
 exports.getEvent = (req, res) => {
