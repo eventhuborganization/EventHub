@@ -7,13 +7,16 @@ let SEARCH_BY_EVENT = 0
 let SEARCH_BY_PLACE = 1
 
 /**
- * @param props {object}
- * @param props.searchBy {number}
- * @param props.onChange {function}
- * @param props.filters {object}
- * @param props.filters.typology {boolean}
- * @param props.filters.date {boolean}
- * @param props.filters.city {boolean}
+ * @param props {{
+ *     searchBy: number,
+ *     onChange: function,
+ *     filters: {
+ *         typology: boolean,
+ *         date: boolean,
+ *         location: boolean
+ *     },
+ *     stickyTop: boolean
+ * }}
  * @returns {*}
  * @constructor
  */
@@ -21,14 +24,16 @@ class SearchBar extends React.Component {
 
     search_input_id = 'tf-search'
     btn_search_id = 'btn-search'
+    location_filter_id = 'location'
+    location_input_placeholder = "Indirizzo, Città, ..."
 
     constructor(props) {
         super(props)
         let filters = {}
         if (props.filters.typology)
             filters.typology = ""
-        if (props.filters.city)
-            filters.city = ""
+        if (props.filters.location)
+            filters.location = ""
         if (props.filters.date)
             filters.date = ""
         this.state = {
@@ -79,6 +84,22 @@ class SearchBar extends React.Component {
                 return state
             })
         })
+        GoogleApi.loadGoogleMapsScript(() => {
+            let locationFilter = document.getElementById(this.location_filter_id)
+            console.log(locationFilter)
+            let searchBox = new window.google.maps.places.SearchBox(locationFilter)
+            searchBox.addListener('places_changed', () => {
+                let places = searchBox.getPlaces()
+                if (places && places.length) {
+                    this.setState(
+                        (prevState, props) => {
+                            let state = prevState
+                            state.filters.location = places[0]
+                            return state
+                        }, () => this.searchEvents())
+                }
+            })
+        })
         let searchButton = document.getElementById(this.btn_search_id)
         searchButton.addEventListener('click', event => this.searchEvents())
     }
@@ -89,7 +110,10 @@ class SearchBar extends React.Component {
         let data = {
             event: {
                 typology: filters.typology,
-                date: filters.date,
+                date: {
+                    value: filters.date,
+                    operator: ">="
+                },
             }
         }
         let response = {}
@@ -99,28 +123,34 @@ class SearchBar extends React.Component {
                     let place = state.search_value
                     let location = place.geometry.location
                     data.event.location = {
-                        lng: location.lng,
-                        lat: location.lat,
-                        place_id: place.place_id,
-                        address: place.address
+                        lng: location.lng(),
+                        lat: location.lat(),
+                        maxDistanceInMetres: 1000
                     }
                     response.place = place
                 }
                 break
             case SEARCH_BY_EVENT:
                 data.event.name = state.search_value
-                data.event.location = {
-                    city: filters.city
+                if (filters.location) {
+                    let location = filters.location.geometry.location
+                    data.event.location = {
+                        lng: location.lng,
+                        lat: location.lat,
+                        maxDistanceInMetres: 1000
+                    }
                 }
                 break
             default: break
         }
-        ApiService.searchEvents(data,
+        console.log(data)
+        this.props.onChange(response)
+        /*ApiService.searchEvents(data,
             error => this.props.onError("Errore durante la ricerca. Riprovare."),
             res => {
                 response.events = res.data
                 this.props.onChange(response)
-            })
+            })*/
     }
 
     getSearchInputColsByType() {
@@ -139,8 +169,8 @@ class SearchBar extends React.Component {
         this.updateFilterValue(event, "date")
     }
 
-    updateCity = (event) => {
-        this.updateFilterValue(event, "city")
+    updateLocation = (event) => {
+        this.updateFilterValue(event, "location")
     }
 
     updateFilterValue = (event, filterName) => {
@@ -154,6 +184,19 @@ class SearchBar extends React.Component {
 
     loadFilters() {
         let filters = []
+        if (this.props.filters.location && this.props.searchBy !== SEARCH_BY_PLACE)
+            filters.push(
+                <div key="location">
+                    <label htmlFor={this.location_filter_id} className="m-0">Località</label>
+                    <input
+                        id={this.location_filter_id}
+                        name="location"
+                        type="text"
+                        className="form-control"
+                        placeholder={this.location_input_placeholder}
+                    />
+                </div>
+            )
         if (this.props.filters.typology)
             filters.push(
                 <div key="typology">
@@ -161,8 +204,9 @@ class SearchBar extends React.Component {
                     <select defaultValue={"placeholder"}
                             onChange={this.updateTypology}
                             className="form-control"
-                            id="typology">
-                        <option value="placeholder" disabled hidden>Type</option>
+                            id="typology"
+                    >
+                        <option value="placeholder" disabled hidden>Tipo</option>
                         <option value={PARTY}>Festa</option>
                         <option value={MEETING}>Incontro</option>
                         <option value={SPORT}>Sport</option>
@@ -182,19 +226,6 @@ class SearchBar extends React.Component {
                     />
                 </div>
             )
-        if (this.props.filters.city && this.props.searchBy !== SEARCH_BY_PLACE)
-            filters.push(
-                <div key="city">
-                    <label htmlFor="city" className="m-0">Città</label>
-                    <input
-                        id="city"
-                        name="city"
-                        type="text"
-                        className="form-control"
-                        onChange={this.updateCity}
-                    />
-                </div>
-            )
         return (
             <div className="card card-body">
                 <h4>Filtri</h4>
@@ -207,30 +238,46 @@ class SearchBar extends React.Component {
         document.getElementById("filters").classList.remove("show")
     }
 
+    getInputSearchPlaceHolder = () => {
+        switch(this.props.searchBy) {
+            case SEARCH_BY_EVENT: return "Nome dell'evento"
+            case SEARCH_BY_PLACE: return this.location_input_placeholder
+            default: return ""
+        }
+    }
+
     render() {
+        let navBarClassName = (this.props.stickyTop ? " sticky-top " : "")
+            + " row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1"
         return (
-            <nav id="search-bar" className="sticky-top row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1">
-                <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1">EH</h1>
-                <div className="col form-inline container-fluid px-1 pb-1">
-                    <div className="row w-100 mx-0 d-flex justify-content-between">
-                        <label htmlFor={this.search_input_id} className="d-none">Search field</label>
-                        <label htmlFor={this.btn_search_id} className="d-none">Search button</label>
-                        <input id={this.search_input_id} name="tf-search" type="search" placeholder="Cerca qualcosa"
-                               className={this.getSearchInputColsByType() + " form-control"}
-                                onFocus={this.hideFilters}/>
-                        <button id={this.btn_search_id} name="btn-search" className="col ml-1 btn btn-success" type="button">
-                            <em className="fas fa-search" aria-hidden="true"></em>
-                        </button>
-                        <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button" data-toggle="collapse"
-                                data-target="#filters" aria-expanded="false" aria-controls="filters">
-                            <em className="fas fa-sliders-h" aria-hidden="true"></em>
-                        </button>
+            <div>
+                <nav id="search-bar" className={navBarClassName}>
+                    <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1">EH</h1>
+                    <div className="col form-inline container-fluid px-1 pb-1">
+                        <div className="row w-100 mx-0 d-flex justify-content-between">
+                            <label htmlFor={this.search_input_id} className="d-none">Search field</label>
+                            <label htmlFor={this.btn_search_id} className="d-none">Search button</label>
+                            <input id={this.search_input_id}
+                                   name="tf-search"
+                                   type="search"
+                                   placeholder={this.getInputSearchPlaceHolder()}
+                                   className={this.getSearchInputColsByType() + " form-control"}
+                                   onFocus={this.hideFilters}
+                            />
+                            <button id={this.btn_search_id} name="btn-search" className="col ml-1 btn btn-success" type="button">
+                                <em className="fas fa-search" aria-hidden="true"></em>
+                            </button>
+                            <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button" data-toggle="collapse"
+                                    data-target="#filters" aria-expanded="false" aria-controls="filters">
+                                <em className="fas fa-sliders-h" aria-hidden="true"></em>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </nav>
                 <div className="collapse w-100" id="filters">
                     {this.loadFilters()}
                 </div>
-            </nav>
+            </div>
         )
     }
 }

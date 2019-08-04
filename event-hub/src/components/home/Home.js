@@ -44,8 +44,9 @@ class Home extends React.Component {
                            filters={{
                                typology: true,
                                date: true,
-                               city: true
+                               location: true
                            }}
+                           stickyTop={true}
                            onError={this.props.onError}
                 />
 

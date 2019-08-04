@@ -42,7 +42,7 @@ class EventsMap extends React.Component {
         let noPoiMapName = 'no_poi_map'
         let noPoiMap = new window.google.maps.StyledMapType(styles,{name: noPoiMapName});
         let map = new window.google.maps.Map(document.getElementById(this.googleMapDivId), {
-            zoom: 16,
+            zoom: 14,
             center: this.props.centerPosition,
             disableDefaultUI: true,
             mapTypeControlOptions: {

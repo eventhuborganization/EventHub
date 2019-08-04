@@ -19,12 +19,15 @@ class Map extends React.Component {
     }
 
     componentDidMount() {
+        this.updateMapHeight()
+        window.onorientationchange = this.updateMapHeight
+    }
+
+    updateMapHeight = () => {
         let searchBarHeight = document.getElementById('search-bar').offsetHeight
         let footerHeight = document.getElementById('footer').offsetHeight
         let mapContainerHeight = window.screen.availHeight - searchBarHeight - footerHeight
-        let state = this.state
-        state.mapContainerHeight = mapContainerHeight
-        this.setState(state)
+        this.setState({mapContainerHeight: mapContainerHeight})
     }
 
     setCurrentPositionAsCenter = () => {

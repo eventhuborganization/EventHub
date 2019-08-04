@@ -219,6 +219,37 @@ let searchEvents = (data, onError, onSuccess) => {
 }
 
 /**
+ * @param data {{
+ *     event: {
+ *         typology: string,
+ *         location: {
+ *             lat: number,
+ *             lng: number,
+ *             maxDistanceInMetres: number,
+ *             place_id: string,
+ *             address: string
+ *         },
+ *         date: {
+ *             value: Date,
+ *             operator: string
+ *         },
+ *         public: boolean
+ *     }
+ * }}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let searchNearestEvents = (data, onError, onSuccess) => {
+    let config = createEventQueryConfigs(data)
+    managePromise(
+        Axios.get('/events/position/near', config),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapEvent))
+    )
+}
+
+/**
  * @param event {{
  *     name: string,
  *     description: string,
