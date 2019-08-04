@@ -310,7 +310,7 @@ let interactWithEvent = (data, onError, onSuccess) => {
  */
 let getNotifications = (fromIndex, onError, onSuccess) => {
     managePromise(
-        Axios.get('/notifications/' + fromIndex),
+        Axios.get('/notifications/' + (fromIndex && fromIndex >=0 ? fromIndex : 0)),
         [200],
         onError,
         response => onSuccess(response.data.map(mapNotification))
@@ -325,7 +325,7 @@ let getNotifications = (fromIndex, onError, onSuccess) => {
  */
 let sendFriendshipResponse = (friendId, accepted, onError, onSuccess) => {
     let data = {
-        firend: friendId,
+        friend: friendId,
         accepted: accepted
     }
     managePromise(
@@ -337,16 +337,20 @@ let sendFriendshipResponse = (friendId, accepted, onError, onSuccess) => {
 }
 
 /**
- * @param position {object}
- * @param position.lat {number}
- * @param position.lon {number}
+ * @param position {{
+ *     lat: number,
+ *     lng: number
+ * }}
  * @param accepted {boolean}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
 let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
     let data = {
-        position: position,
+        position: {
+            lat: position.lat,
+            lng: position.lng
+        },
         accepted: accepted
     }
     managePromise(
@@ -435,11 +439,12 @@ let updateUserProfile = (data, onError, onSuccess) => {
 }
 
 /**
- * @param data {object}
- * @param data.email {string}
- * @param data.password {string}
- * @param data.newEmail {string}
- * @param data.newPassword {string}
+ * @param data {{
+ *     email: string,
+ *     password: string,
+ *     newEmail: string,
+ *     newPassword: string
+ * }}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
