@@ -2,7 +2,7 @@ import React from 'react'
 import Notification from "./Notification"
 import {LoginRedirect} from "../redirect/Redirect"
 import ApiService from '../../services/api/Api'
-import NoItemsPlaceholder from "../no_item_placeholder/NoItemsPlaceHolder";
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
 
 class Notifications extends React.Component {
 

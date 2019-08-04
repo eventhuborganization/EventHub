@@ -209,7 +209,7 @@ class SearchBar extends React.Component {
 
     render() {
         return (
-            <nav id="search-bar" className="sticky-top row navbar navbar-light bg-light px-0 border-bottom border-primary pb-0">
+            <nav id="search-bar" className="sticky-top row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1">
                 <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1">EH</h1>
                 <div className="col form-inline container-fluid px-1 pb-1">
                     <div className="row w-100 mx-0 d-flex justify-content-between">

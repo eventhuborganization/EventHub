@@ -4,7 +4,7 @@ import EventCard from "../event_card/EventCard";
 import {CreateNewEventButton} from "../floating_button/FloatingButton";
 import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar";
 import ApiService from '../../services/api/Api'
-import NoItemsPlaceholder from "../no_item_placeholder/NoItemsPlaceHolder";
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
 
 class Home extends React.Component {
 

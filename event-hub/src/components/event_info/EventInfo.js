@@ -3,6 +3,8 @@ import {EventHeaderBanner, EventInteractionPanel, EventLocation, EventOrganizato
 import Contacts from '../contacts/Contacts'
 import ApiService from '../../services/api/Api'
 import GoogleApi from '../../services/google_cloud/GoogleMaps'
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
+import {Link} from "react-router-dom";
 
 class EventInfo extends React.Component {
 
@@ -81,7 +83,18 @@ class EventInfo extends React.Component {
                 </main>
             )
         else
-            return (<div />)
+            return (
+                <div>
+                    <NoItemsPlaceholder placeholder={"Le informazioni per questo evento non sono al momento disponibili"} />
+                    <div className={"row"}>
+                        <div className={"col-12"}>
+                            <div className={"text-right h4 mt-2"}>
+                                <Link to={"/"}>Ritorna alla home</Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                )
     }
 }
 
