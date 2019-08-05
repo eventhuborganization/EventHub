@@ -131,7 +131,6 @@ let createEventQueryConfigs = (data) => {
     if (data) {
         if (data.event) {
             config.params = {
-                name: data.event.name,
                 typology: data.event.typology,
                 public: data.event.public
             }
@@ -210,8 +209,9 @@ let getEvents = (data, onError, onSuccess) => {
  */
 let searchEvents = (data, onError, onSuccess) => {
     let config = createEventQueryConfigs(data)
+    let name = data && data.event ? data.event.name : ""
     managePromise(
-        Axios.get('/events/search/' + data.event.name, config),
+        Axios.get('/events/search/' + name, config),
         [200],
         onError,
         response => onSuccess(response.data.map(mapEvent))
@@ -587,6 +587,7 @@ export default {
     createNewEvent,
     getEvents,
     searchEvents,
+    searchNearestEvents,
     participateToEvent,
     followEvent,
     getNotifications,

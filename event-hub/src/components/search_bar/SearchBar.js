@@ -71,8 +71,6 @@ class SearchBar extends React.Component {
                 }
             })
         })
-        let searchButton = document.getElementById(this.btn_search_id)
-        searchButton.style.display = 'none'
     }
 
     configureSearchByEvent = () => {
@@ -104,6 +102,19 @@ class SearchBar extends React.Component {
         searchButton.addEventListener('click', event => this.searchEvents())
     }
 
+    search = (searchApi, data, place) => {
+        searchApi(data,
+            error => this.props.onError("Errore durante la ricerca. Riprovare."),
+            events => this.onResults(events, place))
+    }
+
+    onResults = (events, place) => {
+        this.props.onChange({
+            events: events,
+            place: place
+        })
+    }
+
     searchEvents = () => {
         let state = this.state
         let filters = state.filters
@@ -116,19 +127,18 @@ class SearchBar extends React.Component {
                 },
             }
         }
-        let response = {}
         switch(this.props.searchBy) {
             case SEARCH_BY_PLACE:
-                if (state.search_value) {
-                    let place = state.search_value
+                let place = state.search_value
+                if (place) {
                     let location = place.geometry.location
                     data.event.location = {
                         lng: location.lng(),
                         lat: location.lat(),
                         maxDistanceInMetres: 1000
                     }
-                    response.place = place
                 }
+                this.search(ApiService.searchNearestEvents, data, place)
                 break
             case SEARCH_BY_EVENT:
                 data.event.name = state.search_value
@@ -140,22 +150,15 @@ class SearchBar extends React.Component {
                         maxDistanceInMetres: 1000
                     }
                 }
+                this.search(ApiService.searchEvents, data)
                 break
             default: break
         }
-        console.log(data)
-        this.props.onChange(response)
-        /*ApiService.searchEvents(data,
-            error => this.props.onError("Errore durante la ricerca. Riprovare."),
-            res => {
-                response.events = res.data
-                this.props.onChange(response)
-            })*/
     }
 
     getSearchInputColsByType() {
         switch(this.props.searchBy) {
-            case SEARCH_BY_PLACE: return " col-10 "
+            case SEARCH_BY_PLACE: return " col-9 "
             case SEARCH_BY_EVENT: return " col-7 "
             default: return ""
         }
@@ -167,10 +170,6 @@ class SearchBar extends React.Component {
 
     updateDate = (event) => {
         this.updateFilterValue(event, "date")
-    }
-
-    updateLocation = (event) => {
-        this.updateFilterValue(event, "location")
     }
 
     updateFilterValue = (event, filterName) => {
@@ -246,6 +245,18 @@ class SearchBar extends React.Component {
         }
     }
 
+    renderSearchButton = () => {
+        switch(this.props.searchBy) {
+            case SEARCH_BY_EVENT:
+                return (
+                    <button id={this.btn_search_id} name="btn-search" className="col ml-1 btn btn-success" type="button">
+                        <em className="fas fa-search" aria-hidden="true"></em>
+                    </button>
+                )
+            default: break
+        }
+    }
+
     render() {
         let navBarClassName = (this.props.stickyTop ? " sticky-top " : "")
             + " row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1"
@@ -264,9 +275,7 @@ class SearchBar extends React.Component {
                                    className={this.getSearchInputColsByType() + " form-control"}
                                    onFocus={this.hideFilters}
                             />
-                            <button id={this.btn_search_id} name="btn-search" className="col ml-1 btn btn-success" type="button">
-                                <em className="fas fa-search" aria-hidden="true"></em>
-                            </button>
+                            {this.renderSearchButton()}
                             <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button" data-toggle="collapse"
                                     data-target="#filters" aria-expanded="false" aria-controls="filters">
                                 <em className="fas fa-sliders-h" aria-hidden="true"></em>
@@ -274,7 +283,7 @@ class SearchBar extends React.Component {
                         </div>
                     </div>
                 </nav>
-                <div className="collapse w-100" id="filters">
+                <div className="collapse w-100 my-1" id="filters">
                     {this.loadFilters()}
                 </div>
             </div>
