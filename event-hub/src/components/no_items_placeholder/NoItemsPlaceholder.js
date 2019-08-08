@@ -3,8 +3,8 @@ import './NoItemsPlaceholder.css'
 let NoItemsPlaceholder = props => {
     return (
         <div className="row">
-            <div className={"col-12 px-2 mt-2"}>
-                <p className={"m-0 h3 no-items-placeholder"}>{props.placeholder}</p>
+            <div className={"col-11 col-md-6 mx-auto mt-2"}>
+                <p className={"m-0 h4 no-items-placeholder p-2"}>{props.placeholder}</p>
             </div>
         </div>
     )
