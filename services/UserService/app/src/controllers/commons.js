@@ -4,23 +4,10 @@ let network = require('./network');
 let Users = mongoose.model('Users');
 
 exports.deleteUserPrivateInformations = (user) => {
-    return {
-        linkedUsers: user.linkedUsers,
-        groups: user.groups,
-        eventsSubscribed: user.eventsSubscribed,
-        eventsFollowed: user.eventsFollowed,
-        badges: user.badges,
-        points: user.points,
-        reviewsDone: user.reviewsDone,
-        reviewsReceived: user.reviewsReceived,
-        _id: user._id,
-        email: user.email,
-        name: user.name,
-        surname: user.surname,
-        organization: user.organization,
-        notifications: user.notifications,
-        actions: user.actions
-    }
+    let modifiableUser = Object.assign({}, user._doc)
+    delete modifiableUser.password
+    delete modifiableUser.salt
+    return modifiableUser
 }
 
 exports.updateUserEvents = (req, res, updates) => {

@@ -27,7 +27,14 @@ exports.logout = (req, res) => {
 }
 
 exports.registration = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users`, req.body)
+    let data = req.body
+    data.sex = data.gender
+    data.phoneNumber = data.phone
+    data.profilePicture = data.avatar
+    delete data.gender
+    delete data.phone
+    delete data.avatar
+    axios.post(`${UserServiceHostPort}/users`, data)
         .then((response) => {
             network.replayResponse(response, res);
         })

@@ -69,7 +69,7 @@ let mapUser = (user) => {
         organization: user.organization,
         gender: user.gender,
         birthdate: user.birthdate,
-        phone: user.phone,
+        phone: user.phone ? user.phone : user.phoneNumber,
         email: user.email,
         avatar: user.avatar,
         groups: user.groups ? user.groups : [],
