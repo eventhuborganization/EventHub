@@ -95,7 +95,7 @@ class PersonalProfile extends AbstractProfile {
     render = () => {
         return (
             <div>
-                <Profile {...this.props} isLocalUser={true} updateState={this.changeState} state={this.state}/>} />
+                <Profile {...this.props} isLocalUser={true} updateState={this.changeState} state={this.state} />
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>
         )
