@@ -1,8 +1,7 @@
 import React from 'react'
 import Api from '../../services/api/Api'
 
-import MultipleEventCard from '../multiple_event_card/MultipleEventCard'
-import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, ProfileControls} from './Profiles'
+import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, EventsBanner, ProfileControls} from './Profiles'
 import UserBanner from '../user_banner/UserBanner'
 import {FriendsTab} from '../menu_tab/MenuTab'
 
@@ -27,32 +26,29 @@ class Profile extends React.Component {
         return this.state.organization ? 
             (<div>
                 <section className="mt-3">
-                    <MultipleEventCard
+                    <EventsBanner
                         {...this.props}
                         events={this.state.pastEvents}
-                        iconName={"glass-cheers"} 
                         title={"Eventi organizzati"}
-                        emptyListLabel={ initialString + " ancora organizzato un evento"}
+                        emptyLabel={ initialString + " ancora organizzato un evento"}
                     />
                 </section>
             </div>) : 
             (<div> 
                 <section className="mt-3">
-                    <MultipleEventCard
+                    <EventsBanner
                         {...this.props}
                         events={this.state.futureEvents}
-                        iconName={"glass-cheers"} 
                         title={"Prossimi eventi"}
-                        emptyListLabel={initialString + " nessun prossimo evento in programma"}
+                        emptyLabel={initialString + " nessun prossimo evento in programma"}
                     />
                 </section>
                 <section className="mt-3">
-                    <MultipleEventCard
+                    <EventsBanner
                         {...this.props}
                         events={this.state.pastEvents}
-                        iconName={"glass-cheers"} 
                         title={"Ultimi eventi a cui " + (this.props.isLocalUser ? "hai" : "ha" ) + " partecipato"}
-                        emptyListLabel={initialString + " partecipato a nessun evento"}
+                        emptyLabel={initialString + " partecipato a nessun evento"}
                     />
                 </section>
             </div>)
@@ -89,27 +85,12 @@ class Profile extends React.Component {
         }
     }
 
-    renderLastBadge = () => {
-        console.log(this.state)
-        if (this.state.badges && this.state.badges.length !== 0) {
-            let lastBadge = this.state.badges[this.state.badges.length - 1]
-            return (
-                <section className="mt-2">
-                    <BadgeBanner badge={{
-                        name: lastBadge.name,
-                        description: lastBadge.description
-                    }}/>
-                </section>
-            )
-        } else
-            return (<div/>)
-    }
-
     render() {
         let isMyFriend = !this.props.isLocalUser && 
             this.state.linkedUsers.findIndex(elem => elem._id === this.props.userId) >= 0
 
         let events = this.getEventsByUserTypology()
+        let lastBadge = this.state.badges && this.state.badges.length !== 0 ? this.state.badges[this.state.badges.length - 1] : ""
         return (
             <main className="main-container">
 
@@ -168,7 +149,9 @@ class Profile extends React.Component {
                     <h2 className="col text-center">{this.state.name}</h2>
                 </section>
 
-                {this.renderLastBadge()}
+                <section className="mt-2">
+                    <BadgeBanner badge={lastBadge} emptyLabel="Nessun badge guadagnato al momento"/>
+                </section>
 
                 <section className="mt-3">
                     <LinkedUsersBanner 
