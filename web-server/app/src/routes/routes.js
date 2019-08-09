@@ -35,16 +35,16 @@ module.exports = (app) => {
     app.route("/profile")
         .put(sessionChecker, userController.updateProfile);
 
-    app.route("/event")
+    app.route("/events")
         .put(sessionChecker, eventController.createEvent);
 
     app.route("/profile/credentiels")
         .put(userController.updateCredentials);
 
-    app.route("/user/:uuid")
+    app.route("/users/:uuid")
         .get(userController.getInfoUser);
 
-    app.route("/user/search/:name")
+    app.route("/users/search/:name")
         .get(userController.searchUser);
 
 // *-------------------------------------------------------------------------
@@ -72,10 +72,10 @@ module.exports = (app) => {
         .post(sessionChecker, userController.userFriendRequest)
         .delete(sessionChecker, userController.removeLinkedUser)
 
-    app.route('/notification')
+    app.route('/notifications')
         .post(sessionChecker, notificationController.markNotificationAsReaded)
     
-    app.route('/notification/:fromIndex')
+    app.route('/notifications/:fromIndex')
         .post(sessionChecker, notificationController.getNotification)
     
     // ! notifica livello 4
