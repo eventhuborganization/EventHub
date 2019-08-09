@@ -91,19 +91,21 @@ class Profile extends React.Component {
 
         let events = this.getEventsByUserTypology()
         let lastBadge = this.state.badges && this.state.badges.length !== 0 ? this.state.badges[this.state.badges.length - 1] : ""
+        let avatar = this.state.avatar ? 
+            <img src={Api.getAvatarUrl(this.state.avatar)}
+                className="img-fluid" 
+                alt="Immagine profilo utente"
+            /> : 
+            <div className="text-secondary">
+                <em className="far fa-image fa-10x"></em>
+            </div>
         return (
             <main className="main-container">
 
                 <section className="row">
                     <div className="col card bg-dark px-0">
                         <div className="card-img px-0 text-center bg-dark" style={{minHeight: 150}}>
-                            <div className={"text-secondary" + (this.state.avatar ? " d-none" : "" )}>
-                                <em className="far fa-image fa-10x"></em>
-                            </div>
-                            <img src={Api.getImageUrl(this.state.avatar)}
-                                className={"img-fluid"  + (this.state.avatar ? "" : " d-none")} 
-                                alt="Immagine profilo utente"
-                            />
+                            {avatar}
                         </div>
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
