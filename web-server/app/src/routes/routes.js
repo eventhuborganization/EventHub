@@ -6,17 +6,17 @@ module.exports = (app) => {
 
     app.route("/")
         .get(sessionChecker,(req, res) => {
-            res.sendFile(`${appRoot}/views/home.html`);
+            res.sendFile(`${appRoot}/views/home.html`)
         })
 
     app.route('/images/:name')
         .get((req, res) => {
-            res.sendFile(`${appRoot}/public/images/events/${req.params.name}`);
+            res.sendFile(`${appRoot}/public/images/events/${req.params.name}`)
         })
 
     app.route('/avatars/:name')
         .get((req, res) => {
-            res.sendFile(`${appRoot}/public/images/users/${req.params.name}`);
+            res.sendFile(`${appRoot}/public/images/users/${req.params.name}`)
         })
 
     /* ----------------------------------------------- */
