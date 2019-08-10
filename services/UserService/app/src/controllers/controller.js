@@ -1,13 +1,14 @@
-let mongoose = require('mongoose');
-let commons = require('./commons');
-let security = require('./security');
-let network = require('./network');
+let mongoose = require('mongoose')
+let Fuse = require('fuse.js')
+let commons = require('./commons')
+let security = require('./security')
+let network = require('./network')
 
-let Users = mongoose.model('Users');
-let Reviews = mongoose.model('Reviews');
-let Groups = mongoose.model('Groups');
-let Actions = mongoose.model("Actions");
-let Badges = mongoose.model("Badges");
+let Users = mongoose.model('Users')
+let Reviews = mongoose.model('Reviews')
+let Groups = mongoose.model('Groups')
+let Actions = mongoose.model("Actions")
+let Badges = mongoose.model("Badges")
 
 const NUM_NOTIFICATIONS_TO_SHOW = 10;
 
@@ -578,13 +579,12 @@ exports.searchUser = (req, res) => {
         if (err)
             network.notContentRetrieved(res);
         else{
-            let fuse = new Fuse(users, options);
+            let fuse = new Fuse(users, optionsFuse)
             let list = fuse.search(req.params.name)
             let result = []
-            for (user in list) {
-                result.push(commons.deleteUserPrivateInformations(list[user]))
-            };
-            network.resultWithJSON(res,result);
+            list.map(user => commons.deleteUserPrivateInformations(user))
+                .forEach(user => result.push(user))
+            network.resultWithJSON(res,result)
         }
     });
 }

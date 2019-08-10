@@ -67,7 +67,7 @@ let mapUser = (user) => {
         name: user.name,
         surname: user.surname,
         organization: user.organization,
-        gender: user.gender,
+        gender: user.gender ? user.gender : user.sex,
         birthdate: user.birthdate,
         phone: user.phone ? user.phone : user.phoneNumber,
         email: user.email,
@@ -526,7 +526,7 @@ let searchUsers = (name, onError, onSuccess) => {
         Axios.get('/users/search/' + name),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapUser))
+        response => onSuccess({users: response.data.users.map(mapUser)})
     )
 }
 

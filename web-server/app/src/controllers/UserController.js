@@ -199,15 +199,13 @@ exports.getInfoUser = (req, res) => {
 }
 
 exports.searchUser = (req, res) => {
-    exports.registration = (req, res) => {
-        axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
+    axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
         .then((response) => {
-            network.replayResponse(response, res)
+            network.resultWithJSON(res, {users: response.data})
         })
         .catch((err) => {
             network.internalError(res, err)
-        });
-    }
+        })
 }
 
 exports.getLinkedUserInfo = (uuid) => {
