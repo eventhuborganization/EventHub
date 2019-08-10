@@ -38,18 +38,13 @@ exports.searchEventByName = (req, res) => {
     })
 }
 
-// TODO: riordinare il risultato e prendere i primi 10 a partire da :fromIndex
-exports.getEvents = (req, res) => {
+exports.getEventsFromIndex = (req, res) => {
     EventService.getEvent(req.query, response => {
         response.data.sort((a, b)=>{
             return a.eventDate - b.eventDate
         })
-        if(response.data.length > req.params.formIndex){
-            for (let index = 0; index < req.params.formIndex; index++) {
-                response.data.shift()
-            }
-        }
-        // TODO: prendere i primi 10 e restituirli 
+        // slice(from: escluso, to: incluso)
+        var result = response.data.slice(req.params.fromIndex, req.params.fromIndex + 10)
     })
 }
 

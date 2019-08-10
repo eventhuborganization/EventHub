@@ -21,7 +21,7 @@ module.exports = (app) => {
 
 
     app.route("/events/:fromIndex")
-        .get(eventController.getEvents)
+        .get(eventController.getEventsFromIndex)
 
     app.route("/notification/friendship")
         .post(sessionChecker,userController.friendshipAnswer);
@@ -78,11 +78,9 @@ module.exports = (app) => {
     app.route('/notification/:fromIndex')
         .post(sessionChecker, notificationController.getNotification)
     
-    // ! notifica livello 4
     app.route('/users/friendposition')
         .post(sessionChecker, userController.requestFriendPosition);
         
-    // ! Notifica livello 0 
     app.route('/invite/:uuid')
         .get(sessionChecker, userController.inviteFriends)
 
