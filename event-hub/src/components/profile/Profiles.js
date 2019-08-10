@@ -1,6 +1,8 @@
 import React from 'react';
-import styles from './UserProfile.module.css';
-import {Link} from "react-router-dom";
+import styles from './UserProfile.module.css'
+import {Link} from "react-router-dom"
+import EventCard from '../event_card/EventCard'
+import MultipleElementsBanner from '../multiple_elements_banner/MultipleElementsBanner'
 import ApiService from '../../services/api/Api'
 
 export function LinkedUserAvatar(props){
@@ -57,24 +59,15 @@ export function LinkedUsersBanner(props) {
         } else {
             avatars.push(<EmptyUserAvatar margin={true} key={"av" + (limit + 1)}/>)
         }
-    } else {
-        avatars = 
-            <div className="col-11 col-md-6 mx-auto border border-primary p-2 empty-list"> 
-                {props.emptyLabel}
-            </div>
     }
 
     return (
-        <div>
-            <div className="row">
-                <div className="col">
-                    <h6><em className="fas fa-user-friends"></em> {props.typology}</h6>
-                </div>
-            </div>
-            <div className="row">
-                {avatars}
-            </div>
-        </div>
+        <MultipleElementsBanner
+            elements={avatars}
+            title={props.typology}
+            iconName={"user-friends"}
+            emptyLabel={props.emptyLabel}
+        />
     )
 }
 
@@ -100,23 +93,40 @@ export function ProfileAction(props){
 }
 
 export function BadgeBanner(props) {
+    let badge = props.badge !== "" ? [
+        <div className="col d-flex justify-content-center">
+            <div className="border border-primary rounded-circle p-5 d-flex flex-column text-center personal-badge">
+                <em className="fas fa-rocket fa-5x"></em>
+                <h6 className="mt-2 font-weight-bold">{props.badge.name}</h6>
+                <p>{props.badge.description}</p>
+            </div>
+        </div>]: 
+        []
     return (
-        <div>
-            <div className="row">
-                <div className="col">
-                    <h6><em className="fas fa-trophy"></em> Ultimo badge ottenuto</h6>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col d-flex justify-content-center">
-                    <div className="border border-primary rounded-circle p-5 d-flex flex-column text-center personal-badge">
-                        <em className="fas fa-rocket fa-5x"></em>
-                        <h6 className="mt-2 font-weight-bold">{props.badge.name}</h6>
-                        <p>{props.badge.description}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <MultipleElementsBanner
+            elements={badge}
+            title={"Ultimo badge ottenuto"}
+            iconName={"trophy"}
+            emptyLabel={props.emptyLabel}
+        />
+    ) 
+}
+
+export function EventsBanner(props) {
+    let events = props.events.map(event =>
+        <EventCard  key={event._id}
+                    eventInfo={event}
+                    onError={props.onError}
+                    isLogged={props.isLogged}
+                    location={props.location}
+    />)
+    return (
+        <MultipleElementsBanner
+            elements={events}
+            title={props.title}
+            iconName={"glass-cheers"}
+            emptyLabel={props.emptyLabel}
+        />
     )
 }
 

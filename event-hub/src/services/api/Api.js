@@ -69,7 +69,7 @@ let mapUser = (user) => {
         organization: user.organization,
         gender: user.gender,
         birthdate: user.birthdate,
-        phone: user.phone,
+        phone: user.phone ? user.phone : user.phoneNumber,
         email: user.email,
         avatar: user.avatar,
         groups: user.groups ? user.groups : [],
@@ -284,7 +284,7 @@ let createNewEvent = (event, onError, onSuccess) => {
         organizator: event.organizator._id
     }
     managePromise(
-        Axios.post('/event', data),
+        Axios.post('/events', data),
         [201],
         onError,
         response => onSuccess(mapEvent(response.data))
@@ -327,7 +327,7 @@ let followEvent = (eventId, onError, onSuccess) => {
  */
 let interactWithEvent = (data, onError, onSuccess) => {
     managePromise(
-        Axios.post("/users/event", data),
+        Axios.post("/user/event", data),
         [201],
         onError,
         onSuccess
@@ -360,7 +360,7 @@ let sendFriendshipResponse = (friendId, accepted, onError, onSuccess) => {
         accepted: accepted
     }
     managePromise(
-        Axios.post('/notifications/friendship', data),
+        Axios.post('/notification/friendship', data),
         [200],
         onError,
         onSuccess
@@ -385,7 +385,7 @@ let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
         accepted: accepted
     }
     managePromise(
-        Axios.post('/notifications/friendposition', data),
+        Axios.post('/notification/friendposition', data),
         [200],
         onError,
         onSuccess
@@ -400,7 +400,7 @@ let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
 let notificationRead = (notificationId, onError, onSuccess) => {
     let data = { _id: notificationId}
     managePromise(
-        Axios.post('/notification', data),
+        Axios.post('/notifications', data),
         [200, 201],
         onError,
         onSuccess
@@ -414,7 +414,7 @@ let notificationRead = (notificationId, onError, onSuccess) => {
  */
 let getEventInformation = (eventId, onError, onSuccess) => {
     managePromise(
-        Axios.get('/event/info/' + eventId),
+        Axios.get('/events/info/' + eventId),
         [200],
         onError,
         response => onSuccess(mapEvent(response.data))
@@ -583,6 +583,14 @@ let getImageUrl = (imageName) => {
     return "/images/" + imageName
 }
 
+/**
+ * @param imageName {string}
+ * @returns {string}
+ */
+let getAvatarUrl = (imageName) => {
+    return "/avatars/" + imageName
+}
+
 export default {
     createNewEvent,
     getEvents,
@@ -605,5 +613,6 @@ export default {
     sendFriendshipRequest,
     sendFriendPositionRequest,
     removeFriend,
-    getImageUrl
+    getImageUrl,
+    getAvatarUrl
 }

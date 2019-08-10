@@ -50,7 +50,7 @@ class Home extends React.Component {
                            onError={this.props.onError}
                 />
 
-                <CreateNewEventButton location={this.props.location} />
+                <CreateNewEventButton location={this.props.location} isLogged={this.props.isLogged} />
 
                 <main className="main-container">
                     {
