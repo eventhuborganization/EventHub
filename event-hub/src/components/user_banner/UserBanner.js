@@ -6,15 +6,23 @@ import Api from '../../services/api/Api'
 export default function UserBanner(props) {
     return (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
-            <Link to={"/users/" + props.user._id} className={"col-3 col-md-2 col-lg-1" + (props.user.avatar ? "" : " d-flex align-self-stretch")}>
+            <Link 
+                to={"/users/" + props.user._id} 
+                className={"col-3 col-md-2 col-lg-1" + (props.user.avatar ? "" : " d-flex align-self-stretch")}
+                style={{textDecoration: "none"}}
+            >
                 {
                     props.user.avatar ?
                         <img src={Api.getAvatarUrl(props.user.avatar)}
                             className="img-fluid border rounded-circle"
                             alt="Immagine profilo utente"
                         /> :
-                        <div className="text-secondary border border-primary rounded-circle w-100 h-100 d-flex justify-content-center align-items-center">
-                            <em className="far fa-image fa-2x"></em>
+                        <div className="w-100 d-flex justify-content-center align-items-center">
+                            <div 
+                                className="text-secondary border border-primary rounded-circle d-flex justify-content-center align-items-center"
+                                style={{width: 50, height: 50}}>
+                                <em className="far fa-image fa-2x"></em>
+                            </div>
                         </div>
                 }
             </Link>
@@ -24,8 +32,8 @@ export default function UserBanner(props) {
             </Link>
             {
                 props.showAddFriendButton ?
-                <div className="col-3 text-center pl-0"> 
-                    <button className="btn btn-sm btn-primary" onClick={props.onAddFriend}>
+                <div className="col-3 text-center px-0"> 
+                    <button id={"friendBtn" + props.user._id} className="btn btn-sm btn-primary" onClick={props.onAddFriend}>
                         {props.user.organization ? "Segui" : "Aggiungi"}
                     </button>
                 </div> : ""

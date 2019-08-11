@@ -72,7 +72,12 @@ class Friends extends React.Component {
         Api.sendFriendshipRequest(
             friend._id,
             () => this.props.onError("Si è verificato un errore durante la richesta, riprova"),
-            () => {}
+            () => {
+                let button = document.getElementById("friendBtn" + friend._id)
+                button.innerHTML = "In Attesa"
+                button.classList.add("disabled")
+                button.blur()
+            }
         )
     }
 
