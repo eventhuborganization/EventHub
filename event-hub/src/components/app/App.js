@@ -5,7 +5,6 @@ import { CallableComponent } from '../redirect/Redirect'
 import ScrollToTop from '../scroll_to_top/ScrollToTop'
 
 import './App.css'
-//import Api from '../../services/api/Api'
 import Home from '../home/Home'
 import Login from '../login/Login'
 import EventInfo from '../event_info/EventInfo'
@@ -46,19 +45,16 @@ class App extends React.Component {
 
   onLoginSuccessfull = (user_data) => {
 
-    this.setState((prevState, props) =>{
+    this.setState((prevState) =>{
         let state = prevState
         state.isLogged = true
         state.user = user_data
         return state
     })
-    /*Api.getUserInformation(userId, () => {}, response => {
-      this.setState({user: response})
-    })*/
   }
 
   logout = () => {
-      this.setState((prevState, props) => {
+      this.setState((prevState) => {
           let state = prevState
           state.user = {}
           state.isLogged = false
@@ -67,7 +63,7 @@ class App extends React.Component {
   }
   
   updateUserInfo = (user) => {
-      this.setState((prevState, props) => {
+      this.setState((prevState) => {
           let state = prevState
           state.user = user
           return state

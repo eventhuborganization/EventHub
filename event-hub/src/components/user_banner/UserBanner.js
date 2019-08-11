@@ -13,8 +13,8 @@ export default function UserBanner(props) {
                 />
             </Link>
             <Link to={"/users/" + props.user._id} className="col-6 px-0" style={{textDecoration: "none"}}>
-                <div className="font-weight-bold text-dark">{props.user.name}</div>
-                <div className="text-muted small">{props.user.organization ? "Organizzazione" : "Utente"} - {props.user.city}</div>
+                <div className="font-weight-bold text-dark">{props.user.name + (props.user.organization ? "" : " " + props.user.surname)}</div>
+                <div className="text-muted small">{props.user.organization ? "Organizzazione" : "Utente"} - {props.user.address.city}</div>
             </Link>
             {
                 props.showAddFriendButton ?

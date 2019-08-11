@@ -11,18 +11,21 @@ class AbstractProfile extends React.Component {
         super(props)
         
         this.state = {
-            name: "",
-            avatar: undefined,
-            organization: false,
-            points: 0,
-            linkedUsers: [],
-            pastEvents: [],
-            futureEvents: []
+            profileComp: undefined,
+            user: {
+                name: "",
+                avatar: undefined,
+                organization: false,
+                points: 0,
+                linkedUsers: [],
+                pastEvents: [],
+                futureEvents: []
+            }
         }
 
         let toShow = this.displayWindowSize()
-        this.state.avatarsToShow = toShow[0]
-        this.state.emptyAvatarSize = toShow[1]
+        this.state.user.avatarsToShow = toShow[0]
+        this.state.user.emptyAvatarSize = toShow[1]
     }
 
     displayWindowSize = () => {
@@ -41,7 +44,12 @@ class AbstractProfile extends React.Component {
     componentDidMount = () => {
         window.onresize = () => {
             let toShow = this.displayWindowSize()
-            this.setState({avatarsToShow: toShow[0], emptyAvatarSize: toShow[1]})
+            this.setState((prevState) => {
+                let state = prevState
+                state.user.avatarsToShow = toShow[0]
+                state.user.emptyAvatarSize = toShow[1]
+                return state
+            })
         }
     }
 
@@ -51,13 +59,13 @@ class AbstractProfile extends React.Component {
 
     getUserInformation = () => {
         Api.getUserInformation(
-            this.state._id,
+            this.state.user._id,
             () => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"),
             user => {
                 let name = user.name + (user.organization ? "" : " " + user.surname)
                 let futureEvents =  user.eventsSubscribed.filter(x => x.date > Date.now())
                 let pastEvents =  user.eventsSubscribed.filter(x => x.date < Date.now())
-                this.setState({
+                let data = {
                     name: name,
                     avatar: user.avatar,
                     organization: user.organization,
@@ -66,14 +74,26 @@ class AbstractProfile extends React.Component {
                     points: user.points,
                     futureEvents: futureEvents,
                     pastEvents: pastEvents,
-                    groups: user.groups
-                })
+                    groups: user.groups,
+                    avatarsToShow:  this.state.user.avatarsToShow,
+                    emptyAvatarSize: this.state.user.emptyAvatarSize
+                }
+                this.setState({user: data})
+                if(this.state.profileComp){
+                    this.state.profileComp.newData(data)
+                }
             }
         )
     }
 
     changeState = (newState) => {
-        this.setState(newState)
+        newState.avatarsToShow = this.state.user.avatarsToShow
+        newState.emptyAvatarSize = this.state.user.emptyAvatarSize
+        this.setState({user: newState})
+    }
+
+    setProfileComponent = (component) => {
+        this.setState({profileComp: component})
     }
 
     render = () => {
@@ -87,7 +107,7 @@ class PersonalProfile extends AbstractProfile {
     constructor(props){
         super(props)
         if(!!props.isLogged){
-            this.state._id = props.userId
+            this.state.user._id = props.userId
             this.getUserInformation()
         }
     }
@@ -95,7 +115,11 @@ class PersonalProfile extends AbstractProfile {
     render = () => {
         return (
             <div>
-                <Profile {...this.props} isLocalUser={true} updateState={this.changeState} state={this.state} />
+                <Profile {...this.props} 
+                    isLocalUser={true} 
+                    updateState={this.changeState} 
+                    state={this.state.user}
+                    onRef={this.setProfileComponent}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>
         )
@@ -111,7 +135,7 @@ class UserProfile extends AbstractProfile {
     }
 
     updateInformation = () => {
-        this.state._id = this.props.match.params.id
+        this.state.user._id = this.props.match.params.id
         this.getUserInformation()
     }
 
@@ -123,7 +147,7 @@ class UserProfile extends AbstractProfile {
                     exact 
                     render={() => {
                         return <UserFriends {...this.props}
-                            linkedUsers={this.state.linkedUsers}
+                            linkedUsers={this.state.user.linkedUsers}
                         />
                     }} 
                 />
@@ -135,14 +159,15 @@ class UserProfile extends AbstractProfile {
                             updateInfo={this.updateInformation} 
                             isLocalUser={false} 
                             updateState={this.changeState} 
-                            state={this.state}
+                            state={this.state.user}
                             userId={this.props.user._id}
+                            onRef={this.setProfileComponent}
                         />
                     }}
                 />
                 <RedirectComponent {...this.props}
                     to={'/profile'}
-                    redirectNow={this.props.isLogged && this.props.user._id === this.state._id}
+                    redirectNow={this.props.isLogged && this.props.user._id === this.state.user._id}
                 />
             </div>
         )

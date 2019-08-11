@@ -148,7 +148,7 @@ exports.getInfoUser = (req, res) => {
                 result[1].map(obj => obj.data).forEach(group => {
                     response.groups.push({ _id: group._id, name: group.name })
                 })
-                response.badges = result[2].data
+                response.badges = result[2].data.badge
                 response.reviewsDone = response.reviewsDone.length
                 response.reviewsReceived = response.reviewsReceived.length
                 let sortFunction = (a,b) => {  
@@ -186,7 +186,7 @@ exports.getInfoUser = (req, res) => {
                     for (var count=0; count<k && (indexFol+count)<result[4].length; count++) {
                         response.nextEventFollowed.push(result[4][indexFol+count])
                     }
-                }             
+                }         
                 network.resultWithJSON(res, response)
             })
         })

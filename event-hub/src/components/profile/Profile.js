@@ -4,15 +4,18 @@ import Api from '../../services/api/Api'
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, EventsBanner, ProfileControls} from './Profiles'
 import UserBanner from '../user_banner/UserBanner'
 import {FriendsTab} from '../menu_tab/MenuTab'
+import { CallableComponent } from '../redirect/Redirect'
 
 /**
  * I badge sono ancora da gestire!!!
  */
-class Profile extends React.Component {
+class Profile extends CallableComponent {
 
     constructor(props){
         super(props)
-        this.state = props.state
+        this.state = {
+            user: props.state
+        }
     }
 
     componentDidUpdate = (prevProps) => {
@@ -23,12 +26,12 @@ class Profile extends React.Component {
 
     getEventsByUserTypology = () => {
         let initialString = "Non " + (this.props.isLocalUser ? "hai" : "ha")
-        return this.state.organization ? 
+        return this.state.user.organization ? 
             (<div>
                 <section className="mt-3">
                     <EventsBanner
                         {...this.props}
-                        events={this.state.pastEvents}
+                        events={this.state.user.pastEvents}
                         title={"Eventi organizzati"}
                         emptyLabel={ initialString + " ancora organizzato un evento"}
                     />
@@ -38,7 +41,7 @@ class Profile extends React.Component {
                 <section className="mt-3">
                     <EventsBanner
                         {...this.props}
-                        events={this.state.futureEvents}
+                        events={this.state.user.futureEvents}
                         title={"Prossimi eventi"}
                         emptyLabel={initialString + " nessun prossimo evento in programma"}
                     />
@@ -46,7 +49,7 @@ class Profile extends React.Component {
                 <section className="mt-3">
                     <EventsBanner
                         {...this.props}
-                        events={this.state.pastEvents}
+                        events={this.state.user.pastEvents}
                         title={"Ultimi eventi a cui " + (this.props.isLocalUser ? "hai" : "ha" ) + " partecipato"}
                         emptyLabel={initialString + " partecipato a nessun evento"}
                     />
@@ -85,14 +88,18 @@ class Profile extends React.Component {
         }
     }
 
+    newData = (value) => {
+        this.setState({user: value})
+    }
+
     render() {
-        let isMyFriend = !this.props.isLocalUser && 
-            this.state.linkedUsers.findIndex(elem => elem._id === this.props.userId) >= 0
+        let isMyFriend = !this.props.isLocalUser && this.props.isLogged &&
+            this.state.user.linkedUsers.findIndex(elem => elem._id === this.props.userId) >= 0
 
         let events = this.getEventsByUserTypology()
-        let lastBadge = this.state.badges && this.state.badges.length !== 0 ? this.state.badges[this.state.badges.length - 1] : ""
-        let avatar = this.state.avatar ? 
-            <img src={Api.getAvatarUrl(this.state.avatar)}
+        let lastBadge = this.state.user.badges && this.state.user.badges.length !== 0 ? this.state.user.badges[this.state.badges.length - 1] : ""
+        let avatar = this.state.user.avatar ? 
+            <img src={Api.getAvatarUrl(this.state.user.avatar)}
                 className="img-fluid" 
                 alt="Immagine profilo utente"
             /> : 
@@ -113,7 +120,7 @@ class Profile extends React.Component {
                                     {...this.props}
                                     isLocalUser={this.props.isLocalUser}
                                     isMyFriend={isMyFriend} 
-                                    _id={this.state._id}
+                                    _id={this.state.user._id}
                                     settingsLink={"/settings"}
                                     removeClicked={this.removeFriend}
                                 />
@@ -122,7 +129,7 @@ class Profile extends React.Component {
                                         <div className="col d-flex justify-content-between px-2 align-items-center font-weight-bold">
                                             <ProfileBadge
                                                 iconName={"trophy"}
-                                                number={this.state.points} 
+                                                number={this.state.user.points} 
                                             />
                                             <ProfileAction
                                                 iconName={"plus"}
@@ -132,12 +139,12 @@ class Profile extends React.Component {
                                             />
                                             <ProfileAction
                                                 iconName={"street-view"}
-                                                show={!this.props.isLocalUser && isMyFriend && !this.state.organization && this.props.isLogged}
+                                                show={!this.props.isLocalUser && isMyFriend && !this.state.user.organization && this.props.isLogged}
                                                 actionSelected={this.requestPosition}
                                             />
                                             <ProfileBadge
                                                 iconName={"address-card"}
-                                                number={this.state.linkedUsers.length} 
+                                                number={this.state.user.linkedUsers.length} 
                                             />
                                         </div>
                                     </div>
@@ -148,7 +155,7 @@ class Profile extends React.Component {
                 </section>
 
                 <section className="row mt-2">
-                    <h2 className="col text-center">{this.state.name}</h2>
+                    <h2 className="col text-center">{this.state.user.name}</h2>
                 </section>
 
                 <section className="mt-2">
@@ -157,11 +164,11 @@ class Profile extends React.Component {
 
                 <section className="mt-3">
                     <LinkedUsersBanner 
-                        linkedUsers={this.state.linkedUsers}
-                        emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.organization ? "follower" : "amico")}
-                        typology={this.state.organization ? "Followers" : "Amici"}
-                        numberToShow={this.state.avatarsToShow}
-                        emptyAvatarSize={this.state.emptyAvatarSize}
+                        linkedUsers={this.state.user.linkedUsers}
+                        emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.user.organization ? "follower" : "amico")}
+                        typology={this.state.user.organization ? "Followers" : "Amici"}
+                        numberToShow={this.state.user.avatarsToShow}
+                        emptyAvatarSize={this.state.user.emptyAvatarSize}
                         moreLinkedUsersLink={this.props.isLocalUser ? "/friends" : `${this.props.match.url}/friends`}
                     />
                 </section>
