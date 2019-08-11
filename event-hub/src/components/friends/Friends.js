@@ -77,7 +77,7 @@ class Friends extends React.Component {
     }
 
     cantAddFriend = (friend) => {
-        return !this.props.isLogged || this.state.friendsArray.includes(friend) || friend._id === this.props.user._id
+        return !this.props.isLogged || this.state.friendsArray.includes(friend) || friend._id === this.props.userId
     }
 
     getAllFriends = (filterFriends) => {
