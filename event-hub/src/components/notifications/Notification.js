@@ -10,7 +10,7 @@ class Notification extends React.Component {
         this.state = {
             notificationTypes: {
                 0: "Ti ha invitato ad un evento.",
-                1: "Ti ha inviato la richiesta d'amicizia.",
+                1: "Ti ha inviato una richiesta d'amicizia.",
                 2: "Ha iniziato a seguirti.",
                 3: "Nuovo badge ottenuto.",
                 4: "Vuole sapere la tua posizione.",
@@ -108,19 +108,55 @@ class Notification extends React.Component {
     }
 }
 
-let NotificationSenderInformation = (props) => {
-    let timestamp = new Date(new Date() - Date.parse(props.notification.timestamp))
-    return (
-        <div className="row">
-            <div className="col-2 px-0 my-auto">
-                <img src={ApiService.getImageUrl(props.notification.sender.avatar)} className="img-fluid border rounded-circle" alt="Immagine profilo utente" />
+class NotificationSenderInformation extends React.Component {
+
+    getTime = () => {
+        let diff = new Date(new Date() - new Date(this.props.notification.timestamp))
+        let years = diff.getUTCFullYear() - 1970
+        let months = diff.getUTCMonth()
+        let days = diff.getUTCDate() - 1
+        let hours = diff.getUTCHours()
+        let minutes = diff.getUTCMinutes()
+        let seconds = diff.getUTCSeconds()
+        let time = ""
+        if(years > 0) {
+            time = years + (years > 1 ? " anni" : " anno")
+        } else if(months > 0){
+            time = months + (months > 1 ? " mesi" : " mese")
+        } else if(days > 0){
+            time = days + (days > 1 ? " giorni" : " giorno")
+        } else if(hours > 0){
+            time = hours + (hours > 1 ? " ore " : " ora ")
+        } else if(minutes > 0) {
+            time += minutes + (minutes > 1 ? " minuti" : " minuto")
+        } else {
+            time += seconds + (seconds > 1 ? " secondi" : " secondo")
+        }
+        return time + " fa"
+    }
+
+    render = () => {
+        return (
+            <div className="row">
+                <div className="col-3 px-0 my-auto">
+                {
+                        this.props.notification.sender.avatar ?
+                            <img src={ApiService.getAvatarUrl(this.props.notification.sender.avatar)}
+                                className="img-fluid border rounded-circle"
+                                alt="Immagine profilo utente"
+                            /> :
+                            <div className="w-100 d-flex justify-content-center align-items-center text-secondary">
+                                <em className="far fa-image fa-2x"></em>
+                            </div>
+                }
+                </div>
+                <div className="col-9 d-flex flex-column justify-content-center px-1">
+                    <span className="text-secondary time-passed">{this.getTime()}</span>
+                    <span className="text-invited"><span className="font-weight-bold">{this.props.notification.sender.name} {this.props.notification.sender.surname}</span> {this.props.description}</span>
+                </div>
             </div>
-            <div className="col-10 d-flex flex-column justify-content-center">
-                <span className="text-secondary time-passed">{timestamp.getMinutes()} min</span>
-                <span className="text-invited"><span className="font-weight-bold">{props.notification.sender.name} {props.notification.sender.surname}</span> {props.description}</span>
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 let UserNotificationInteractionPanel = (props) => {

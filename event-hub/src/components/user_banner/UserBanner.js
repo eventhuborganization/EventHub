@@ -17,12 +17,8 @@ export default function UserBanner(props) {
                             className="img-fluid border rounded-circle"
                             alt="Immagine profilo utente"
                         /> :
-                        <div className="w-100 d-flex justify-content-center align-items-center">
-                            <div 
-                                className="text-secondary border border-primary rounded-circle d-flex justify-content-center align-items-center"
-                                style={{width: 50, height: 50}}>
-                                <em className="far fa-image fa-2x"></em>
-                            </div>
+                        <div className="w-100 d-flex justify-content-center align-items-center text-secondary">
+                            <em className="far fa-image fa-2x"></em>
                         </div>
                 }
             </Link>
