@@ -24,13 +24,9 @@ exports.inviteFriends = (req, res) => {
 
 exports.userFriendRequest = (req, res) => {
     var data = {typology: 1, sender: req.session.user}
-    axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)
-    .then((response) => {
-        network.result(res)
-    })
-    .catch((err) => {
-        network.internalError(res, err)
-    })
+    axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, data)
+        .then(() => network.result(res))
+        .catch((err) => network.internalError(res, err))
 }
 
 exports.friendshipAnswer = (req, res) => {
