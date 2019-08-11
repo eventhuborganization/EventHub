@@ -58,7 +58,7 @@ module.exports = (app) => {
         .post(sessionChecker, notificationController.markNotificationAsReaded)
     
     app.route('/notifications/:fromIndex')
-        .post(sessionChecker, notificationController.getNotification)
+        .get(sessionChecker, notificationController.getNotification)
 
     app.route("/notification/friendship")
         .post(sessionChecker,userController.friendshipAnswer)

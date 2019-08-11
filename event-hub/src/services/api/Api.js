@@ -344,7 +344,7 @@ let getNotifications = (fromIndex, onError, onSuccess) => {
         Axios.get('/notifications/' + (fromIndex && fromIndex >=0 ? fromIndex : 0)),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapNotification))
+        response => onSuccess(response.data.notifications.map(mapNotification))
     )
 }
 
