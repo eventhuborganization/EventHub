@@ -2,6 +2,8 @@ const network = require('./network');
 const axios = require('axios');
 
 const UserServiceHostPort = 'http://' + UserServiceHost + ':' + UserServicePort
+const EventServiceHostPort = 'http://' + EventServiceHost + ':' + EventServicePort
+
 
 exports.removeLinkedUser = (req, res) => {
     axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.session.user})
@@ -214,6 +216,10 @@ exports.getGroupInfo = (uuid) => {
 
 exports.getBadgePoints = (uuid) => {
     return axios.get(`${UserServiceHostPort}/users/${uuid}/levels`)
+}
+
+exports.getEventInfo = (uuid) => {
+    return axios.get(`${EventServiceHostPort}/events/${uuid}`);
 }
 
 exports.getReviewsWritten = (uuid) => {
