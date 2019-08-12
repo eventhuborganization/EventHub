@@ -5,8 +5,11 @@ const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
+const fs = require('fs')
 const app = express()
 
+const _cfg = JSON.parse(fs.readFileSync('app.config'))
+console.log(_cfg);
 
 function pausecomp(millis)
 {
@@ -20,7 +23,8 @@ let reconnectTries = 10
 let reconnectInterval = 2000
 
 function connect(reconnectTries, reconnectInterval) {
-    mongoose.connect('mongodb://event-hub_mongodb/event-hub-db', { useNewUrlParser: true, useFindAndModify: false })
+    // ! per lavorare con docker sostituire "_cfg.dbpath" con "_cfg.dbpath_docker"
+    mongoose.connect(`mongodb://${_cfg.dbpath}/event-hub-db`, { useNewUrlParser: true, useFindAndModify: false })
         .then(
             () => runApp(),
             error => {
