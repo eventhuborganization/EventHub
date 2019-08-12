@@ -84,7 +84,8 @@ exports.responseFriendPosition = (req, res) => {
 
 
 exports.updateProfile = (req, res) => {
-    axios.put(`${UserServiceHostPort}/users/${req.params.uuid}`, req.body)
+    let user = req.session.user
+    axios.put(`${UserServiceHostPort}/users/${user}`, req.body)
         .then((response) => {
             network.replayResponse(response, res);
         })
