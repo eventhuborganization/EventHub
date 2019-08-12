@@ -1,0 +1,10 @@
+roba testata che sembra funzionare:
+1) registrazione
+2) login
+3) visualizzazione delle informazioni di una persona/organizzazione
+4) ricerca di una persona/organizzazione
+5) notifiche
+	- richiesta amicizia
+6) invio di richiesta amicizia
+7) modifica informazioni personali
+8) modifica credenziali di accesso
