@@ -20,25 +20,73 @@ try {
    print (e);
 }
 
+/* Stefano -> password: stefano */
 db.users.insert({
     "name": "Stefano",
     "surname": "Righini",
     "sex": "Male",
+    "phoneNumber" : "333 444444",
     "birthdate": "1996-10-24",
-    "address": {"city": "Imola", "province": "Bologna", "address": "Via Santerno, 3"},
+    "address": {"city": "Imola"},
     "organization": false,
     "email": "stefano.righini@studio.unibo.it",
-    "password": "AGDIH548csdf5DD",
-    "salt": "pepe"
+    "password": "33b0752569fbda08fdec7564d213c2c93b8df0e371f553a2ead8b574f10a2b4caf75efe981707fbc209cdc641f399141b09536ab07b8880848d85f8d7638ccf9",
+    "salt": "1d7729ec4827cbe8",
+    "linkedUsers" : [ ],
+    "groups" : [ ],
+    "eventsSubscribed" : [ ],
+    "eventsFollowed" : [ ],
+    "badges" : [ ],
+    "points" : 0,
+    "reviewsDone" : [ ],
+    "reviewsReceived" : [ ],
+    "notifications" : [ ],
+    "actions" : [ ]
 });
 
+/* Francesco -> password: ciao */
+db.users.insert({
+    "name": "Francesco",
+    "surname": "Grandinetti",
+    "sex": "Male",
+    "phoneNumber" : "3474864891",
+    "birthdate": "1996-04-27",
+    "address": {"city": "Imola"},
+    "organization": false,
+    "email": "francesco.grandinett@gmail.com",
+    "password": "39364b9ad34c2e2fdd9a25743c015c9cc99d8e2953255211a3550af10cb167ebbac882099dec0fa329c2317f5050ba5dff0322630dfdecc23b08e3624f43496e",
+    "salt": "1fdfa9f703c0aa51",
+    "linkedUsers" : [ ],
+    "groups" : [ ],
+    "eventsSubscribed" : [ ],
+    "eventsFollowed" : [ ],
+    "badges" : [ ],
+    "points" : 0,
+    "reviewsDone" : [ ],
+    "reviewsReceived" : [ ],
+    "notifications" : [ ],
+    "actions" : [ ]
+});
+
+/* La volgia matta -> password: GSBSU88*/
 db.users.insert({
     "name": "La voglia matta",
     "address": {"city": "Imola", "province": "Bologna", "address": "Via Santerno, 3"},
     "organization": true,
     "email": "80voglia@xxx.it",
-    "password": "GSBSU88",
-    "salt": "pepe"
+    "password" : "7662cfb157c0e43dfd3acaa223756a21c60a9d2a44a226f78a07854ac9c7ddd7d744ff71658a08e3b252986da7743866448fa863a3bd01fd6adba69b8099af9a",
+    "phoneNumber" : "0542 684258",
+    "salt" : "3c726955fcedd794",
+    "linkedUsers" : [ ],
+    "groups" : [ ],
+    "eventsSubscribed" : [ ],
+    "eventsFollowed" : [ ],
+    "badges" : [ ],
+    "points" : 0,
+    "reviewsDone" : [ ],
+    "reviewsReceived" : [ ],
+    "notifications" : [ ],
+    "actions" : [ ]
 });
 
 var uuid = db.users.find({"name": "La voglia matta"}).limit(1)[0]._id
