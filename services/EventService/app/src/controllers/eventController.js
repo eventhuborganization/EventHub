@@ -7,7 +7,7 @@ exports.getEvent = (req, res) => {
     let query =  Event.find({})
     if(req.query){
         for (const key in req.query) {
-            if (object.hasOwnProperty(key)) {
+            if (Object.hasOwnProperty(key)) {
                 switch (key) {
                     case 'date':
                         query.find({key: parser.parseDateObject(req.query[key])})

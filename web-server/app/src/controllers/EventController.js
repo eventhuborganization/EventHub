@@ -45,6 +45,7 @@ exports.getEventsFromIndex = (req, res) => {
         })
         // slice(from: escluso, to: incluso)
         var result = response.data.slice(req.params.fromIndex, req.params.fromIndex + 10)
+        network.resultWithJSON(res, result);
     })
 }
 
