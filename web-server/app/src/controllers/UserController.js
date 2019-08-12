@@ -115,7 +115,7 @@ exports.updateCredentials = (req, res) => {
 }
 
 /* user: {name, surname, avatar, gender, birthdate, phone, email, organization, 
-    linkedUsers: [{_id, name, surname, avatar}], groups:[{_id, name}], 
+    linkedUsers: [{_id, name, city, avatar, oganization}], groups:[{_id, name}], 
     badges(last 3): [{name, icon, _id}], points, n.reviewDone, n.reviewReceived, 
     eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
@@ -205,6 +205,25 @@ exports.getInfoUser = (req, res) => {
     } catch (err) {
         console.log(err)
     }
+}
+
+/* user: {_id, name, surname, avatar, city, organization}*/
+exports.getLightweightInfoUser = (req, res) => {
+    axios.get(`${UserServiceHostPort}/users/${req.params.uuid}`)
+        .then(resComplete => {
+            let user = resComplete.data
+            network.resultWithJSON(res, {
+                name: user.name,
+                surname: user.surname, 
+                avatar: user.profilePicture, 
+                _id: user._id, 
+                organization: user.organization,
+                city: user.address.city
+            })
+        })
+        .catch(err => {
+            network.internalError(res, err)
+        })
 }
 
 exports.searchUser = (req, res) => {
