@@ -20,6 +20,22 @@ class Friends extends React.Component {
         this.state.friends = this.getAllFriends(() => true)
         if(this.state.friends.length <= 0){
             this.state.friends = <EmptyList description={<div>La tua lista amici è vuota.<br/>Incontra nuova gente!</div>}/>
+        } else {
+            Api.getUsersInformation(
+                this.state.friendsArray,
+                () => {},
+                result => {
+                    result.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                    let friends = this.mapArrayToUserBanner(
+                        result,
+                        () => false,
+                        () => {}
+                    )
+                    this.setState({
+                        friendsArray: result,
+                        friends: friends
+                    })
+                })
         }
     }
 

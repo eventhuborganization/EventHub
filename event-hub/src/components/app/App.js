@@ -44,13 +44,13 @@ class App extends React.Component {
   }
 
   onLoginSuccessfull = (user_data) => {
-
     this.setState((prevState) =>{
         let state = prevState
         state.isLogged = true
         state.user = user_data
+        state.user.linkedUsers = state.user.linkedUsers.map(id => {return {_id: id, name: ""}})
         return state
-    })
+      })
   }
 
   logout = () => {

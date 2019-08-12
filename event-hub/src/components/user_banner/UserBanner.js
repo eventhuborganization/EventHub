@@ -4,7 +4,7 @@ import Api from '../../services/api/Api'
 
 
 export default function UserBanner(props) {
-    return (
+    return props.user.name ? (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link 
                 to={"/users/" + props.user._id} 
@@ -35,5 +35,5 @@ export default function UserBanner(props) {
                 </div> : ""
             }
         </div>
-    )
+    ) : ""
 }

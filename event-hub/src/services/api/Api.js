@@ -519,6 +519,28 @@ let getUserInformation = (userId, onError, onSuccess) => {
 }
 
 /**
+ * @param users {Array}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let getUsersInformation = (users, onError, onSuccess) => {
+    let promises = users.map(user => Axios.get('/users/' + user._id + '/info'))
+    Axios.all(promises)
+        .then(res => {
+            let results = res.map(r => {
+                let data = r.data
+                data.address = {
+                    city: data.city
+                }
+                delete data.city
+                return data
+            }) 
+            onSuccess(results)
+        })
+        .catch(onError)
+}
+
+/**
  * @param name {string}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -611,6 +633,7 @@ export default {
     updateUserCredentials,
     updateUserSettings,
     getUserInformation,
+    getUsersInformation,
     searchUsers,
     sendFriendshipRequest,
     sendFriendPositionRequest,
