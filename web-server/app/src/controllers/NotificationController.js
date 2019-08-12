@@ -8,7 +8,7 @@ function getUserInfo(uuid){
 }
 
 exports.markNotificationAsReaded = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, data)
+    axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
     .then((response) => {
         network.result(res)
     })
@@ -30,7 +30,6 @@ exports.getNotification = (req,res) => {
                         newNotification.sender = result.filter(res => res.data._id === not.sender)[0].data
                         return newNotification
                     })
-                    console.log(notifications)
                     network.resultWithJSON(res, {notifications: notifications})
                 })
                 .catch(err => {

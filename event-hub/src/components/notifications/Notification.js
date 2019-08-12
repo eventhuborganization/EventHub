@@ -23,6 +23,17 @@ class Notification extends React.Component {
         }
     }
 
+    handleFriendshipRequest = (accepted) => {
+        ApiService.sendFriendshipResponse(
+            this.props.notification.sender._id, 
+            accepted,
+            this.props.notification._id,
+            () => this.props.onError("Si è verificato un errore durante l'invio della risposta, riprova"),
+            () => {
+                this.props.deleteNotification(this.props.notification._id)
+            })
+    }
+
     rightComponentByType = (type) => {
         switch(type) {
             case 0:
@@ -33,7 +44,17 @@ class Notification extends React.Component {
                                    event={this.props.notification.event} />
             case 1:
                 return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
-                    buttons={[<RejectFriendshipButton key={this.props.notification._id + "rejectFriend"} />, <AcceptFriendshipButton key={this.props.notification._id + "acceptFriend"} />]} />
+                            buttons={[
+                                <RejectFriendshipButton 
+                                    key={this.props.notification._id + "rejectFriend"} 
+                                    onClick={() => this.handleFriendshipRequest(false)} 
+                                />, 
+                                <AcceptFriendshipButton 
+                                    key={this.props.notification._id + "acceptFriend"} 
+                                    onClick={() => this.handleFriendshipRequest(true)} 
+                                />
+                            ]} 
+                        />
             case 4:
                 return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
                     buttons={[<RejectSharePositionButton key={this.props.notification._id + "rejectPos"} />, <SharePositionButton key={this.props.notification._id + "sharePos"} />]} />
@@ -80,8 +101,15 @@ class Notification extends React.Component {
         return type === 0 || type === 5 || type === 6 || type === 7
     }
 
+    isNotificationToBeReadOnce = (type) => {
+        return type === 8
+    }
+
     render() {
         let type = this.props.notification.typology
+        if(this.isNotificationToBeReadOnce(type)){
+            ApiService.notificationRead(this.props.notification._id, ()=> {}, () => {})
+        }
         return (
             <div className="row">
                 <div className="col card shadow my-2 mx-2 px-0">
@@ -198,7 +226,7 @@ let LocationMap = (props) => {
 
 let AcceptFriendshipButton = (props) => {
     return (
-        <button className="btn btn-primary" type="button">
+        <button className="btn btn-primary" type="button" onClick={props.onClick}>
             <em className="fas fa-user-plus fa-md"></em>
         </button>
     )
@@ -206,7 +234,7 @@ let AcceptFriendshipButton = (props) => {
 
 let RejectFriendshipButton = (props) => {
     return (
-        <button className="btn btn-outline-primary" type="button">
+        <button className="btn btn-outline-primary" type="button" onClick={props.onClick}>
             <em className="fas fa-user-times fa-md"></em>
         </button>
     )
@@ -214,7 +242,7 @@ let RejectFriendshipButton = (props) => {
 
 let SharePositionButton = (props) => {
     return (
-        <button className="btn btn-primary" type="submit">
+        <button className="btn btn-primary" type="submit" onClick={props.onClick}>
             <em className="fas fa-street-view fa-lg"></em>
         </button>
     )
@@ -222,7 +250,7 @@ let SharePositionButton = (props) => {
 
 let RejectSharePositionButton = (props) => {
     return (
-        <button className="btn btn-outline-primary" type="submit">
+        <button className="btn btn-outline-primary" type="submit" onClick={props.onClick}>
             <em className="fas fa-times fa-lg"></em>
         </button>
     )

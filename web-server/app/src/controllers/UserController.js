@@ -34,15 +34,25 @@ exports.userFriendRequest = (req, res) => {
 exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
         axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.session.user})
-            .then( response => {
-                network.replayError(response, res);
-                axios.post(UserServiceHostPort + '/users/' + req.body.friend + '/notifications', {typology: 8, sender: req.session.user})
-                    .catch (error => {
-                        network.internalError(res, error);
-                    });
+            .then(() => {
+                return axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications/`, {typology: 8, sender: req.session.user})
+            })
+            .then(() => {
+                return axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
+            })
+            .then(response => {
                 network.replayResponse(response, res);
             })
-            .catch( error => {
+            .catch (error => {
+                console.log(error)
+                network.internalError(res, error);
+            })
+    } else {
+        axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
+            .then(response => {
+                network.replayResponse(response, res);
+            })
+            .catch (error => {
                 network.internalError(res, error);
             })
     }
@@ -199,12 +209,8 @@ exports.getInfoUser = (req, res) => {
 
 exports.searchUser = (req, res) => {
     axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
-        .then((response) => {
-            network.resultWithJSON(res, {users: response.data})
-        })
-        .catch((err) => {
-            network.internalError(res, err)
-        })
+        .then((response) => network.resultWithJSON(res, {users: response.data}))
+        .catch((err) => network.internalError(res, err))
 }
 
 exports.getLinkedUserInfo = (uuid) => {

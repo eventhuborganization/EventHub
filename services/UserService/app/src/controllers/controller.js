@@ -72,14 +72,8 @@ exports.userLogin = (req, res) => {
             } else {
                 let pwd = security.sha512(data.password, user.salt);
                 if(pwd === user.password) {
-                    network.resultWithJSON(res, {
-                        _id: user._id, 
-                        name: user.name, 
-                        surname: user.surname, 
-                        phoneNumber: user.phoneNumber,
-                        avatar: user.profilePicture, 
-                        email: user.email
-                    });
+                    let user_data = commons.deleteUserPrivateInformations(user)
+                    network.resultWithJSON(res, user_data)
                 } else {
                     network.userNotFound(res);
                 }
@@ -167,7 +161,7 @@ exports.getUserNotifications = (req, res) => {
             network.userNotFound(res);
         } else {
             let limit = req.params.fromIndex + NUM_NOTIFICATIONS_TO_SHOW;
-            let notificationsToShow = user.notifications.slice(req.params.fromIndex, limit);
+            let notificationsToShow = user.notifications.filter(not => !not.read).slice(req.params.fromIndex, limit);
             network.resultWithJSON(res, {
                 notifications: notificationsToShow
             });

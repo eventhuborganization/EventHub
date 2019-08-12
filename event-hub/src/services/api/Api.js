@@ -351,13 +351,15 @@ let getNotifications = (fromIndex, onError, onSuccess) => {
 /**
  * @param friendId {string}
  * @param accepted {boolean}
+ * @param notificationId {String}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
-let sendFriendshipResponse = (friendId, accepted, onError, onSuccess) => {
+let sendFriendshipResponse = (friendId, accepted, notificationId, onError, onSuccess) => {
     let data = {
         friend: friendId,
-        accepted: accepted
+        accepted: accepted,
+        _id: notificationId
     }
     managePromise(
         Axios.post('/notification/friendship', data),

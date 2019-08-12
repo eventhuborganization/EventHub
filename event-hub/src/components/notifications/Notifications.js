@@ -30,6 +30,14 @@ class Notifications extends React.Component {
             return <NoItemsPlaceholder placeholder={"Nessuna notifica ricevuta"} />
     }
 
+    deleteNotification = (notificationId) => {
+        this.setState((prevState) => {
+            let state = prevState
+            state.notifications = prevState.notifications.filter(not => not._id !== notificationId)
+            return state
+        })
+    }
+
     render() {
         return (
             <div>
@@ -44,6 +52,7 @@ class Notifications extends React.Component {
                             <Notification {...this.props}
                                           key={notification._id}
                                           notification={notification}
+                                          deleteNotification={this.deleteNotification}
                             />)
                     }
                     {this.renderNoNotificationPlaceHolder()}
