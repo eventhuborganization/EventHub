@@ -153,11 +153,11 @@ class ChangeInfo extends React.Component {
         super(props)
         this.state = {
             name: [false, this.props.user.name],
-            surname: [false, (!this.props.user.organization ? this.props.user.surname : "")],
-            city: [false, this.props.user.address.city],
-            province: [false, (this.props.user.organization ? this.props.user.address.province : "")],
-            address: [false, (this.props.user.organization ? this.props.user.address.address : "")],
-            phone: [false, (this.props.user.phone ? this.props.user.phone : "")],
+            surname: [false, this.props.user.surname],
+            city: [false, this.props.user.address ? this.props.user.address.city : ""],
+            province: [false, this.props.user.address ? this.props.user.address.province : ""],
+            address: [false, this.props.user.address ? this.props.user.address.address : ""],
+            phone: [false, this.props.user.phone],
             avatar: [false, (this.props.user.avatar ? this.props.user.avatar : "")]
         }
     }

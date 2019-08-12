@@ -20,20 +20,20 @@ class Settings extends React.Component {
         }
        return (
             <div className="main-container">
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <ScrollableMenuTab tabs={[
                     this.createSingleTab(
                         "Modifica dati personali", 
                         <ChangeInfo {...this.props} 
-                            user={this.props.user}
+                            user={this.props.isLogged ? this.props.user : {}}
                             onChange={this.props.onChangeUserInfo}
                         />),
                     this.createSingleTab(
                         "Modifica credenziali", 
                         <ChangeCredentials {...this.props} 
-                            user={this.props.user}
+                            user={this.props.isLogged ? this.props.user : {}}
                             onChange={this.props.onChangeUserInfo}
                         />),
-                    this.createSingleTab("Modifica impostazioni privacy", <div>privacy</div>),
                     this.createSingleTab(<Link to="/" className={style.link} onClick={this.props.onLogout}>Logout</Link>, <div></div>)
                 ]} title="Impostazioni" style={style}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
