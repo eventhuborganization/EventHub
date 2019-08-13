@@ -592,7 +592,7 @@ let sendFriendPositionRequest = (friendId, onError, onSuccess) => {
 let removeFriend = (friendId, onError, onSuccess) => {
     let data = { friend: friendId }
     managePromise(
-        Axios.delete('/users/friendship', data),
+        Axios.delete('/users/friendship', {data: data}),
         [200],
         onError,
         onSuccess

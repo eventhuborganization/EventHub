@@ -60,7 +60,7 @@ class Profile extends CallableComponent {
     addFriend = () => {
         if(!this.props.isLocalUser){
             Api.sendFriendshipRequest(
-                this.state._id,
+                this.state.user._id,
                 () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
                 () => {}
             )
@@ -70,7 +70,7 @@ class Profile extends CallableComponent {
     requestPosition = () => {
         if(!this.props.isLocalUser && !this.state.organization){
             Api.sendFriendPositionRequest(
-                this.state._id,
+                this.state.user._id,
                 () => this.props.onError("Si è verificato un errore durante la richiesta di posizione, riprova"),
                 () => {}
             )
@@ -80,7 +80,7 @@ class Profile extends CallableComponent {
     removeFriend = () => {
         if(!this.props.isLocalUser){
             Api.removeFriend(
-                this.state._id, 
+                this.state.user._id, 
                 () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
                 () => 
                     this.props.updateState({linkedUsers: this.state.linkedUsers.filter(elem => elem._id !== this.props.userId)})

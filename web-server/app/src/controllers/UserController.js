@@ -6,10 +6,10 @@ const EventServiceHostPort = 'http://' + EventServiceHost + ':' + EventServicePo
 
 
 exports.removeLinkedUser = (req, res) => {
-    axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.session.user})
-    .then((response) => {
-        network.replayResponse(res)
-    })
+    let data = {uuid1: req.body.friend, uuid2: req.session.user}
+    axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {data: data})
+        .then((response) => network.replayResponse(response, res))
+        .catch(err => network.replayError(err, res))
 }
 
 exports.inviteFriends = (req, res) => {
