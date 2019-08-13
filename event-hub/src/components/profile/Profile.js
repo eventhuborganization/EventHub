@@ -83,7 +83,7 @@ class Profile extends CallableComponent {
                 this.state.user._id, 
                 () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
                 () => 
-                    this.props.updateState({linkedUsers: this.state.linkedUsers.filter(elem => elem._id !== this.props.userId)})
+                    this.props.updateState({linkedUsers: this.state.user.linkedUsers.filter(elem => elem._id !== this.props.userId)})
             )
         }
     }
