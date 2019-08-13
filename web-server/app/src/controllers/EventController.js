@@ -31,7 +31,7 @@ exports.eventInfo = (req, res) => {
 }
 
 exports.searchEventByName = (req, res) => {
-    EventService.searchEvent(req.params.data,(response)=>{
+    EventService.searchEvent(req.params.data, (response)=>{
         network.resultWithJSON(res,response)
     }, (err) => {
         network.internalError(res, err)
@@ -62,7 +62,7 @@ exports.createEvent = (req, res) => {
             axios.get(`${UserServiceHostPort}/users/${req.session.user}/linkedUsers`)
                 .then(resLinkedUsers => {
                     resLinkedUsers.forEach(user => {
-                        axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.session.user})
+                        axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {data: {typology: 6, sender: req.session.user}})
                     })
                 })
         }

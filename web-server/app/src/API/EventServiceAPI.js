@@ -91,7 +91,7 @@ exports.EventService = class EventService{
      */
     addEventReviews(eventUuid, reviewsUuid,  successCallback = null, errorCallback = null){
         let data = JSON.stringify({reviews:{reviews: [reviewsUuid]}})
-        axios.post(`${this.hostport}/events/${eventUuid}/reviews`, data)
+        axios.post(`${this.hostport}/events/${eventUuid}/reviews`, {data: data})
         .then(successCallback)
         .catch(errorCallback);
     }
@@ -111,7 +111,7 @@ exports.EventService = class EventService{
     updateEventById(eventUuid, dataToUpdate,  successCallback = null, errorCallback = null){
         let data = JSON.stringify(dataToUpdate)
 
-        axios.put(`${this.hostport}/events/${eventUuid}`, data)
+        axios.put(`${this.hostport}/events/${eventUuid}`, {data: data})
         .then(successCallback)
         .catch(errorCallback);
     }
@@ -131,7 +131,7 @@ exports.EventService = class EventService{
      */
     addUserToEvent(eventUuid, users,  successCallback = null, errorCallback = null){
         let data = JSON.stringify(users)
-        axios.post(`${this.hostport}/events/${eventUuid}/users`, data)
+        axios.post(`${this.hostport}/events/${eventUuid}/users`, {data: data})
         .then(successCallback)
         .catch(errorCallback);
     }
@@ -150,7 +150,7 @@ exports.EventService = class EventService{
      */
     removeUserToEvent(eventUuid, users, successCallback = null, errorCallback = null){
         let data = JSON.stringify(users)
-        axios.delete(`${this.hostport}/events/${eventUuid}/users`, data)
+        axios.delete(`${this.hostport}/events/${eventUuid}/users`, {data: data})
         .then(successCallback)
         .catch(errorCallback);
     }
@@ -167,7 +167,7 @@ exports.EventService = class EventService{
      */
     newEvent(event, successCallback = null, errorCallback = null){
         let data = JSON.stringify(event)
-        axios.post(`${this.hostport}/events`, data)
+        axios.post(`${this.hostport}/events`, {data: data})
         .then(successCallback)
         .catch(errorCallback);
     }
