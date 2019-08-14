@@ -2,6 +2,10 @@ import React from 'react'
 import './Notification.css'
 import {EventInteractionPanel} from '../event/Event'
 import ApiService from '../../services/api/Api'
+import GoogleMapsApi from '../../services/google_cloud/GoogleMaps'
+import GeoLocation from '../../services/location/GeoLocation'
+import {LocationMap} from "../map/Maps"
+import GoogleMapsProperties from "../../services/google_cloud/Properties"
 
 class Notification extends React.Component {
 
@@ -32,7 +36,29 @@ class Notification extends React.Component {
             () => {
                 this.props.deleteNotification(this.props.notification._id)
                 this.props.onFriendAdded(this.props.notification.sender)
-            })
+            }
+        )
+    }
+
+    handlePositionRequest = (accepted) => {
+        GeoLocation.getCurrentLocation(
+            () =>
+                this.props.onError("Si è verificato un problema nell'acquisizione della posizione attuale, riprovare."),
+            position => {
+                let coords = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                }
+                ApiService.sendFriendPositionResponse(
+                    coords,
+                    accepted,
+                    this.props.notification.sender._id,
+                    this.props.notification._id,
+                    () => this.props.onError("Si è verificato un errore durante l'invio della posizione, riprova"),
+                    () => this.props.deleteNotification(this.props.notification._id)
+                )
+            }
+        )
     }
 
     rightComponentByType = (type) => {
@@ -58,9 +84,19 @@ class Notification extends React.Component {
                         />
             case 4:
                 return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
-                    buttons={[<RejectSharePositionButton key={this.props.notification._id + "rejectPos"} />, <SharePositionButton key={this.props.notification._id + "sharePos"} />]} />
+                            buttons={[
+                                <RejectSharePositionButton
+                                    key={this.props.notification._id + "rejectPos"}
+                                    onClick={() => this.handlePositionRequest(false)}
+                                />,
+                                <SharePositionButton
+                                    key={this.props.notification._id + "sharePos"}
+                                    onClick={() => this.handlePositionRequest(true)}
+                                />
+                            ]}
+                        />
             case 9:
-                return <LocationMap notification={this.props.notification} />
+                return <LocationMap place={{location: this.props.notification.event.location}} />
             case 3:
                 break //return badge
             case 2:
@@ -103,7 +139,7 @@ class Notification extends React.Component {
     }
 
     isNotificationToBeReadOnce = (type) => {
-        return type === 8
+        return type === 8 || type === 2 || type === 3
     }
 
     render() {
@@ -210,19 +246,6 @@ let Eventdescription = (props) => {
 
 let UserDescription = (props) => {
     return (<p>{props.description}</p>)
-}
-
-let LocationMap = (props) => {
-    return (
-        <div className="embed-responsive embed-responsive-16by9">
-            <iframe
-                title={props.notification._id + " loaction"}
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2862.8552303608158!2d12.235158712371355!3d44.14822954462452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132ca55098146cbf%3A0x6de70b93cd4aed53!2sUniversit%C3%A0+di+Bologna+-+Campus+di+Cesena!5e0!3m2!1sit!2sit!4v1561908171773!5m2!1sit!2sit"
-                className="embed-responsive-item"
-                style={{border: 0}} allowFullScreen>
-            </iframe>
-        </div>
-    )
 }
 
 let AcceptFriendshipButton = (props) => {

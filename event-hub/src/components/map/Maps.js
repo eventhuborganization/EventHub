@@ -104,16 +104,28 @@ class EventsMap extends React.Component {
 }
 
 /**
- * @param props {object}
- * @param props.place {object}
- * @param props.place.place_id {string}
+ * @param props {{
+ *     place: {
+ *         place_id: string
+ *     },
+ *     location: {
+ *         lat: number,
+ *         lng: number
+ *     }
+ * }}
  * @returns {*}
  * @constructor
  */
 let LocationMap = props => {
-    var mapSrc = ""
-    if (props.place)
-        mapSrc = "https://www.google.com/maps/embed/v1/place?q=place_id:" + (props.place ? props.place.place_id : "") + "&zoom=18&key=" + GoogleMapsProperties.key
+    let mapSrc = ""
+    if (props.place) {
+        let q = ""
+        if (props.place.place_id)
+            q = "q=place_id:" + props.place.place_id
+        else if (props.place.location)
+            q = "q=" + props.place.location.lat + "," + props.place.location.lng
+        mapSrc = q ? "https://www.google.com/maps/embed/v1/place?" + q + "&zoom=18&key=" + GoogleMapsProperties.key : ""
+    }
     return (
         <div className={"embed-responsive embed-responsive-16by9 " + (props.place ? "" : " d-none ")}>
             <div className={"embed-responsive-item"}>
