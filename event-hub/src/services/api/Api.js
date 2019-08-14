@@ -39,7 +39,7 @@ let mapEvent = (event) => {
         date: event.date,
         description: event.description,
         followers: event.followers ? event.followers : [],
-        maxParticipants: event.maximumParticipants,
+        maxParticipants: event.maxParticipants,
         name: event.name,
         organizator: mapUser(event.organizator),
         participants: event.participants ? event.participants : [],
@@ -574,6 +574,21 @@ let sendFriendshipRequest = (friendId, onError, onSuccess) => {
 }
 
 /**
+ * @param organizationId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let followOrganization = (organizationId, onError, onSuccess) => {
+    let data = { uuid: organizationId }
+    managePromise(
+        Axios.post('/users/follower', data),
+        [200],
+        onError,
+        onSuccess
+    )
+}
+
+/**
  * @param friendId {string}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -594,7 +609,7 @@ let sendFriendPositionRequest = (friendId, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let removeFriend = (friendId, onError, onSuccess) => {
-    let data = { friend: friendId }
+    let data = { linkedUser: friendId }
     managePromise(
         Axios.delete('/users/friendship', {data: data}),
         [200],
@@ -626,6 +641,7 @@ export default {
     searchNearestEvents,
     participateToEvent,
     followEvent,
+    followOrganization,
     getNotifications,
     sendFriendshipResponse,
     sendFriendPositionResponse,

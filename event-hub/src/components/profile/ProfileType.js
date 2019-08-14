@@ -161,7 +161,7 @@ class UserProfile extends AbstractProfile {
                             isLocalUser={false} 
                             updateState={this.changeState} 
                             state={this.state.user}
-                            userId={this.props.user._id}
+                            localUser={this.props.user}
                             onRef={this.setProfileComponent}
                         />
                     }}
