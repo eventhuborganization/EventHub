@@ -6,7 +6,7 @@ const EventServiceHostPort = 'http://' + EventServiceHost + ':' + EventServicePo
 
 
 exports.removeLinkedUser = (req, res) => {
-    let data = {uuid1: req.body.friend, uuid2: req.session.user}
+    let data = {uuid1: req.body.linkedUser, uuid2: req.session.user}
     axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {data: data})
         .then((response) => network.replayResponse(response, res))
         .catch(err => network.replayError(err, res))
@@ -23,6 +23,19 @@ exports.inviteFriends = (req, res) => {
     })
 }
 
+exports.addFollower = (req, res) => {
+    axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.uuid, uuid2: req.session.user})
+        .then(() => {
+            return axios.post(`${UserServiceHostPort}/users/${req.body.uuid}/notifications/`, {typology: 2, sender: req.session.user})
+        })
+        .then(response => {
+            network.replayResponse(response, res);
+        })
+        .catch (error => {
+            console.log(error)
+            network.internalError(res, error);
+        })
+}
 
 exports.userFriendRequest = (req, res) => {
     var data = {typology: 1, sender: req.session.user}

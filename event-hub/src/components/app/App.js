@@ -70,10 +70,14 @@ class App extends React.Component {
       })
   }
 
-  addLinkedUser = (user) => {
+  manageLinkedUser = (user, add) => {
     this.setState((prevState) =>{
       let state = prevState
-      state.user.linkedUsers = state.user.linkedUsers.push(user)
+      if(add){
+        state.user.linkedUsers.push(user)
+      } else {
+        state.user.linkedUsers = state.user.linkedUsers.filter(user => user._id !== user._id)
+      }
       return state
     })
   }
@@ -122,7 +126,7 @@ class App extends React.Component {
                 <Notifications {...props}
                     isLogged={this.state.isLogged}
                     onError={this.onError}
-                    onFriendAdded={this.addLinkedUser}
+                    onFriendAdded={(elem) => this.manageLinkedUser(elem, true)}
                 />}
             />
             <Route path="/profile" exact render={(props) =>
@@ -137,9 +141,12 @@ class App extends React.Component {
                     isLogged={this.state.isLogged}
                     user={{
                       _id: this.state.user._id,
-                      linkedUsers: this.state.user.linkedUsers ? this.state.user.linkedUsers : []
+                      linkedUsers: this.state.user.linkedUsers ? this.state.user.linkedUsers : [],
+                      organization: this.state.user.organization
                     }}
                     onError={this.onError}
+                    onSuccess={this.onSuccess}
+                    manageLinkedUser={this.manageLinkedUser}
                 />} 
             />
             <Route path="/friends" exact render={(props) =>

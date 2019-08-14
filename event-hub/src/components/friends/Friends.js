@@ -85,16 +85,35 @@ class Friends extends React.Component {
     }
 
     addFriend = (friend) => {
-        Api.sendFriendshipRequest(
-            friend._id,
-            () => this.props.onError("Si è verificato un errore durante la richesta, riprova"),
-            () => {
-                let button = document.getElementById("friendBtn" + friend._id)
-                button.innerHTML = "In Attesa"
-                button.classList.add("disabled")
-                button.blur()
-            }
-        )
+        let errorFun = () => this.props.onError("Si è verificato un errore durante la richesta, riprova")
+        if(friend.organization){
+            Api.followOrganization(
+                friend._id,
+                errorFun,
+                () => {
+                    this.disableFriendButton(friend, "Segui")
+                    this.setState((prevState) => {
+                        let state = prevState
+                        state.friendsArray.push(friend)
+                        state.friendsArray.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                        return state
+                    })
+                }
+            )
+        } else {
+            Api.sendFriendshipRequest(
+                friend._id,
+                errorFun,
+                () => this.disableFriendButton(friend, "In Attesa")
+            )
+        }
+    }
+
+    disableFriendButton = (friend, text) => {
+        let button = document.getElementById("friendBtn" + friend._id)
+        button.innerHTML = text
+        button.classList.add("disabled")
+        button.blur()
     }
 
     cantAddFriend = (friend) => {

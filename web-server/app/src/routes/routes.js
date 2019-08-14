@@ -51,6 +51,9 @@ module.exports = (app) => {
         .post(sessionChecker, userController.userFriendRequest)
         .delete(sessionChecker, userController.removeLinkedUser)
 
+    app.route('/users/follower')
+        .post(sessionChecker, userController.addFollower)
+
     app.route("/users/:uuid/info")
         .get(userController.getLightweightInfoUser)
     

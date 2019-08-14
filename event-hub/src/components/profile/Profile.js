@@ -58,12 +58,34 @@ class Profile extends CallableComponent {
     }
 
     addFriend = () => {
+        let errorFun = () => this.props.onError("Si è verificato un errore durante la richiesta, riprova")
         if(!this.props.isLocalUser){
-            Api.sendFriendshipRequest(
-                this.state.user._id,
-                () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
-                () => {}
-            )
+            if(this.state.user.organization){
+                Api.followOrganization(
+                    this.state.user._id,
+                    errorFun,
+                    () => {
+                        let newFriends = this.state.user.linkedUsers
+                        newFriends.push(this.props.localUser)
+                        this.props.updateState({linkedUsers: newFriends})
+                        this.props.manageLinkedUser(this.state.user, true)
+                        this.setState((prevState) => {
+                            prevState.user.linkedUsers = newFriends
+                            return prevState
+                        })
+                    }
+                )
+            } else {
+                Api.sendFriendshipRequest(
+                    this.state.user._id,
+                    errorFun,
+                    () => {
+                        let btn = document.getElementById("addButton")
+                        btn.classList.add("disabled")
+                        this.props.onSuccess("Richiesta d'amicizia inviata!")
+                    }
+                )
+            }
         }
     }
 
@@ -82,8 +104,15 @@ class Profile extends CallableComponent {
             Api.removeFriend(
                 this.state.user._id, 
                 () => this.props.onError("Si è verificato un errore durante la richiesta, riprova"),
-                () => 
-                    this.props.updateState({linkedUsers: this.state.user.linkedUsers.filter(elem => elem._id !== this.props.userId)})
+                () => {
+                    let list = this.state.user.linkedUsers.filter(elem => elem._id !== this.props.localUser._id)
+                    this.props.updateState({linkedUsers: list})
+                    this.props.manageLinkedUser(this.state.user, false)
+                    this.setState((prevState) => {
+                        prevState.user.linkedUsers = list
+                        return prevState
+                    })
+                }
             )
         }
     }
@@ -94,7 +123,7 @@ class Profile extends CallableComponent {
 
     render() {
         let isMyFriend = !this.props.isLocalUser && this.props.isLogged &&
-            this.state.user.linkedUsers.findIndex(elem => elem._id === this.props.userId) >= 0
+            this.state.user.linkedUsers.findIndex(elem => elem._id === this.props.localUser._id) >= 0
 
         let events = this.getEventsByUserTypology()
         let lastBadge = this.state.user.badges && this.state.user.badges.length !== 0 ? this.state.user.badges[this.state.badges.length - 1] : ""
@@ -132,14 +161,14 @@ class Profile extends CallableComponent {
                                                 number={this.state.user.points} 
                                             />
                                             <ProfileAction
+                                                id="addButton"
                                                 iconName={"plus"}
-                                                id="ciaooo"
-                                                show={!this.props.isLocalUser && !isMyFriend && this.props.isLogged}
+                                                show={!this.props.isLocalUser && !isMyFriend && this.props.isLogged && !this.props.user.organization}
                                                 actionSelected={this.addFriend}
                                             />
                                             <ProfileAction
                                                 iconName={"street-view"}
-                                                show={!this.props.isLocalUser && isMyFriend && !this.state.user.organization && this.props.isLogged}
+                                                show={!this.props.isLocalUser && isMyFriend && !this.state.user.organization && !this.props.localUser.organization && this.props.isLogged}
                                                 actionSelected={this.requestPosition}
                                             />
                                             <ProfileBadge
