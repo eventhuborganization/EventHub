@@ -152,8 +152,7 @@ class App extends React.Component {
             <Route path="/friends" exact render={(props) =>
                 <Friends {...props}
                     isLogged={this.state.isLogged}
-                    userId={this.state.user._id}
-                    friends={this.state.user.linkedUsers ? this.state.user.linkedUsers : []}    
+                    loggedUser={this.state.user}  
                     onError={this.onError}
                 />}
               />

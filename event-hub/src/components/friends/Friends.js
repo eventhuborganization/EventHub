@@ -9,17 +9,27 @@ class Friends extends React.Component {
 
     constructor(props){
         super(props)
+
+        let user = props.loggedUser
+        if(!user.linkedUsers) {
+            user.linkedUsers = []
+        }
+
         this.state = {
+            loggedUser : user,
             filter: "",
             searchComplete: false,
-            friendsArray: props.friends.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+            friendsArray: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
             friends: [],
             organizations: [],
             users: []
         }
         this.state.friends = this.getAllFriends(() => true)
         if(this.state.friends.length <= 0){
-            this.state.friends = <EmptyList description={<div>La tua lista amici è vuota.<br/>Incontra nuova gente!</div>}/>
+            this.state.friends = <EmptyList description={user.organization ? 
+                <div>Non hai follower</div> : 
+                <div>La tua lista amici è vuota.<br/>Incontra nuova gente!</div>}
+            />
         } else {
             Api.getUsersInformation(
                 this.state.friendsArray,
@@ -117,7 +127,8 @@ class Friends extends React.Component {
     }
 
     cantAddFriend = (friend) => {
-        return !this.props.isLogged || this.state.friendsArray.includes(friend) || friend._id === this.props.userId
+        return !this.props.isLogged || this.state.loggedUser.organization || 
+        this.state.friendsArray.includes(friend) || friend._id === this.state.loggedUser._id
     }
 
     getAllFriends = (filterFriends) => {
@@ -179,7 +190,7 @@ class Friends extends React.Component {
                     this.props.isLogged || this.state.searchComplete ? 
                         <div className="mt-1">
                             <MultipleElementsCard
-                                title="I tuoi amici"
+                                title={"I tuoi " + (this.state.loggedUser.organization ? "follower" : "amici")}
                                 elements={this.state.friends}
                                 showAll={!this.state.searchComplete}
                                 show={this.props.isLogged}
