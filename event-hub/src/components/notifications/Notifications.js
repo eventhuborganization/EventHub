@@ -9,13 +9,7 @@ class Notifications extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            notifications: [{
-                _id: "ee",
-                typology: 1,
-                sender: {},
-                event: {},
-                timestamp: new Date()
-            }]
+            notifications: []
         }
         if (!!props.isLogged)
             ApiService.getNotifications(
@@ -47,7 +41,7 @@ class Notifications extends React.Component {
     render() {
         return (
             <div>
-                <LoginRedirect {...this.props} redirectIfNotLogged={false} />
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <section className="row sticky-top shadow bg-white border-bottom border-primary text-center">
                     <h1 className="col ml-1">Notifiche</h1>
                 </section>

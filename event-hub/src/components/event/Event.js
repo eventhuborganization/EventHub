@@ -157,6 +157,9 @@ let EventHeaderBanner = props => {
 
     let renderDate = () => {
         let date = props.event.date
+        if (!(date instanceof Date)) {
+            date = new Date(date)
+        }
         let hours = date ? date.getUTCHours() < 10 ? "0" + date.getUTCHours() : date.getUTCHours() : "00"
         let minutes = date ? date.getUTCMinutes() < 10 ? "0" + date.getUTCMinutes() : date.getUTCMinutes() : "00"
         return date

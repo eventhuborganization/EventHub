@@ -25,7 +25,7 @@ class Home extends React.Component {
         if (response && response.events)
             this.setState((prevState, props) => {
                 let state = prevState
-                //state.eventsLoaded = response.events
+                state.eventsLoaded = response.events
                 return state
             })
     }
