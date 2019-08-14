@@ -20,7 +20,8 @@ class Notification extends React.Component {
                 6: "Ha organizzato un nuovo evento.",
                 7: "Ha modificato l'evento.",
                 8: "Ha accettato la tua richiesta d'amicizia.",
-                9: "Ti ha inviato la sua posizione."
+                9: "Ti ha inviato la sua posizione.",
+                10: "Non ha accettato di inviarti la sua posizione."
             }
         }
     }
@@ -33,30 +34,44 @@ class Notification extends React.Component {
             () => this.props.onError("Si è verificato un errore durante l'invio della risposta, riprova"),
             () => {
                 this.props.deleteNotification(this.props.notification._id)
-                this.props.onFriendAdded(this.props.notification.sender)
+                if(accepted){
+                    this.props.onFriendAdded(this.props.notification.sender)
+                }
             }
         )
     }
 
     handlePositionRequest = (accepted) => {
-        GeoLocation.getCurrentLocation(
-            () =>
-                this.props.onError("Si è verificato un problema nell'acquisizione della posizione attuale, riprovare."),
-            position => {
-                let coords = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
+        if(accepted){
+            GeoLocation.getCurrentLocation(
+                () =>
+                    this.props.onError("Si è verificato un problema nell'acquisizione della posizione attuale, riprovare."),
+                position => {
+                    let coords = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    }
+                    ApiService.sendFriendPositionResponse(
+                        coords,
+                        accepted,
+                        this.props.notification.sender._id,
+                        this.props.notification._id,
+                        () => this.props.onError("Si è verificato un errore durante l'invio della posizione, riprova"),
+                        () => this.props.deleteNotification(this.props.notification._id)
+                    )
                 }
-                ApiService.sendFriendPositionResponse(
-                    coords,
-                    accepted,
-                    this.props.notification.sender._id,
-                    this.props.notification._id,
-                    () => this.props.onError("Si è verificato un errore durante l'invio della posizione, riprova"),
-                    () => this.props.deleteNotification(this.props.notification._id)
-                )
-            }
-        )
+            )
+        } else {
+            ApiService.sendFriendPositionResponse(
+                {},
+                accepted,
+                this.props.notification.sender._id,
+                this.props.notification._id,
+                () => this.props.onError("Si è verificato un errore durante l'invio della posizione, riprova"),
+                () => this.props.deleteNotification(this.props.notification._id)
+            )
+        }
+        
     }
 
     rightComponentByType = (type) => {
@@ -94,11 +109,12 @@ class Notification extends React.Component {
                             ]}
                         />
             case 9:
-                return <LocationMap place={{location: this.props.notification.event.location}} />
+                return <LocationMap place={{location: this.props.notification.position}} />
             case 3:
                 break //return badge
             case 2:
             case 8:
+            case 10:
                 break
             default:
                 break
@@ -117,6 +133,7 @@ class Notification extends React.Component {
             case 4:
             case 8:
             case 9:
+            case 10:
             case 2:
                 return <UserDescription description={this.state.notificationTypes[type]} />
             default:
@@ -137,7 +154,7 @@ class Notification extends React.Component {
     }
 
     isNotificationToBeReadOnce = (type) => {
-        return type === 8 || type === 2 || type === 3
+        return type === 2 || type === 3 || type === 8 || type === 10
     }
 
     render() {
