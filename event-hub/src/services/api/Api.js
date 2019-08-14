@@ -24,7 +24,7 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
 }
 
 /**
- * Map a received event datas to a well known data structure.
+ * Map a received event data to a well known data structure.
  * @param event {object}
  * @returns {{date: *, description: *, creationDate: *, maxParticipants: *, organizator: *, typology: *, followers: *, public: *, reviews: *, name: *, _id: *, participants: *, numParticipants: *}}
  */
@@ -375,16 +375,20 @@ let sendFriendshipResponse = (friendId, accepted, notificationId, onError, onSuc
  *     lng: number
  * }}
  * @param accepted {boolean}
+ * @param friendId {string}
+ * @param notificationId {string}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
  */
-let sendFriendPositionResponse = (position, accepted, onError, onSuccess) => {
+let sendFriendPositionResponse = (position, accepted, friendId, notificationId, onError, onSuccess) => {
     let data = {
         position: {
             lat: position.lat,
             lng: position.lng
         },
-        accepted: accepted
+        accepted: accepted,
+        _id: notificationId,
+        friend: friendId
     }
     managePromise(
         Axios.post('/notification/friendposition', data),

@@ -2,6 +2,7 @@ import React from 'react'
 import {EventsMap} from "./Maps"
 import {SearchBar, SEARCH_BY_PLACE} from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
+import GeoLocation from '../../services/location/GeoLocation'
 
 class Map extends React.Component {
 
@@ -31,31 +32,27 @@ class Map extends React.Component {
     }
 
     setCurrentPositionAsCenter = () => {
-        if (window.navigator.geolocation) {
-            window.navigator.geolocation.getCurrentPosition(
-                position => {
-                    let data = {
-                        event: {
-                            location: {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude
-                            },
-                            date: {
-                                value: new Date(),
-                                operator: ">="
-                            }
+        GeoLocation.getCurrentLocation(
+            () => this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione"),
+            position => {
+                let data = {
+                    event: {
+                        location: {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        },
+                        date: {
+                            value: new Date(),
+                            operator: ">="
                         }
                     }
-                    ApiService.getEvents(data,
-                        error => { console.log(error.body); this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina.")},
-                        response => this.onSearchResults({response: {events: response.data}}))
-                    this.updateCenterPosition(position.coords.latitude, position.coords.longitude)
-                },
-                error => {
-                    this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione")
                 }
-            )
-        }
+                ApiService.getEvents(data,
+                    () => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+                    events => this.onSearchResults({events: events}))
+                this.updateCenterPosition(position.coords.latitude, position.coords.longitude)
+            }
+        )
     }
 
     updateCenterPosition = (lat, lng) => {
@@ -76,23 +73,7 @@ class Map extends React.Component {
             if (response.events) {
                 this.setState((prevState) => {
                     let state = prevState
-                    state.events = response.events.map(event => {
-                        return {
-                            creationDate: event.creationDate,
-                            date: event.date,
-                            description: event.description,
-                            followers: event.followers,
-                            maxParticipants: event.maximumParticipants,
-                            name: event.name,
-                            organizator: event.organizator,
-                            participants: event.participants,
-                            numParticipants: event.participants.length,
-                            public: event.public,
-                            reviews: event.reviews,
-                            typology: event.typology,
-                            _id: event._id
-                        }
-                    })
+                    state.events = response.events
                     return state
                 })
             }
