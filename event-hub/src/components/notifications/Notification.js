@@ -31,6 +31,7 @@ class Notification extends React.Component {
             () => this.props.onError("Si è verificato un errore durante l'invio della risposta, riprova"),
             () => {
                 this.props.deleteNotification(this.props.notification._id)
+                this.props.onFriendAdded(this.props.notification.sender)
             })
     }
 

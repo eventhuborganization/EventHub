@@ -70,6 +70,14 @@ class App extends React.Component {
       })
   }
 
+  addLinkedUser = (user) => {
+    this.setState((prevState) =>{
+      let state = prevState
+      state.user.linkedUsers = state.user.linkedUsers.push(user)
+      return state
+    })
+  }
+
   render() {
     return (
         <Router>
@@ -114,6 +122,7 @@ class App extends React.Component {
                 <Notifications {...props}
                     isLogged={this.state.isLogged}
                     onError={this.onError}
+                    onFriendAdded={this.addLinkedUser}
                 />}
             />
             <Route path="/profile" exact render={(props) =>
