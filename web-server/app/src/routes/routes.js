@@ -25,13 +25,13 @@ module.exports = (app) => {
         .put(sessionChecker, eventController.createEvent)
 
     app.route('/events/info/:uuid')
-        .get(sessionChecker, eventController.eventInfo)
+        .get(eventController.eventInfo)
 
     app.route('/events/position/near')
-        .get(sessionChecker, eventController.getEventsNear)
+        .get(eventController.getEventsNear)
 
     app.route('/events/search/:name')
-        .get(sessionChecker, eventController.searchEventByName)
+        .get(eventController.searchEventByName)
 
     app.route("/events/:fromIndex")
         .get(eventController.getEventsFromIndex)

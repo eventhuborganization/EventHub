@@ -39,7 +39,7 @@ let mapEvent = (event) => {
         date: event.date,
         description: event.description,
         followers: event.followers ? event.followers : [],
-        maxParticipants: event.maximumParticipants,
+        maxParticipants: event.maxParticipants,
         name: event.name,
         organizator: mapUser(event.organizator),
         participants: event.participants ? event.participants : [],
