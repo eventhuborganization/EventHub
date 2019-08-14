@@ -59,12 +59,18 @@ exports.createEvent = (req, res) => {
     event.organizator = req.session.user;
     EventService.newEvent(event, (response)=>{
         if (event.public) {
-            axios.get(`${UserServiceHostPort}/users/${req.session.user}/linkedUsers`)
-                .then(resLinkedUsers => {
-                    resLinkedUsers.forEach(user => {
-                        axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.session.user})
-                    })
+            axios.get(`${UserServiceHostPort}/users/${req.session.user}`)
+                .then(user => {
+                    if (user.data.organization) {
+                        axios.get(`${UserServiceHostPort}/users/${req.session.user}/linkedUsers`)
+                            .then(resLinkedUsers => {
+                                resLinkedUsers.forEach(user => {
+                                    axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.session.user})
+                                })
+                            })
+                    }
                 })
+            
         }
         network.resultWithJSON(res,response)
     }, (err) => {
