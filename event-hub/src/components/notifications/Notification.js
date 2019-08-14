@@ -2,10 +2,8 @@ import React from 'react'
 import './Notification.css'
 import {EventInteractionPanel} from '../event/Event'
 import ApiService from '../../services/api/Api'
-import GoogleMapsApi from '../../services/google_cloud/GoogleMaps'
 import GeoLocation from '../../services/location/GeoLocation'
 import {LocationMap} from "../map/Maps"
-import GoogleMapsProperties from "../../services/google_cloud/Properties"
 
 class Notification extends React.Component {
 
