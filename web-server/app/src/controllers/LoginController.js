@@ -8,7 +8,7 @@ exports.getLogin = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users/credentials`, {data: req.body})
+    axios.post(`${UserServiceHostPort}/users/credentials`, req.body)
     .then((response) => {
         req.session.user = response.data._id
         network.replayResponse(response, res);
@@ -34,7 +34,7 @@ exports.registration = (req, res) => {
     delete data.gender
     delete data.phone
     delete data.avatar
-    axios.post(`${UserServiceHostPort}/users`, {data: data})
+    axios.post(`${UserServiceHostPort}/users`, data)
         .then((response) => {
             network.replayResponse(response, res);
         })
