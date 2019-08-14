@@ -73,10 +73,10 @@ class App extends React.Component {
   manageLinkedUser = (user, add) => {
     this.setState((prevState) =>{
       let state = prevState
-      if(add){
+      if (add) {
         state.user.linkedUsers.push(user)
       } else {
-        state.user.linkedUsers = state.user.linkedUsers.filter(user => user._id !== user._id)
+        state.user.linkedUsers = state.user.linkedUsers.filter(u => u._id !== user._id)
       }
       return state
     })

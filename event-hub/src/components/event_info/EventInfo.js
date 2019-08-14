@@ -13,7 +13,6 @@ class EventInfo extends React.Component {
         this.state = {
             eventInfo: undefined
         }
-        GoogleApi.getPlaceInformationByLocation({lat: 44, lng: 11}, () => {}, () => {})
         ApiService.getEventInformation(props.match.params.id,
             error => props.onError("Errore nel caricare le informazioni dell'evento. Ricaricare la pagina."),
                 event => {

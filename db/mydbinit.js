@@ -92,11 +92,20 @@ db.users.insert({
 var uuid = db.users.find({"name": "La voglia matta"}).limit(1)[0]._id
 
 db.events.insert({
+    "creationDate": "04-08-2019",
+    "date": "24-08-2020",
+    "description": "Una madonna rogoronnesca",
+    "followers": [],
+    "maxParticipants": 200,
     "name": "Evento della madonna",
-    "description": "C'è la madonna in rogo (rogopedia)",
-    "date": "2019-07-10",
     "organizator": uuid,
+    "participants": [],
     "public": true,
+    "reviews": [],
     "typology": "sport",
-    "maximumParticipants": 10
+    "location": {
+        "lat": 44.345420,
+        "lng": 11.725786,
+        "address": "Via Santerno, 3"
+    }
 });
