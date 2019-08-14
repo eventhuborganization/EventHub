@@ -46,7 +46,7 @@ var UserSchema = new Schema({
         sender: Schema.Types.ObjectId,
         timestamp: Date,
         read: Boolean,
-        data: String
+        data: {}
     }],
     profilePicture: String,
     eventsSubscribed: [Schema.Types.ObjectId],

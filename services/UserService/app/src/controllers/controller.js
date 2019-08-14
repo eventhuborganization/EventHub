@@ -176,6 +176,7 @@ exports.addUserNotification = (req, res) => {
         data.timestamp = Date.now();
         data.typology = req.body.typology;
         data.sender = req.body.sender;
+        data.data = req.body.data;
         Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {
             if (err) {
                 network.userNotFound(res);

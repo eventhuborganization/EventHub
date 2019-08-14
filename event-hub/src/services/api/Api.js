@@ -86,6 +86,18 @@ let mapUser = (user) => {
 }
 
 /**
+ * Map a received position to a well known data structure.
+ * @param position {object}
+ * @returns {{typology: *, sender: *, _id: *, event: *, timestamp: *}}
+ */
+let mapPosition = (position) => {
+    return {
+        lat: position.lat,
+        lng: position.lon
+    }
+}
+
+/**
  * Map a received notification to a well known data structure.
  * @param notification {{
  *     _id: string,
@@ -94,15 +106,16 @@ let mapUser = (user) => {
  *     event: object,
  *     timestamp: string
  * }}
- * @returns {{typology: *, sender: *, _id: *, event: *, timestamp: *}}
+ * @returns {{typology: *, sender: *, _id: *, event: *, timestamp: *, position: *}}
  */
 let mapNotification = (notification) => {
     return {
         _id: notification._id,
         typology: notification.typology,
+        timestamp: notification.timestamp,
         sender: notification.sender ? mapUser(notification.sender) : {},
-        event: notification.event ? mapEvent(notification.event) : {},
-        timestamp: notification.timestamp
+        event: notification.data && notification.data.event ? mapEvent(notification.data.event) : {},
+        position: notification.data && notification.data.position ? mapPosition(notification.data.position) : {}
     }
 }
 
