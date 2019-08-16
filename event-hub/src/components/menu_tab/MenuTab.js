@@ -46,11 +46,12 @@ function ScrollableMenuTab(props){
         count++
         return (
             <li className="nav-item" key={"li" + count + "_id"}>
-                <a  className={"nav-link " + props.style.link + (count === 0 ? " active" : "")} 
+                <a className={"nav-link " + props.style.link + (count === 0 ? " active" : "")}
                     id={"tab-scroll-" + count} 
                     data-toggle="pill" 
-                    href={"#scroll-elem-" + count} 
-                    role="tab" aria-controls={"scroll-elem-" + count} aria-selected={count === 0 ? true : false}>
+                    href={"#scroll-elem-" + count}
+                    role="tab" aria-controls={"scroll-elem-" + count} aria-selected={count === 0}
+                    onClick={element.onClick instanceof Function ? element.onClick : () => {}}>
                     {element.tag}
                 </a>
             </li>

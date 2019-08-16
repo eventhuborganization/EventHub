@@ -16,6 +16,7 @@ import Friends from '../friends/Friends'
 import Map from '../map/Map'
 import Settings from '../settings/Settings'
 import NotificationService from "../../services/notification/Notification";
+import ApiService from "../../services/api/Api"
 
 class App extends React.Component {
 
@@ -60,14 +61,22 @@ class App extends React.Component {
   }
 
   logout = () => {
-      this.setState((prevState) => {
-          let state = prevState
-          state.user = {}
-          state.isLogged = false
-          return state
-      }, () => {
-          NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
-          this.#notificationServiceSubscriptionCode = undefined
+        /*ApiService.logout(
+            () => {},
+            () => {
+                NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
+                this.#notificationServiceSubscriptionCode = undefined
+                this.setState({
+                    user: {},
+                    isLogged: false
+                })
+            }
+        )*/
+      NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
+      this.#notificationServiceSubscriptionCode = undefined
+      this.setState({
+          user: {},
+          isLogged: false
       })
   }
   
@@ -182,7 +191,7 @@ class App extends React.Component {
                     onChangeUserInfo={this.updateUserInfo}
                     onError={this.onError}
                     onSuccess={this.onSuccess}
-                    onLogout={this.logout}
+                    logout={this.logout}
                 />}
               />
           </Switch>

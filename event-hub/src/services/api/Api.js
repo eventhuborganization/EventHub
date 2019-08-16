@@ -461,6 +461,19 @@ let login = (email, password, onError, onSuccess) => {
 }
 
 /**
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let logout = (onError, onSuccess) => {
+    managePromise(
+        Axios.post('/logout'),
+        [200],
+        onError,
+        onSuccess
+    )
+}
+
+/**
  * @param data {object}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -661,6 +674,7 @@ export default {
     notificationRead,
     getEventInformation,
     login,
+    logout,
     register,
     updateUserProfile,
     updateUserCredentials,
