@@ -15,15 +15,19 @@ import { PersonalProfile, UserProfile } from '../profile/ProfileType'
 import Friends from '../friends/Friends'
 import Map from '../map/Map'
 import Settings from '../settings/Settings'
+import NotificationService from "../../services/notification/Notification";
 
 class App extends React.Component {
+
+    #notificationServiceSubscriptionCode = undefined
 
   constructor(props) {
     super(props)
     this.state = {
-      isLogged: false,
-      user: {},
-      showMessageElement: undefined
+        isLogged: false,
+        user: {},
+        showMessageElement: undefined,
+        notifications: []
     }
   }
 
@@ -50,7 +54,9 @@ class App extends React.Component {
         state.user = user_data
         state.user.linkedUsers = state.user.linkedUsers.map(id => {return {_id: id, name: ""}})
         return state
-      })
+      }, () => {
+        this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
+    })
   }
 
   logout = () => {
@@ -59,6 +65,9 @@ class App extends React.Component {
           state.user = {}
           state.isLogged = false
           return state
+      }, () => {
+          NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
+          this.#notificationServiceSubscriptionCode = undefined
       })
   }
   
@@ -80,6 +89,10 @@ class App extends React.Component {
       }
       return state
     })
+  }
+
+  onNotificationLoaded = (notifications) => {
+      this.setState({notifications: notifications})
   }
 
   render() {
@@ -127,6 +140,7 @@ class App extends React.Component {
                     isLogged={this.state.isLogged}
                     onError={this.onError}
                     onFriendAdded={(elem) => this.manageLinkedUser(elem, true)}
+                    notifications={this.state.notifications}
                 />}
             />
             <Route path="/profile" exact render={(props) =>
