@@ -108,7 +108,10 @@ class App extends React.Component {
           /> 
           <Switch>
             <Route path="/" exact render={(props) => 
-                <Home {...props} 
+                <Home {...props}
+                  user={{
+                      _id: this.state.user._id
+                  }}
                   isLogged={this.state.isLogged} 
                   onError={this.onError} 
                 />} 
@@ -122,8 +125,11 @@ class App extends React.Component {
             />
             <Route path="/event/:id" exact render={(props) => 
                 <EventInfo {...props} 
-                  isLogged={this.state.isLogged}
-                  onError={this.onError} 
+                   isLogged={this.state.isLogged}
+                   onError={this.onError}
+                   user={{
+                       _id: this.state.user._id
+                   }}
                 />} 
             />
             <Route path="/login" exact render={(props) => 

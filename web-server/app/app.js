@@ -43,11 +43,11 @@ function runApp() {
 
     //host e port servizio utenti
     global.UserServicePort = 3001
-    global.UserServiceHost = 'event-hub_user-service'
+    global.UserServiceHost = 'localhost'//'event-hub_user-service'
     global.EventServicePort = 3002
-    global.EventServiceHost = 'event-hub_event-service'
+    global.EventServiceHost = 'localhost'//'event-hub_event-service'
     //port di questo servizio
-    global.port = 3000
+    global.port = 3003
 
     global.appRoot = path.resolve(__dirname)
     /**

@@ -57,7 +57,19 @@ class EventInfo extends React.Component {
                     <section className={"mt-2"}>
                         <EventInteractionPanel {...this.props}
                                                key={this.state.eventInfo._id}
-                                               event={this.state.eventInfo} />
+                                               event={this.state.eventInfo}
+                                               onEventParticipated={event =>  this.setState(prevState => {
+                                                   let state = prevState
+                                                   state.eventInfo.participants = event.participants
+                                                   state.eventInfo.numParticipants = event.participants.length
+                                                   return state
+                                               })}
+                                               onEventFollowed={event =>  this.setState(prevState => {
+                                                   let state = prevState
+                                                   state.eventInfo.followers = event.followers
+                                                   return state
+                                               })}
+                        />
                     </section>
 
                     <section className="row mt-2">

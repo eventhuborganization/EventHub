@@ -145,7 +145,10 @@ class Notification extends React.Component {
         if (this.isEventType(type)) {
             return <EventInteractionPanel {...this.props}
                                           key={this.props.notification._id}
-                                          event={this.props.notification.event} />
+                                          event={this.props.notification.event}
+                                          onEventParticipated={() => {}}
+                                          onEventFollowed={() =>  {}}
+            />
         }
     }
 

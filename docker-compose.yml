@@ -42,7 +42,7 @@ services:
     container_name: event-hub_web-server
     hostname: event-hub_web-server
     ports:
-      - 3003:3000
+      - 3003:3003
     networks:
       - internal
 

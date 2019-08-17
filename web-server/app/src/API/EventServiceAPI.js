@@ -130,8 +130,7 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     addUserToEvent(eventUuid, users,  successCallback = null, errorCallback = null){
-        let data = JSON.stringify(users)
-        axios.post(`${this.hostport}/events/${eventUuid}/users`, data)
+        axios.post(`${this.hostport}/events/${eventUuid}/users`, users)
         .then(successCallback)
         .catch(errorCallback);
     }

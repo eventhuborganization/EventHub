@@ -312,7 +312,7 @@ let createNewEvent = (event, onError, onSuccess) => {
 let participateToEvent = (eventId, onError, onSuccess) => {
     interactWithEvent(
         {participant: true, event: eventId},
-        () => onError("Errore durante la partecipazione ad un evento. Riprovare."),
+        onError,
         onSuccess
     )
 }
@@ -325,7 +325,7 @@ let participateToEvent = (eventId, onError, onSuccess) => {
 let followEvent = (eventId, onError, onSuccess) => {
     interactWithEvent(
         {follower: true, event: eventId},
-        () => onError("Errore nel tentativo di seguire un evento. Riprovare."),
+        onError,
         onSuccess
     )
 }
@@ -341,9 +341,9 @@ let followEvent = (eventId, onError, onSuccess) => {
 let interactWithEvent = (data, onError, onSuccess) => {
     managePromise(
         Axios.post("/user/event", data),
-        [201],
+        [200],
         onError,
-        onSuccess
+        response => onSuccess(mapEvent(response.data))
     )
 }
 

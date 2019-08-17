@@ -73,7 +73,7 @@ exports.getEventById = (req, res) => {
         else if(event)
                 res.status(201).json(event)
             else
-                res.status(404)
+                res.status(404).end()
     })
 }
 
@@ -85,22 +85,28 @@ exports.updateEventById = (req, res) => {
             else if(event)
                 res.status(200).send('ok') 
             else 
-                res.status(404)
+                res.status(404).end()
         })
     }
 }
 
 exports.addUserToEvent = (req, res) => {
-    if(req.body.user){
-        console.log(req.body)
-        Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.user}, (err, event) => {
+    if(req.body.user) {
+        let conditions = { _id: req.params.uuid }
+        if (req.body.user.participants)
+            conditions.$where = 'this.participants.length<this.maxParticipants'
+        let update = { $addToSet: req.body.user }
+        let options = { new: true }
+        Event.findOneAndUpdate(conditions, update, options, (err, event) => {
             if(err)
                 res.status(500).send(err)
             else if(event)
-                res.status(200).send('ok') 
-            else 
-                res.status(404)
+                res.status(200).json(event)
+            else
+                res.status(404).end()
         })
+    } else {
+        res.status(400).end()
     }
 }
 
@@ -112,7 +118,7 @@ exports.removeUserToEvent = (req, res) => {
             else if(event)
                 res.status(200).send('ok') 
             else 
-                res.status(404)
+                res.status(404).end()
         })
     }
 }
@@ -124,7 +130,7 @@ exports.getEventReviews = (req, res) => {
         else if(event)
             res.status(event.reviews.length > 0 ? 201 : 204).json(event.reviews)
         else 
-            res.status(404)
+            res.status(404).end()
     })
 }
 
@@ -136,7 +142,7 @@ exports.addEventReviews = (req, res) => {
             else if(event)
                 res.status(200).send('ok') 
             else 
-                res.status(404)
+                res.status(404).end()
         })
     }
 }
@@ -150,6 +156,6 @@ exports.newEvent = (req, res) => {
         else if(event)
             res.status(200).send('ok') 
         else 
-            res.status(404)
+            res.status(404).end()
     })
 }

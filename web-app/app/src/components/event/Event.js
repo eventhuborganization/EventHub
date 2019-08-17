@@ -41,7 +41,12 @@ class FollowButton extends React.Component {
     onClick = () => {
         if (this.state.loginRedirect)
             this.state.loginRedirect.doIfLoggedOrElseRedirect(
-                () => ApiService.followEvent(this.props.event._id, this.props.onError))
+                () => ApiService.followEvent(
+                    this.props.event._id,
+                    () => this.props.onError("Errore nel tentativo di seguire un evento. Riprovare."),
+                    this.props.onSuccess
+                )
+            )
     }
 
     render () {
@@ -67,7 +72,12 @@ class ParticipateButton extends React.Component {
     onClick = () => {
         if (this.state.loginRedirect)
             this.state.loginRedirect.doIfLoggedOrElseRedirect(
-                () => ApiService.participateToEvent(this.props.event._id, this.props.onError))
+                () => ApiService.participateToEvent(
+                    this.props.event._id,
+                    () => this.props.onError("I posti disponibili potrebbero essere terminati. Riprovare."),
+                    this.props.onSuccess
+                )
+            )
     }
 
     render () {
@@ -109,10 +119,14 @@ let EventInteractionPanel = (props) => {
             <div className="col-9 d-flex justify-content-end">
                 <FollowButton {...props}
                               key={props.event._id + "followbutton"}
-                              event={props.event} />
+                              event={props.event}
+                              onSuccess={props.onEventFollowed}
+                />
                 <ParticipateButton {...props}
                                    key={props.event._id + "participatebutton"}
-                                   event={props.event} />
+                                   event={props.event}
+                                   onSuccess={props.onEventParticipated}
+                />
             </div>
         </div>
     )

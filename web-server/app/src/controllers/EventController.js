@@ -11,7 +11,9 @@ exports.addUserToEvent = (req, res) => {
     } else if(req.body.follower){
         data = {user: {followers: req.session.user}}
     }
-    EventService.addUserToEvent(req.body.event, data, event.defaultCallback)
+    EventService.addUserToEvent(req.body.event, data,
+            response => network.replayResponse(response, res),
+            error => network.internalError(res, error))
 }
 
 exports.eventInfo = (req, res) => {

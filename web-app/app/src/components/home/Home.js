@@ -60,6 +60,7 @@ class Home extends React.Component {
                                        onError={this.props.onError}
                                        isLogged={this.props.isLogged}
                                        location={this.props.location}
+                                       user={this.props.user}
                             />)
                     }
                     {this.renderNoNotificationPlaceHolder()}
