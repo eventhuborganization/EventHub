@@ -52,7 +52,8 @@ class FollowButton extends React.Component {
     render () {
         return (
             <button className={getButtonClassName(this.props.event.typology, FOLLOW)}
-                    onClick={this.onClick}>
+                    onClick={this.onClick}
+                    disabled={this.props.disabled}>
                 <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
                 Segui
             </button>
@@ -83,7 +84,8 @@ class ParticipateButton extends React.Component {
     render () {
         return (
             <button className={getButtonClassName(this.props.event.typology, PARTICIPATE)}
-                    onClick={this.onClick}>
+                    onClick={this.onClick}
+                    disabled={this.props.disabled}>
                 <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
                 Partecipa
             </button>
@@ -121,11 +123,13 @@ let EventInteractionPanel = (props) => {
                               key={props.event._id + "followbutton"}
                               event={props.event}
                               onSuccess={props.onEventFollowed}
+                              disabled={props.event.followers.includes(props.user._id)}
                 />
                 <ParticipateButton {...props}
                                    key={props.event._id + "participatebutton"}
                                    event={props.event}
                                    onSuccess={props.onEventParticipated}
+                                   disabled={props.event.participants.includes(props.user._id)}
                 />
             </div>
         </div>

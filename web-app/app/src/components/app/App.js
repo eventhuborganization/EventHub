@@ -150,6 +150,9 @@ class App extends React.Component {
                     onError={this.onError}
                     onFriendAdded={(elem) => this.manageLinkedUser(elem, true)}
                     notifications={this.state.notifications}
+                    user={{
+                        _id: this.state.user._id
+                    }}
                 />}
             />
             <Route path="/profile" exact render={(props) =>
