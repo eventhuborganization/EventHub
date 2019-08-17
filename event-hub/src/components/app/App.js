@@ -61,7 +61,7 @@ class App extends React.Component {
   }
 
   logout = () => {
-        /*ApiService.logout(
+        ApiService.logout(
             () => {},
             () => {
                 NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
@@ -71,13 +71,7 @@ class App extends React.Component {
                     isLogged: false
                 })
             }
-        )*/
-      NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
-      this.#notificationServiceSubscriptionCode = undefined
-      this.setState({
-          user: {},
-          isLogged: false
-      })
+        )
   }
   
   updateUserInfo = (user) => {
