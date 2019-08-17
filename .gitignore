@@ -847,3 +847,6 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/node,eclipse,intellij,webstorm,intellij+iml,webstorm+all,intellij+all,visualstudio,webstorm+iml,visualstudiocode
+
+#add from Andrea, script to start mongodb in local
+mongodb.bat
