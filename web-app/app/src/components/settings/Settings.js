@@ -1,14 +1,28 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
-import { LoginRedirect } from '../redirect/Redirect'
+import {LoginRedirect, RedirectComponent} from '../redirect/Redirect'
 import { ScrollableMenuTab } from '../menu_tab/MenuTab'
 import { ChangeCredentials, ChangeInfo } from './SettingsElements'
 
 
 class Settings extends React.Component {
 
-    createSingleTab = (tag, elem) => {
-        return Object.freeze({ tag: tag, elem: elem})
+    constructor(props) {
+        super(props)
+        console.log(props)
+        this.state = {
+            redirectComponent: undefined
+        }
+    }
+
+    createSingleTab = (tag, elem, onClick) => {
+        return Object.freeze({ tag: tag, elem: elem, onClick: onClick})
+    }
+
+    logout = () => {
+        if (this.state.redirectComponent) {
+            this.props.logout()
+            this.state.redirectComponent.setRedirect(true)
+        }
     }
 
     render() {
@@ -34,7 +48,16 @@ class Settings extends React.Component {
                             user={this.props.isLogged ? this.props.user : {}}
                             onChange={this.props.onChangeUserInfo}
                         />),
-                    this.createSingleTab(<Link to="/" className={style.link} onClick={this.props.onLogout}>Logout</Link>, <div></div>)
+                    this.createSingleTab(
+                        <div>
+                            <RedirectComponent
+                                from={this.props.location.pathname} to={"/"}
+                                onRef={ref => this.setState({redirectComponent: ref})}
+                            />
+                            Logout
+                        </div>,
+                        <div/>,
+                        this.logout)
                 ]} title="Impostazioni" style={style}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>

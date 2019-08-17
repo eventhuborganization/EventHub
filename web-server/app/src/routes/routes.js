@@ -91,5 +91,5 @@ module.exports = (app) => {
         .post(loginController.login)
         
     app.route('/logout')
-        .get(sessionChecker, loginController.logout)
+        .post(sessionChecker, loginController.logout)
 }

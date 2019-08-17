@@ -1,7 +1,6 @@
 import React from 'react'
 import Notification from "./Notification"
 import {LoginRedirect} from "../redirect/Redirect"
-import ApiService from '../../services/api/Api'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
 
 class Notifications extends React.Component {
@@ -9,20 +8,8 @@ class Notifications extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            notifications: []
+            notifications: props.notifications
         }
-        if (!!props.isLogged)
-            ApiService.getNotifications(
-                props.match.params.fromIndex, 
-                () => this.props.onError("Si è verificato un errore durante il caricamento delle notifiche, riprova."),
-                notifications => {
-                    this.setState((prevState) => {
-                        let state = prevState
-                        state.notifications = notifications
-                        return state
-                    })
-                }
-            )
     }
 
     renderNoNotificationPlaceHolder = () => {

@@ -84,7 +84,6 @@ class SearchBar extends React.Component {
         })
         GoogleApi.loadGoogleMapsScript(() => {
             let locationFilter = document.getElementById(this.location_filter_id)
-            console.log(locationFilter)
             let searchBox = new window.google.maps.places.SearchBox(locationFilter)
             searchBox.addListener('places_changed', () => {
                 let places = searchBox.getPlaces()
