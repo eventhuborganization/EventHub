@@ -24,6 +24,7 @@ class EventCreator extends React.Component {
                 public: true,
                 typology: undefined,
                 thumbnail: undefined,
+                thumbnailPreview: undefined,
                 maxParticipants: undefined,
                 organizator: props.loggedUser
             },
@@ -47,7 +48,8 @@ class EventCreator extends React.Component {
                         let streetAddress = place.address_components[1].short_name
                         let city = place.address_components[2].short_name
                         let address = streetAddress + ", " + streetNumber + ", " + city
-                        this.setState((prevState, props) => {
+                        console.log(place)
+                        this.setState((prevState) => {
                             let state = prevState
                             state.event.location.address = address
                             state.event.location.place_id = place.place_id
@@ -62,7 +64,7 @@ class EventCreator extends React.Component {
 
     updateName = (event) => {
         event.persist()
-        this.setState((prevState, props) => {
+        this.setState((prevState) => {
             let state = prevState
             state.event.name = event.target.value
             return state
@@ -71,7 +73,7 @@ class EventCreator extends React.Component {
 
     updateType = (event) => {
         event.persist()
-        this.setState((prevState, props) => {
+        this.setState((prevState) => {
             let state = prevState
             state.event.typology = event.target.value
             return state
@@ -80,16 +82,20 @@ class EventCreator extends React.Component {
 
     updateMaxParticipants = (event) => {
         event.persist()
-        this.setState((prevState, props) => {
-            let state = prevState
-            state.event.maxParticipants = event.target.value
-            return state
-        })
+        if(event.target.value > 10000000){
+            this.props.onError("Numero massimo di partecipanti troppo elevato")
+        } else {
+            this.setState((prevState) => {
+                let state = prevState
+                state.event.maxParticipants = event.target.value
+                return state
+            })
+        }
     }
 
     updateDate = (event) => {
         event.persist()
-        this.setState((prevState, props) => {
+        this.setState((prevState) => {
             let state = prevState
             state.dateSet = true
             let date = event.target.valueAsDate
@@ -126,9 +132,10 @@ class EventCreator extends React.Component {
         event.persist()
         let reader = new FileReader()
         reader.onload = e => {
-            this.setState((prevState, props) => {
+            this.setState((prevState) => {
                 let state = prevState
                 state.event.thumbnail = e.target.result
+                state.event.thumbnailPreview = e.target.result
                 return state
             })
         }
@@ -143,7 +150,7 @@ class EventCreator extends React.Component {
 
     updateDescription = event => {
         event.persist()
-        this.setState((prevState, props) => {
+        this.setState((prevState) => {
             let state = prevState
             state.event.description = event.target.value
             return state
@@ -181,8 +188,10 @@ class EventCreator extends React.Component {
                 element.scrollIntoView()
             }
         }
-        if (!event.thumbnailPreview)
+        if (!event.thumbnail) {
             addErrorClassAndfocus("thumbnail-preview")
+            this.props.onError("Non hai selezionato una immagine per l'evento!")
+        }
         if (!event.name)
             addErrorClassAndfocus("name")
         if (!event.typology)
@@ -197,12 +206,12 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("max-participants")
         if (!event.description)
             addErrorClassAndfocus("description")
-        if (!errorFound) {
+        if (!errorFound) {            
             ApiService.createNewEvent(this.state.event,
-                    () => console.log("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
+                    () => this.props.onError("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
                     response => {
-                        this.setState((prevState, props) => {
-                            let state = this.state
+                        this.setState((prevState) => {
+                            let state = prevState
                             state.eventCreated = true
                             state.eventId = response.event._id
                             return state
@@ -240,7 +249,7 @@ class EventCreator extends React.Component {
                             <em className="far fa-image fa-9x"></em>
                             <h4>Clicca per aggiungere un'immagine</h4>
                         </div>
-                        <img src={this.state.event.thumbnail}
+                        <img src={this.state.event.thumbnailPreview}
                              alt="Event thumbnail"
                              className={"img-fluid " + (this.state.event.thumbnail ? "" : " d-none ")}
                         />
@@ -344,7 +353,7 @@ class EventCreator extends React.Component {
                         </div>
                         <div className="row d-flex align-item-center mt-2">
                             <div className="col-7 pr-2">
-                                <label htmlFor="address" className="m-0">Dove</label>
+                                <label htmlFor="address" className="m-0">Luogo</label>
                                 <input
                                     id="address"
                                     name="address"
