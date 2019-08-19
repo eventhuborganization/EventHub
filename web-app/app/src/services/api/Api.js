@@ -29,17 +29,19 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  * @returns {{date: *, description: *, creationDate: *, maxParticipants: *, organizator: *, typology: *, followers: *, public: *, reviews: *, name: *, _id: *, participants: *, numParticipants: *}}
  */
 let mapEvent = (event) => {
+    console.log("prima")
+    console.log(event)
     let location = event.location ? {
-        lat: event.location.lat,
-        lng: event.location.lng,
-        address: event.location.address
+        lat: event.location.geo.coordinates[0],
+        lng: event.location.geo.coordinates[0],
+        address: event.location.city
     } : {}
     return {
         creationDate: event.creationDate,
-        date: event.date,
+        date: event.date ? event.date : event.eventDate,
         description: event.description,
         followers: event.followers ? event.followers : [],
-        maxParticipants: event.maxParticipants,
+        maxParticipants: event.maxParticipants ? event.maxParticipants : event.maximumParticipants,
         name: event.name,
         organizator: mapUser(event.organizator),
         participants: event.participants ? event.participants : [],

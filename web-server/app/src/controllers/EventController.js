@@ -28,9 +28,7 @@ exports.eventInfo = (req, res) => {
             .catch(err => {
                 network.internalError(res, err)
             })
-    }, err => {
-        network.internalError(res, err)
-    })
+    }, err => network.internalError(res, err))
 }
 
 exports.searchEventByName = (req, res) => {
@@ -48,7 +46,15 @@ exports.getEventsFromIndex = (req, res) => {
         })
         // slice(from: escluso, to: incluso)
         var result = response.data.slice(req.params.fromIndex, req.params.fromIndex + 10)
-        network.resultWithJSON(res, result);
+        var promises = result.map(event => axios.get(`${UserServiceHostPort}/users/${event.organizator}`))
+        axios.all(promises)
+            .then(usersResponse => {
+                usersResponse.map(user => user.data).forEach(user => {
+                    let ev = result.find(event => event.organizator === user._id)
+                    ev.organizator = user
+                })
+                network.resultWithJSON(res, result);
+            })
     })
 }
 
@@ -58,9 +64,9 @@ exports.getEventsNear = (req, res) => {
     })
 }
 exports.createEvent = (req, res) => {
-    var event = req.body;
-    event.thumbnail = "";
-    event.organizator = req.session.user;
+    var event = req.body
+    event.thumbnail = ""
+    event.organizator = req.session.user
     EventService.newEvent(event, (response)=>{
         if (event.public) {
             axios.get(`${UserServiceHostPort}/users/${req.session.user}`)
@@ -76,7 +82,7 @@ exports.createEvent = (req, res) => {
                 })
             
         }
-        network.resultWithJSON(res,response)
+        network.resultWithJSON(res,response.data)
     }, (err) => {
         console.log(err)
         network.internalError(res, err)

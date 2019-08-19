@@ -28,18 +28,23 @@ class EventCard extends React.Component {
                             <div className="d-flex align-items-start flex-column h-100">
                                 <div className="container-fluid">
                                     <div className="row">
-                                        <div className="col-8">
+                                        <div className="col-8 pl-0">
                                             <h5 className="card-title event-name">{this.state.eventInfo.name}</h5>
-                                            <h6 className="card-subtitle text-muted event-text">{this.state.eventInfo.organizator.name} {this.state.eventInfo.organizator.surname}</h6>
+                                            <h6 className="card-subtitle event-text">{this.state.eventInfo.organizator.name} {this.state.eventInfo.organizator.surname}</h6>
                                         </div>
-                                        <div className="col-4 d-flex justify-content-end">
-                                            <h5 className="card-title event-name">{this.state.eventInfo.numParticipants}/{this.state.eventInfo.maxParticipants}</h5>
+                                        <div className="col-4 px-0 d-flex justify-content-end">
+                                            <h5 className="card-title event-name">{this.state.eventInfo.numParticipants} / {this.state.eventInfo.maxParticipants}</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="container-fluid mt-auto mb-2">
                                     <div className="row">
-                                        <div className="col-12 card-text event-text">
+                                        <div className="col-12 px-0 card-text event-text">
+                                            {
+                                                this.state.eventInfo.location && this.state.eventInfo.location.address ? 
+                                                    <div className="event-place"><em className="fas fa-map-marker-alt"></em> {this.state.eventInfo.location.address}</div>
+                                                    : ""
+                                            }
                                             <p className="m-0">{this.state.eventInfo.description}</p>
                                         </div>
                                     </div>
