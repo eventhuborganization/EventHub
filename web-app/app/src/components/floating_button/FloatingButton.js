@@ -18,10 +18,10 @@ let FloatingButton = (props) => {
     if (props.icon && props.icon.name)
         iconClass = "fas fa-" + props.icon.name + (props.icon.size ? " fa-" + props.icon.size : "")
     return props.show ? (
-        <button className="btn btn-lg btn-primary rounded-circle floating-button fixed-bottom"
+        <button className="btn btn-lg btn-primary rounded-circle floating-button fixed-bottom d-flex justify-content-center align-items-center px-2"
                 type="button"
                 onClick={props.onClick}>
-            <em className={iconClass} aria-hidden="true"></em>
+            <em className={iconClass + " d-flex justify-content-center align-items-center"} aria-hidden="true" style={{height: 40, width: 40}}></em>
         </button>
     ) : ""
 }
@@ -29,7 +29,7 @@ let FloatingButton = (props) => {
 let CreateNewEventButton = (props) => {
     return (
         <Link to={"/event/new"}>
-            <FloatingButton icon={{name: "plus"}} show={props.isLogged} />
+            <FloatingButton icon={{name: "plus", size:"2x"}} show={props.isLogged} />
         </Link>
         )
 }
@@ -41,7 +41,7 @@ let CreateNewEventButton = (props) => {
  * @constructor
  */
 let ConfirmButton = (props) => {
-    return (<FloatingButton icon={{name: "check-circle"}} onClick={props.onClick} show={true}/>)
+    return (<FloatingButton icon={{name: "check", size:"2x"}} onClick={props.onClick} show={true}/>)
 }
 
 export {CreateNewEventButton, ConfirmButton}
