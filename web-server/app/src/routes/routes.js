@@ -3,9 +3,10 @@ module.exports = (app) => {
     var userController = require('../controllers/UserController')
     var notificationController = require('../controllers/NotificationController')
     var loginController = require('../controllers/LoginController')
+    const {loginChecker} = require('../API/passport')
 
     app.route("/")
-        .get(sessionChecker,(req, res) => {
+        .get(loginChecker,(req, res) => {
             res.sendFile(`${appRoot}/views/home.html`)
         })
 
@@ -22,7 +23,7 @@ module.exports = (app) => {
     /* ----------------------------------------------- */
 
     app.route("/events")
-        .post(sessionChecker, eventController.createEvent)
+        .post(loginChecker, eventController.createEvent)
 
     app.route('/events/info/:uuid')
         .get(eventController.eventInfo)
@@ -37,7 +38,7 @@ module.exports = (app) => {
         .get(eventController.getEventsFromIndex)
 
     app.route('/user/event')
-        .post(sessionChecker, eventController.addUserToEvent)
+        .post(loginChecker, eventController.addUserToEvent)
 
     /* ----------------------------------------------- */
 
@@ -45,14 +46,14 @@ module.exports = (app) => {
         .get(userController.searchUser)
     
     app.route('/users/friendposition')
-        .post(sessionChecker, userController.requestFriendPosition)
+        .post(loginChecker, userController.requestFriendPosition)
 
     app.route('/users/friendship')
-        .post(sessionChecker, userController.userFriendRequest)
-        .delete(sessionChecker, userController.removeLinkedUser)
+        .post(loginChecker, userController.userFriendRequest)
+        .delete(loginChecker, userController.removeLinkedUser)
 
     app.route('/users/follower')
-        .post(sessionChecker, userController.addFollower)
+        .post(loginChecker, userController.addFollower)
 
     app.route("/users/:uuid/info")
         .get(userController.getLightweightInfoUser)
@@ -61,25 +62,25 @@ module.exports = (app) => {
         .get(userController.getInfoUser)
 
     app.route('/notifications')
-        .post(sessionChecker, notificationController.markNotificationAsReaded)
+        .post(loginChecker, notificationController.markNotificationAsReaded)
     
     app.route('/notifications/:fromIndex')
-        .get(sessionChecker, notificationController.getNotification)
+        .get(loginChecker, notificationController.getNotification)
 
     app.route("/notification/friendship")
-        .post(sessionChecker,userController.friendshipAnswer)
+        .post(loginChecker,userController.friendshipAnswer)
 
     app.route("/notification/friendposition")
-        .post(sessionChecker, userController.responseFriendPosition)
+        .post(loginChecker, userController.responseFriendPosition)
 
     app.route("/profile")
-        .put(sessionChecker, userController.updateProfile)
+        .put(loginChecker, userController.updateProfile)
 
     app.route("/profile/credentials")
         .put(userController.updateCredentials)
 
     app.route('/invite/:uuid')
-        .get(sessionChecker, userController.inviteFriends)
+        .get(loginChecker, userController.inviteFriends)
 
     /* ----------------------------------------------- */
 
@@ -91,5 +92,5 @@ module.exports = (app) => {
         .post(loginController.login)
         
     app.route('/logout')
-        .post(sessionChecker, loginController.logout)
+        .post(loginChecker, loginController.logout)
 }

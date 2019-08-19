@@ -1,15 +1,12 @@
 const express = require('express')
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session)
-const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
 const fs = require('fs')
+const bodyParser = require('body-parser')
+const passport = require("./src/API/passport");
 const app = express()
 
 const _cfg = JSON.parse(fs.readFileSync('app.config'))
-console.log(_cfg);
 
 function pausecomp(millis)
 {
@@ -24,91 +21,51 @@ let reconnectInterval = 2000
 
 function connect(reconnectTries, reconnectInterval) {
     // ! per lavorare con docker sostituire "_cfg.dbpath" con "_cfg.dbpath_docker"
-    mongoose.connect(`mongodb://${_cfg.dbpath}/event-hub-db`, { useNewUrlParser: true, useFindAndModify: false })
+    mongoose.connect("mongodb://" + _cfg.dbpath + "/event-hub-db", { useNewUrlParser: true, useFindAndModify: false })
         .then(
             () => runApp(),
-            error => {
-                pausecomp(reconnectInterval)
-                if (reconnectTries > 0) {
-                    connect(reconnectTries - 1, reconnectInterval)
-                } else {
-                    console.log("Error: connection to mongodb refused.")
-                    console.log("Due to: " + error)
-                }
-            }
+            error => handleMongoConnectionError(error, reconnectTries, reconnectInterval)
         )
+        .catch(error => handleMongoConnectionError(error, reconnectTries, reconnectInterval))
+}
+
+function handleMongoConnectionError(error, reconnectTries, reconnectInterval) {
+    pausecomp(reconnectInterval)
+    if (reconnectTries > 0) {
+        connect(reconnectTries - 1, reconnectInterval)
+    } else {
+        console.log("Error: connection to mongodb refused.")
+        console.log("Due to: " + error)
+    }
 }
 
 function runApp() {
 
     //host e port servizio utenti
     global.UserServicePort = 3001
-    global.UserServiceHost = 'localhost'//'event-hub_user-service'
+    global.UserServiceHost = "localhost"//'event-hub_user-service'
     global.EventServicePort = 3002
-    global.EventServiceHost = 'localhost'//'event-hub_event-service'
+    global.EventServiceHost = "localhost"//'event-hub_event-service'
+    global.UserServiceServer = 'http://' + UserServiceHost + ':' + UserServicePort
+    global.EventServiceServer = 'http://' + EventServiceHost + ':' + EventServicePort
     //port di questo servizio
     global.port = 3003
 
     global.appRoot = path.resolve(__dirname)
-    /**
-     * Funzione che ci permette di controllare se un utente è loggato o meno.
-     * Se non è loggato risponde con un errore
-     */
-    global.sessionChecker = (req, res, next) => {
-        if (req.session.user && req.cookies.user_sid) {
-            next()
-        } else {
-            res.status(400).json({error: 'User not logged'})
-        }
-    }
-
-    /**
-     *  * MIDDLEWARE FLOW
-     *  ! non inserire qui sotto quello che non centra con i middleware
-     * */
-    app.use(cookieParser())
-
-    app.use(session({
-        name: 'user_sid',
-        resave: false,
-        saveUninitialized: false,
-        secret: 'EventHubSecret',
-        store: new MongoStore({ mongooseConnection:  mongoose.connection }),
-        cookie: {
-            path: '/', 
-            maxAge: 100000000,
-            sameSite: true,
-            httpOnly: true, 
-            secure: false
-        }
-    }))
 
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
 
-    /**
-     * Middleware che controlla se i coockie dell'utente sono ancora salvati nel browser
-     * ma l'utente non è impostato, allora effetta un logout automatico.
-     *
-     * Questo accade quando viene spento il server dopo aver effettuato il login e i
-     * coockie rimangono salvati nel browser.
-     */
+    passport.initialize(app)
 
-    app.use((req, res, next) => {
-        if (req.cookies.user_sid && !req.session.user) {
-            res.clearCookie('user_sid')
-        }
-        next()
-    })
-
-    var routes = require('./src/routes/routes')
+    let routes = require('./src/routes/routes')
     routes(app)
 
     app.use(function(req, res) {
         res.status(404).send({url: req.originalUrl + ' not found'})
     })
 
-    app.listen(port, () => console.log(`User service now listening on port ${port}!`))
+    app.listen(port, () => console.log(`Web Server now listening on port ${port}!`))
 }
 
 connect(reconnectTries, reconnectInterval)
