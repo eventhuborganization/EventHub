@@ -23,7 +23,7 @@ module.exports = (app) => {
     /* ----------------------------------------------- */
 
     app.route("/events")
-        .put(loginChecker, eventController.createEvent)
+        .post(loginChecker, eventController.createEvent)
 
     app.route('/events/info/:uuid')
         .get(eventController.eventInfo)

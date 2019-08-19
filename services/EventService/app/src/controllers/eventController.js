@@ -148,12 +148,25 @@ exports.addEventReviews = (req, res) => {
 }
 
 exports.newEvent = (req, res) => {
-    console.log(req.body)
-    var event = new Event(req.body.event)
+    let eventReceived = req.body.event
+    let newLocation = {
+        city: eventReceived.location.address,
+        geo: {
+            coordinates: [
+                eventReceived.location.lat,
+                eventReceived.location.lng
+            ]
+        }
+    }
+
+    eventReceived.eventDate = eventReceived.date
+    eventReceived.location = newLocation
+    eventReceived.maximumParticipants = eventReceived.maxParticipants
+    var event = new Event(eventReceived)
     event.save((err, newEvent) => {
         if(err)
             res.status(500).send(err)
-        else if(event)
+        else if(newEvent)
             res.status(200).send('ok') 
         else 
             res.status(404).end()

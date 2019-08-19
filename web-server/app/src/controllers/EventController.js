@@ -1,5 +1,6 @@
-const network = require('./network');
+const network = require('./network')
 const event = require('../API/EventServiceAPI.js')
+const axios = require('axios')
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
 const UserServiceHostPort = 'http://' + UserServiceHost + ':' + UserServicePort
@@ -58,6 +59,7 @@ exports.getEventsNear = (req, res) => {
 }
 exports.createEvent = (req, res) => {
     var event = req.body;
+    event.thumbnail = "";
     event.organizator = req.session.user;
     EventService.newEvent(event, (response)=>{
         if (event.public) {
@@ -76,6 +78,7 @@ exports.createEvent = (req, res) => {
         }
         network.resultWithJSON(res,response)
     }, (err) => {
+        console.log(err)
         network.internalError(res, err)
     })
 }
