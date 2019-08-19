@@ -37,18 +37,27 @@ var EventSchema = new Schema({
         default: false
     },
     typology:{
-        type: {name: String, subtypology: String},
+        type: {name: String},
         required: 'A typology is required'
     },
-    participants: [Schema.Types.ObjectId],
-    followers: [Schema.Types.ObjectId],
+    participants: {
+        type: [Schema.Types.ObjectId],
+        default: []
+    },
+    followers: {
+        type: [Schema.Types.ObjectId],
+        default: []
+    },
     thumbnail: String,
     maximumParticipants: {
         type: Number, 
         min: 0,
         required: 'A maximum number of participant is required'
     },
-    reviews: [Schema.Types.ObjectId],
+    reviews: {
+        type: [Schema.Types.ObjectId],
+        default: []
+    },
     creationDate:{
         type: Date,
         default: Date.now

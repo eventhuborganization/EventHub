@@ -148,8 +148,7 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     removeUserToEvent(eventUuid, users, successCallback = null, errorCallback = null){
-        let data = JSON.stringify(users)
-        axios.delete(`${this.hostport}/events/${eventUuid}/users`, data)
+        axios.delete(`${this.hostport}/events/${eventUuid}/users`, eventUuid)
         .then(successCallback)
         .catch(errorCallback);
     }
@@ -165,8 +164,7 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     newEvent(event, successCallback = null, errorCallback = null){
-        let data = JSON.stringify(event)
-        axios.post(`${this.hostport}/events`, data)
+        axios.post(`${this.hostport}/events`, {event: event})
         .then(successCallback)
         .catch(errorCallback);
     }
