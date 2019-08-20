@@ -178,10 +178,10 @@ let EventHeaderBanner = props => {
         if (!(date instanceof Date)) {
             date = new Date(date)
         }
-        let hours = date ? date.getUTCHours() < 10 ? "0" + date.getUTCHours() : date.getUTCHours() : "00"
-        let minutes = date ? date.getUTCMinutes() < 10 ? "0" + date.getUTCMinutes() : date.getUTCMinutes() : "00"
+        let hours = date ? date.getHours() < 10 ? "0" + date.getHours() : date.getHours() : "00"
+        let minutes = date ? date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes() : "00"
         return date
-            ? date.getUTCDate() + "/" + date.getUTCMonth() + "/" + date.getUTCFullYear() + " - " + hours + ":" + minutes
+            ? date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + hours + ":" + minutes
             : ""
     }
 

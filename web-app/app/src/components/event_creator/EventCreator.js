@@ -8,6 +8,8 @@ import GoogleApi from "../../services/google_cloud/GoogleMaps";
 
 class EventCreator extends React.Component {
 
+    minDateTime = 60 * 60 * 1000 // 1 hour
+    timeMatchRegex = "^([0-1][0-9]|2[0-4]):[0-5][0-9]$"
     constructor(props) {
         super(props)
         this.state = {
@@ -36,7 +38,7 @@ class EventCreator extends React.Component {
     }
 
     componentDidMount() {
-        if (true/*this.props.isLogged*/)
+        if (this.props.isLogged)
             GoogleApi.loadGoogleMapsScript(() => {
                 let inputAddress = document.getElementById('address')
                 let searchBox = new window.google.maps.places.SearchBox(inputAddress)
@@ -44,13 +46,13 @@ class EventCreator extends React.Component {
                     let places = searchBox.getPlaces()
                     if (places && places.length) {
                         let place = places[0]
-                        console.log(place)
                         if (place.address_components && place.address_components instanceof Array) {
                             let name = place.name
                             let isPoi = place.types.includes("point_of_interest")
                             let streetNumber = undefined
                             let streetAddress = undefined
                             let city = undefined
+                            let political = undefined
                             place.address_components.forEach(component => {
                                 if (!streetNumber && component.types.includes("street_number"))
                                     streetNumber = component.short_name
@@ -58,6 +60,8 @@ class EventCreator extends React.Component {
                                     streetAddress = component.short_name
                                 else if (!city && component.types.includes("locality"))
                                     city = component.short_name
+                                else if (!political && component.types.includes("political"))
+                                    political = component.short_name
                             })
                             let address_elems = []
                             if (isPoi && name)
@@ -68,11 +72,11 @@ class EventCreator extends React.Component {
                                 address_elems.push(streetNumber)
                             if (city)
                                 address_elems.push(city)
-                            console.log(address_elems)
-                            let address = address_elems.join(", ")
+                            else if (political)
+                                address_elems.push(political)
                             this.setState((prevState) => {
                                 let state = prevState
-                                state.event.location.address = address
+                                state.event.location.address = address_elems.join(", ")
                                 state.event.location.place_id = place.place_id
                                 state.event.location.lat = place.geometry.location.lat()
                                 state.event.location.lng = place.geometry.location.lng()
@@ -106,7 +110,7 @@ class EventCreator extends React.Component {
 
     updateMaxParticipants = (event) => {
         event.persist()
-        if(event.target.value > 10000000){
+        if(event.target.value > 10000000) {
             this.props.onError("Numero massimo di partecipanti troppo elevato")
         } else {
             this.setState((prevState) => {
@@ -125,12 +129,12 @@ class EventCreator extends React.Component {
             let date = event.target.valueAsDate
             if (state.event.date && date) {
                 state.event.date.setUTCFullYear(date.getUTCFullYear())
-                state.event.date.setUTCMonth(date.getUTCMonth() + 1)
+                state.event.date.setUTCMonth(date.getUTCMonth())
                 state.event.date.setUTCDate(date.getUTCDate())
             }
             else {
                 state.event.date = date
-                state.event.date.setUTCMonth(date.getUTCMonth() + 1)
+                state.event.date.setUTCMonth(date.getUTCMonth())
             }
             return state
         })
@@ -141,11 +145,11 @@ class EventCreator extends React.Component {
         this.setState((prevState, props) => {
             let state = prevState
             state.timeSet = true
-            let time = event.target.valueAsDate
-            if (state.event.date && time) {
-                state.event.date.setUTCHours(time.getUTCHours())
-                state.event.date.setUTCMinutes(time.getUTCMinutes())
-                state.event.date.setUTCSeconds(time.getUTCSeconds())
+            let time = event.target.value
+            if (state.event.date && time && time.match(this.timeMatchRegex)) {
+                let timesInfo = time.split(":")
+                state.event.date.setHours(timesInfo[0])
+                state.event.date.setMinutes(timesInfo[1])
             } else
                 state.event.date = time
             return state
@@ -230,7 +234,12 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("max-participants")
         if (!event.description)
             addErrorClassAndfocus("description")
-        if (!errorFound) {            
+        if (!errorFound && event.date && event.date - new Date() < this.minDateTime) {
+            addErrorClassAndfocus("date")
+            addErrorClassAndfocus("time")
+            this.props.onError("La data e l'orario selezionati devono essere più vanati di un'ora rispetto ad adesso")
+        }
+        if (!errorFound) {
             ApiService.createNewEvent(this.state.event,
                     () => this.props.onError("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
                     response => {
@@ -265,7 +274,7 @@ class EventCreator extends React.Component {
     render() {
         return (
             <form className="main-container">
-                <LoginRedirect {...this.props} redirectIfNotLogged={false} />
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.renderRedirect()}
                 <section className="row">
                     <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
@@ -275,7 +284,7 @@ class EventCreator extends React.Component {
                         </div>
                         <img src={this.state.event.thumbnailPreview}
                              alt="Event thumbnail"
-                             className={"img-fluid " + (this.state.event.thumbnail ? "" : " d-none ")}
+                             className={"img-fluid w-100 " + (this.state.event.thumbnail ? "" : " d-none ")}
                         />
                     </div>
                     <div className="d-none">
