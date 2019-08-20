@@ -1,20 +1,17 @@
-const network = require('./network');
-const axios = require('axios');
-
-const UserServiceHostPort = global.UserServiceServer
-const EventServiceHostPort = global.EventServiceServer
+const network = require('./network')
+const axios = require('axios')
 
 
 exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
-    axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {data: data})
+    axios.delete(`${UserServiceServer}/users/linkedUsers`, {data: data})
         .then((response) => network.replayResponse(response, res))
         .catch(err => network.replayError(err, res))
 }
 
 exports.inviteFriends = (req, res) => {
     var data = {typology: 0, sender: req.user._id}
-    axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)
+    axios.post(`${UserServiceServer}/users/${req.body.user}`, data)
     .then((response) => {
         network.result(res)
     })
@@ -24,9 +21,9 @@ exports.inviteFriends = (req, res) => {
 }
 
 exports.addFollower = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.uuid, uuid2: req.user._id})
+    axios.post(`${UserServiceServer}/users/linkedUsers`, {uuid1: req.body.uuid, uuid2: req.user._id})
         .then(() => {
-            return axios.post(`${UserServiceHostPort}/users/${req.body.uuid}/notifications/`, {typology: 2, sender: req.user._id})
+            return axios.post(`${UserServiceServer}/users/${req.body.uuid}/notifications/`, {typology: 2, sender: req.user._id})
         })
         .then(response => {
             network.replayResponse(response, res);
@@ -39,19 +36,19 @@ exports.addFollower = (req, res) => {
 
 exports.userFriendRequest = (req, res) => {
     var data = {typology: 1, sender: req.user._id}
-    axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, data)
+    axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, data)
         .then(() => network.result(res))
         .catch((err) => network.internalError(res, err))
 }
 
 exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
-        axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.user._id})
+        axios.post(`${UserServiceServer}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.user._id})
             .then(() => {
-                return axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications/`, {typology: 8, sender: req.user._id})
+                return axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications/`, {typology: 8, sender: req.user._id})
             })
             .then(() => {
-                return axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
+                return axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
             })
             .then(response => {
                 network.replayResponse(response, res);
@@ -61,14 +58,14 @@ exports.friendshipAnswer = (req, res) => {
                 network.internalError(res, error);
             })
     } else {
-        axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
+        axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
             .then(response => network.replayResponse(response, res))
             .catch (error => network.internalError(res, error))
     }
 }
 
 exports.requestFriendPosition = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {
+    axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, {
         typology: 4, 
         sender: req.user._id, 
     })
@@ -78,7 +75,7 @@ exports.requestFriendPosition = (req, res) => {
 
 exports.responseFriendPosition = (req, res) => {
     if (req.body.accepted) {
-        axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {
+        axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, {
             typology: 9, 
             sender: req.user._id, 
             data: {
@@ -89,15 +86,15 @@ exports.responseFriendPosition = (req, res) => {
             }
         })
         .then(() => {
-            return axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
+            return axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
         })
         .then( response => network.replayResponse(response, res))
         .catch(error => network.internalError(res, error))
     } else {
         let data = { typology: 10, sender: req.user._id }
-        axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
+        axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
             .then(() => {
-                return axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, data)
+                return axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, data)
             })
             .then(response => network.replayResponse(response, res))
             .catch(error => network.internalError(res, error))
@@ -107,13 +104,13 @@ exports.responseFriendPosition = (req, res) => {
 
 exports.updateProfile = (req, res) => {
     let user = req.user._id
-    axios.put(`${UserServiceHostPort}/users/${user}`, req.body)
+    axios.put(`${UserServiceServer}/users/${user}`, req.body)
         .then((response) => network.replayResponse(response, res))
         .catch((err) => network.internalError(res, err))
 }
 
 exports.updateCredentials = (req, res) => {
-    axios.put(`${UserServiceHostPort}/users/credentials`, req.body)
+    axios.put(`${UserServiceServer}/users/credentials`, req.body)
         .then((response) => network.replayResponse(response, res))
         .catch((err) => network.internalError(res, err))
 }
@@ -124,7 +121,7 @@ exports.updateCredentials = (req, res) => {
     eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
     try {
-        axios.get(`${UserServiceHostPort}/users/${req.params.uuid}`)
+        axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
         .then( resComplete => {
             let response = resComplete.data
             response.avatar = response.profilePicture
@@ -213,7 +210,7 @@ exports.getInfoUser = (req, res) => {
 
 /* user: {_id, name, surname, avatar, city, organization}*/
 exports.getLightweightInfoUser = (req, res) => {
-    axios.get(`${UserServiceHostPort}/users/${req.params.uuid}`)
+    axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
         .then(resComplete => {
             let user = resComplete.data
             network.resultWithJSON(res, {
@@ -231,31 +228,31 @@ exports.getLightweightInfoUser = (req, res) => {
 }
 
 exports.searchUser = (req, res) => {
-    axios.get(`${UserServiceHostPort}/users/search/${req.params.name}`, req.body)
+    axios.get(`${UserServiceServer}/users/search/${req.params.name}`, req.body)
         .then((response) => network.resultWithJSON(res, {users: response.data}))
         .catch((err) => network.internalError(res, err))
 }
 
 exports.getLinkedUserInfo = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}`)
+    return axios.get(`${UserServiceServer}/users/${uuid}`)
 }
 
 exports.getGroupInfo = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/group/${uuid}`)
+    return axios.get(`${UserServiceServer}/group/${uuid}`)
 }
 
 exports.getBadgePoints = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}/levels`)
+    return axios.get(`${UserServiceServer}/users/${uuid}/levels`)
 }
 
 exports.getEventInfo = (uuid) => {
-    return axios.get(`${EventServiceHostPort}/events/${uuid}`);
+    return axios.get(`${EventServiceServer}/events/${uuid}`);
 }
 
 exports.getReviewsWritten = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/written`)
+    return axios.get(`${UserServiceServer}/users/${uuid}/reviews/written`)
 }
 
 exports.getReviewsReceived = (uuid) => {
-    return axios.get(`${UserServiceHostPort}/users/${uuid}/reviews/received`)
+    return axios.get(`${UserServiceServer}/users/${uuid}/reviews/received`)
 }

@@ -177,18 +177,19 @@ exports.addUserNotification = (req, res) => {
         data.typology = req.body.typology;
         data.sender = req.body.sender;
         data.data = req.body.data;
-        //controllo
         if (data.typology === 1) {
             Users.findById(req.params.uuid, (err, user) => {
                 if (err) {
                     network.userNotFound(res);
                 }
-                if (user.notifications.filter(e => e.typology === 1 && e.sender === data.sender).length === 0 ){
+                if (user.notifications.filter(e => e.typology === 1 &&
+                                            e.sender === data.sender &&
+                                            e.read === false).length === 0 ) {
                     user.notifications.push(data)
+                    user.save(() => network.result(res))
                 } else {
                     network.badRequest(res)
                 }
-                network.result(res);
             });
         } else {
             Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {

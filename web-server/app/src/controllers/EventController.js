@@ -3,7 +3,6 @@ const event = require('../API/EventServiceAPI.js')
 const axios = require('axios')
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
-const UserServiceHostPort = global.UserServiceServer
 
 exports.addUserToEvent = (req, res) => {
     var data = {}
@@ -20,7 +19,7 @@ exports.addUserToEvent = (req, res) => {
 exports.eventInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, response => {
         let event = response.data;
-        axios.get(`${UserServiceHostPort}/users/${event.organizator}`)
+        axios.get(`${UserServiceServer}/users/${event.organizator}`)
             .then(organizator => {
                 event.organizator = organizator.data;
                 network.resultWithJSON(res, event)
@@ -46,7 +45,7 @@ exports.getEventsFromIndex = (req, res) => {
         })
         // slice(from: escluso, to: incluso)
         var result = response.data.slice(req.params.fromIndex, req.params.fromIndex + 10)
-        var promises = result.map(event => axios.get(`${UserServiceHostPort}/users/${event.organizator}`))
+        var promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
         axios.all(promises)
             .then(usersResponse => {
                 usersResponse.map(user => user.data).forEach(user => {
@@ -69,13 +68,13 @@ exports.createEvent = (req, res) => {
     event.organizator = req.user._id
     EventService.newEvent(event, (response)=>{
         if (event.public) {
-            axios.get(`${UserServiceHostPort}/users/${req.user._id}`)
+            axios.get(`${UserServiceServer}/users/${req.user._id}`)
                 .then(user => {
                     if (user.data.organization) {
-                        axios.get(`${UserServiceHostPort}/users/${req.user._id}/linkedUsers`)
+                        axios.get(`${UserServiceServer}/users/${req.user._id}/linkedUsers`)
                             .then(resLinkedUsers => {
                                 resLinkedUsers.forEach(user => {
-                                    axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
+                                    axios.post(`${UserServiceServer}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
                                 })
                             })
                     }
