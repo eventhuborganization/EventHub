@@ -44,19 +44,43 @@ class EventCreator extends React.Component {
                     let places = searchBox.getPlaces()
                     if (places && places.length) {
                         let place = places[0]
-                        let streetNumber = place.address_components[0].short_name
-                        let streetAddress = place.address_components[1].short_name
-                        let city = place.address_components[2].short_name
-                        let address = streetAddress + ", " + streetNumber + ", " + city
                         console.log(place)
-                        this.setState((prevState) => {
-                            let state = prevState
-                            state.event.location.address = address
-                            state.event.location.place_id = place.place_id
-                            state.event.location.lat = place.geometry.location.lat()
-                            state.event.location.lng = place.geometry.location.lng()
-                            return state
-                        })
+                        if (place.address_components && place.address_components instanceof Array) {
+                            let name = place.name
+                            let isPoi = place.types.includes("point_of_interest")
+                            let streetNumber = undefined
+                            let streetAddress = undefined
+                            let city = undefined
+                            place.address_components.forEach(component => {
+                                if (!streetNumber && component.types.includes("street_number"))
+                                    streetNumber = component.short_name
+                                else if (!streetAddress && component.types.includes("route"))
+                                    streetAddress = component.short_name
+                                else if (!city && component.types.includes("locality"))
+                                    city = component.short_name
+                            })
+                            let address_elems = []
+                            if (isPoi && name)
+                                address_elems.push(name)
+                            if (streetAddress)
+                                address_elems.push(streetAddress)
+                            if (streetNumber)
+                                address_elems.push(streetNumber)
+                            if (city)
+                                address_elems.push(city)
+                            console.log(address_elems)
+                            let address = address_elems.join(", ")
+                            this.setState((prevState) => {
+                                let state = prevState
+                                state.event.location.address = address
+                                state.event.location.place_id = place.place_id
+                                state.event.location.lat = place.geometry.location.lat()
+                                state.event.location.lng = place.geometry.location.lng()
+                                return state
+                            })
+                        } else {
+                            this.props.onError("Devi selezionare uno degli indirizzi o luoghi proposti sotto la barra di ricerca.")
+                        }
                     }
                 })
             })
