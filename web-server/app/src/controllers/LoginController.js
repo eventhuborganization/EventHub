@@ -7,7 +7,7 @@ exports.getLogin = (req, res) => {
 }
 
 exports.login = (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err, user) => {
         if (err)
             network.internalError(res, err)
         else if (!user)
