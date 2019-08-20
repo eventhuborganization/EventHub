@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const fuse = require('fuse.js')
 const parser = require('./DataParser')
+const network = require('./network')
 const Event = mongoose.model('Events')
 
 exports.getEvent = (req, res) => {
@@ -30,9 +31,11 @@ exports.getEvent = (req, res) => {
     console.log(query.getFilter())
     query.exec((err, event) => {
         if(err){
-            res.status(500).send(err)
-        }
-        res.status(event.length > 0 ? 200 : 404).json(event)
+            network.internalError(res,err)
+        } else if(event)
+            network.resultWithJSON(res, event)
+            else
+            network.eventNotFound(res)     
     })
 }
 
@@ -58,22 +61,27 @@ exports.searchEvent = (req, res) => {
         }]
     }
     Event.find({}, (err,event) => {
-        var fuses = new fuse(event,searchOption)
-
-        console.log(event)
-        
-        res.status(201).json(fuses.search(req.params.data))
+        if(err)
+            network.internalError(res,err)
+        else{
+            let fuses = new fuse(event,searchOption)
+            let fuseEvent = fuses.search(req.params.data)
+            if(fuseEvent)
+                network.resultWithJSON(res, fuseEvent)
+            else 
+                network.eventNotFound(res)  
+        }
     })
 }
 
 exports.getEventById = (req, res) => {
     Event.findById(req.params.uuid, (err, event) => {
         if(err)
-            res.status(500).send(err)
+            network.internalError(res,err)
         else if(event)
-                res.status(201).json(event)
-            else
-                res.status(404).end()
+            network.resultWithJSON(res, event)
+        else
+            network.eventNotFound(res)
     })
 }
 
@@ -81,11 +89,11 @@ exports.updateEventById = (req, res) => {
     if(req.body.event){
         Event.findByIdAndUpdate(req.params.uuid, req.body.event, (err, event) => {
             if(err)
-                res.status(500).send(err)
+                network.internalError(res,err)
             else if(event)
-                res.status(200).send('ok') 
+                network.resultWithJSON(res, event)
             else 
-                res.status(404).end()
+                network.eventNotFound(res)
         })
     }
 }
@@ -99,14 +107,14 @@ exports.addUserToEvent = (req, res) => {
         let options = { new: true }
         Event.findOneAndUpdate(conditions, update, options, (err, event) => {
             if(err)
-                res.status(500).send(err)
+                network.internalError(res,err)
             else if(event)
-                res.status(200).json(event)
+                network.resultWithJSON(res, event)
             else
-                res.status(404).end()
+                network.eventNotFound(res)
         })
     } else {
-        res.status(400).end()
+        network.badRequestJSON(res, {description:'user object is Undefined'})
     }
 }
 
@@ -114,11 +122,11 @@ exports.removeUserToEvent = (req, res) => {
     if(req.body.user){
         Event.findByIdAndUpdate(req.params.uuid, {$pullAll : req.body.user}, (err, event) => {
             if(err)
-                res.status(500).send(err)
+                network.internalError(res,err)
             else if(event)
-                res.status(200).send('ok') 
+                network.result(res)
             else 
-                res.status(404).end()
+                network.eventNotFound(res)
         })
     }
 }
@@ -126,11 +134,11 @@ exports.removeUserToEvent = (req, res) => {
 exports.getEventReviews = (req, res) => {
     Event.findById(req.params.uuid, (err, event) => {
         if(err)
-            res.status(500).send(err)
+            network.internalError(res,err)
         else if(event)
-            res.status(event.reviews.length > 0 ? 201 : 204).json(event.reviews)
+            network.resultWithJSON(res, event.reviews)
         else 
-            res.status(404).end()
+            network.eventNotFound(res)
     })
 }
 
@@ -138,11 +146,11 @@ exports.addEventReviews = (req, res) => {
     if(req.params.uuid && req.body.reviews){
         Event.findByIdAndUpdate(req.params.uuid, {$push : req.body.reviews}, (err, event) => {
             if(err)
-                res.status(500).send(err)
+                network.internalError(res,err)
             else if(event)
-                res.status(200).send('ok') 
+                network.result(res)
             else 
-                res.status(404).end()
+                network.eventNotFound(res)
         })
     }
 }
@@ -165,10 +173,10 @@ exports.newEvent = (req, res) => {
     var event = new Event(eventReceived)
     event.save((err, newEvent) => {
         if(err)
-            res.status(500).send(err)
+            network.internalError(res,err)
         else if(newEvent)
-            res.status(200).send('ok') 
+            network.result(res)
         else 
-            res.status(404).end()
+            network.eventNotFound(res)
     })
 }
