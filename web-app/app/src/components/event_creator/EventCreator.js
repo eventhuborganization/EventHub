@@ -9,7 +9,8 @@ import GoogleApi from "../../services/google_cloud/GoogleMaps";
 class EventCreator extends React.Component {
 
     minDateTime = 60 * 60 * 1000 // 1 hour
-    timeMatchRegex = "^([0-1][0-9]|2[0-4]):[0-5][0-9]$"
+    timeMatchRegex = "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+
     constructor(props) {
         super(props)
         this.state = {
@@ -128,13 +129,13 @@ class EventCreator extends React.Component {
             state.dateSet = true
             let date = event.target.valueAsDate
             if (state.event.date && date) {
-                state.event.date.setUTCFullYear(date.getUTCFullYear())
-                state.event.date.setUTCMonth(date.getUTCMonth())
-                state.event.date.setUTCDate(date.getUTCDate())
-            }
-            else {
+                state.event.date.setFullYear(date.getFullYear())
+                state.event.date.setMonth(date.getMonth())
+                state.event.date.setDate(date.getDate())
+            } else if (date) {
                 state.event.date = date
-                state.event.date.setUTCMonth(date.getUTCMonth())
+            } else {
+                state.dateSet = false
             }
             return state
         })
@@ -142,16 +143,20 @@ class EventCreator extends React.Component {
 
     updateTime = (event) => {
         event.persist()
-        this.setState((prevState, props) => {
+        this.setState(prevState => {
             let state = prevState
             state.timeSet = true
             let time = event.target.value
-            if (state.event.date && time && time.match(this.timeMatchRegex)) {
+            if (time && time.match(this.timeMatchRegex)) {
                 let timesInfo = time.split(":")
+                if (!state.event.date) {
+                    state.event.date = new Date()
+                }
                 state.event.date.setHours(timesInfo[0])
                 state.event.date.setMinutes(timesInfo[1])
-            } else
-                state.event.date = time
+            } else {
+                state.timeSet = false
+            }
             return state
         })
     }
@@ -234,7 +239,7 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("max-participants")
         if (!event.description)
             addErrorClassAndfocus("description")
-        if (!errorFound && event.date && event.date - new Date() < this.minDateTime) {
+        if (!errorFound && this.state.dateSet && this.state.timeSet && event.date && event.date - new Date() < this.minDateTime) {
             addErrorClassAndfocus("date")
             addErrorClassAndfocus("time")
             this.props.onError("La data e l'orario selezionati devono essere più vanati di un'ora rispetto ad adesso")

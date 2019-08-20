@@ -240,26 +240,28 @@ let EventLocation = props => {
 }
 
 let EventOrganizatorInfo = props => {
-
-    //if (props.organizator && props.organizator.name && props.organizator.surname && props.organizator.avatar)
-        return (
+        return props.organizator ? (
             <div className="row">
                 <div className="col-12 px-0">
                     <h6>Organizzatore</h6>
                 </div>
                 <div className="col-2 px-0 ">
-                    <img src={ApiService.getImageUrl(props.organizator.avatar)}
-                         className={"img-fluid border rounded-circle " + (props.organizator.avatar ? "" : " d-none ")}
-                         alt="Immagine profilo organizzatore"
-                    />
+                    {
+                        props.organizator.avatar ?
+                            <img src={ApiService.getAvatarUrl(props.organizator.avatar)}
+                                 className="img-fluid border rounded-circle"
+                                 alt="Immagine profilo utente"
+                            /> :
+                            <div className="w-100 d-flex justify-content-center align-items-center text-secondary">
+                                <em className="far fa-image fa-2x"></em>
+                            </div>
+                    }
                 </div>
                 <div className="col-10 d-flex justify-content-start align-items-center">
                     <span className="text-invited font-weight-bold">{props.organizator.name} {props.organizator.surname}</span>
                 </div>
             </div>
-        )
-    /*else
-        return (<div />)*/
+        ) : <div />
 }
 
 export {

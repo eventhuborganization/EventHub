@@ -35,5 +35,5 @@ export default function UserBanner(props) {
                 </div> : ""
             }
         </div>
-    ) : ""
+    ) : <div/>
 }
