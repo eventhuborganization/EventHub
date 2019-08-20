@@ -1,19 +1,19 @@
 const network = require('./network');
 const axios = require('axios');
 
-const UserServiceHostPort = 'http://' + UserServiceHost + ':' + UserServicePort
-const EventServiceHostPort = 'http://' + EventServiceHost + ':' + EventServicePort
+const UserServiceHostPort = global.UserServiceServer
+const EventServiceHostPort = global.EventServiceServer
 
 
 exports.removeLinkedUser = (req, res) => {
-    let data = {uuid1: req.body.linkedUser, uuid2: req.session.user}
+    let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
     axios.delete(`${UserServiceHostPort}/users/linkedUsers`, {data: data})
         .then((response) => network.replayResponse(response, res))
         .catch(err => network.replayError(err, res))
 }
 
 exports.inviteFriends = (req, res) => {
-    var data = {typology: 0, sender: req.session.user}
+    var data = {typology: 0, sender: req.user._id}
     axios.post(`${UserServiceHostPort}/users/${req.body.user}`, data)
     .then((response) => {
         network.result(res)
@@ -24,9 +24,9 @@ exports.inviteFriends = (req, res) => {
 }
 
 exports.addFollower = (req, res) => {
-    axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.uuid, uuid2: req.session.user})
+    axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.uuid, uuid2: req.user._id})
         .then(() => {
-            return axios.post(`${UserServiceHostPort}/users/${req.body.uuid}/notifications/`, {typology: 2, sender: req.session.user})
+            return axios.post(`${UserServiceHostPort}/users/${req.body.uuid}/notifications/`, {typology: 2, sender: req.user._id})
         })
         .then(response => {
             network.replayResponse(response, res);
@@ -38,7 +38,7 @@ exports.addFollower = (req, res) => {
 }
 
 exports.userFriendRequest = (req, res) => {
-    var data = {typology: 1, sender: req.session.user}
+    var data = {typology: 1, sender: req.user._id}
     axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, data)
         .then(() => network.result(res))
         .catch((err) => network.internalError(res, err))
@@ -46,12 +46,12 @@ exports.userFriendRequest = (req, res) => {
 
 exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
-        axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.session.user})
+        axios.post(`${UserServiceHostPort}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.user._id})
             .then(() => {
-                return axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications/`, {typology: 8, sender: req.session.user})
+                return axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications/`, {typology: 8, sender: req.user._id})
             })
             .then(() => {
-                return axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
+                return axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
             })
             .then(response => {
                 network.replayResponse(response, res);
@@ -61,7 +61,7 @@ exports.friendshipAnswer = (req, res) => {
                 network.internalError(res, error);
             })
     } else {
-        axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
+        axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
             .then(response => network.replayResponse(response, res))
             .catch (error => network.internalError(res, error))
     }
@@ -70,7 +70,7 @@ exports.friendshipAnswer = (req, res) => {
 exports.requestFriendPosition = (req, res) => {
     axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {
         typology: 4, 
-        sender: req.session.user, 
+        sender: req.user._id, 
     })
         .then(response => network.replayResponse(response, res))
         .catch(error => network.internalError(res, error))
@@ -80,7 +80,7 @@ exports.responseFriendPosition = (req, res) => {
     if (req.body.accepted) {
         axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, {
             typology: 9, 
-            sender: req.session.user, 
+            sender: req.user._id, 
             data: {
                 position : {
                     lat: req.body.position.lat, 
@@ -89,13 +89,13 @@ exports.responseFriendPosition = (req, res) => {
             }
         })
         .then(() => {
-            return axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
+            return axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
         })
         .then( response => network.replayResponse(response, res))
         .catch(error => network.internalError(res, error))
     } else {
-        let data = { typology: 10, sender: req.session.user }
-        axios.put(`${UserServiceHostPort}/users/${req.session.user}/notifications/${req.body._id}`, {})
+        let data = { typology: 10, sender: req.user._id }
+        axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
             .then(() => {
                 return axios.post(`${UserServiceHostPort}/users/${req.body.friend}/notifications`, data)
             })
@@ -106,7 +106,7 @@ exports.responseFriendPosition = (req, res) => {
 
 
 exports.updateProfile = (req, res) => {
-    let user = req.session.user
+    let user = req.user._id
     axios.put(`${UserServiceHostPort}/users/${user}`, req.body)
         .then((response) => network.replayResponse(response, res))
         .catch((err) => network.internalError(res, err))

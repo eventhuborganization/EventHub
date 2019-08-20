@@ -3,14 +3,14 @@ const event = require('../API/EventServiceAPI.js')
 const axios = require('axios')
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
-const UserServiceHostPort = 'http://' + UserServiceHost + ':' + UserServicePort
+const UserServiceHostPort = global.UserServiceServer
 
 exports.addUserToEvent = (req, res) => {
     var data = {}
     if(req.body.participant){
-        data = {user: {participants: req.session.user}}
+        data = {user: {participants: req.user._id}}
     } else if(req.body.follower){
-        data = {user: {followers: req.session.user}}
+        data = {user: {followers: req.user._id}}
     }
     EventService.addUserToEvent(req.body.event, data,
             response => network.replayResponse(response, res),
@@ -66,16 +66,16 @@ exports.getEventsNear = (req, res) => {
 exports.createEvent = (req, res) => {
     var event = req.body
     event.thumbnail = ""
-    event.organizator = req.session.user
+    event.organizator = req.user._id
     EventService.newEvent(event, (response)=>{
         if (event.public) {
-            axios.get(`${UserServiceHostPort}/users/${req.session.user}`)
+            axios.get(`${UserServiceHostPort}/users/${req.user._id}`)
                 .then(user => {
                     if (user.data.organization) {
-                        axios.get(`${UserServiceHostPort}/users/${req.session.user}/linkedUsers`)
+                        axios.get(`${UserServiceHostPort}/users/${req.user._id}/linkedUsers`)
                             .then(resLinkedUsers => {
                                 resLinkedUsers.forEach(user => {
-                                    axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.session.user})
+                                    axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
                                 })
                             })
                     }
