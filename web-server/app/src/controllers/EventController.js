@@ -5,7 +5,6 @@ const path = require('path')
 const fs = require("fs")
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
-const UserServiceHostPort = global.UserServiceServer
 
 exports.addUserToEvent = (req, res) => {
     var data = {}
@@ -22,7 +21,7 @@ exports.addUserToEvent = (req, res) => {
 exports.eventInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, response => {
         let event = response.data;
-        axios.get(`${UserServiceHostPort}/users/${event.organizator}`)
+        axios.get(`${UserServiceServer}/users/${event.organizator}`)
             .then(organizator => {
                 event.organizator = organizator.data;
                 network.resultWithJSON(res, event)
@@ -48,7 +47,7 @@ exports.getEventsFromIndex = (req, res) => {
         })
         // slice(from: escluso, to: incluso)
         var result = response.data.slice(req.params.fromIndex, req.params.fromIndex + 10)
-        var promises = result.map(event => axios.get(`${UserServiceHostPort}/users/${event.organizator}`))
+        var promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
         axios.all(promises)
             .then(usersResponse => {
                 usersResponse.map(user => user.data).forEach(user => {

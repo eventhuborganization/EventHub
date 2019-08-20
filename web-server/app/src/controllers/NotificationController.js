@@ -1,14 +1,12 @@
 const network = require('./network');
 const axios = require('axios');
 
-const UserServiceHostPort = global.UserServiceServer
-
 function getUserInfo(uuid){
-    return axios.get(`${UserServiceHostPort}/users/${uuid}`)
+    return axios.get(`${UserServiceServer}/users/${uuid}`)
 }
 
 exports.markNotificationAsReaded = (req, res) => {
-    axios.put(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.body._id}`, {})
+    axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
     .then((response) => {
         network.result(res)
     })
@@ -18,7 +16,7 @@ exports.markNotificationAsReaded = (req, res) => {
 }
 
 exports.getNotification = (req,res) => {
-    axios.get(`${UserServiceHostPort}/users/${req.user._id}/notifications/${req.params.fromIndex}`)
+    axios.get(`${UserServiceServer}/users/${req.user._id}/notifications/${req.params.fromIndex}`)
         .then((response) => {
             let notifications = response.data.notifications
             let userInfo = notifications.map(not => getUserInfo(not.sender))
