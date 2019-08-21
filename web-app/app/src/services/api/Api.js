@@ -281,27 +281,28 @@ let searchNearestEvents = (data, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let createNewEvent = (event, onError, onSuccess) => {
-    let data = {
-        name: event.name,
-        description: event.description,
-        date: event.date,
-        location: {
+    let form = new FormData()
+    form.append("name", event.name)
+    form.append("description", event.description)
+    form.append("date", event.date)
+    form.append("location", {
             lat: event.location.lat,
             lng: event.location.lng,
             address: event.location.address
-        },
-        public: event.public,
-        typology: event.typology,
-        thumbnail: event.thumbnail,
-        maxParticipants: event.maxParticipants,
-        organizator: event.organizator._id
-    }
-    managePromise(
-        Axios.post('/events', data),
-        [201],
-        onError,
-        response => onSuccess(mapEvent(response.data))
-    )
+    })
+    form.append("public", event.public)
+    form.append("typology", event.typology)
+    form.append("thumbnail", event.thumbnail)
+    form.append("maxParticipants", event.maxParticipants)
+    form.append("organizator", event.organizator._id)
+    
+    Axios.post('/events', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then(response => onSuccess(mapEvent(response.data)))
+    .catch(onError)
 }
 
 /**

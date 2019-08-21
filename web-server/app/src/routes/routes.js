@@ -4,6 +4,11 @@ module.exports = (app) => {
     var notificationController = require('../controllers/NotificationController')
     var loginController = require('../controllers/LoginController')
     const {loginChecker} = require('../API/passport')
+    var multer = require('multer')
+
+    const upload = multer({
+        dest: __dirname + "../../../temp/files"
+    });
 
     app.route("/")
         .get(loginChecker,(req, res) => {
@@ -23,7 +28,11 @@ module.exports = (app) => {
     /* ----------------------------------------------- */
 
     app.route("/events")
-        .post(loginChecker, eventController.createEvent)
+        .post(
+            loginChecker, 
+            upload.single("thumbnail"), 
+            eventController.createEvent
+        )
 
     app.route('/events/info/:uuid')
         .get(eventController.eventInfo)

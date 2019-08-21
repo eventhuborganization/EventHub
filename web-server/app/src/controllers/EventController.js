@@ -1,6 +1,8 @@
 const network = require('./network')
 const event = require('../API/EventServiceAPI.js')
 const axios = require('axios')
+const path = require('path')
+const fs = require("fs")
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
@@ -63,27 +65,38 @@ exports.getEventsNear = (req, res) => {
     })
 }
 exports.createEvent = (req, res) => {
-    var event = req.body
-    event.thumbnail = ""
-    event.organizator = req.user._id
-    EventService.newEvent(event, (response)=>{
-        if (event.public) {
-            axios.get(`${UserServiceServer}/users/${req.user._id}`)
-                .then(user => {
-                    if (user.data.organization) {
-                        axios.get(`${UserServiceServer}/users/${req.user._id}/linkedUsers`)
-                            .then(resLinkedUsers => {
-                                resLinkedUsers.forEach(user => {
-                                    axios.post(`${UserServiceServer}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
-                                })
-                            })
-                    }
-                })
-            
+    const tempPath = req.file.path
+    const imageName = "image" + path.extname(req.file.originalname).toLowerCase()
+    const targetPath = path.join(__dirname, ("../../public/uploads/" + imageName))
+
+    fs.rename(tempPath, targetPath, errore => {
+        if (errore) {
+            console.log(errore)
+            network.internalError(res, errore)
+        } else {
+            var event = req.body
+            event.thumbnail = imageName
+            event.organizator = req.user._id
+            EventService.newEvent(event, (response)=>{
+                if (event.public) {
+                    axios.get(`${UserServiceHostPort}/users/${req.user._id}`)
+                        .then(user => {
+                            if (user.data.organization) {
+                                axios.get(`${UserServiceHostPort}/users/${req.user._id}/linkedUsers`)
+                                    .then(resLinkedUsers => {
+                                        resLinkedUsers.forEach(user => {
+                                            axios.post(`${UserServiceHostPort}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
+                                        })
+                                    })
+                            }
+                        })
+                    
+                }
+                network.resultWithJSON(res,response.data)
+            }, (err) => {
+                console.log(err)
+                network.internalError(res, err)
+            })
         }
-        network.resultWithJSON(res,response.data)
-    }, (err) => {
-        console.log(err)
-        network.internalError(res, err)
     })
 }

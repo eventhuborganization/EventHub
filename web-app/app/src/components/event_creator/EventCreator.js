@@ -167,7 +167,7 @@ class EventCreator extends React.Component {
         reader.onload = e => {
             this.setState((prevState) => {
                 let state = prevState
-                state.event.thumbnail = e.target.result
+                state.event.thumbnail = event.target.files[0]
                 state.event.thumbnailPreview = e.target.result
                 return state
             })
