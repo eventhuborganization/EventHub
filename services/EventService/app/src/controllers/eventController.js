@@ -102,7 +102,7 @@ exports.addUserToEvent = (req, res) => {
     if(req.body.user) {
         let conditions = { _id: req.params.uuid }
         if (req.body.user.participants)
-            conditions.$where = 'this.participants.length<this.maxParticipants'
+            conditions.$where = 'this.participants.length<this.maximumParticipants'
         let update = { $addToSet: req.body.user }
         let options = { new: true }
         Event.findOneAndUpdate(conditions, update, options, (err, event) => {

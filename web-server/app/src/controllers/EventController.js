@@ -15,7 +15,7 @@ exports.addUserToEvent = (req, res) => {
     }
     EventService.addUserToEvent(req.body.event, data,
             response => network.replayResponse(response, res),
-            error => network.internalError(res, error))
+            error => network.replayError(error, res))
 }
 
 exports.eventInfo = (req, res) => {

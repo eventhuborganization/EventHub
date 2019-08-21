@@ -8,10 +8,6 @@ module.exports = function(app) {
     app.route('/events/search/:data')
         .get(eventController.searchEvent)
 
-    app.route('/events/:uuid')
-        .get(eventController.getEventById)
-        .put(eventController.updateEventById)
-
     app.route('/events/:uuid/users')
         .post(eventController.addUserToEvent)
         .delete(eventController.removeUserToEvent)
@@ -19,4 +15,8 @@ module.exports = function(app) {
     app.route('/events/:uuid/reviews')
         .get(eventController.getEventReviews)
         .post(eventController.addEventReviews)
+
+    app.route('/events/:uuid')
+        .get(eventController.getEventById)
+        .put(eventController.updateEventById)
 }
