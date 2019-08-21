@@ -15,24 +15,43 @@ import { PersonalProfile, UserProfile } from '../profile/ProfileType'
 import Friends from '../friends/Friends'
 import Map from '../map/Map'
 import Settings from '../settings/Settings'
-import NotificationService from "../../services/notification/Notification";
+import NotificationService from "../../services/notification/Notification"
 import ApiService from "../../services/api/Api"
+import LocalStorage from "local-storage"
 
 class App extends React.Component {
 
     #notificationServiceSubscriptionCode = undefined
+    #applicationSTateLocalStorageName = "application-state"
 
   constructor(props) {
-    super(props)
-    this.state = {
-        isLogged: false,
-        user: {},
-        showMessageElement: undefined,
-        notifications: []
-    }
+        super(props)
+        this.state = {
+            isLogged: false,
+            user: {},
+            showMessageElement: undefined,
+            notifications: []
+        }
   }
 
-  showMessageElement = (elem) => {
+  componentDidMount() {
+      let applicationState = LocalStorage(this.#applicationSTateLocalStorageName) || undefined
+      if (applicationState)
+          this.setState(applicationState)
+  }
+
+    componentWillUnmount() {
+        this.removeSubscriptions()
+    }
+
+    saveUserDataToLocalStorage = () => {
+        LocalStorage(this.#applicationSTateLocalStorageName,{
+            isLogged: this.state.isLogged,
+            user: this.state.user
+        })
+    }
+
+    showMessageElement = (elem) => {
       this.setState((prevState, props) => {
           let state = prevState
           state.showMessageElement = elem
@@ -57,6 +76,7 @@ class App extends React.Component {
         return state
       }, () => {
         this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
+        this.saveUserDataToLocalStorage()
     })
   }
 
@@ -64,12 +84,11 @@ class App extends React.Component {
         ApiService.logout(
             () => {},
             () => {
-                NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
-                this.#notificationServiceSubscriptionCode = undefined
+                this.removeSubscriptions()
                 this.setState({
                     user: {},
                     isLogged: false
-                })
+                }, () => this.saveUserDataToLocalStorage())
             }
         )
   }
@@ -79,7 +98,7 @@ class App extends React.Component {
           let state = prevState
           state.user = user
           return state
-      })
+      }, () => this.saveUserDataToLocalStorage())
   }
 
   manageLinkedUser = (user, add) => {
@@ -91,11 +110,16 @@ class App extends React.Component {
         state.user.linkedUsers = state.user.linkedUsers.filter(u => u._id !== user._id)
       }
       return state
-    })
+    }, () => this.saveUserDataToLocalStorage())
   }
 
   onNotificationLoaded = (notifications) => {
-      this.setState({notifications: notifications})
+        this.setState({notifications: notifications})
+  }
+
+  removeSubscriptions = () => {
+      NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
+      this.#notificationServiceSubscriptionCode = undefined
   }
 
   render() {
@@ -149,7 +173,6 @@ class App extends React.Component {
                     isLogged={this.state.isLogged}
                     onError={this.onError}
                     onFriendAdded={(elem) => this.manageLinkedUser(elem, true)}
-                    notifications={this.state.notifications}
                     user={{
                         _id: this.state.user._id
                     }}

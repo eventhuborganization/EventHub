@@ -34,7 +34,7 @@ class Notification extends React.Component {
             () => this.props.onError("Si è verificato un errore durante l'invio della risposta, riprova"),
             () => {
                 this.props.deleteNotification(this.props.notification._id)
-                if(accepted){
+                if(accepted) {
                     this.props.onFriendAdded(this.props.notification.sender)
                 }
             }
@@ -156,15 +156,8 @@ class Notification extends React.Component {
         return type === 0 || type === 5 || type === 6 || type === 7
     }
 
-    isNotificationToBeReadOnce = (type) => {
-        return type === 2 || type === 3 || type === 8 || type === 10
-    }
-
     render() {
         let type = this.props.notification.typology
-        if(this.isNotificationToBeReadOnce(type)){
-            ApiService.notificationRead(this.props.notification._id, ()=> {}, () => {})
-        }
         return (
             <div className="row">
                 <div className="col card shadow my-2 mx-2 px-0">
@@ -194,7 +187,7 @@ class Notification extends React.Component {
 class NotificationSenderInformation extends React.Component {
 
     getTime = () => {
-        let diff = new Date(new Date() - new Date(this.props.notification.timestamp))
+        let diff = new Date(new Date() - this.props.notification.timestamp)
         let years = diff.getUTCFullYear() - 1970
         let months = diff.getUTCMonth()
         let days = diff.getUTCDate() - 1
