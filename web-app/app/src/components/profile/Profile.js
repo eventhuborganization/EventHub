@@ -184,7 +184,13 @@ class Profile extends CallableComponent {
                 </section>
 
                 <section className="row mt-2">
-                    <h2 className="col text-center">{this.state.user.name}</h2>
+                    <h2 className="col text-center">
+                        {
+                            this.state.user.organization ? 
+                            <div><em className="text-secondary fas fa-user-tie"></em> {this.state.user.name}</div> :
+                            <div>{this.state.user.name}</div>
+                        }
+                    </h2>
                 </section>
 
                 <section className="mt-2">

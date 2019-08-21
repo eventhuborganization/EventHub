@@ -243,7 +243,7 @@ let EventOrganizatorInfo = props => {
         return props.organizator ? (
             <div className="row">
                 <div className="col-12 px-0">
-                    <h6>Organizzatore</h6>
+                    <span className={props.level}>Organizzatore</span>
                 </div>
                 <div className="col-2 px-0 ">
                     {
@@ -258,7 +258,13 @@ let EventOrganizatorInfo = props => {
                     }
                 </div>
                 <div className="col-10 d-flex justify-content-start align-items-center">
-                    <span className="text-invited font-weight-bold">{props.organizator.name} {props.organizator.surname}</span>
+                    <span className="text-invited font-weight-bold">
+                        {
+                            props.organizator.organization ? 
+                            <div> {props.organizator.name} <em className="text-secondary fas fa-user-tie" style={{fontSize: "larger"}}></em></div> : 
+                            <div>{props.organizator.name} {props.organizator.surname}</div>
+                        }
+                    </span>
                 </div>
             </div>
         ) : <div />

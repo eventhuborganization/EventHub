@@ -421,7 +421,7 @@ class EventCreator extends React.Component {
                     <div className="col-12">
                         <h5>Dettagli</h5>
                         <div className="container-fluid">
-                            <EventOrganizatorInfo organizator={this.state.event.organizator}/>
+                            <EventOrganizatorInfo organizator={this.state.event.organizator} level="h6"/>
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6>Descrizione</h6>

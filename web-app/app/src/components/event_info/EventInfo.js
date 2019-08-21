@@ -74,12 +74,11 @@ class EventInfo extends React.Component {
 
                     <section className="row mt-2">
                         <div className="col">
-                            <h5>Dettagli</h5>
                             <div className="container-fluid">
-                                <EventOrganizatorInfo organizator={this.state.eventInfo.organizator}/>
+                                <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
                                 <div className="row mt-2">
                                     <div className="col-12 px-0">
-                                        <h6>Descrizione</h6>
+                                        <h5>Descrizione</h5>
                                         <p className="text-justify">{this.state.eventInfo.description}</p>
                                     </div>
                                 </div>
