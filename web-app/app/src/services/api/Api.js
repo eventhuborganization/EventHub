@@ -287,11 +287,9 @@ let createNewEvent = (event, onError, onSuccess) => {
     form.append("name", event.name)
     form.append("description", event.description)
     form.append("date", event.date)
-    form.append("location", {
-            lat: event.location.lat,
-            lng: event.location.lng,
-            address: event.location.address
-    })
+    form.append("locationLat", event.location.lat)
+    form.append("locationLng", event.location.lng)
+    form.append("locationAddress", event.location.address)
     form.append("public", event.public)
     form.append("typology", event.typology)
     form.append("thumbnail", event.thumbnail)
