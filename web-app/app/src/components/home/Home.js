@@ -13,11 +13,8 @@ class Home extends React.Component {
         this.state = {
             eventsLoaded: []
         }
-    }
-
-    componentDidMount() {
-        ApiService.getEvents({fromIndex: 0, event: {/*fromDate: new Date(), public: true*/typology: "sport"}},
-            error => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+        ApiService.getEvents({fromIndex: 0},
+            () => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
             response => this.onSearchResults({events: response}))
     }
 
