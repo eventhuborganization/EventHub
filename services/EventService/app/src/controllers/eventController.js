@@ -175,7 +175,7 @@ exports.newEvent = (req, res) => {
         if(err)
             network.internalError(res,err)
         else if(newEvent)
-            network.result(res)
+            network.resultWithJSON(res, newEvent)
         else 
             network.eventNotFound(res)
     })

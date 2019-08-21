@@ -242,7 +242,7 @@ class EventCreator extends React.Component {
         if (!errorFound && this.state.dateSet && this.state.timeSet && event.date && event.date - new Date() < this.minDateTime) {
             addErrorClassAndfocus("date")
             addErrorClassAndfocus("time")
-            this.props.onError("La data e l'orario selezionati devono essere più vanati di un'ora rispetto ad adesso")
+            this.props.onError("La data e l'orario selezionati devono essere più avanti di un'ora rispetto ad adesso")
         }
         if (!errorFound) {
             ApiService.createNewEvent(this.state.event,
@@ -251,7 +251,7 @@ class EventCreator extends React.Component {
                         this.setState((prevState) => {
                             let state = prevState
                             state.eventCreated = true
-                            state.eventId = response.event._id
+                            state.eventId = response
                             return state
                         })
                     })

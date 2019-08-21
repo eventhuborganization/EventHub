@@ -303,7 +303,7 @@ let createNewEvent = (event, onError, onSuccess) => {
           'Content-Type': 'multipart/form-data'
         }
     })
-    .then(response => onSuccess(mapEvent(response.data)))
+    .then(response => onSuccess(response.data._id))
     .catch(onError)
 }
 
