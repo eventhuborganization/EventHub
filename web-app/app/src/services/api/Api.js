@@ -9,16 +9,16 @@ import Axios from 'axios'
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            console.log("RESPONSE: ")
-            console.log(response)
+            /*console.log("RESPONSE: ")
+            console.log(response)*/
             if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
             else
                 onSuccess(response)
         })
         .catch(error => {
-            console.log("ERROR: ")
-            console.log(error)
+            /*console.log("ERROR: ")
+            console.log(error)*/
             onError(error)
         })
 }
@@ -29,8 +29,6 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  * @returns {{date: *, description: *, creationDate: *, maxParticipants: *, organizator: *, typology: *, followers: *, public: *, reviews: *, name: *, _id: *, participants: *, numParticipants: *}}
  */
 let mapEvent = (event) => {
-    console.log("prima")
-    console.log(event)
     let location = event.location ? {
         lat: event.location.geo.coordinates[0],
         lng: event.location.geo.coordinates[0],

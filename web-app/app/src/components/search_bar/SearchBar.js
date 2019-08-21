@@ -150,7 +150,7 @@ class SearchBar extends React.Component {
                         maxDistanceInMetres: 1000
                     }
                 }
-                this.search(ApiService.searchEvents, data)
+                this.search(state.search_value ? ApiService.searchEvents : ApiService.getEvents, data)
                 break
             default: break
         }

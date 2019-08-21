@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios')
 
 exports.EventService = class EventService{
     constructor(host, port){
@@ -13,12 +13,13 @@ exports.EventService = class EventService{
     /**
      * Restituisce una lista di eventi che metchano con la stringa
      * 
-     * @param {String} data stringa di ricerca
+     * @param {String} name stringa di ricerca
+     * @param {Object} query dati di filtraggio
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    searchEvent(data,  successCallback = null, errorCallback = null) {
-        axios.get(`${this.hostport}/events/search/${data}`)
+    searchEvent(name, query, successCallback = null, errorCallback = null) {
+        axios.get(`${this.hostport}/events/search/${name}`, {params: query})
         .then(successCallback)
         .catch(errorCallback);
     }
