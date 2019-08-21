@@ -113,7 +113,8 @@ class App extends React.Component {
                       _id: this.state.user._id
                   }}
                   isLogged={this.state.isLogged} 
-                  onError={this.onError} 
+                  onError={this.onError}
+                  onSuccess={this.onSuccess} 
                 />} 
             />
             <Route path="/event/new" exact render={(props) =>

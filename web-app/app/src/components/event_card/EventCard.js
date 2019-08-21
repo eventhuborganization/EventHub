@@ -13,6 +13,25 @@ class EventCard extends React.Component {
         }
     }
 
+    onEventFollowed = event => {
+        this.setState(prevState => {
+            let state = prevState
+            state.eventInfo.followers = event.followers
+            return state
+        })
+        this.props.onSuccess("Da adesso segui l'evento, se ci saranno modifiche verrai informato!")
+    }
+
+    onEventParticipated = event =>  {   
+        this.setState(prevState => {
+            let state = prevState
+            state.eventInfo.participants = event.participants
+            state.eventInfo.numParticipants = event.participants.length
+            return state
+        })
+        this.props.onSuccess("Partecipi all'evento!")
+    }
+
     render() {
         return (
             <div className="row">
@@ -56,17 +75,8 @@ class EventCard extends React.Component {
                         <EventInteractionPanel {...this.props}
                                                key={this.state.eventInfo._id + "eventInteractionPanel"}
                                                event={this.state.eventInfo}
-                                               onEventParticipated={event =>  this.setState(prevState => {
-                                                   let state = prevState
-                                                   state.eventInfo.participants = event.participants
-                                                   state.eventInfo.numParticipants = event.participants.length
-                                                   return state
-                                               })}
-                                               onEventFollowed={event =>  this.setState(prevState => {
-                                                   let state = prevState
-                                                   state.eventInfo.followers = event.followers
-                                                   return state
-                                               })}
+                                               onEventParticipated={this.onEventParticipated}
+                                               onEventFollowed={this.onEventFollowed}
                         />
                     </div>
                 </div>
