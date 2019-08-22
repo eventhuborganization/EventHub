@@ -31,7 +31,7 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
 let mapEvent = (event) => {
     let location = event.location ? {
         lat: event.location.geo.coordinates[0],
-        lng: event.location.geo.coordinates[0],
+        lng: event.location.geo.coordinates[1],
         address: event.location.city
     } : {}
     return {
@@ -522,8 +522,16 @@ let logout = (onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let register = (data, onError, onSuccess) => {
+    let form = new FormData()
+    form.append('avatar', data.avatar)
+    delete data.avatar
+    form.append('data', JSON.stringify(data));
     managePromise(
-        Axios.post('/registration', data),
+        Axios.post('/registration', form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        }),
         [200, 201],
         onError,
         response => onSuccess(mapUser(response.data))
