@@ -20,6 +20,7 @@ class RegistrationForm extends React.Component {
                 province: "province",
                 address: "address",
                 phone: "tel",
+                avatarPreview: "avatar-preview",
                 avatar: "avatar",
                 email: "email",
                 password: "pwd",
@@ -34,7 +35,8 @@ class RegistrationForm extends React.Component {
         this.state[this.state.componentIds.province] = ""
         this.state[this.state.componentIds.address] = ""
         this.state[this.state.componentIds.phone] = ""
-        this.state[this.state.componentIds.avatar] = undefined
+        this.state[this.state.componentIds.avatar] = ""
+        this.state[this.state.componentIds.avatarPreview] = undefined
         this.state[this.state.componentIds.email] = ""
         this.state[this.state.componentIds.password] = ""
         this.state[this.state.componentIds.confirmPassword] = ""
@@ -100,38 +102,18 @@ class RegistrationForm extends React.Component {
                 this.setState({
                     [name]: value
                 })
-            } else if (name === this.state.componentIds.avatar) {
-                /*let reader = new FileReader()
-                reader.onload = e => {
-                    let img = new Image()
-                    img.src = e.target.result
-                    img.onload = () => {
-                        let elem = document.createElement("canvas")
-                        let width = 300
-                        let scaleFactor = width / img.width;
-                        elem.width = width;
-                        elem.height = img.height * scaleFactor;
-                        let ctx = elem.getContext("2d")
-                        ctx.drawImage(img, 0, 0, width, img.height * scaleFactor)
-                        const data = ctx.canvas.toDataURL(img, "image/jpeg", 0.6)
-                        console.log(data);
-                        
-                        this.setState({[name]: data})
-                    }
-                }
+            } else if (name === this.state.componentIds.avatarPreview) {
                 if(event.target.files.length > 0){
-                    reader.readAsDataURL(event.target.files[0])
-                }*/
-                if(event.target.files.length > 0){
+                    let image = event.target.files[0]
                     Resizer.imageFileResizer(
-                        event.target.files[0],
+                        image,
                         200,
                         200,
                         'JPEG',
                         100,
                         0,
                         uri => {
-                            this.setState({[name]: uri})
+                            this.setState({[name]: uri, avatar: image})
                         },
                         'base64'
                     )
@@ -240,10 +222,10 @@ class RegistrationForm extends React.Component {
                 />
                 <RegistrationFileComponent
                     label="Immagine di profilo"  
-                    componentId={this.getIdBasedOnType(this.state.componentIds.avatar)}
-                    componentName={this.getIdBasedOnType(this.state.componentIds.avatar)}
+                    componentId={this.getIdBasedOnType(this.state.componentIds.avatarPreview)}
+                    componentName={this.getIdBasedOnType(this.state.componentIds.avatarPreview)}
                     onChangeHandler={this.handleChangeEvent}
-                    image={this.state[this.state.componentIds.avatar]}
+                    image={this.state[this.state.componentIds.avatarPreview]}
                     mandatory={false}
                     show={true}
                 />

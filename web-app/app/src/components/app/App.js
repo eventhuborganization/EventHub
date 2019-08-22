@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
 
-import { CallableComponent } from '../redirect/Redirect'
+import {CallableComponent} from '../redirect/Redirect'
 import ScrollToTop from '../scroll_to_top/ScrollToTop'
 
 import './App.css'
@@ -22,22 +22,27 @@ import LocalStorage from "local-storage"
 class App extends React.Component {
 
     #notificationServiceSubscriptionCode = undefined
-    #applicationSTateLocalStorageName = "application-state"
+    #applicationStateLocalStorageName = "application-state"
 
   constructor(props) {
-        super(props)
-        this.state = {
-            isLogged: false,
-            user: {},
-            showMessageElement: undefined,
-            notifications: []
-        }
+      super(props)
+      let applicationState = LocalStorage(this.#applicationStateLocalStorageName) || undefined
+      this.state = {
+          isLogged: applicationState && applicationState.isLogged,
+          user: applicationState && applicationState.user ? applicationState.user : {},
+          showMessageElement: undefined,
+          notifications: []
+      }
+      ApiService.setNotAuthenticatedBehaviour(this.onNotAuthenticated)
   }
 
   componentDidMount() {
-      let applicationState = LocalStorage(this.#applicationSTateLocalStorageName) || undefined
+      let applicationState = LocalStorage(this.#applicationStateLocalStorageName) || undefined
       if (applicationState)
-          this.setState(applicationState)
+          this.setState({
+              isLogged: applicationState.isLogged,
+              user: applicationState.user
+          })
   }
 
     componentWillUnmount() {
@@ -45,7 +50,7 @@ class App extends React.Component {
     }
 
     saveUserDataToLocalStorage = () => {
-        LocalStorage(this.#applicationSTateLocalStorageName,{
+        LocalStorage(this.#applicationStateLocalStorageName,{
             isLogged: this.state.isLogged,
             user: this.state.user
         })
@@ -121,6 +126,11 @@ class App extends React.Component {
       NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
       this.#notificationServiceSubscriptionCode = undefined
   }
+
+    onNotAuthenticated = () => {
+        this.removeSubscriptions()
+        this.setState({isLogged: false}, () => this.saveUserDataToLocalStorage())
+    }
 
   render() {
     return (
@@ -222,7 +232,6 @@ class App extends React.Component {
                 />}
               />
           </Switch>
-
           <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
               <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to={"/profile"}><em className="fas fa-user fa-lg" /></Link></div>

@@ -130,14 +130,18 @@ exports.addUserToEvent = (req, res) => {
 
 exports.removeUserToEvent = (req, res) => {
     if(req.body.user){
-        Event.findByIdAndUpdate(req.params.uuid, {$pullAll : req.body.user}, (err, event) => {
+        let update = { $pull: req.body.user }
+        let options = { new: true }
+        Event.findByIdAndUpdate(req.params.uuid, update, options, (err, event) => {
             if(err)
                 network.internalError(res,err)
             else if(event)
-                network.result(res)
+                network.resultWithJSON(res, event)
             else 
                 network.eventNotFound(res)
         })
+    } else {
+        network.badRequestJSON(res, {description:'user object is Undefined'})
     }
 }
 

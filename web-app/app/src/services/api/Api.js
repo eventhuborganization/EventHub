@@ -1,5 +1,21 @@
 import Axios from 'axios'
 
+let notAuthenticatedBehaviour = undefined
+let onNotAuthenticated = (onError, data) => {
+    if (notAuthenticatedBehaviour)
+        notAuthenticatedBehaviour()
+    else
+        onError(data)
+}
+
+let setNotAuthenticatedBehaviour = behaviour => {
+    notAuthenticatedBehaviour = behaviour
+}
+
+let checkIfIsNotAuthenticated = response => {
+    return response && response.status && response.status === 401
+}
+
 /**
  * @param promise {Promise}
  * @param httpSuccessfulCodes {Array}
@@ -9,17 +25,24 @@ import Axios from 'axios'
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            /*console.log("RESPONSE: ")
-            console.log(response)*/
-            if (!response || !httpSuccessfulCodes.includes(response.status))
+            //console.log("RESPONSE: ")
+            //console.log(response)
+            if (checkIfIsNotAuthenticated(response))
+                onNotAuthenticated(onError, response)
+            else if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
-            else
+            else {
+
                 onSuccess(response)
+            }
         })
         .catch(error => {
-            /*console.log("ERROR: ")
-            console.log(error)*/
-            onError(error)
+            //console.log("ERROR: ")
+            //console.log(error)
+            if (checkIfIsNotAuthenticated(error.response))
+                onNotAuthenticated(onError, error)
+            else
+                onError(error)
         })
 }
 
@@ -30,8 +53,8 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  */
 let mapEvent = (event) => {
     let location = event.location ? {
-        lat: event.location.geo.coordinates[0],
-        lng: event.location.geo.coordinates[1],
+        lat: event.location.geo.coordinates[1],
+        lng: event.location.geo.coordinates[0],
         address: event.location.city
     } : {}
     return {
@@ -48,7 +71,8 @@ let mapEvent = (event) => {
         reviews: event.reviews ? event.reviews : [],
         typology: event.typology,
         _id: event._id,
-        location: location
+        location: location,
+        thumbnail: event.thumbnail
     }
 }
 
@@ -340,6 +364,49 @@ let followEvent = (eventId, onError, onSuccess) => {
 let interactWithEvent = (data, onError, onSuccess) => {
     managePromise(
         Axios.post("/user/event", data),
+        [200],
+        onError,
+        response => onSuccess(mapEvent(response.data))
+    )
+}
+
+/**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let unsubscribeToEvent = (eventId, onError, onSuccess) => {
+    deselectEvent(
+        {participant: true, event: eventId},
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let unfollowEvent = (eventId, onError, onSuccess) => {
+    deselectEvent(
+        {follower: true, event: eventId},
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param data {object}
+ * @param data.follower {boolean}
+ * @param data.participant {boolean}
+ * @param data.event {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let deselectEvent = (data, onError, onSuccess) => {
+    managePromise(
+        Axios.delete("/user/event", {data: data}),
         [200],
         onError,
         response => onSuccess(mapEvent(response.data))
@@ -674,6 +741,8 @@ export default {
     searchNearestEvents,
     participateToEvent,
     followEvent,
+    unsubscribeToEvent,
+    unfollowEvent,
     followOrganization,
     getNotifications,
     sendFriendshipResponse,
@@ -693,5 +762,6 @@ export default {
     sendFriendPositionRequest,
     removeFriend,
     getImageUrl,
-    getAvatarUrl
+    getAvatarUrl,
+    setNotAuthenticatedBehaviour
 }
