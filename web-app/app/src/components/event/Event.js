@@ -178,11 +178,24 @@ let EventHeaderBanner = props => {
         if (!(date instanceof Date)) {
             date = new Date(date)
         }
-        let hours = date ? date.getHours() < 10 ? "0" + date.getHours() : date.getHours() : "00"
-        let minutes = date ? date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes() : "00"
-        return date
-            ? date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + hours + ":" + minutes
-            : ""
+        let hours = date && date.getHours() instanceof Number
+            ? date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
+            : undefined
+        let minutes = date && date.getMinutes() instanceof Number
+            ? date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+            : undefined
+        let displayTime = hours && minutes
+            ? hours + ":" + minutes
+            : undefined
+        let displayDate = date &&
+                            date.getDate() instanceof Number &&
+                            date.getMonth() instanceof Number &&
+                            date.getFullYear() instanceof Number
+            ? date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
+            : undefined
+        return displayDate && displayTime
+            ? displayDate + " - " + displayTime
+            : "Data e orario non specificati"
     }
 
     return (

@@ -9,16 +9,16 @@ import Axios from 'axios'
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            console.log("RESPONSE: ")
-            console.log(response)
+            //console.log("RESPONSE: ")
+            //console.log(response)
             if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
             else
                 onSuccess(response)
         })
         .catch(error => {
-            console.log("ERROR: ")
-            console.log(error)
+            //console.log("ERROR: ")
+            //console.log(error)
             onError(error)
         })
 }
@@ -29,16 +29,14 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  * @returns {{date: *, description: *, creationDate: *, maxParticipants: *, organizator: *, typology: *, followers: *, public: *, reviews: *, name: *, _id: *, participants: *, numParticipants: *}}
  */
 let mapEvent = (event) => {
-    console.log("prima")
-    console.log(event)
     let location = event.location ? {
         lat: event.location.geo.coordinates[0],
         lng: event.location.geo.coordinates[0],
         address: event.location.city
     } : {}
     return {
-        creationDate: event.creationDate,
-        date: event.date ? event.date : event.eventDate,
+        creationDate: new Date(event.creationDate),
+        date: event.date ? new Date(event.date) : new Date(event.eventDate),
         description: event.description,
         followers: event.followers ? event.followers : [],
         maxParticipants: event.maxParticipants ? event.maxParticipants : event.maximumParticipants,
@@ -114,7 +112,7 @@ let mapNotification = (notification) => {
     return {
         _id: notification._id,
         typology: notification.typology,
-        timestamp: notification.timestamp,
+        timestamp: new Date(notification.timestamp),
         sender: notification.sender ? mapUser(notification.sender) : {},
         event: notification.data && notification.data.event ? mapEvent(notification.data.event) : {},
         position: notification.data && notification.data.position ? mapPosition(notification.data.position) : {}
