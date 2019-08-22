@@ -7,7 +7,7 @@ const fs = require("fs")
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
 exports.addUserToEvent = (req, res) => {
-    var data = {}
+    let data = {}
     if(req.body.participant){
         data = {user: {participants: req.user._id}}
     } else if(req.body.follower){

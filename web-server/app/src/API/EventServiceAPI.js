@@ -132,6 +132,18 @@ exports.EventService = class EventService{
      */
     addUserToEvent(eventUuid, users,  successCallback = null, errorCallback = null){
         axios.post(`${this.hostport}/events/${eventUuid}/users`, users)
+        .then(res => {
+            let userId = (users.user.followers ? users.user.followers : users.user.participants)
+            let data = {}
+            if(users.user.followers) {
+                data.follower = eventUuid
+            } else {
+                data.participant = eventUuid
+            }
+            return axios.post(`${UserServiceServer}/users/${userId}/events`, data)
+                    .then(() => Promise.resolve(res))
+            
+        })
         .then(successCallback)
         .catch(errorCallback);
     }

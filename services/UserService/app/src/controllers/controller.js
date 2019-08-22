@@ -327,11 +327,11 @@ exports.getUserEvents = (req, res) => {
 };
 
 exports.addEventToUser = (req, res) => {
-    commons.updateUserEvents(req, res,{$push: retrieveEventsToUpdate(req.body)});
+    commons.updateUserEvents(req, res,{$addToSet: commons.retrieveEventsToUpdate(req.body)})
 };
 
 exports.removeEventToUser = (req, res) => {
-    commons.updateUserEvents(req, res,{$pullAll: retrieveEventsToUpdate(req.body)});
+    commons.updateUserEvents(req, res,{$pullAll: commons.retrieveEventsToUpdate(req.body)})
 };
 
 exports.getWrittenReviews = (req, res) => {
