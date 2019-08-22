@@ -9,16 +9,16 @@ import Axios from 'axios'
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            //console.log("RESPONSE: ")
-            //console.log(response)
+            /*console.log("RESPONSE: ")
+            console.log(response)*/
             if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
             else
                 onSuccess(response)
         })
         .catch(error => {
-            //console.log("ERROR: ")
-            //console.log(error)
+            /*console.log("ERROR: ")
+            console.log(error)*/
             onError(error)
         })
 }
@@ -299,7 +299,7 @@ let createNewEvent = (event, onError, onSuccess) => {
           'Content-Type': 'multipart/form-data'
         }
     })
-    .then(response => onSuccess(mapEvent(response.data)))
+    .then(response => onSuccess(response.data._id))
     .catch(onError)
 }
 

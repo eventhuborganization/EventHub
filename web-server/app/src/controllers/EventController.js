@@ -7,7 +7,7 @@ const fs = require("fs")
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
 exports.addUserToEvent = (req, res) => {
-    var data = {}
+    let data = {}
     if(req.body.participant){
         data = {user: {participants: req.user._id}}
     } else if(req.body.follower){
@@ -15,7 +15,7 @@ exports.addUserToEvent = (req, res) => {
     }
     EventService.addUserToEvent(req.body.event, data,
             response => network.replayResponse(response, res),
-            error => network.internalError(res, error))
+            error => network.replayError(error, res))
 }
 
 exports.eventInfo = (req, res) => {
@@ -33,11 +33,24 @@ exports.eventInfo = (req, res) => {
 }
 
 exports.searchEventByName = (req, res) => {
-    EventService.searchEvent(req.params.data,(response)=>{
-        network.resultWithJSON(res,response)
-    }, (err) => {
-        network.internalError(res, err)
-    })
+    EventService.searchEvent(
+        req.params.name,
+        req.query,
+        response => {
+            let result = response.data
+            let promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
+            axios.all(promises)
+            .then(usersResponse => {
+                usersResponse.map(user => user.data).forEach(user => {
+                    let ev = result.find(event => event.organizator === user._id)
+                    ev.organizator = user
+                })
+                network.resultWithJSON(res, result);
+            })
+            .catch(err => network.replayError(err, res))
+        },
+        err => network.replayError(err, res)
+    )
 }
 
 exports.getEventsFromIndex = (req, res) => {
@@ -56,6 +69,7 @@ exports.getEventsFromIndex = (req, res) => {
                 })
                 network.resultWithJSON(res, result);
             })
+            .catch(err => network.replayError(err, res))
     })
 }
 

@@ -103,7 +103,7 @@ class SearchBar extends React.Component {
 
     search = (searchApi, data, place) => {
         searchApi(data,
-            error => this.props.onError("Errore durante la ricerca. Riprovare."),
+            () => this.props.onError("Errore durante la ricerca. Riprovare."),
             events => this.onResults(events, place))
     }
 
@@ -117,13 +117,14 @@ class SearchBar extends React.Component {
     searchEvents = () => {
         let state = this.state
         let filters = state.filters
-        let data = {
-            event: {
-                typology: filters.typology,
-                date: {
-                    value: filters.date,
-                    operator: ">="
-                },
+        let data = { event: {} }
+        if(filters.typology){
+            data.event.typology = filters.typology
+        }
+        if(filters.date){
+            data.event.date = {
+                value: filters.date,
+                operator: ">="
             }
         }
         switch(this.props.searchBy) {
@@ -149,7 +150,7 @@ class SearchBar extends React.Component {
                         maxDistanceInMetres: 1000
                     }
                 }
-                this.search(ApiService.searchEvents, data)
+                this.search(state.search_value ? ApiService.searchEvents : ApiService.getEvents, data)
                 break
             default: break
         }
@@ -173,7 +174,7 @@ class SearchBar extends React.Component {
 
     updateFilterValue = (event, filterName) => {
         event.persist()
-        this.setState((prevState, props) => {
+        this.setState((prevState) => {
             let state = prevState
             state.filters[filterName] = event.target.value
             return state

@@ -13,17 +13,14 @@ class Home extends React.Component {
         this.state = {
             eventsLoaded: []
         }
-    }
-
-    componentDidMount() {
-        ApiService.getEvents({fromIndex: 0, event: {/*fromDate: new Date(), public: true*/typology: "sport"}},
-            error => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+        ApiService.getEvents({fromIndex: 0},
+            () => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
             response => this.onSearchResults({events: response}))
     }
 
     onSearchResults = response => {
         if (response && response.events)
-            this.setState((prevState, props) => {
+            this.setState((prevState) => {
                 let state = prevState
                 state.eventsLoaded = response.events
                 return state
@@ -55,12 +52,9 @@ class Home extends React.Component {
                 <main className="main-container">
                     {
                         this.state.eventsLoaded.map(event =>
-                            <EventCard key={event._id}
+                            <EventCard {...this.props}
+                                       key={event._id}
                                        eventInfo={event}
-                                       onError={this.props.onError}
-                                       isLogged={this.props.isLogged}
-                                       location={this.props.location}
-                                       user={this.props.user}
                             />)
                     }
                     {this.renderNoNotificationPlaceHolder()}

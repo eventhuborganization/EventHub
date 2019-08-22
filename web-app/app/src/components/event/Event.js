@@ -178,19 +178,16 @@ let EventHeaderBanner = props => {
         if (!(date instanceof Date)) {
             date = new Date(date)
         }
-        let hours = date && date.getHours() instanceof Number
+        let hours = date && date.getHours()
             ? date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
             : undefined
-        let minutes = date && date.getMinutes() instanceof Number
+        let minutes = date && date.getMinutes()
             ? date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
             : undefined
         let displayTime = hours && minutes
             ? hours + ":" + minutes
             : undefined
-        let displayDate = date &&
-                            date.getDate() instanceof Number &&
-                            date.getMonth() instanceof Number &&
-                            date.getFullYear() instanceof Number
+        let displayDate = date && date.getDate() && date.getMonth() && date.getFullYear()
             ? date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             : undefined
         return displayDate && displayTime
@@ -256,7 +253,7 @@ let EventOrganizatorInfo = props => {
         return props.organizator ? (
             <div className="row">
                 <div className="col-12 px-0">
-                    <h6>Organizzatore</h6>
+                    <span className={props.level}>Organizzatore</span>
                 </div>
                 <div className="col-2 px-0 ">
                     {
@@ -271,7 +268,13 @@ let EventOrganizatorInfo = props => {
                     }
                 </div>
                 <div className="col-10 d-flex justify-content-start align-items-center">
-                    <span className="text-invited font-weight-bold">{props.organizator.name} {props.organizator.surname}</span>
+                    <span className="text-invited font-weight-bold">
+                        {
+                            props.organizator.organization ? 
+                            <div> {props.organizator.name} <em className="text-secondary fas fa-user-tie" style={{fontSize: "larger"}}></em></div> : 
+                            <div>{props.organizator.name} {props.organizator.surname}</div>
+                        }
+                    </span>
                 </div>
             </div>
         ) : <div />

@@ -11,22 +11,24 @@ exports.deleteUserPrivateInformations = (user) => {
 }
 
 exports.updateUserEvents = (req, res, updates) => {
-    if (checkIfEventsUpdateIsABadRequest(req.body))
-        badRequest(res);
-    Users.findByIdAndUpdate(req.params.uuid, updates,
-        (err, model) => {
-            if (err)
-                network.internalError(res, err);
-            else if (!model)
-                network.userNotFound(res);
-            else
-                network.result(res);
-        });
-};
+    if (exports.isEventUpdateWellFormed(req.body)){  
+        Users.findByIdAndUpdate(req.params.uuid, updates,
+            (err, model) => {
+                if (err) 
+                    network.internalError(res, err);
+                else if (!model)
+                    network.userNotFound(res)
+                else
+                    network.result(res)
+            })
+    } else {   
+        network.badRequest(res)
+    }
+}
 
-exports.checkIfEventsUpdateIsABadRequest = (body) => {
-    return body.participant || body.follower;
-};
+exports.isEventUpdateWellFormed = (body) => {
+    return (body.participant && !body.follower) || (!body.participant && body.follower);
+}
 
 exports.retrieveEventsToUpdate = (body) => {
     let eventsSubscribed = [];

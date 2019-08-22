@@ -4,14 +4,14 @@ const parser = require('./DataParser')
 const network = require('./network')
 const Event = mongoose.model('Events')
 
-exports.getEvent = (req, res) => {
+function queryEvents(req, onSuccess, onError, onNotFound) {
     let query =  Event.find({})
     if(req.query){
         for (const key in req.query) {
-            if (Object.hasOwnProperty(key)) {
+            if (req.query.hasOwnProperty(key)) {
                 switch (key) {
                     case 'date':
-                        query.find({key: parser.parseDateObject(req.query[key])})
+                        query.find({eventDate: parser.parseDateObject(req.query[key])})
                         break;
                     case 'location':
                         var options = {
@@ -19,7 +19,10 @@ exports.getEvent = (req, res) => {
                             maxDistance: req.body.maxDistance ? req.body.maxDistance : 1000,
                             limit: 10000
                         }
-                        Event.geoSearch({type: 'Point'}, options)
+                        query = Event.geoSearch({type: 'Point'}, options)
+                        break;
+                    case 'typology':
+                        query.find({typology: req.query[key]})
                         break;
                     default:
                         query.find({key:req.query[key]})
@@ -28,22 +31,28 @@ exports.getEvent = (req, res) => {
             }
         }
     }
-    console.log(query.getFilter())
     query.exec((err, event) => {
-        if(err){
-            network.internalError(res,err)
-        } else if(event)
-            network.resultWithJSON(res, event)
-            else
-            network.eventNotFound(res)     
+        if(err)
+            onError(err)
+        else if(event)
+            onSuccess(event)
+        else
+            onNotFound()    
     })
+}
+
+exports.getEvent = (req, res) => {
+    queryEvents(
+        req, 
+        event => network.resultWithJSON(res, event),
+        err => network.internalError(res,err),
+        () => network.eventNotFound(res)
+    )
 }
 
 exports.searchEvent = (req, res) => {
     let searchOption = {
         shouldSort: true,
-        includeScore: true,
-        includeMatches: true,
         threshold: 0.6,
         location: 0,
         distance: 100,
@@ -60,18 +69,19 @@ exports.searchEvent = (req, res) => {
             weight: 0.2
         }]
     }
-    Event.find({}, (err,event) => {
-        if(err)
-            network.internalError(res,err)
-        else{
+    queryEvents(
+        req, 
+        event => {
             let fuses = new fuse(event,searchOption)
             let fuseEvent = fuses.search(req.params.data)
             if(fuseEvent)
                 network.resultWithJSON(res, fuseEvent)
             else 
-                network.eventNotFound(res)  
-        }
-    })
+                network.eventNotFound(res)
+        },
+        err => network.internalError(res,err),
+        () => network.eventNotFound(res)
+    )
 }
 
 exports.getEventById = (req, res) => {
@@ -102,7 +112,7 @@ exports.addUserToEvent = (req, res) => {
     if(req.body.user) {
         let conditions = { _id: req.params.uuid }
         if (req.body.user.participants)
-            conditions.$where = 'this.participants.length<this.maxParticipants'
+            conditions.$where = 'this.participants.length<this.maximumParticipants'
         let update = { $addToSet: req.body.user }
         let options = { new: true }
         Event.findOneAndUpdate(conditions, update, options, (err, event) => {
@@ -178,19 +188,19 @@ exports.newEvent = (req, res) => {
             newEvent.thumbnail = newEvent._id + Date.now() + newEvent.thumbnail 
             newEvent.save((err, finalEvent) => {
                 if (err) {
-                    Event.findByIdAndDelete(newEvent._id, (errBis, event) => {
+                    Event.findByIdAndDelete(newEvent._id, () => {
                         network.internalError(res,err)
                     })
                 } else if (finalEvent)
                     network.resultWithJSON(res, finalEvent)
             })
-        } else 
+        } else
             network.eventNotFound(res)
     })
 }
 
 exports.deleteEvent = (req, res) => {
-    Event.findByIdAndDelete(req.params.uuid, (err, event) => {
+    Event.findByIdAndDelete(req.params.uuid, (err) => {
         if (err)
             network.internalError(res,err)
         else
