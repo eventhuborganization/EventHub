@@ -25,9 +25,7 @@ exports.logout = (req, res) => {
 }
 
 exports.registration = (req, res) => {
-    console.log(req.body);
     let data = JSON.parse(req.body.data)
-    console.log(data);
     data.sex = data.gender
     data.phoneNumber = data.phone
     data.profilePicture = req.file ? path.extname(req.file.originalname).toLowerCase() : ""

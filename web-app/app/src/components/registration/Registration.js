@@ -46,7 +46,8 @@ class Registration extends React.Component {
                 city: data[data.componentIds.city]
             },
             organization: !privateUser,
-            password: hashedPwd 
+            password: hashedPwd,
+            avatar: data.avatar 
         };
         if(data[data.componentIds.phone]){
             message.phone = data[data.componentIds.phone]
@@ -62,7 +63,7 @@ class Registration extends React.Component {
         Api.register(
             message, 
             () => this.props.onError("Qualcosa nella registrazione non ha funzionato correttamente, riprova."),
-            response => {
+            () => {
                 Api.login(message.email, message.password,
                     () => {
                         this.props.onError("La registrazione è stata effettuata correttamente, effettua il login.")

@@ -30,8 +30,8 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  */
 let mapEvent = (event) => {
     let location = event.location ? {
-        lat: event.location.geo.coordinates[0],
-        lng: event.location.geo.coordinates[1],
+        lat: event.location.geo.coordinates[1],
+        lng: event.location.geo.coordinates[0],
         address: event.location.city
     } : {}
     return {
