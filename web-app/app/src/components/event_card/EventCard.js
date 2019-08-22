@@ -14,22 +14,30 @@ class EventCard extends React.Component {
     }
 
     onEventFollowed = event => {
+        this.onEventFollowInteraction(event)
+        this.props.onSuccess("Da adesso segui l'evento, se ci saranno modifiche verrai informato!")
+    }
+
+    onEventParticipated = event =>  {   
+        this.onEventParticipateInteraction(event)
+        this.props.onSuccess("Partecipi all'evento!")
+    }
+
+    onEventFollowInteraction = event => {
         this.setState(prevState => {
             let state = prevState
             state.eventInfo.followers = event.followers
             return state
         })
-        this.props.onSuccess("Da adesso segui l'evento, se ci saranno modifiche verrai informato!")
     }
 
-    onEventParticipated = event =>  {   
+    onEventParticipateInteraction = event =>  {   
         this.setState(prevState => {
             let state = prevState
             state.eventInfo.participants = event.participants
             state.eventInfo.numParticipants = event.participants.length
             return state
         })
-        this.props.onSuccess("Partecipi all'evento!")
     }
 
     render() {
@@ -77,6 +85,8 @@ class EventCard extends React.Component {
                                                event={this.state.eventInfo}
                                                onEventParticipated={this.onEventParticipated}
                                                onEventFollowed={this.onEventFollowed}
+                                               onEventUnfollowed={this.onEventFollowInteraction}
+                                               onEventUnsubscribed={this.onEventParticipateInteraction}
                         />
                     </div>
                 </div>

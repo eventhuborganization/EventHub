@@ -10,6 +10,17 @@ exports.EventService = class EventService{
 
     }
 
+    decodeUserForEvent(elem, uuid){
+        let userId = (elem.user.followers ? elem.user.followers : elem.user.participants)
+        let data = {}
+        if(elem.user.followers) {
+            data.follower = uuid
+        } else {
+            data.participant = uuid
+        }
+        return [userId, data]
+    }
+
     /**
      * Restituisce una lista di eventi che metchano con la stringa
      * 
@@ -133,14 +144,8 @@ exports.EventService = class EventService{
     addUserToEvent(eventUuid, users,  successCallback = null, errorCallback = null){
         axios.post(`${this.hostport}/events/${eventUuid}/users`, users)
         .then(res => {
-            let userId = (users.user.followers ? users.user.followers : users.user.participants)
-            let data = {}
-            if(users.user.followers) {
-                data.follower = eventUuid
-            } else {
-                data.participant = eventUuid
-            }
-            return axios.post(`${UserServiceServer}/users/${userId}/events`, data)
+            let data = this.decodeUserForEvent(users, eventUuid)
+            return axios.post(`${UserServiceServer}/users/${data[0]}/events`, data[1])
                     .then(() => Promise.resolve(res))
             
         })
@@ -161,7 +166,13 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     removeUserToEvent(eventUuid, users, successCallback = null, errorCallback = null){
-        axios.delete(`${this.hostport}/events/${eventUuid}/users`, {data: eventUuid})
+        axios.delete(`${this.hostport}/events/${eventUuid}/users`, {data: users})
+        .then(res => {
+            let data = this.decodeUserForEvent(users, eventUuid)
+            return axios.delete(`${UserServiceServer}/users/${data[0]}/events`, {data: data[1]})
+                    .then(() => Promise.resolve(res))
+            
+        })
         .then(successCallback)
         .catch(errorCallback);
     }

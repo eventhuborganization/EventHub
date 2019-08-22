@@ -6,14 +6,24 @@ const fs = require("fs")
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
-exports.addUserToEvent = (req, res) => {
+function formatUserForEvent (req) {
     let data = {}
     if(req.body.participant){
         data = {user: {participants: req.user._id}}
     } else if(req.body.follower){
         data = {user: {followers: req.user._id}}
     }
-    EventService.addUserToEvent(req.body.event, data,
+    return data
+}
+
+exports.addUserToEvent = (req, res) => {
+    EventService.addUserToEvent(req.body.event, formatUserForEvent(req),
+            response => network.replayResponse(response, res),
+            error => network.replayError(error, res))
+}
+
+exports.removeUserToEvent = (req, res) => {
+    EventService.removeUserToEvent(req.body.event, formatUserForEvent(req),
             response => network.replayResponse(response, res),
             error => network.replayError(error, res))
 }

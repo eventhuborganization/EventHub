@@ -53,7 +53,7 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  */
 let mapEvent = (event) => {
     let location = event.location ? {
-        lat: event.location.geo.coordinates[0],
+        lat: event.location.geo.coordinates[1],
         lng: event.location.geo.coordinates[0],
         address: event.location.city
     } : {}
@@ -71,7 +71,8 @@ let mapEvent = (event) => {
         reviews: event.reviews ? event.reviews : [],
         typology: event.typology,
         _id: event._id,
-        location: location
+        location: location,
+        thumbnail: event.thumbnail
     }
 }
 
@@ -370,6 +371,49 @@ let interactWithEvent = (data, onError, onSuccess) => {
 }
 
 /**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let unsubscribeToEvent = (eventId, onError, onSuccess) => {
+    deselectEvent(
+        {participant: true, event: eventId},
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let unfollowEvent = (eventId, onError, onSuccess) => {
+    deselectEvent(
+        {follower: true, event: eventId},
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param data {object}
+ * @param data.follower {boolean}
+ * @param data.participant {boolean}
+ * @param data.event {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let deselectEvent = (data, onError, onSuccess) => {
+    managePromise(
+        Axios.delete("/user/event", {data: data}),
+        [200],
+        onError,
+        response => onSuccess(mapEvent(response.data))
+    )
+}
+
+/**
  * @param fromIndex {number}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -501,8 +545,16 @@ let logout = (onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let register = (data, onError, onSuccess) => {
+    let form = new FormData()
+    form.append('avatar', data.avatar)
+    delete data.avatar
+    form.append('data', JSON.stringify(data));
     managePromise(
-        Axios.post('/registration', data),
+        Axios.post('/registration', form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        }),
         [200, 201],
         onError,
         response => onSuccess(mapUser(response.data))
@@ -689,6 +741,8 @@ export default {
     searchNearestEvents,
     participateToEvent,
     followEvent,
+    unsubscribeToEvent,
+    unfollowEvent,
     followOrganization,
     getNotifications,
     sendFriendshipResponse,
