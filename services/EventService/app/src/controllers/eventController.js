@@ -184,9 +184,26 @@ exports.newEvent = (req, res) => {
     event.save((err, newEvent) => {
         if(err)
             network.internalError(res,err)
-        else if(newEvent)
-            network.resultWithJSON(res, newEvent)
-        else 
+        else if(newEvent) {
+            newEvent.thumbnail = newEvent._id + Date.now() + newEvent.thumbnail 
+            newEvent.save((err, finalEvent) => {
+                if (err) {
+                    Event.findByIdAndDelete(newEvent._id, () => {
+                        network.internalError(res,err)
+                    })
+                } else if (finalEvent)
+                    network.resultWithJSON(res, finalEvent)
+            })
+        } else
             network.eventNotFound(res)
+    })
+}
+
+exports.deleteEvent = (req, res) => {
+    Event.findByIdAndDelete(req.params.uuid, (err) => {
+        if (err)
+            network.internalError(res,err)
+        else
+            network.result(res)
     })
 }

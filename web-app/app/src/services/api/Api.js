@@ -35,8 +35,8 @@ let mapEvent = (event) => {
         address: event.location.city
     } : {}
     return {
-        creationDate: event.creationDate,
-        date: event.date ? event.date : event.eventDate,
+        creationDate: new Date(event.creationDate),
+        date: event.date ? new Date(event.date) : new Date(event.eventDate),
         description: event.description,
         followers: event.followers ? event.followers : [],
         maxParticipants: event.maxParticipants ? event.maxParticipants : event.maximumParticipants,
@@ -112,7 +112,7 @@ let mapNotification = (notification) => {
     return {
         _id: notification._id,
         typology: notification.typology,
-        timestamp: notification.timestamp,
+        timestamp: new Date(notification.timestamp),
         sender: notification.sender ? mapUser(notification.sender) : {},
         event: notification.data && notification.data.event ? mapEvent(notification.data.event) : {},
         position: notification.data && notification.data.position ? mapPosition(notification.data.position) : {}
@@ -285,11 +285,9 @@ let createNewEvent = (event, onError, onSuccess) => {
     form.append("name", event.name)
     form.append("description", event.description)
     form.append("date", event.date)
-    form.append("location", {
-            lat: event.location.lat,
-            lng: event.location.lng,
-            address: event.location.address
-    })
+    form.append("locationLat", event.location.lat)
+    form.append("locationLng", event.location.lng)
+    form.append("locationAddress", event.location.address)
     form.append("public", event.public)
     form.append("typology", event.typology)
     form.append("thumbnail", event.thumbnail)

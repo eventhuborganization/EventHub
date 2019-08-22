@@ -161,7 +161,7 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     removeUserToEvent(eventUuid, users, successCallback = null, errorCallback = null){
-        axios.delete(`${this.hostport}/events/${eventUuid}/users`, eventUuid)
+        axios.delete(`${this.hostport}/events/${eventUuid}/users`, {data: eventUuid})
         .then(successCallback)
         .catch(errorCallback);
     }
@@ -178,6 +178,22 @@ exports.EventService = class EventService{
      */
     newEvent(event, successCallback = null, errorCallback = null){
         axios.post(`${this.hostport}/events`, {event: event})
+        .then(successCallback)
+        .catch(errorCallback);
+    }
+
+    /**
+     * Eliminare un evento del db.
+     * 
+     *  - 200: dato eliminato correttamente
+     *  - 400: errore nell'inserimento
+     * 
+     * @param {Object} eventUuid id dell'evento da eliminare dal db.
+     * @param {Function} successCallback da eseguire in caso di successo
+     * @param {Function} errorCallback da eseguire in caso di errore
+     */
+    deleteEvent(eventUuid, successCallback = null, errorCallback = null){
+        axios.delete(`${this.hostport}/events/${eventUuid}`)
         .then(successCallback)
         .catch(errorCallback);
     }

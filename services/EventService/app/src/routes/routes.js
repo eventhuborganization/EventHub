@@ -19,4 +19,5 @@ module.exports = function(app) {
     app.route('/events/:uuid')
         .get(eventController.getEventById)
         .put(eventController.updateEventById)
+        .delete(eventController.deleteEvent)
 }
