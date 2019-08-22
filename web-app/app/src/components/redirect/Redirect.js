@@ -72,10 +72,12 @@ class LoginRedirect extends CallableComponent {
     }
 
     render() {
+        let from = this.props.location && this.props.location.pathname
+            ? this.props.location.pathname : "/"
         return (
             <div>
                 <RedirectComponent {...this.props}
-                                   from={this.props.location.pathname}
+                                   from={from}
                                    to={"/login"}
                                    redirectNow={this.props.redirectIfNotLogged && !this.props.isLogged}
                                    onRef={ref => this.saveRedirectComponentRef(ref)}/>

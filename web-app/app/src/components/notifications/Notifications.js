@@ -23,7 +23,7 @@ class Notifications extends React.Component {
             ApiService.getNotifications(0,() => {},notifications => {
                 this.setState({
                     notifications: notifications,
-                    notificationsRead: [] //notificationsRead
+                    notificationsRead: []
                 },() => this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded))
             })
         }

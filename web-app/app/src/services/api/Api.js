@@ -1,5 +1,21 @@
 import Axios from 'axios'
 
+let notAuthenticatedBehaviour = undefined
+let onNotAuthenticated = (onError, data) => {
+    if (notAuthenticatedBehaviour)
+        notAuthenticatedBehaviour()
+    else
+        onError(data)
+}
+
+let setNotAuthenticatedBehaviour = behaviour => {
+    notAuthenticatedBehaviour = behaviour
+}
+
+let checkIfIsNotAuthenticated = response => {
+    return response && response.status && response.status === 401
+}
+
 /**
  * @param promise {Promise}
  * @param httpSuccessfulCodes {Array}
@@ -9,17 +25,24 @@ import Axios from 'axios'
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            /*console.log("RESPONSE: ")
-            console.log(response)*/
-            if (!response || !httpSuccessfulCodes.includes(response.status))
+            //console.log("RESPONSE: ")
+            //console.log(response)
+            if (checkIfIsNotAuthenticated(response))
+                onNotAuthenticated(onError, response)
+            else if (!response || !httpSuccessfulCodes.includes(response.status))
                 onError(response)
-            else
+            else {
+
                 onSuccess(response)
+            }
         })
         .catch(error => {
-            /*console.log("ERROR: ")
-            console.log(error)*/
-            onError(error)
+            //console.log("ERROR: ")
+            //console.log(error)
+            if (checkIfIsNotAuthenticated(error.response))
+                onNotAuthenticated(onError, error)
+            else
+                onError(error)
         })
 }
 
@@ -685,5 +708,6 @@ export default {
     sendFriendPositionRequest,
     removeFriend,
     getImageUrl,
-    getAvatarUrl
+    getAvatarUrl,
+    setNotAuthenticatedBehaviour
 }
