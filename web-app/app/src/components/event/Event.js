@@ -52,10 +52,29 @@ class FollowButton extends React.Component {
     render () {
         return (
             <button className={getButtonClassName(this.props.event.typology, FOLLOW)}
-                    onClick={this.onClick}
-                    disabled={this.props.disabled}>
+                    onClick={this.onClick}>
                 <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
                 Segui
+            </button>
+        )
+    }
+}
+
+class UnfollowButton extends React.Component {
+
+    onClick = () => {
+        ApiService.unfollowEvent(
+            this.props.event._id,
+            () => this.props.onError("Si è verificato un errore. Riprovare."),
+            this.props.onSuccess
+        )
+    }
+
+    render () {
+        return (
+            <button className={getButtonClassName(this.props.event.typology, FOLLOW) + " p-1"}
+                    onClick={this.onClick}>
+                Non seguire
             </button>
         )
     }
@@ -84,10 +103,29 @@ class ParticipateButton extends React.Component {
     render () {
         return (
             <button className={getButtonClassName(this.props.event.typology, PARTICIPATE)}
-                    onClick={this.onClick}
-                    disabled={this.props.disabled}>
+                    onClick={this.onClick}>
                 <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
                 Partecipa
+            </button>
+        )
+    }
+}
+
+class UnsubscribeButton extends React.Component {
+
+    onClick = () => {
+        ApiService.unsubscribeToEvent(
+            this.props.event._id,
+            () => this.props.onError("Si è verificato un errore. Riprovare."),
+            this.props.onSuccess
+        )
+    }
+
+    render () {
+        return (
+            <button className={getButtonClassName(this.props.event.typology, PARTICIPATE)}
+                    onClick={this.onClick}>
+                Ritirati
             </button>
         )
     }
@@ -119,18 +157,32 @@ let EventInteractionPanel = (props) => {
                             event={props.event} />
             </div>
             <div className="col-9 d-flex justify-content-end">
-                <FollowButton {...props}
-                              key={props.event._id + "followbutton"}
-                              event={props.event}
-                              onSuccess={props.onEventFollowed}
-                              disabled={props.event.followers.includes(props.user._id)}
-                />
-                <ParticipateButton {...props}
-                                   key={props.event._id + "participatebutton"}
-                                   event={props.event}
-                                   onSuccess={props.onEventParticipated}
-                                   disabled={props.event.participants.includes(props.user._id)}
-                />
+                {
+                    props.isLogged && props.event.followers.includes(props.user._id) ?
+                        <UnfollowButton {...props}
+                            key={props.event._id + "unfollowbutton"}
+                            event={props.event}
+                            onSuccess={props.onEventUnfollowed}
+                        /> :
+                        <FollowButton {...props}
+                            key={props.event._id + "followbutton"}
+                            event={props.event}
+                            onSuccess={props.onEventFollowed}
+                        />
+                }
+                {
+                    props.isLogged && props.event.participants.includes(props.user._id) ?
+                        <UnsubscribeButton {...props}
+                            key={props.event._id + "unsubscribebutton"}
+                            event={props.event}
+                            onSuccess={props.onEventUnsubscribed}
+                        /> :
+                        <ParticipateButton {...props}
+                            key={props.event._id + "subscribebutton"}
+                            event={props.event}
+                            onSuccess={props.onEventParticipated}
+                        />
+                }
             </div>
         </div>
     )

@@ -48,7 +48,8 @@ let mapEvent = (event) => {
         reviews: event.reviews ? event.reviews : [],
         typology: event.typology,
         _id: event._id,
-        location: location
+        location: location,
+        thumbnail: event.thumbnail
     }
 }
 
@@ -340,6 +341,49 @@ let followEvent = (eventId, onError, onSuccess) => {
 let interactWithEvent = (data, onError, onSuccess) => {
     managePromise(
         Axios.post("/user/event", data),
+        [200],
+        onError,
+        response => onSuccess(mapEvent(response.data))
+    )
+}
+
+/**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let unsubscribeToEvent = (eventId, onError, onSuccess) => {
+    deselectEvent(
+        {participant: true, event: eventId},
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let unfollowEvent = (eventId, onError, onSuccess) => {
+    deselectEvent(
+        {follower: true, event: eventId},
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param data {object}
+ * @param data.follower {boolean}
+ * @param data.participant {boolean}
+ * @param data.event {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let deselectEvent = (data, onError, onSuccess) => {
+    managePromise(
+        Axios.delete("/user/event", {data: data}),
         [200],
         onError,
         response => onSuccess(mapEvent(response.data))
@@ -666,6 +710,8 @@ export default {
     searchNearestEvents,
     participateToEvent,
     followEvent,
+    unsubscribeToEvent,
+    unfollowEvent,
     followOrganization,
     getNotifications,
     sendFriendshipResponse,
