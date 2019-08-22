@@ -38,8 +38,16 @@ exports.createNewUser = (req, res) => {
                     if (err) {
                         network.internalError(res, err);
                     } else {
-                        let user_data = commons.deleteUserPrivateInformations(user);
-                        network.userCreated(res, user_data);
+                        user.profilePicture = user._id + Date.now() + user.profilePicture
+                        user.save((err, finalUser) => {
+                            if (err) {
+                                Users.findByIdAndDelete(user._id, () => {
+                                    network.internalError()
+                                })
+                            }
+                            let user_data = commons.deleteUserPrivateInformations(user);
+                            network.userCreated(res, user_data);
+                        })
                     }
                 });
             } else {
