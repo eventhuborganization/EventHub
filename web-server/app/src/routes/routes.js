@@ -94,7 +94,10 @@ module.exports = (app) => {
     /* ----------------------------------------------- */
 
     app.route("/registration")
-        .post(loginController.registration)
+        .post(
+            upload.single("avatar"),
+            loginController.registration
+        )
 
     app.route('/login')
         .get(loginController.getLogin)

@@ -98,11 +98,11 @@ exports.getUserInformations = (req, res) => {
 exports.updateUserInformations = (req, res) => {
     let data = req.body;
     if(commons.isUpdateUserDataWellFormed(data)){
-        Users.findByIdAndUpdate(req.params.uuid, data, (err) => {
+        Users.findByIdAndUpdate(req.params.uuid, {$set: data}, (err) => {
             if(err){
                 network.internalError(res);
             } else {
-                network.result(res);
+                network.resultWithJSON(res, data);
             }
         });
     } else {

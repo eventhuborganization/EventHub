@@ -25,6 +25,15 @@ exports.resultWithJSON = (res, data) => {
 };
 
 /**
+ * Send an ok message over the network
+ * @param {Response} res where to send the message
+ * @param {Object} data the JSON data to send
+ */
+exports.resultWithJSONNoImage = (res, data) => {
+    res.status(210).json(data);
+};
+
+/**
  * Send a created message over the network
  * @param {Response} res where to send the message
  * @param {Object} item the user's data
