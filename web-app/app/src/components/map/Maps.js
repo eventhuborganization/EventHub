@@ -106,11 +106,11 @@ class EventsMap extends React.Component {
 /**
  * @param props {{
  *     place: {
- *         place_id: string
- *     },
- *     location: {
- *         lat: number,
- *         lng: number
+ *         place_id: string,
+ *         location: {
+ *             lat: number,
+ *             lng: number
+ *         }
  *     }
  * }}
  * @returns {*}
