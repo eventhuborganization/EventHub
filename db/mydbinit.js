@@ -96,7 +96,7 @@ db.events.insert({
     "date": "24-08-2020",
     "description": "Una madonna rogoronnesca",
     "followers": [],
-    "maxParticipants": 200,
+    "maximumParticipants": 200,
     "name": "Evento della madonna",
     "organizator": uuid,
     "participants": [],

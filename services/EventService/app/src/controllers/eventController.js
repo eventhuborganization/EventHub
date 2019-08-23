@@ -128,18 +128,27 @@ exports.updateEventById = (req, res) => {
 exports.addUserToEvent = (req, res) => {
     if(req.body.user) {
         let conditions = { _id: req.params.uuid }
-        if (req.body.user.participants)
+        let dataForUpdate = undefined
+        if (req.body.user.participants) {
             conditions.$where = 'this.participants.length<this.maximumParticipants'
-        let update = { $addToSet: req.body.user }
-        let options = { new: true }
-        Event.findOneAndUpdate(conditions, update, options, (err, event) => {
-            if(err)
-                network.internalError(res,err)
-            else if(event)
-                network.resultWithJSON(res, event)
-            else
-                network.eventNotFound(res)
-        })
+            dataForUpdate = {participants: req.body.user.participants}
+        } else if (req.body.user.followers) {
+            dataForUpdate = {followers: req.body.user.followers}
+        }
+        if (dataForUpdate) {
+            let update = { $addToSet: dataForUpdate }
+            let options = { new: true }
+            Event.findOneAndUpdate(conditions, update, options, (err, event) => {
+                if(err)
+                    network.internalError(res,err)
+                else if(event)
+                    network.resultWithJSON(res, event)
+                else
+                    network.eventNotFound(res)
+            })
+        } else {
+            network.badRequestJSON(res, {description:'No participants or followers defined.'})
+        }
     } else {
         network.badRequestJSON(res, {description:'user object is Undefined'})
     }
@@ -147,16 +156,25 @@ exports.addUserToEvent = (req, res) => {
 
 exports.removeUserToEvent = (req, res) => {
     if(req.body.user){
-        let update = { $pull: req.body.user }
-        let options = { new: true }
-        Event.findByIdAndUpdate(req.params.uuid, update, options, (err, event) => {
-            if(err)
-                network.internalError(res,err)
-            else if(event)
-                network.resultWithJSON(res, event)
-            else 
-                network.eventNotFound(res)
-        })
+        let dataForUpdate = undefined
+        if (req.body.user.participants)
+            dataForUpdate = {participants: req.body.user.participants}
+        else if (req.body.user.followers)
+            dataForUpdate = {followers: req.body.user.followers}
+        if (dataForUpdate) {
+            let update = { $pull: dataForUpdate }
+            let options = { new: true }
+            Event.findByIdAndUpdate(req.params.uuid, update, options, (err, event) => {
+                if(err)
+                    network.internalError(res,err)
+                else if(event)
+                    network.resultWithJSON(res, event)
+                else
+                    network.eventNotFound(res)
+            })
+        } else {
+            network.badRequestJSON(res, {description:'No participants or followers defined.'})
+        }
     } else {
         network.badRequestJSON(res, {description:'user object is Undefined'})
     }
