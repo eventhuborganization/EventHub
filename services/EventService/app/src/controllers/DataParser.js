@@ -1,27 +1,28 @@
 exports.parseDateObject = (date) => {
-    var date = {}
-    var res;
+    var res = {};
+    date = JSON.parse(date)
     switch (date.operator) {
         case '<':
-            res.$lt = date.value
+            res.$lt = new Date(date.value)
             break;
         case '>':
-            res.$gt = date.value
+            res.$gt = new Date(date.value)
             break;
         case '<=':
-            res.$lte = date.value
+            res.$lte = new Date(date.value)
             break;
         case '>=':
-            res.$gte = date.value
+            res.$gte = new Date(date.value)
             break;
         case '=':
-            res.$eq = date.value
+            res.$gte = new Date(date.value)
+            res.$lte = new Date(date.value)
             break;
         default:
-            if(date.value)
-                res = date.value
-            else
-                res = value
+            if(!date.value){
+                console.log('test');
+                res = new Date(date.value)
+            }
             break;
     }
     return res;

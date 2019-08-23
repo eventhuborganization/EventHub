@@ -11,15 +11,26 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
             if (req.query.hasOwnProperty(key)) {
                 switch (key) {
                     case 'date':
+                        console.log('STO FACENDO DATA');
                         query.find({eventDate: parser.parseDateObject(req.query[key])})
                         break;
                     case 'location':
-                        var options = {
-                            near: [req.query.location.lon, req.query.location.lat],
-                            maxDistance: req.body.maxDistance ? req.body.maxDistance : 1000,
-                            limit: 10000
-                        }
-                        query = Event.geoSearch({type: 'Point'}, options)
+                            let location = JSON.parse(req.query.location)
+                            query.find({
+                                location:{
+                                    geo:{
+                                        $geoNear:{
+                                            // $maxDistance: location.maxDistance ? location.maxDistance : 100000,
+                                            $maxDistance: 1000000,
+                                            $geometry: {
+                                                type: "Point",
+                                                // coordinates: [req.query.location.lng, req.query.location.lat]
+                                                coordinates: [12.6137738, 44.0027035]
+                                            }
+                                        }
+                                    }
+                                }
+                            })
                         break;
                     case 'typology':
                         query.find({typology: req.query[key]})
@@ -32,12 +43,18 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
         }
     }
     query.exec((err, event) => {
-        if(err)
+        if(err){
+            console.log(`Errore: ${err}`)
             onError(err)
-        else if(event)
+        }
+        else if(event && event.length > 0){
+            console.log(`Eventi: ${event}`)
             onSuccess(event)
-        else
+        }
+        else{
+            console.log('not found')
             onNotFound()    
+        }
     })
 }
 
@@ -172,18 +189,19 @@ exports.addEventReviews = (req, res) => {
 exports.newEvent = (req, res) => {
     let eventReceived = req.body.event
     let newLocation = {
-        city: eventReceived.location.address,
+        city: eventReceived.locationAddress,
         geo: {
             coordinates: [
-                eventReceived.location.lat,
-                eventReceived.location.lng
+                eventReceived.locationLng,
+                eventReceived.locationLat
             ]
         }
     }
-
+    console.log("---------------------")
     eventReceived.eventDate = eventReceived.date
     eventReceived.location = newLocation
     eventReceived.maximumParticipants = eventReceived.maxParticipants
+    console.log(eventReceived)
     var event = new Event(eventReceived)
     event.save((err, newEvent) => {
         if(err)
