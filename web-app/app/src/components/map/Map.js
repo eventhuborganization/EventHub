@@ -66,10 +66,7 @@ class Map extends React.Component {
 
     onSearchResults = response => {
         if (response) {
-            if (response.place) {
-                let location = response.place.geometry.location
-                this.updateCenterPosition(location.lat(), location.lng())
-            }
+            this.updateCenterPositionWithSearchResults(response.place)
             if (response.events) {
                 this.setState((prevState) => {
                     let state = prevState
@@ -77,6 +74,18 @@ class Map extends React.Component {
                     return state
                 })
             }
+        }
+    }
+
+    onSearchError = place => {
+        this.updateCenterPositionWithSearchResults(place)
+        this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare.")
+    }
+
+    updateCenterPositionWithSearchResults = place => {
+        if (place && place.geometry && place.geometry.location) {
+            let location = place.geometry.location
+            this.updateCenterPosition(location.lat(), location.lng())
         }
     }
 
@@ -89,7 +98,7 @@ class Map extends React.Component {
                                 typology: true,
                                 date: true
                             }}
-                            onError={this.props.onError}
+                            onError={this.onSearchError}
                  />
                  <div className="row">
                      <div id="map-container" className="col-12 px-0" style={{height: this.state.mapContainerHeight}}>

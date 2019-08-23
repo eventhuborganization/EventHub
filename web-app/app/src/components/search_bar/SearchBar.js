@@ -108,9 +108,7 @@ class SearchBar extends React.Component {
     }
 
     search = (searchApi, data, place) => {
-        searchApi(data,
-            () => this.props.onError("Errore durante la ricerca. Riprovare."),
-            events => this.onResults(events, place))
+        searchApi(data, () => this.props.onError(place), events => this.onResults(events, place))
     }
 
     onResults = (events, place) => {

@@ -77,10 +77,10 @@ exports.getEventsFromIndex = (req, res) => {
                     let ev = result.find(event => event.organizator === user._id)
                     ev.organizator = user
                 })
-                network.resultWithJSON(res, result);
+                network.resultWithJSON(res, result)
             })
             .catch(err => network.replayError(err, res))
-    })
+    }, err => network.replayError(err, res))
 }
 
 exports.getEventsNear = (req, res) => {

@@ -27,6 +27,11 @@ class Home extends React.Component {
             })
     }
 
+    onSearchError = () => {
+        this.setState({eventsLoaded: []},
+            () => this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare."))
+    }
+
     renderNoNotificationPlaceHolder = () => {
         if (this.state.eventsLoaded.length <= 0)
             return <NoItemsPlaceholder placeholder={"Non ci sono eventi disponibili"} />
@@ -35,7 +40,6 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-
                 <SearchBar searchBy={SEARCH_BY_EVENT}
                            onChange={this.onSearchResults}
                            filters={{
@@ -44,7 +48,7 @@ class Home extends React.Component {
                                location: true
                            }}
                            stickyTop={true}
-                           onError={this.props.onError}
+                           onError={this.onSearchError}
                 />
 
                 <CreateNewEventButton location={this.props.location} isLogged={this.props.isLogged} />
