@@ -45,7 +45,7 @@ exports.createNewUser = (req, res) => {
                                     network.internalError()
                                 })
                             }
-                            let user_data = commons.deleteUserPrivateInformations(user);
+                            let user_data = commons.deleteUserPrivateInformations(finalUser);
                             network.userCreated(res, user_data);
                         })
                     }
