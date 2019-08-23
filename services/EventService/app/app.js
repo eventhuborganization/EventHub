@@ -40,7 +40,15 @@ function connect(reconnectTries, reconnectInterval) {
 function runApp() {
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
-
+    app.use((req, res, next) => {
+        console.log('');
+        console.log(req.body);
+        console.log('--------');
+        console.log(req.query);
+        console.log('--------');
+        console.log('');
+        next();
+    })
     //app.use(session({secret: '343ji43j4n3jn4jk3n'}))
 
     var routes = require('./src/routes/routes')

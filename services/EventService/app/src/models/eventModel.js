@@ -63,5 +63,6 @@ var EventSchema = new Schema({
         default: Date.now
     }
 })
-
+//Dichiaro a mongoDb di indicizare le posizioni come 2dsphere
+EventSchema.index({ location:{ geo: "2dsphere" }});
 module.exports = mongoose.model('Events', EventSchema);
