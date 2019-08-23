@@ -99,6 +99,12 @@ class SearchBar extends React.Component {
         })
         let searchButton = document.getElementById(this.btn_search_id)
         searchButton.addEventListener('click', event => this.searchEvents())
+        searchButton.addEventListener('keyup', event => {
+            if (event.keyCode === 13) {
+                event.preventDefault()
+                searchButton.click()
+            }
+        })
     }
 
     search = (searchApi, data, place) => {

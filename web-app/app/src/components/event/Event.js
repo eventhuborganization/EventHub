@@ -230,10 +230,10 @@ let EventHeaderBanner = props => {
         if (!(date instanceof Date)) {
             date = new Date(date)
         }
-        let hours = date && date.getHours()
+        let hours = date && date.getHours() >= 0
             ? date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
             : undefined
-        let minutes = date && date.getMinutes()
+        let minutes = date && date.getMinutes() >= 0
             ? date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
             : undefined
         let displayTime = hours && minutes

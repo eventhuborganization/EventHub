@@ -154,6 +154,7 @@ class EventCreator extends React.Component {
                 }
                 state.event.date.setHours(timesInfo[0])
                 state.event.date.setMinutes(timesInfo[1])
+                state.event.date.setSeconds(0)
             } else {
                 state.timeSet = false
             }
