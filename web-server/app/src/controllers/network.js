@@ -113,17 +113,15 @@ exports.replayResponse = (response, res) => {
         exports.itemCreated(res, response.data);
     } else if (response.status === 204) {
         exports.notContentRetrieved(res);
-    } else {
-        exports.replayError(response, res);
     }
 }
 
-exports.replayError = (response,res) => {
-    if (response.status === 404){
-        exports.notFound(res, response.data);
-    } else if (response.status === 500) {
-        exports.internalError(res, response.data);
-    } else if (response.status === 400) {
-        exports.badRequestJSON(res, response.data);
+exports.replayError = (error,res) => {
+    if (error.response.status === 404){
+        exports.notFound(res, error.response.data);
+    } else if (error.response.status === 500) {
+        exports.internalError(res, error.response.data);
+    } else if (error.response.status === 400) {
+        exports.badRequestJSON(res, error.response.data);
     }
 }
