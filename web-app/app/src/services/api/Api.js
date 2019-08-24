@@ -25,8 +25,8 @@ let checkIfIsNotAuthenticated = response => {
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            //console.log("RESPONSE: ")
-            //console.log(response)
+            /*console.log("RESPONSE: ")
+            console.log(response)*/
             if (checkIfIsNotAuthenticated(response))
                 onNotAuthenticated(onError, response)
             else if (!response || !httpSuccessfulCodes.includes(response.status))
@@ -37,8 +37,9 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
             }
         })
         .catch(error => {
-            //console.log("ERROR: ")
-            //console.log(error)
+            /*console.log("ERROR: ")
+            console.log(error)
+            console.log(error.response)*/
             if (checkIfIsNotAuthenticated(error.response))
                 onNotAuthenticated(onError, error)
             else
@@ -53,22 +54,24 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
  */
 let mapEvent = (event) => {
     let location = event.location ? {
-        lat: event.location.geo.coordinates[1],
-        lng: event.location.geo.coordinates[0],
         address: event.location.city
     } : {}
+    if(event.location.geo && event.location.geo.coordinates){
+        location.lat = event.location.geo.coordinates[1]
+        location.lng = event.location.geo.coordinates[0]
+    }
     return {
         creationDate: new Date(event.creationDate),
         date: event.date ? new Date(event.date) : new Date(event.eventDate),
         description: event.description,
-        followers: event.followers ? event.followers : [],
-        maxParticipants: event.maxParticipants ? event.maxParticipants : event.maximumParticipants,
+        followers: event.followers || [],
+        maxParticipants: event.maxParticipants || event.maximumParticipants,
         name: event.name,
         organizator: mapUser(event.organizator),
-        participants: event.participants ? event.participants : [],
+        participants: event.participants || [],
         numParticipants: event.participants ? event.participants.length : 0,
         public: event.public,
-        reviews: event.reviews ? event.reviews : [],
+        reviews: event.reviews || [],
         typology: event.typology,
         _id: event._id,
         location: location,
