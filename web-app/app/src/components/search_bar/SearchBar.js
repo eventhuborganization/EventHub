@@ -26,6 +26,9 @@ class SearchBar extends React.Component {
     btn_search_id = 'btn-search'
     location_filter_id = 'location'
     location_input_placeholder = "Indirizzo, Città, ..."
+    defaultDistance = 5 //km
+    minDistance = 1 //km
+    maxDistance = 20 //km
 
     constructor(props) {
         super(props)
@@ -36,6 +39,8 @@ class SearchBar extends React.Component {
             filters.location = ""
         if (props.filters.date)
             filters.date = ""
+        if (props.filters.distance)
+            filters.distance = this.defaultDistance
         this.state = {
             search_value: undefined,
             filters: filters
@@ -139,7 +144,7 @@ class SearchBar extends React.Component {
                     data.event.location = {
                         lng: location.lng(),
                         lat: location.lat(),
-                        maxDistanceInMetres: 1000
+                        maxDistanceInMetres: filters.distance
                     }
                 }
                 this.search(ApiService.searchNearestEvents, data, place)
@@ -151,7 +156,7 @@ class SearchBar extends React.Component {
                     data.event.location = {
                         lng: location.lng,
                         lat: location.lat,
-                        maxDistanceInMetres: 1000
+                        maxDistanceInMetres: filters.distance
                     }
                 }
                 this.search(state.search_value ? ApiService.searchEvents : ApiService.getEvents, data)
@@ -176,6 +181,10 @@ class SearchBar extends React.Component {
         this.updateFilterValue(event, "date")
     }
 
+    updateDistance = event => {
+        this.updateFilterValue(event, "distance")
+    }
+
     updateFilterValue = (event, filterName) => {
         event.persist()
         this.setState((prevState) => {
@@ -185,7 +194,7 @@ class SearchBar extends React.Component {
         }, () => this.searchEvents())
     }
 
-    loadFilters() {
+    renderFilters() {
         let filters = []
         if (this.props.filters.location && this.props.searchBy !== SEARCH_BY_PLACE)
             filters.push(
@@ -229,10 +238,36 @@ class SearchBar extends React.Component {
                     />
                 </div>
             )
+        if (this.props.filters.distance)
+            filters.push(
+                <div key="distance">
+                    <label htmlFor="distance" className="m-0">Distanza: {this.state.filters.distance}km</label>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <span>{this.minDistance}km</span>
+                        <input
+                            id="distance"
+                            name="distance"
+                            type="range"
+                            min={this.minDistance}
+                            max={this.maxDistance}
+                            defaultValue={this.defaultDistance}
+                            className="form-control"
+                            onChange={this.updateDistance}
+                        />
+                        <span>{this.maxDistance}km</span>
+                    </div>
+                </div>
+            )
         return (
             <div className="card card-body">
                 <h4>Filtri</h4>
                 {filters}
+                {
+                    filters.length > 0 ?
+                        <div className={"d-flex justify-content-end align-items-center"}>
+                            <button className={"btn btn-danger"}>Reset</button>
+                        </div> : <div/>
+                }
             </div>
         )
     }
@@ -288,7 +323,7 @@ class SearchBar extends React.Component {
                     </div>
                 </nav>
                 <div className="collapse w-100 my-1" id="filters">
-                    {this.loadFilters()}
+                    {this.renderFilters()}
                 </div>
             </div>
         )

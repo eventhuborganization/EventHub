@@ -48,7 +48,7 @@ class Map extends React.Component {
                     }
                 }
                 ApiService.getEvents(data,
-                    () => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+                    () => {},//this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
                     events => this.onSearchResults({events: events}))
                 this.updateCenterPosition(position.coords.latitude, position.coords.longitude)
             }
@@ -79,7 +79,7 @@ class Map extends React.Component {
 
     onSearchError = place => {
         this.updateCenterPositionWithSearchResults(place)
-        this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare.")
+        //this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare.")
     }
 
     updateCenterPositionWithSearchResults = place => {
@@ -96,7 +96,8 @@ class Map extends React.Component {
                             onChange={this.onSearchResults}
                             filters={{
                                 typology: true,
-                                date: true
+                                date: true,
+                                distance: true
                             }}
                             onError={this.onSearchError}
                  />
