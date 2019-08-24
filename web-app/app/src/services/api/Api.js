@@ -567,8 +567,16 @@ let register = (data, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let updateUserProfile = (data, onError, onSuccess) => {
+    let form = new FormData()
+    form.append('avatar', data.avatar)
+    delete data.avatar
+    form.append('data', JSON.stringify(data));
     managePromise(
-        Axios.put('/profile', data),
+        Axios.put('/profile', form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        }),
         [200],
         onError,
         response => onSuccess(mapUser(response.data))

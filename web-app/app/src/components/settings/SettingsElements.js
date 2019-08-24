@@ -225,14 +225,23 @@ class ChangeInfo extends React.Component {
                 message.avatar = this.state.avatar[1]
                 user.avatar = this.state.avatar[1]
             }
-            Api.updateUserProfile(
-                message, 
-                () => this.props.onError("Qualcosa nell'aggiornamento non ha funzionato correttamente, riprova"),
-                () => {
-                    this.props.onChange(user)
-                    this.props.onSuccess("I tuoi dati sono stati aggiornati correttamente!")
-                }
-            )
+            if (this.state.name[1] 
+                && this.state.surname[1] 
+                && this.state.city[1] 
+                && (this.state.province[1] || !this.props.user.organization)
+                && (this.state.address[1] || !this.props.user.organization)) {
+                Api.updateUserProfile(
+                    message, 
+                    () => this.props.onError("Qualcosa nell'aggiornamento non ha funzionato correttamente, riprova"),
+                    () => {
+                        this.props.onChange(user)
+                        this.props.onSuccess("I tuoi dati sono stati aggiornati correttamente!")
+                    }
+                )
+            } else {
+                this.props.onError("Uno o più campi obbligatori sono vuoti, ricompila e riprova")
+            }
+            
         }
     }
 

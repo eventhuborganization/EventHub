@@ -84,7 +84,11 @@ module.exports = (app) => {
         .post(loginChecker, userController.responseFriendPosition)
 
     app.route("/profile")
-        .put(loginChecker, userController.updateProfile)
+        .put(
+            loginChecker,
+            upload.single("avatar"),
+            userController.updateProfile
+        )
 
     app.route("/profile/credentials")
         .put(userController.updateCredentials)
