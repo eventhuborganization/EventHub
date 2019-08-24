@@ -116,13 +116,15 @@ export function EventsBanner(props) {
     let events = props.events.map(event =>
         <EventCard  key={event._id}
                     eventInfo={event}
+                    user={props.user}
                     onError={props.onError}
                     isLogged={props.isLogged}
                     location={props.location}
     />)
+    let elements = events.length > 0 ? [<div key={props.title + "-elems"} className="container-fluid">{events}</div>] : []
     return (
         <MultipleElementsBanner
-            elements={events}
+            elements={elements}
             title={props.title}
             iconName={"glass-cheers"}
             emptyLabel={props.emptyLabel}

@@ -92,8 +92,8 @@ db.users.insert({
 var uuid = db.users.find({"name": "La voglia matta"}).limit(1)[0]._id
 
 db.events.insert({
-    "creationDate": "04-08-2019",
-    "date": "24-08-2020",
+    "creationDate": new Date("Sat Jul 27 2019 18:47:41 GMT+0200 (Ora legale dell’Europa centrale)"),
+    "eventDate": new Date("Sat Aug 24 2019 18:47:41 GMT+0200 (Ora legale dell’Europa centrale)"),
     "description": "Una madonna rogoronnesca",
     "followers": [],
     "maximumParticipants": 200,

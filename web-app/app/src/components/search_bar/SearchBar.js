@@ -154,8 +154,8 @@ class SearchBar extends React.Component {
                 if (filters.location) {
                     let location = filters.location.geometry.location
                     data.event.location = {
-                        lng: location.lng,
-                        lat: location.lat,
+                        lng: location.lng(),
+                        lat: location.lat(),
                         maxDistanceInMetres: filters.distance
                     }
                 }
@@ -178,7 +178,9 @@ class SearchBar extends React.Component {
     }
 
     updateDate = (event) => {
-        this.updateFilterValue(event, "date")
+        if(new Date(event.target.value).getFullYear() / 1000 > 1){
+            this.updateFilterValue(event, "date")
+        }
     }
 
     updateDistance = event => {

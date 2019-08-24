@@ -27,3 +27,9 @@ exports.parseDateObject = (date) => {
     }
     return res;
 }
+
+exports.getFromToday = () => {
+    return {
+        $gte: new Date()
+    }
+}

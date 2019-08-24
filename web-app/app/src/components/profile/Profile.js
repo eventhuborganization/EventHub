@@ -26,11 +26,13 @@ class Profile extends CallableComponent {
 
     getEventsByUserTypology = () => {
         let initialString = "Non " + (this.props.isLocalUser ? "hai" : "ha")
+        let user = this.props.isLocalUser ? this.state.user : this.props.localUser
         return this.state.user.organization ? 
             (<div>
                 <section className="mt-3">
                     <EventsBanner
                         {...this.props}
+                        user={user}
                         events={this.state.user.pastEvents}
                         title={"Eventi organizzati"}
                         emptyLabel={ initialString + " ancora organizzato un evento"}
@@ -41,6 +43,7 @@ class Profile extends CallableComponent {
                 <section className="mt-3">
                     <EventsBanner
                         {...this.props}
+                        user={user}
                         events={this.state.user.futureEvents}
                         title={"Prossimi eventi"}
                         emptyLabel={initialString + " nessun prossimo evento in programma"}
@@ -49,6 +52,7 @@ class Profile extends CallableComponent {
                 <section className="mt-3">
                     <EventsBanner
                         {...this.props}
+                        user={user}
                         events={this.state.user.pastEvents}
                         title={"Ultimi eventi a cui " + (this.props.isLocalUser ? "hai" : "ha" ) + " partecipato"}
                         emptyLabel={initialString + " partecipato a nessun evento"}
