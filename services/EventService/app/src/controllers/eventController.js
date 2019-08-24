@@ -18,9 +18,9 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
                             query.where('location.geo').near({
                                 center:{
                                     type: 'Point',
-                                    coordinates: [location.locationLng, location.locationLat]
+                                    coordinates: [location.lon, location.lat]
                                 },
-                                maxDistance: location.maxDistance ? location.maxDistance: 1000,
+                                maxDistance: location.maxDistance ? location.maxDistance: 10000,
                             })
                         break;
                     case 'typology':
@@ -33,18 +33,15 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
             }
         }
     }
-    //console.log(query.getFilter())
     query.exec((err, event) => {
         if(err){
             console.log(`Errore: ${err}`)
             onError(err)
         }
         else if(event && event.length > 0){
-            event.forEach(ev => console.log(`Id: ${ev._id}  |  Luogo: ${ev.location.geo.coordinates[0]},${ev.location.geo.coordinates[1]}`))
             onSuccess(event)
         }
         else{
-            console.log('not found')
             onNotFound()    
         }
     })
@@ -207,11 +204,9 @@ exports.newEvent = (req, res) => {
             ]
         }
     }
-    console.log("---------------------")
     eventReceived.eventDate = eventReceived.date
     eventReceived.location = newLocation
     eventReceived.maximumParticipants = eventReceived.maxParticipants
-    console.log(eventReceived)
     var event = new Event(eventReceived)
     event.save((err, newEvent) => {
         if(err)

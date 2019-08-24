@@ -154,8 +154,8 @@ class SearchBar extends React.Component {
                 if (filters.location) {
                     let location = filters.location.geometry.location
                     data.event.location = {
-                        lng: location.lng,
-                        lat: location.lat,
+                        lng: location.lng(),
+                        lat: location.lat(),
                         maxDistanceInMetres: filters.distance
                     }
                 }
