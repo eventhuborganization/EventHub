@@ -24,6 +24,9 @@ class Notification extends React.Component {
                 10: "Non ha accettato di inviarti la sua posizione."
             }
         }
+        if(this.props.notification.typology === 8){
+            this.props.onFriendAdded(this.props.notification.sender)
+        }
     }
 
     handleFriendshipRequest = (accepted) => {
