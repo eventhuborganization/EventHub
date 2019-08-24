@@ -59,8 +59,11 @@ exports.searchEventByName = (req, res) => {
             })
             .catch(err => network.replayError(err, res))
         },
-        err => network.replayError(err, res)
-    )
+        err => {
+            console.log('tessseeesssssssssssssssssssssss');
+            
+            network.replayError(err, res)
+        })
 }
 
 exports.getEventsFromIndex = (req, res) => {
@@ -104,11 +107,11 @@ exports.createEvent = (req, res) => {
         fs.rename(tempPath, targetPath, error => {
             if (error) {
                 console.log(error)
-                for(let notDone=4; notDone; ) {
+                for(let notDone = 4; notDone; ) {
                     EventService.deleteEvent(response.data._id, response => {
-                        notDone=false
+                        notDone = false
                         network.internalError(res, error)
-                    }, error => {notDone--})
+                    }, error => notDone--)
                 }
                 network.internalError(res, error)
             } else {

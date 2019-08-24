@@ -40,7 +40,7 @@ function handleMongoConnectionError(error, reconnectTries, reconnectInterval) {
 }
 
 function runApp() {
-
+    let routes = require('./src/routes/routes')
     //host e port servizio utenti
     global.UserServicePort = 3001
     global.UserServiceHost = "localhost"//'event-hub_user-service'
@@ -57,8 +57,16 @@ function runApp() {
     app.use(bodyParser.json())
 
     passport.initialize(app)
-
-    let routes = require('./src/routes/routes')
+    app.use((req, res, next) => {
+        console.log('')
+        console.log('-------REQUEST BODY------')
+        console.log(req.body)
+        console.log('-------REQUEST QUERY------')
+        console.log(req.query)
+        console.log('---- CONTROLLER LOG----')
+        console.log('')
+        next()
+    })
     routes(app)
 
     app.use(function(req, res) {

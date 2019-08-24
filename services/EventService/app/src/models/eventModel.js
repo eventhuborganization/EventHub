@@ -24,7 +24,7 @@ var EventSchema = new Schema({
                 type: String,
                 enum: ['Point'], 
                 required: true,
-                default: 'Point'
+                default: 'Point',
             },
             coordinates: {
                 type: [Number],
@@ -64,5 +64,5 @@ var EventSchema = new Schema({
     }
 })
 //Dichiaro a mongoDb di indicizare le posizioni come 2dsphere
-EventSchema.index({ location:{ geo: "2dsphere" }});
+EventSchema.index({ 'location.geo': '2dsphere' });
 module.exports = mongoose.model('Events', EventSchema);

@@ -11,25 +11,16 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
             if (req.query.hasOwnProperty(key)) {
                 switch (key) {
                     case 'date':
-                        console.log('STO FACENDO DATA');
                         query.find({eventDate: parser.parseDateObject(req.query[key])})
                         break;
                     case 'location':
                             let location = JSON.parse(req.query.location)
-                            query.find({
-                                location:{
-                                    geo:{
-                                        $geoNear:{
-                                            // $maxDistance: location.maxDistance ? location.maxDistance : 100000,
-                                            $maxDistance: 1000000,
-                                            $geometry: {
-                                                type: "Point",
-                                                // coordinates: [req.query.location.lng, req.query.location.lat]
-                                                coordinates: [12.6137738, 44.0027035]
-                                            }
-                                        }
-                                    }
-                                }
+                            query.where('location.geo').near({
+                                center:{
+                                    type: 'Point',
+                                    coordinates: [location.locationLng, location.locationLat]
+                                },
+                                maxDistance: location.maxDistance ? location.maxDistance: 1000,
                             })
                         break;
                     case 'typology':
@@ -42,13 +33,14 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
             }
         }
     }
+    //console.log(query.getFilter())
     query.exec((err, event) => {
         if(err){
             console.log(`Errore: ${err}`)
             onError(err)
         }
         else if(event && event.length > 0){
-            console.log(`Eventi: ${event}`)
+            event.forEach(ev => console.log(`Id: ${ev._id}  |  Luogo: ${ev.location.geo.coordinates[0]},${ev.location.geo.coordinates[1]}`))
             onSuccess(event)
         }
         else{

@@ -22,7 +22,7 @@ let reconnectInterval = 2000
 
 function connect(reconnectTries, reconnectInterval) {
     // ! per lavorare con docker sostituire "_cfg.dbpath" con "_cfg.dbpath_docker"
-    mongoose.connect(`mongodb://${_cfg.dbpath}/event-hub-db`, { useNewUrlParser: true, useFindAndModify: false })
+    mongoose.connect(`mongodb://${_cfg.dbpath}/event-hub-db`, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
         .then(
             () => runApp(),
             error => {
@@ -41,13 +41,14 @@ function runApp() {
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
     app.use((req, res, next) => {
-        console.log('');
-        console.log(req.body);
-        console.log('--------');
-        console.log(req.query);
-        console.log('--------');
-        console.log('');
-        next();
+        console.log('')
+        console.log('-------REQUEST BODY------')
+        console.log(req.body)
+        console.log('-------REQUEST QUERY------')
+        console.log(req.query)
+        console.log('---- CONTROLLER LOG----')
+        console.log('')
+        next()
     })
     //app.use(session({secret: '343ji43j4n3jn4jk3n'}))
 
