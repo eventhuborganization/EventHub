@@ -158,7 +158,8 @@ class ChangeInfo extends React.Component {
             province: [false, this.props.user.address ? this.props.user.address.province : ""],
             address: [false, this.props.user.address ? this.props.user.address.address : ""],
             phone: [false, this.props.user.phone],
-            avatar: [false, (this.props.user.avatar ? this.props.user.avatar : "")]
+            avatar: [false, (this.props.user.avatar ? this.props.user.avatar : "")],
+            avatarPreview: undefined
         }
     }
 
@@ -166,16 +167,17 @@ class ChangeInfo extends React.Component {
         let target = event.target
         let name = target.name
         let value = target.value
-        if (name === "avatar" && event.target.files.length > 0){
+        if (name === "avatarPreview" && event.target.files.length > 0){
+            let image = event.target.files[0]
             Resizer.imageFileResizer(
-                event.target.files[0],
+                image,
                 200,
                 200,
                 'JPEG',
                 100,
                 0,
                 uri => {
-                    this.setState({[name]: [true, uri]})
+                    this.setState({avatarPreview: uri, avatar: [true, image]})
                 },
                 'base64'
             )
@@ -320,10 +322,10 @@ class ChangeInfo extends React.Component {
                     <SettingsFileComponent
                         key={"comp7"} 
                         label="Immagine di profilo"  
-                        componentId={"avatar"}
-                        componentName={"avatar"}
+                        componentId={"avatarPreview"}
+                        componentName={"avatarPreview"}
                         onChangeHandler={this.handleChangeEvent}
-                        image={this.state.avatar[1]}
+                        image={[this.state.avatar[0], this.state.avatarPreview ? this.state.avatarPreview : this.state.avatar[1]] }
                         mandatory={false}
                         show={true}
                     />
@@ -365,6 +367,7 @@ function SettingsFileComponent(props) {
     let common = "col-10 col-md-8 mx-auto px-0 "
     let labelClass = common + "text-left"
     let labelInputClass = common + "mx-auto"
+    let image = props.image[0] ? props.image[1] : Api.getAvatarUrl(props.image[1])
     return props.show ? (
         <div>
             <div className="form-group row">
@@ -383,11 +386,11 @@ function SettingsFileComponent(props) {
                     />
                 </div>
             </div>
-            <div className={props.image ? "form-group row" : "d-none"}>
-                <img src={props.image} className={"img-fluid mx-auto d-block"} alt="immagine profilo"/>
+            <div className={props.image[1] ? "form-group row" : "d-none"}>
+                <img src={image} className={"img-fluid mx-auto d-block"} alt="immagine profilo"/>
             </div>
         </div>
-    ) : "";
+    ) : <div/>;
 }
 
 function SettingsCard(props){
