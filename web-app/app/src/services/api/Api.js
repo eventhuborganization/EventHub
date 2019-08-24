@@ -88,6 +88,13 @@ let mapUser = (user) => {
     let address = user.address ? {
         city: user.address.city
     } : {}
+    let eventsSubscribed = []
+    if(user.nextEventSubscribed){
+        eventsSubscribed = eventsSubscribed.concat(user.nextEventSubscribed.map(elem => mapEvent(elem)))
+    }
+    if(user.lastEventSubscribed){
+        eventsSubscribed = eventsSubscribed.concat(user.lastEventSubscribed.map(elem => mapEvent(elem)))
+    }
     return {
         _id: user._id,
         linkedUsers: user.linkedUsers ? user.linkedUsers : [],
@@ -106,7 +113,7 @@ let mapUser = (user) => {
         reviewsDone: user.reviewsDone ? user.reviewsDone : [],
         nReviewsReceived: user.reviewsReceived ? user.reviewsReceived.length : 0,
         reviewsReceived: user.reviewsReceived ? user.reviewsReceived : [],
-        eventsSubscribed: user.eventsSubscribed ? user.eventsSubscribed : [],
+        eventsSubscribed: eventsSubscribed,
         eventsFollowed: user.eventsFollowed ? user.eventsFollowed : [],
         address: address
     }
@@ -621,7 +628,7 @@ let getUserInformation = (userId, onError, onSuccess) => {
         Axios.get('/users/' + userId),
         [200],
         onError,
-        response => onSuccess(mapUser(response.data))
+        response => {console.log(response.data); onSuccess(mapUser(response.data))}
     )
 }
 
