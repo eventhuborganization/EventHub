@@ -33,6 +33,9 @@ function queryEvents(req, onSuccess, onError, onNotFound) {
             }
         }
     }
+    if(!req.query["date"]){
+        query.find({eventDate: parser.getFromToday()})
+    }
     query.sort({eventDate: 'ascending'}).exec((err, event) => {
         if(err){
             console.log(`Errore: ${err}`)

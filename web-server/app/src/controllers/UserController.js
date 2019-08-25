@@ -104,7 +104,31 @@ exports.responseFriendPosition = (req, res) => {
 
 exports.updateProfile = (req, res) => {
     let user = req.user._id
-    axios.put(`${UserServiceServer}/users/${user}`, req.body)
+    let message = {}
+    let data = JSON.parse(req.body.data)
+    if (data.name)
+        message.name = data.name
+    if (data.surname)
+        message.surname = data.surname
+    if (data.city)
+        message.address.city = data.city
+    if (data.province)
+        message.address.province = data.province
+    if (data.address)
+        message.address.address = data.address
+    if (data.phone !== undefined)
+        message.phoneNumber = data.phone
+    if (req.file) {
+        message.profilePicture = user + Date.now() + path.extname(req.file.originalname).toLowerCase()
+        let targetPath = path.join(__dirname, ("../../public/images/users/" + message.profilePicture))
+        fs.rename(req.file.path, targetPath, error => {
+            if (error) {
+                network.internalError(res, error)
+                return
+            }
+        })
+    }
+    axios.put(`${UserServiceServer}/users/${user}`, message)
         .then((response) => network.replayResponse(response, res))
         .catch((err) => network.internalError(res, err))
 }

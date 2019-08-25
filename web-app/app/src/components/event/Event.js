@@ -149,6 +149,30 @@ let EventBadge = (props) => {
 }
 
 let EventInteractionPanel = (props) => {
+    let followButton = props.isLogged && props.event.followers.includes(props.user._id) ?
+        <UnfollowButton {...props}
+            key={props.event._id + "unfollowbutton"}
+            event={props.event}
+            onSuccess={props.onEventUnfollowed}
+        /> :
+        <FollowButton {...props}
+            key={props.event._id + "followbutton"}
+            event={props.event}
+            onSuccess={props.onEventFollowed}
+        />
+    let subscribeButton = props.isLogged && props.event.participants.includes(props.user._id) ?
+        <UnsubscribeButton {...props}
+            key={props.event._id + "unsubscribebutton"}
+            event={props.event}
+            onSuccess={props.onEventUnsubscribed}
+        /> :
+        <ParticipateButton {...props}
+            key={props.event._id + "subscribebutton"}
+            event={props.event}
+            onSuccess={props.onEventParticipated}
+        />
+
+
     return (
         <div className="row">
             <div className="col-3 my-auto">
@@ -158,30 +182,9 @@ let EventInteractionPanel = (props) => {
             </div>
             <div className="col-9 d-flex justify-content-end">
                 {
-                    props.isLogged && props.event.followers.includes(props.user._id) ?
-                        <UnfollowButton {...props}
-                            key={props.event._id + "unfollowbutton"}
-                            event={props.event}
-                            onSuccess={props.onEventUnfollowed}
-                        /> :
-                        <FollowButton {...props}
-                            key={props.event._id + "followbutton"}
-                            event={props.event}
-                            onSuccess={props.onEventFollowed}
-                        />
-                }
-                {
-                    props.isLogged && props.event.participants.includes(props.user._id) ?
-                        <UnsubscribeButton {...props}
-                            key={props.event._id + "unsubscribebutton"}
-                            event={props.event}
-                            onSuccess={props.onEventUnsubscribed}
-                        /> :
-                        <ParticipateButton {...props}
-                            key={props.event._id + "subscribebutton"}
-                            event={props.event}
-                            onSuccess={props.onEventParticipated}
-                        />
+                    props.event.date - new Date() > 0 ? 
+                        <div>{followButton} {subscribeButton}</div> :
+                        <div/>
                 }
             </div>
         </div>
