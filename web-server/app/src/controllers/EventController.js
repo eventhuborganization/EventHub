@@ -60,8 +60,6 @@ exports.searchEventByName = (req, res) => {
             .catch(err => network.replayError(err, res))
         },
         err => {
-            console.log('tessseeesssssssssssssssssssssss');
-            
             network.replayError(err, res)
         })
 }
@@ -101,7 +99,7 @@ exports.createEvent = (req, res) => {
     }
     event.thumbnail = path.extname(req.file.originalname).toLowerCase()
     event.organizator = req.user._id
-    EventService.newEvent(event, (response)=>{
+    EventService.newEvent(event, (response) => {
         let imageName = response.data.thumbnail
         let targetPath = path.join(__dirname, ("../../public/images/events/" + imageName))
         fs.rename(tempPath, targetPath, error => {
@@ -117,17 +115,16 @@ exports.createEvent = (req, res) => {
             } else {
                 if (event.public) {
                     axios.get(`${UserServiceServer}/users/${req.user._id}`)
-                        .then(user => {
-                            if (user.data.organization) {
-                                axios.get(`${UserServiceServer}/users/${req.user._id}/linkedUsers`)
-                                    .then(resLinkedUsers => {
-                                        resLinkedUsers.forEach(user => {
-                                            axios.post(`${UserServiceServer}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
-                                        })
-                                    })
-                            }
-                        })
-                    
+                    .then(user => {
+                        if (user.data.organization) {
+                            axios.get(`${UserServiceServer}/users/${req.user._id}/linkedUsers`)
+                            .then(resLinkedUsers => {
+                                resLinkedUsers.forEach(user => {
+                                    axios.post(`${UserServiceServer}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
+                                })
+                            })
+                        }
+                    })
                 }
                 network.resultWithJSON(res,response.data)
             }
