@@ -121,9 +121,7 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     updateEventById(eventUuid, dataToUpdate,  successCallback = null, errorCallback = null){
-        let data = JSON.stringify(dataToUpdate)
-
-        axios.put(`${this.hostport}/events/${eventUuid}`, data)
+        axios.put(`${this.hostport}/events/${eventUuid}`, dataToUpdate)
         .then(successCallback)
         .catch(errorCallback);
     }

@@ -36,6 +36,11 @@ module.exports = (app) => {
 
     app.route('/events/info/:uuid')
         .get(eventController.eventInfo)
+        .put(
+            loginChecker,
+            upload.single("thumbnail"), 
+            eventController.updateEvent
+        )
 
     app.route('/events/position/near')
         .get(eventController.getEventsNear)

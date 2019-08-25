@@ -105,14 +105,20 @@ exports.getEventById = (req, res) => {
 }
 
 exports.updateEventById = (req, res) => {
+    let event = req.body
+    let conditions = { '_id': req.params.uuid, 'organizator' : event.organizator }
+    delete event.organizator
+    if (typeof(event.maximumParticipants)==='number') {
+        conditions.$where = event.maximumParticipants + '>=this.maximumParticipants'
+    }
     if(req.body.event){
-        Event.findByIdAndUpdate(req.params.uuid, req.body.event, (err, event) => {
+        Event.findOneAndUpdate(conditions, {$set: event}, (err, event) => {
             if(err)
                 network.internalError(res,err)
             else if(event)
                 network.resultWithJSON(res, event)
             else 
-                network.eventNotFound(res)
+                network.badRequest(res)
         })
     }
 }
