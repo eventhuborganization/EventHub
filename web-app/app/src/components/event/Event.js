@@ -133,6 +133,19 @@ class UnsubscribeButton extends React.Component {
     }
 }
 
+function UpdateButton(props){
+    return (
+        <Link 
+            to={{
+                pathname: "/event/" + props.event._id + "/update",
+                state: {event: props.event}
+            }} 
+            className={getButtonClassName(props.event.typology, PARTICIPATE)}>
+            Modifica evento
+        </Link>
+    )
+}
+
 let EventBadge = (props) => {
     var typeClass = ""
     var label = ""
@@ -184,9 +197,13 @@ let EventInteractionPanel = (props) => {
             </div>
             <div className="col-9 d-flex justify-content-end">
                 {
-                    props.event.date - new Date() > 0 ? 
+                    props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0 ? 
                         <div>{followButton} {subscribeButton}</div> :
-                        <div/>
+                        (
+                            props.user._id === props.event.organizator._id ? 
+                            <UpdateButton {...props} event={props.event}/> : 
+                            <div/>
+                        )
                 }
             </div>
         </div>

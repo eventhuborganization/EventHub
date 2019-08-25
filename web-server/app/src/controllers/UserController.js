@@ -37,10 +37,14 @@ exports.addFollower = (req, res) => {
 }
 
 exports.userFriendRequest = (req, res) => {
-    var data = {typology: 1, sender: req.user._id}
-    axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, data)
-        .then(() => network.result(res))
-        .catch((err) => network.internalError(res, err))
+    if (req.user._id !== req.body.friend) {
+        var data = {typology: 1, sender: req.user._id}
+        axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, data)
+            .then(() => network.result(res))
+            .catch((err) => network.internalError(res, err))
+    } else {
+        network.badRequest(res)
+    }
 }
 
 exports.friendshipAnswer = (req, res) => {

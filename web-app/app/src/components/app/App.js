@@ -153,10 +153,17 @@ class App extends React.Component {
             />
             <Route path="/event/new" exact render={(props) =>
                 <EventCreator {...props}
-                              isLogged={this.state.isLogged}
-                              onError={this.onError}
-                              loggedUser={this.state.user}
+                    isLogged={this.state.isLogged}
+                    onError={this.onError}
+                    loggedUser={this.state.user}
                 />}
+            />
+            <Route path="/event/:id/update" exact render={(props) => 
+                <EventCreator {...props}
+                    isLogged={this.state.isLogged}
+                    onError={this.onError}
+                    loggedUser={this.state.user}
+                />} 
             />
             <Route path="/event/:id" exact render={(props) => 
                 <EventInfo {...props} 

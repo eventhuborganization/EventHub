@@ -134,3 +134,30 @@ exports.createEvent = (req, res) => {
         network.internalError(res, err)
     })
 }
+
+exports.updateEvent = (req, res) => {
+    var event = req.body
+    let message = {organizator = req.user._id}
+    let event = JSON.parse(req.body.data)
+    if (event.name)
+        message.name = event.name
+    if (event.description)
+        message.description = event.description
+    if (event.date)
+        message.date = event.date
+    if (typeof(event.location.lat) === "number" && typeof(event.location.lng) === "number" && typeof(event.location.address) === "string")
+        message.location = event.location 
+    if (typeof(event.maxParticipants) === "number")
+        message.maxParticipants = event.maxParticipants
+    if (req.file) {
+        message.profilePicture = req.params.uuid + Date.now() + path.extname(req.file.originalname).toLowerCase()
+        let targetPath = path.join(__dirname, ("../../public/images/events/" + message.profilePicture))
+        fs.rename(req.file.path, targetPath, error => {
+            if (error) {
+                network.internalError(res, error)
+                return
+            }
+        })
+    }
+    EventService.updateEventById(req.params.uuid, message, response => network.replayResponse(response, res), error => network.replayError(error, res))
+}
