@@ -1,8 +1,8 @@
 import React from 'react'
-import {Route} from 'react-router-dom'
+import {Route, Redirect} from 'react-router-dom'
 import Api from '../../services/api/Api'
 
-import { RedirectComponent, LoginRedirect } from '../redirect/Redirect'
+import { LoginRedirect } from '../redirect/Redirect'
 import { Profile, UserFriends } from './Profile'
 
 class AbstractProfile extends React.Component {
@@ -119,7 +119,7 @@ class PersonalProfile extends AbstractProfile {
                 <Profile {...this.props} 
                     isLocalUser={true} 
                     updateState={this.changeState} 
-                    state={this.state.user}
+                    user={this.state.user}
                     onRef={this.setProfileComponent}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>
@@ -137,12 +137,20 @@ class UserProfile extends AbstractProfile {
 
     updateInformation = () => {
         this.state.user._id = this.props.match.params.id
-        this.getUserInformation()
+        if(this.props.match.params.id !== this.props.user._id){
+            this.getUserInformation()
+        }
+    }
+
+    renderRedirect = () => {
+        return this.props.user._id === this.props.match.params.id ? 
+            <Redirect from={this.props.from} to={"/profile"} /> : <div/>
     }
 
     render = () => {
         return (
             <div>
+                {this.renderRedirect()}
                 <Route 
                     path={"/users/:id/friends"}
                     exact 
@@ -160,15 +168,11 @@ class UserProfile extends AbstractProfile {
                             updateInfo={this.updateInformation} 
                             isLocalUser={false} 
                             updateState={this.changeState} 
-                            state={this.state.user}
+                            user={this.state.user}
                             localUser={this.props.user}
                             onRef={this.setProfileComponent}
                         />
                     }}
-                />
-                <RedirectComponent {...this.props}
-                    to={'/profile'}
-                    redirectNow={this.props.isLogged && this.props.user._id === this.state.user._id}
                 />
             </div>
         )

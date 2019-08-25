@@ -40,59 +40,69 @@ function MenuTab(props) {
     );
 }
 
-function ScrollableMenuTab(props){
-    let count = -1
-    let navigationBar = props.tabs.map(element => {
-        count++
+class ScrollableMenuTab extends React.Component {
+
+    hideMenu = (ev, elemFunction) => {
+        document.getElementById("navbarToggleExternalContent").classList.remove("show")
+        if(elemFunction instanceof Function){
+            elemFunction(ev)
+        }
+    }
+
+    render = () => {
+        let count = -1
+        let navigationBar = this.props.tabs.map(element => {
+            count++
+            return (
+                <li className="nav-item" key={"li" + count + "_id"}>
+                    <a className={"nav-link " + this.props.style.link + (count === 0 ? " active" : "")}
+                        id={"tab-scroll-" + count} 
+                        data-toggle="pill" 
+                        href={"#scroll-elem-" + count}
+                        role="tab" aria-controls={"scroll-elem-" + count} aria-selected={count === 0}
+                        onClick={ev => this.hideMenu(ev, element.onClick)}>
+                        {element.tag}
+                    </a>
+                </li>
+            )
+        })
+        count = -1
+        let tabBar = this.props.tabs.map(element => {
+            count ++
+            return (
+                <div className={"tab-pane fade h-100" + (count === 0 ? " show active" : "")} 
+                    id={"scroll-elem-" + count} 
+                    role="tabpanel" aria-labelledby={"tab-scroll-" + count}
+                    key={"div" + count + "_id"}>
+                    {element.elem}
+                </div>
+            )
+        })
         return (
-            <li className="nav-item" key={"li" + count + "_id"}>
-                <a className={"nav-link " + props.style.link + (count === 0 ? " active" : "")}
-                    id={"tab-scroll-" + count} 
-                    data-toggle="pill" 
-                    href={"#scroll-elem-" + count}
-                    role="tab" aria-controls={"scroll-elem-" + count} aria-selected={count === 0}
-                    onClick={element.onClick instanceof Function ? element.onClick : () => {}}>
-                    {element.tag}
-                </a>
-            </li>
-        )
-    })
-    count = -1
-    let tabBar = props.tabs.map(element => {
-        count ++
-        return (
-            <div className={"tab-pane fade h-100" + (count === 0 ? " show active" : "")} 
-                 id={"scroll-elem-" + count} 
-                 role="tabpanel" aria-labelledby={"tab-scroll-" + count}
-                 key={"div" + count + "_id"}>
-                {element.elem}
-            </div>
-        )
-    })
-    return (
-        <div>
-            <nav className={"row navbar navbar-dark " + props.style.navbarBackground}>
-                    <button 
-                        className={"navbar-toggler " + props.style.button} type="button" 
-                        data-toggle="collapse" data-target="#navbarToggleExternalContent" 
-                        aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"
-                    >
-                        <em className="navbar-toggler-icon"></em>
-                    </button>
-                    <h5 className={"col text-left mb-0 " + props.style.title}> {props.title} </h5>
-                </nav>
-            <div className="row collapse" id="navbarToggleExternalContent">
-                <div className={"col-12 py-2 " + props.style.navbarBackground}>
-                    <ul className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        {navigationBar}
-                    </ul>
+            <div>
+                <nav className={"row navbar navbar-dark " + this.props.style.navbarBackground}>
+                        <button 
+                            className={"navbar-toggler " + this.props.style.button} type="button" 
+                            data-toggle="collapse" data-target="#navbarToggleExternalContent" 
+                            aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"
+                        >
+                            <em className="navbar-toggler-icon"></em>
+                        </button>
+                        <h5 className={"col text-left mb-0 " + this.props.style.title}> {this.props.title} </h5>
+                    </nav>
+                <div className="row collapse" id="navbarToggleExternalContent">
+                    <div className={"col-12 py-2 " + this.props.style.navbarBackground}>
+                        <ul className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            {navigationBar}
+                        </ul>
+                    </div>
+                </div>
+                <div className="tab-content" id="v-pills-tabContent">
+                    {tabBar}
                 </div>
             </div>
-            <div className="tab-content" id="v-pills-tabContent">
-                {tabBar}
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 

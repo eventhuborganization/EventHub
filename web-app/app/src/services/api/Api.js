@@ -636,7 +636,7 @@ let getUserInformation = (userId, onError, onSuccess) => {
         Axios.get('/users/' + userId),
         [200],
         onError,
-        response => {console.log(response.data); onSuccess(mapUser(response.data))}
+        response => onSuccess(mapUser(response.data))
     )
 }
 
