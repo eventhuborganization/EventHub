@@ -8,7 +8,7 @@ import ApiService from '../../services/api/Api'
 export function LinkedUserAvatar(props){
     let avatar = props.linkedUser.avatar && props.linkedUser.avatar !== "" ? 
         <img 
-            src={ApiService.getImageUrl(props.linkedUser.avatar)}
+            src={ApiService.getAvatarUrl(props.linkedUser.avatar)}
             className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
             alt={"Immagine profilo utente"}
         /> : 
