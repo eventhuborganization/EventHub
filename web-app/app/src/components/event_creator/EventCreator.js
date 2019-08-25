@@ -13,28 +13,37 @@ class EventCreator extends React.Component {
 
     constructor(props) {
         super(props)
+        let onUpdate = props.location && props.location.state && props.location.state.event
         this.state = {
-            event: {
-                name: "",
-                description: "",
-                date: undefined,
-                location: {
-                    lat: undefined,
-                    lng: undefined,
-                    address: "",
-                    place_id: undefined
-                },
-                public: true,
-                typology: undefined,
-                thumbnail: undefined,
-                thumbnailPreview: undefined,
-                maxParticipants: undefined,
-                organizator: props.loggedUser
-            },
-            dateSet: false,
-            timeSet: false,
+            onUpdate: onUpdate,
+            dateSet: onUpdate,
+            timeSet: onUpdate,
             eventCreated: false,
-            eventId: undefined
+        }
+        if(props.location && props.location.state && props.location.state.event){
+            this.state.oldEvent = props.location.state.event
+            this.state.event = props.location.state.event
+            this.state.event.thumbnailPreview = undefined
+            this.state.eventId = props.location.state.event._id
+        } else {
+            this.state.event = {
+                    name: "",
+                    description: "",
+                    date: undefined,
+                    location: {
+                        lat: undefined,
+                        lng: undefined,
+                        address: "",
+                        place_id: undefined
+                    },
+                    public: true,
+                    typology: undefined,
+                    thumbnail: undefined,
+                    thumbnailPreview: undefined,
+                    maxParticipants: undefined,
+                    organizator: props.loggedUser
+            }
+            this.state.eventId = undefined
         }
     }
 
@@ -89,6 +98,13 @@ class EventCreator extends React.Component {
                     }
                 })
             })
+        if(this.state.onUpdate){
+            document.getElementById("name").value = this.state.event.name
+            document.getElementById("address").value = this.state.event.location.address
+            document.getElementById("max-participants").value = this.state.event.maxParticipants
+            document.getElementById("description").value = this.state.event.description
+            this.renderDate()
+        }
     }
 
     updateName = (event) => {
@@ -165,16 +181,17 @@ class EventCreator extends React.Component {
     updateThumbnailPreview = (event) => {
         event.persist()
         let reader = new FileReader()
+        let image = event.target.files[0]
         reader.onload = e => {
             this.setState((prevState) => {
                 let state = prevState
-                state.event.thumbnail = event.target.files[0]
+                state.event.thumbnail = image
                 state.event.thumbnailPreview = e.target.result
                 return state
             })
         }
         if(event.target.files.length > 0){
-            reader.readAsDataURL(event.target.files[0])
+            reader.readAsDataURL(image)
         }
     }
 
@@ -209,7 +226,7 @@ class EventCreator extends React.Component {
         })
     }
 
-    createEvent = () => {
+    checkErrors = () => {
         let event = this.state.event
         var errorFound = false
         let addErrorClassAndfocus = name => {
@@ -245,6 +262,11 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("time")
             this.props.onError("La data e l'orario selezionati devono essere più avanti di un'ora rispetto ad adesso")
         }
+        return errorFound
+    }
+
+    createEvent = () => {
+        let errorFound = this.checkErrors()
         if (!errorFound) {
             ApiService.createNewEvent(this.state.event,
                     () => this.props.onError("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
@@ -256,6 +278,47 @@ class EventCreator extends React.Component {
                             return state
                         })
                     })
+        }
+    }
+
+    updateEvent = () => {
+        let errorFound = this.checkErrors()
+        if (!errorFound) {
+            let newEvent = {}
+            let event = this.state.event
+            let oldEvent = this.state.oldEvent
+            if(event.name !== oldEvent.name){
+                newEvent.name = event.name
+            }
+            if(event.date !== oldEvent.date){
+                newEvent.date = event.date
+            }
+            if(event.description !== oldEvent.description){
+                newEvent.description = event.description
+            }
+            if(event.thumbnail !== oldEvent.thumbnail){
+                newEvent.thumbnail = event.thumbnail
+            }
+            if(event.location !== oldEvent.location){
+                newEvent.location = event.location
+            }
+            if(event.maxParticipants !== oldEvent.maxParticipants){
+                if(event.maxParticipants > oldEvent.numParticipants){
+                    newEvent.maxParticipants = event.maxParticipants
+                } else {
+                    errorFound = true
+                }
+            }
+            if(!errorFound){
+                ApiService.updateEventInfo(
+                    this.state.oldEvent._id, 
+                    newEvent,
+                    () => this.props.onError("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
+                    () => this.setState({eventCreated: true})
+                )
+            } else {
+                this.props.onError("Hai inserito un numero di partecipanti massimi troppo basso, hai già più di " + event.maxParticipants + "utenti iscritti")
+            }
         }
     }
 
@@ -277,7 +340,51 @@ class EventCreator extends React.Component {
             )
     }
 
+    renderVisibility = () => {
+        return  this.state.onUpdate ? <div/> :
+            <div className="row d-flex align-items-center">
+                <div className="col-12">
+                    <label className="m-0">Visibilità</label>
+                    <div className="custom-control custom-radio">
+                        <input
+                            type="radio"
+                            id="public"
+                            name="visibility"
+                            className="custom-control-input"
+                            value="public"
+                            onChange={this.updateVisibility}
+                            defaultChecked={this.state.event.public}
+                        />
+                        <label className="m-0 custom-control-label" htmlFor="public">Evento pubblico</label>
+                    </div>
+                    <div className="custom-control custom-radio">
+                        <input
+                            type="radio"
+                            id="private"
+                            name="visibility"
+                            className="custom-control-input"
+                            value="private"
+                            onChange={this.updateVisibility}
+                            defaultChecked={!this.state.event.public}
+                        />
+                        <label className="m-0 custom-control-label" htmlFor="private">Evento privato</label>
+                    </div>
+                </div>
+        </div>
+    }
+
+    renderDate = () => {
+        var date = new Date(this.state.event.date);
+        var currentDate = date.toISOString().slice(0,10);
+        var currentTime = date.getHours() + ':' + date.getMinutes();
+        document.getElementById("date").value = currentDate
+        document.getElementById("time").value = currentTime
+    }
+
     render() {
+        let image = this.state.onUpdate && !this.state.event.thumbnailPreview ? 
+            ApiService.getImageUrl(this.state.event.thumbnail) : this.state.event.thumbnailPreview
+
         return (
             <form className="main-container">
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
@@ -288,7 +395,7 @@ class EventCreator extends React.Component {
                             <em className="far fa-image fa-9x"></em>
                             <h4>Clicca per aggiungere un'immagine</h4>
                         </div>
-                        <img src={this.state.event.thumbnailPreview}
+                        <img src={image}
                              alt="Event thumbnail"
                              className={"img-fluid w-100 " + (this.state.event.thumbnail ? "" : " d-none ")}
                         />
@@ -312,37 +419,9 @@ class EventCreator extends React.Component {
 
                 <section className={"row mt-2"}>
                     <div className="col container-fluid">
+                        {this.renderVisibility()}
                         <div className="row d-flex align-items-center">
-                            <div className="col-12">
-                                <label className="m-0">Visibilità</label>
-                                <div className="custom-control custom-radio">
-                                    <input
-                                        type="radio"
-                                        id="public"
-                                        name="visibility"
-                                        className="custom-control-input"
-                                        value="public"
-                                        onChange={this.updateVisibility}
-                                        defaultChecked={this.state.event.public}
-                                    />
-                                    <label className="m-0 custom-control-label" htmlFor="public">Evento pubblico</label>
-                                </div>
-                                <div className="custom-control custom-radio">
-                                    <input
-                                        type="radio"
-                                        id="private"
-                                        name="visibility"
-                                        className="custom-control-input"
-                                        value="private"
-                                        onChange={this.updateVisibility}
-                                        defaultChecked={!this.state.event.public}
-                                    />
-                                    <label className="m-0 custom-control-label" htmlFor="private">Evento privato</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row d-flex align-items-center">
-                            <div className="col-7 pr-2">
+                            <div className={this.state.onUpdate ? "col-12" : "col-7 pr-2"}>
                                 <label htmlFor="name" className="m-0">Nome dell'evento</label>
                                 <input
                                     type="text"
@@ -354,18 +433,21 @@ class EventCreator extends React.Component {
                                     required
                                 />
                             </div>
-                            <div className="col-5 pl-2">
-                                <label className="m-0" htmlFor="typology">Typology</label>
-                                <select defaultValue={"placeholder"}
-                                        onChange={this.updateType}
-                                        className="form-control"
-                                        id="typology">
-                                    <option value="placeholder" disabled hidden>Type</option>
-                                    <option value={PARTY}>Festa</option>
-                                    <option value={MEETING}>Incontro</option>
-                                    <option value={SPORT}>Sport</option>
-                                </select>
-                            </div>
+                            {
+                                this.state.onUpdate ? <div/> : 
+                                    <div className="col-5 pl-2">
+                                        <label className="m-0" htmlFor="typology">Typology</label>
+                                        <select defaultValue={"placeholder"}
+                                                onChange={this.updateType}
+                                                className="form-control"
+                                                id="typology">
+                                            <option value="placeholder" disabled hidden>Type</option>
+                                            <option value={PARTY}>Festa</option>
+                                            <option value={MEETING}>Incontro</option>
+                                            <option value={SPORT}>Sport</option>
+                                        </select>
+                                    </div>
+                            }
                         </div>
                         <div className="row mt-2">
                             <div className="col-7 pr-2">
@@ -376,6 +458,7 @@ class EventCreator extends React.Component {
                                     type="date"
                                     className="form-control"
                                     onChange={this.updateDate}
+                                    required
                                 />
                             </div>
                             <div className="col-5 pl-2">
@@ -386,12 +469,12 @@ class EventCreator extends React.Component {
                                     type="time"
                                     className="form-control"
                                     onChange={this.updateTime}
-
+                                    required
                                 />
                             </div>
                         </div>
                         <div className="row d-flex align-item-center mt-2">
-                            <div className="col-7 pr-2">
+                            <div className="col-12">
                                 <label htmlFor="address" className="m-0">Luogo</label>
                                 <input
                                     id="address"
@@ -401,7 +484,9 @@ class EventCreator extends React.Component {
                                     placeholder="Indirizzo"
                                 />
                             </div>
-                            <div className="col-5 pl-2">
+                        </div>
+                        <div className="row d-flex align-item-center mt-2">
+                            <div className="col-5">
                                 <label htmlFor="max-participants" className="m-0">
                                     Partecipanti(max)
                                 </label>
@@ -437,7 +522,7 @@ class EventCreator extends React.Component {
 
                 <Contacts event={this.state.event}/>
 
-                <ConfirmButton onClick={this.createEvent} />
+                <ConfirmButton onClick={this.state.onUpdate ? this.updateEvent : this.createEvent} />
 
             </form>
         )

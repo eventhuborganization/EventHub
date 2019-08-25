@@ -627,6 +627,31 @@ let updateUserSettings = (data, onError, onSuccess) => {
 }
 
 /**
+ * @param eventId {string}
+ * @param data {object}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let updateEventInfo = (eventId, data, onError, onSuccess) => {
+    let form = new FormData()
+    if(data.thumbnail){
+        form.append('thumbnail', data.thumbnail)
+        delete data.thumbnail
+    }
+    form.append('data', JSON.stringify(data));
+    managePromise(
+        Axios.put('/events/info/' + eventId, form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        }),
+        [200],
+        onError,
+        response => onSuccess(mapUser(response.data))
+    )
+}
+
+/**
  * @param userId {string}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -773,6 +798,7 @@ export default {
     updateUserProfile,
     updateUserCredentials,
     updateUserSettings,
+    updateEventInfo,
     getUserInformation,
     getUsersInformation,
     searchUsers,
