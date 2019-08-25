@@ -1,6 +1,8 @@
 import React from 'react'
 import {EventsMap} from "./Maps"
 import {SearchBar, SEARCH_BY_PLACE} from "../search_bar/SearchBar"
+import GeoLocation from "../../services/location/GeoLocation";
+import {BOTTOM_RIGHT, FloatingButton, ROUNDED_CIRCLE, SQUARE, TOP_CENTER} from "../floating_button/FloatingButton";
 
 class Map extends React.Component {
 
@@ -10,13 +12,41 @@ class Map extends React.Component {
             mapContainerHeight: 0,
             events: [],
             searchBarRef: undefined,
-            mapRef: undefined
+            mapRef: undefined,
+            center: {
+                lat: 0,
+                lng: 0
+            }
         }
+        this.setCurrentPositionAsCenter()
     }
 
     componentDidMount() {
         this.updateMapHeight()
         window.onorientationchange = this.updateMapHeight
+    }
+
+    setCurrentPositionAsCenter = () => {
+        GeoLocation.getCurrentLocation(
+            () => this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione"),
+            position => {
+                let location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                }
+                this.setState({center: location}, () => this.searchInNewLocation(location))
+            }
+        )
+    }
+
+    searchInNewLocation = location => {
+        if(this.state.searchBarRef)
+            this.state.searchBarRef.locationChanged(location)
+    }
+
+    searchInMapLocation = () => {
+        if (this.state.mapRef)
+            this.searchInNewLocation(this.state.mapRef.getCurrentPosition())
     }
 
     updateMapHeight = () => {
@@ -43,14 +73,14 @@ class Map extends React.Component {
     }
 
     updateCenterPositionWithSearchResults = location => {
-        if (location && this.state.mapRef)
-            this.state.mapRef.updateCenterPosition(location)
+        if (location && location.lat && location.lng)
+            this.setState({
+                center: {
+                    lat: location.lat,
+                    lng: location.lng
+                }
+            })
 
-    }
-
-    onCenterChanged = location => {
-        if (this.state.searchBarRef)
-            this.state.searchBarRef.locationChanged(location)
     }
 
     render() {
@@ -69,13 +99,25 @@ class Map extends React.Component {
                  />
                  <div className="row">
                      <div id="map-container" className="col-12 px-0" style={{height: this.state.mapContainerHeight}}>
-                         <EventsMap startAtCurrentLocation={true}
+                         <EventsMap center={this.state.center}
                                     events={this.state.events}
-                                    onCenterChanged={this.onCenterChanged}
                                     onRef={ref => this.setState({mapRef: ref})}
                          />
                      </div>
                  </div>
+                 <FloatingButton text={"Cerca in quest'area"}
+                                 show={true}
+                                 invertedColors={true}
+                                 onClick={this.searchInMapLocation}
+                                 position={TOP_CENTER}
+                                 shape={SQUARE}
+                 />
+                 <FloatingButton icon={{name: "dot-circle", size:"2x"}}
+                                 show={true}
+                                 onClick={this.setCurrentPositionAsCenter}
+                                 position={BOTTOM_RIGHT}
+                                 shape={ROUNDED_CIRCLE}
+                 />
              </div>
          )
     }
