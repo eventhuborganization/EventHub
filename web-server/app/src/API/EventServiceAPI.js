@@ -29,7 +29,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    searchEvent(name, query, successCallback = null, errorCallback = null) {
+    searchEvent(name, query, successCallback = defaultCallback, errorCallback = defaultCallback) {
         axios.get(`${this.hostport}/events/search/${name}`, {params: query})
         .then(successCallback)
         .catch(errorCallback);
@@ -47,7 +47,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEvent(query, successCallback = null, errorCallback = null){
+    getEvent(query, successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.get(`${this.hostport}/events`, { params: query })
         .then(successCallback)
         .catch(errorCallback);
@@ -65,7 +65,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEventById(eventUuid,  successCallback = null, errorCallback = null){
+    getEventById(eventUuid,  successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.get(`${this.hostport}/events/${eventUuid}`)
         .then(successCallback)
         .catch(errorCallback);
@@ -83,7 +83,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    getEventReviews(eventUuid,  successCallback = null, errorCallback = null){
+    getEventReviews(eventUuid,  successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.get(`${this.hostport}/events/${eventUuid}/reviews`)
         .then(successCallback)
         .catch(errorCallback);
@@ -101,7 +101,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    addEventReviews(eventUuid, reviewsUuid,  successCallback = null, errorCallback = null){
+    addEventReviews(eventUuid, reviewsUuid,  successCallback = defaultCallback, errorCallback = defaultCallback){
         let data = JSON.stringify({reviews:{reviews: [reviewsUuid]}})
         axios.post(`${this.hostport}/events/${eventUuid}/reviews`, data)
         .then(successCallback)
@@ -120,7 +120,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    updateEventById(eventUuid, dataToUpdate,  successCallback = null, errorCallback = null){
+    updateEventById(eventUuid, dataToUpdate,  successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.put(`${this.hostport}/events/${eventUuid}`, dataToUpdate)
         .then(successCallback)
         .catch(errorCallback);
@@ -139,7 +139,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    addUserToEvent(eventUuid, users,  successCallback = null, errorCallback = null){
+    addUserToEvent(eventUuid, users,  successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.post(`${this.hostport}/events/${eventUuid}/users`, users)
         .then(res => {
             let data = this.decodeUserForEvent(users, eventUuid)
@@ -163,7 +163,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    removeUserToEvent(eventUuid, users, successCallback = null, errorCallback = null){
+    removeUserToEvent(eventUuid, users, successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.delete(`${this.hostport}/events/${eventUuid}/users`, {data: users})
         .then(res => {
             let data = this.decodeUserForEvent(users, eventUuid)
@@ -185,7 +185,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    newEvent(event, successCallback = null, errorCallback = null){
+    newEvent(event, successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.post(`${this.hostport}/events`, {event: event})
         .then(successCallback)
         .catch(errorCallback);
@@ -201,7 +201,7 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    deleteEvent(eventUuid, successCallback = null, errorCallback = null){
+    deleteEvent(eventUuid, successCallback = defaultCallback, errorCallback = defaultCallback){
         axios.delete(`${this.hostport}/events/${eventUuid}`)
         .then(successCallback)
         .catch(errorCallback);
@@ -240,11 +240,7 @@ exports.Event = {
  * 
  * @param res dati restituiti della request http del modulo nodejs.
  */
-exports.defaultCallback = (res) => {
-    console.log('STATUS: ' + res.statusCode);
-    console.log('HEADERS: ' + JSON.stringify(res.headers));
-    res.setEncoding('utf8');
-    res.on('data', function (chunk) {
-      console.log('BODY: ' + chunk);
-    });
+let defaultCallback = (res) => {
+    console.log('ATTENZIONE - Callback de default non restituice niente !!');
+    console.log('response from request: ' + res);
 }

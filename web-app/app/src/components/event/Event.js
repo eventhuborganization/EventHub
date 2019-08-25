@@ -1,7 +1,8 @@
 import React from 'react'
-import { LoginRedirect } from '../redirect/Redirect';
+import { Link } from 'react-router-dom'
+import { LoginRedirect } from '../redirect/Redirect'
 import './Event.css'
-import {LocationMap} from '../map/Maps'
+import { LocationMap } from '../map/Maps'
 import ApiService from '../../services/api/Api'
 
 let PARTY = "party"
@@ -131,6 +132,19 @@ class UnsubscribeButton extends React.Component {
     }
 }
 
+function UpdateButton(props){
+    return (
+        <Link 
+            to={{
+                pathname: "/event/" + props.event._id + "/update",
+                state: {event: props.event}
+            }} 
+            className={getButtonClassName(props.event.typology, PARTICIPATE)}>
+            Modifica evento
+        </Link>
+    )
+}
+
 let EventBadge = (props) => {
     var typeClass = ""
     var label = ""
@@ -182,9 +196,13 @@ let EventInteractionPanel = (props) => {
             </div>
             <div className="col-9 d-flex justify-content-end">
                 {
-                    props.event.date - new Date() > 0 ? 
+                    props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0 ? 
                         <div>{followButton} {subscribeButton}</div> :
-                        <div/>
+                        (
+                            props.user._id === props.event.organizator._id ? 
+                            <UpdateButton {...props} event={props.event}/> : 
+                            <div/>
+                        )
                 }
             </div>
         </div>
@@ -310,7 +328,10 @@ let EventOrganizatorInfo = props => {
                 <div className="col-12 px-0">
                     <span className={props.level}>Organizzatore</span>
                 </div>
-                <div className="col-2 px-0 ">
+                <Link
+                    to={"/users/" + props.organizator._id} 
+                    className="col-2 px-0"
+                    style={{textDecoration: "none"}}>
                     {
                         props.organizator.avatar ?
                             <img src={ApiService.getAvatarUrl(props.organizator.avatar)}
@@ -321,16 +342,19 @@ let EventOrganizatorInfo = props => {
                                 <em className="far fa-image fa-2x"></em>
                             </div>
                     }
-                </div>
-                <div className="col-10 d-flex justify-content-start align-items-center">
-                    <span className="text-invited font-weight-bold">
+                </Link>
+                <Link 
+                    to={"/users/" + props.organizator._id}
+                    className="col-10 d-flex justify-content-start align-items-center" 
+                    style={{textDecoration: "none"}}>
+                    <span className="text-invited font-weight-bold text-dark">
                         {
                             props.organizator.organization ? 
                             <div> {props.organizator.name} <em className="text-secondary fas fa-user-tie" style={{fontSize: "larger"}}></em></div> : 
                             <div>{props.organizator.name} {props.organizator.surname}</div>
                         }
                     </span>
-                </div>
+                </Link>
             </div>
         ) : <div />
 }

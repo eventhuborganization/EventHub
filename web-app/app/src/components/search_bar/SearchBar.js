@@ -32,7 +32,7 @@ class SearchBar extends CallableComponent {
     location_input_placeholder = "Indirizzo, Città, ..."
     defaultDistance = 5 //km
     minDistance = 1 //km
-    maxDistance = 20 //km
+    maxDistance = 50 //km
     configured = false
 
     constructor(props) {
@@ -61,15 +61,15 @@ class SearchBar extends CallableComponent {
                     break
                 case SEARCH_BY_EVENT:
                     this.configureSearchByEvent()
-                    break;
-                default: break;
+                    break
+                default: break
             }
             this.configured = true
         }
     }
 
     locationChanged = location => {
-        if (location && location.lat && location.lng)
+        if (location && location.lat && location.lng) {
             switch(this.props.searchBy) {
                 case SEARCH_BY_PLACE:
                     this.setState(prevState => {
@@ -79,7 +79,7 @@ class SearchBar extends CallableComponent {
                             lng: location.lng
                         }
                         return state
-                    })
+                    }, () => this.searchEvents())
                     break
                 case SEARCH_BY_EVENT:
                     this.setState(prevState => {
@@ -89,10 +89,11 @@ class SearchBar extends CallableComponent {
                             lng: location.lng
                         }
                         return state
-                    })
-                    break;
-                default: break;
+                    }, () => this.searchEvents())
+                    break
+                default: break
             }
+        }
     }
 
     configureSearchByPlace = () => {
@@ -377,8 +378,8 @@ class SearchBar extends CallableComponent {
     }
 
     render() {
-        let navBarClassName = (this.props.stickyTop ? " sticky-top " : "")
-            + " row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1"
+        let navBarClassName = " row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
+            + (this.props.stickyTop ? " sticky-top " : "")
         return (
             <div>
                 <nav id="search-bar" className={navBarClassName}>

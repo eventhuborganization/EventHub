@@ -1,6 +1,24 @@
 .floating-button {
     margin-left: 80%;
+    margin-right: 3%;
     margin-bottom: 22%;
+}
+
+.floating-button-top-center {
+    margin-right: 15%;
+    margin-left: 15%;
+    margin-top: 22%;
+}
+
+.floating-button-bottom-left {
+    margin-left: 3%;
+    margin-bottom: 22%;
+}
+
+.btn-inverted-primary {
+    color: #007bff !important;
+    background-color: white !important;
+    border-color: #007bff !important;
 }
 
 @media screen and (orientation:landscape) {
@@ -29,3 +47,4 @@
         margin-bottom: 8%;
     }
 }
+

@@ -143,18 +143,17 @@ export function ProfileControls(props){
                                 <em className="fas fa-minus"></em> Rimuovi
                             </div>
                         </div>
-                    : ""
+                    : <div/>
                 }
                 
                 {
-                    props.isLocalUser ? 
-                        <Link
-                            to={props.settingsLink} 
-                            className={"col d-flex justify-content-end align-items-center px-2"} 
-                        >
+                    props.isLocalUser ?
+                    <div className={"col d-flex justify-content-end align-items-center px-2"}> 
+                        <Link to={props.settingsLink}>
                             <em className={"fas fa-cog fa-lg " + styles.settingsIcon}></em>
                         </Link>
-                    : ""
+                    </div>
+                    : <div/>
                 }
             </div>
         </div>

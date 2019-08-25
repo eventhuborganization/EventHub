@@ -14,7 +14,7 @@ class Profile extends CallableComponent {
     constructor(props){
         super(props)
         this.state = {
-            user: props.state
+            user: props.user
         }
     }
 
@@ -141,7 +141,6 @@ class Profile extends CallableComponent {
             </div>
         return (
             <main className="main-container">
-
                 <section className="row">
                     <div className="col card bg-dark px-0">
                         <div className="card-img px-0 text-center bg-dark" style={{minHeight: 150}}>

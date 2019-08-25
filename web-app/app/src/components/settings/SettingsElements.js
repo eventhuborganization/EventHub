@@ -235,8 +235,9 @@ class ChangeInfo extends React.Component {
                 Api.updateUserProfile(
                     message, 
                     () => this.props.onError("Qualcosa nell'aggiornamento non ha funzionato correttamente, riprova"),
-                    () => {
-                        this.props.onChange(user)
+                    (newUser) => {
+                        newUser.linkedUsers = newUser.linkedUsers.map(id => {return {_id: id, name: ""}})
+                        this.props.onChange(newUser)
                         this.props.onSuccess("I tuoi dati sono stati aggiornati correttamente!")
                     }
                 )

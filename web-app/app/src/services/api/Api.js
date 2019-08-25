@@ -97,24 +97,24 @@ let mapUser = (user) => {
     }
     return {
         _id: user._id,
-        linkedUsers: user.linkedUsers ? user.linkedUsers : [],
+        linkedUsers: user.linkedUsers || [],
         name: user.name,
         surname: user.surname,
         organization: user.organization,
-        gender: user.gender ? user.gender : user.sex,
+        gender: user.gender || user.sex,
         birthdate: user.birthdate,
-        phone: user.phone ? user.phone : user.phoneNumber,
+        phone: user.phone || user.phoneNumber,
         email: user.email,
-        avatar: user.avatar,
-        groups: user.groups ? user.groups : [],
-        badges: user.badges ? user.badges : [],
+        avatar: user.avatar || user.profilePicture,
+        groups: user.groups || [],
+        badges: user.badges || [],
         points: user.points,
         nReviewsDone: user.reviewsDone ? user.reviewsDone.length : 0,
-        reviewsDone: user.reviewsDone ? user.reviewsDone : [],
+        reviewsDone: user.reviewsDone || [],
         nReviewsReceived: user.reviewsReceived ? user.reviewsReceived.length : 0,
         reviewsReceived: user.reviewsReceived ? user.reviewsReceived : [],
         eventsSubscribed: eventsSubscribed,
-        eventsFollowed: user.eventsFollowed ? user.eventsFollowed : [],
+        eventsFollowed: user.eventsFollowed || [],
         address: address
     }
 }
@@ -627,6 +627,31 @@ let updateUserSettings = (data, onError, onSuccess) => {
 }
 
 /**
+ * @param eventId {string}
+ * @param data {object}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let updateEventInfo = (eventId, data, onError, onSuccess) => {
+    let form = new FormData()
+    if(data.thumbnail){
+        form.append('thumbnail', data.thumbnail)
+        delete data.thumbnail
+    }
+    form.append('data', JSON.stringify(data));
+    managePromise(
+        Axios.put('/events/info/' + eventId, form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        }),
+        [200],
+        onError,
+        response => onSuccess(mapUser(response.data))
+    )
+}
+
+/**
  * @param userId {string}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -773,6 +798,7 @@ export default {
     updateUserProfile,
     updateUserCredentials,
     updateUserSettings,
+    updateEventInfo,
     getUserInformation,
     getUsersInformation,
     searchUsers,
