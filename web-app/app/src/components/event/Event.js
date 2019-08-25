@@ -4,6 +4,7 @@ import { LoginRedirect } from '../redirect/Redirect'
 import './Event.css'
 import { LocationMap } from '../map/Maps'
 import ApiService from '../../services/api/Api'
+import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 
 let PARTY = "party"
 let SPORT = "sport"
@@ -313,22 +314,13 @@ let EventOrganizatorInfo = props => {
                 </div>
                 <Link
                     to={"/users/" + props.organizator._id} 
-                    className="col-2 px-0"
+                    className="col-3 px-0"
                     style={{textDecoration: "none"}}>
-                    {
-                        props.organizator.avatar ?
-                            <img src={ApiService.getAvatarUrl(props.organizator.avatar)}
-                                 className="img-fluid border rounded-circle"
-                                 alt="Immagine profilo utente"
-                            /> :
-                            <div className="w-100 d-flex justify-content-center align-items-center text-secondary">
-                                <em className="far fa-image fa-2x"></em>
-                            </div>
-                    }
+                    <RoundedSmallImage imageName={props.organizator.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} />
                 </Link>
                 <Link 
                     to={"/users/" + props.organizator._id}
-                    className="col-10 d-flex justify-content-start align-items-center" 
+                    className="col-9 d-flex justify-content-start align-items-center"
                     style={{textDecoration: "none"}}>
                     <span className="text-invited font-weight-bold text-dark">
                         {

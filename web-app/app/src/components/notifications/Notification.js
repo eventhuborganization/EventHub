@@ -4,6 +4,7 @@ import {EventInteractionPanel} from '../event/Event'
 import ApiService from '../../services/api/Api'
 import GeoLocation from '../../services/location/GeoLocation'
 import {LocationMap} from "../map/Maps"
+import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 
 class Notification extends React.Component {
 
@@ -218,16 +219,7 @@ class NotificationSenderInformation extends React.Component {
         return (
             <div className="row">
                 <div className="col-3 px-0 my-auto">
-                {
-                        this.props.notification.sender.avatar ?
-                            <img src={ApiService.getAvatarUrl(this.props.notification.sender.avatar)}
-                                className="img-fluid border rounded-circle"
-                                alt="Immagine profilo utente"
-                            /> :
-                            <div className="w-100 d-flex justify-content-center align-items-center text-secondary">
-                                <em className="far fa-image fa-2x"></em>
-                            </div>
-                }
+                    <RoundedSmallImage imageName={this.props.notification.sender.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
                 </div>
                 <div className="col-9 d-flex flex-column justify-content-center px-1">
                     <span className="text-secondary time-passed">{this.getTime()}</span>

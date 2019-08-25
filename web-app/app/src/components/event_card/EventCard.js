@@ -2,7 +2,7 @@ import React from 'react'
 import './EventCard.css'
 import { Link } from 'react-router-dom'
 import {EventInteractionPanel} from '../event/Event'
-import ApiService from '../../services/api/Api'
+import {IMAGE, ImageForCard} from "../image/Image"
 
 class EventCard extends React.Component {
 
@@ -45,17 +45,7 @@ class EventCard extends React.Component {
             <div className="row">
                 <div className="col-11 card shadow my-2 mx-auto px-0">
                     <Link className="card bg-secondary" id={this.state.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.state.eventInfo._id }>
-                        <div className={"myCard"}>
-                            <img src={ApiService.getImageUrl(this.state.eventInfo.thumbnail)}
-                                 className={"card-img img-fluid myCard" + (this.state.eventInfo.thumbnail ? "" : " d-none ")}
-                                 alt="locandina evento"
-                            />
-                            <div className={(this.state.eventInfo.thumbnail ? " d-none " : "" )}>
-                                <div className={"bg-secondary text-white my-card d-flex justify-content-center align-items-center"}>
-                                    <em className="far fa-image fa-9x"></em>
-                                </div>
-                            </div>
-                        </div>
+                        <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
                                 <div className="container-fluid">

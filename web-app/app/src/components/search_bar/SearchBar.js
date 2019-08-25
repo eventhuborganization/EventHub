@@ -379,9 +379,8 @@ class SearchBar extends CallableComponent {
 
     render() {
         let navBarClassName = " row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
-            + (this.props.stickyTop ? " sticky-top " : "")
         return (
-            <div>
+            <div className={(this.props.stickyTop ? " sticky-top " : "")}>
                 <nav id="search-bar" className={navBarClassName}>
                     <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1">EH</h1>
                     <div className="col form-inline container-fluid px-1 pb-1">

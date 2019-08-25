@@ -5,6 +5,7 @@ import ApiService from '../../services/api/Api'
 import GoogleApi from '../../services/google_cloud/GoogleMaps'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
 import {Link} from "react-router-dom";
+import {IMAGE, ImageForCard} from "../image/Image";
 
 class EventInfo extends React.Component {
 
@@ -43,10 +44,7 @@ class EventInfo extends React.Component {
 
                     <section className="row">
                         <div className="col px-0 text-center">
-                            <img src={ApiService.getImageUrl(this.state.eventInfo.thumbnail)}
-                                 alt="Event thumbnail"
-                                 className={"img-fluid " + (this.state.eventInfo.thumbnail ? "" : " d-none ")}
-                            />
+                            <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
                         </div>
                     </section>
 

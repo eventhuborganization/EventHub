@@ -1,0 +1,9 @@
+.avatar-size {
+    height: 60px;
+    width: 60px;
+}
+
+.friendsIcon {
+    border-width: 2px !important;
+    color: rgba(0,0,180, 0.8);
+}

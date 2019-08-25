@@ -3,29 +3,20 @@ import styles from './UserProfile.module.css'
 import {Link} from "react-router-dom"
 import EventCard from '../event_card/EventCard'
 import MultipleElementsBanner from '../multiple_elements_banner/MultipleElementsBanner'
-import ApiService from '../../services/api/Api'
+import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 
 export function LinkedUserAvatar(props){
-    let avatar = props.linkedUser.avatar && props.linkedUser.avatar !== "" ? 
-        <img 
-            src={ApiService.getAvatarUrl(props.linkedUser.avatar)}
-            className={"img-fluid border border-primary rounded-circle " + styles.friendsIcon} 
-            alt={"Immagine profilo utente"}
-        /> : 
-        <div className={styles.friendsIcon}>
-            <em className={"fas fa-user-circle fa-" + props.emptyAvatarSize + "x"}></em>
-        </div>
     return (
         <Link className={"col d-flex align-items-center justify-content-center " + (!!props.margin ? "" : "pr-0")} to={"/users/" + props.linkedUser._id}>
-            {avatar}
+            <RoundedSmallImage imageName={props.linkedUser.avatar} borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </Link>
     )
 }
 
 export function EmptyUserAvatar(props){
     return (
-        <div className={"col " + (!!props.margin ? "" : "pr-0")}>
-            <div className={"h-100 border border-primary rounded-circle " + styles.friendsIcon} ></div>
+        <div className={"col d-flex justify-content-center " + (!!props.margin ? "" : " pr-0 ")}>
+            <EmptyAvatar borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </div>
     )
 }

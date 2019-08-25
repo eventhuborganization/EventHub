@@ -5,6 +5,7 @@ import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, EventsBanne
 import UserBanner from '../user_banner/UserBanner'
 import {FriendsTab} from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
+import {AVATAR, ImageForCard} from "../image/Image";
 
 /**
  * I badge sono ancora da gestire!!!
@@ -131,20 +132,12 @@ class Profile extends CallableComponent {
 
         let events = this.getEventsByUserTypology()
         let lastBadge = this.state.user.badges && this.state.user.badges.length !== 0 ? this.state.user.badges[this.state.badges.length - 1] : ""
-        let avatar = this.state.user.avatar ? 
-            <img src={Api.getAvatarUrl(this.state.user.avatar)}
-                className="img-fluid" 
-                alt="Immagine profilo utente"
-            /> : 
-            <div className="text-secondary">
-                <em className="far fa-image fa-10x"></em>
-            </div>
         return (
             <main className="main-container">
                 <section className="row">
                     <div className="col card bg-dark px-0">
                         <div className="card-img px-0 text-center bg-dark" style={{minHeight: 150}}>
-                            {avatar}
+                            <ImageForCard imageName={this.state.user.avatar} type={AVATAR}/>
                         </div>
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
