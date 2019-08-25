@@ -2,6 +2,7 @@ import React from 'react'
 import GoogleApi from "../../services/google_cloud/GoogleMaps";
 import ApiService from '../../services/api/Api'
 import {MEETING, PARTY, SPORT} from "../event/Event";
+import {CallableComponent} from "../redirect/Redirect";
 
 let SEARCH_BY_EVENT = 0
 let SEARCH_BY_PLACE = 1
@@ -20,15 +21,19 @@ let SEARCH_BY_PLACE = 1
  * @returns {*}
  * @constructor
  */
-class SearchBar extends React.Component {
+class SearchBar extends CallableComponent {
 
     search_input_id = 'tf-search'
     btn_search_id = 'btn-search'
     location_filter_id = 'location'
+    date_filter_id = 'date'
+    typology_filter_id = 'typology'
+    distance_filter_id = 'distance'
     location_input_placeholder = "Indirizzo, Città, ..."
     defaultDistance = 5 //km
     minDistance = 1 //km
     maxDistance = 20 //km
+    configured = false
 
     constructor(props) {
         super(props)
@@ -48,15 +53,46 @@ class SearchBar extends React.Component {
     }
 
     componentDidMount() {
-        switch(this.props.searchBy) {
-            case SEARCH_BY_PLACE:
-                this.configureSearchByPlace()
-                break
-            case SEARCH_BY_EVENT:
-                this.configureSearchByEvent()
-                break;
-            default: break;
+        super.componentDidMount()
+        if (!this.configured) {
+            switch(this.props.searchBy) {
+                case SEARCH_BY_PLACE:
+                    this.configureSearchByPlace()
+                    break
+                case SEARCH_BY_EVENT:
+                    this.configureSearchByEvent()
+                    break;
+                default: break;
+            }
+            this.configured = true
         }
+    }
+
+    locationChanged = location => {
+        if (location && location.lat && location.lng)
+            switch(this.props.searchBy) {
+                case SEARCH_BY_PLACE:
+                    this.setState(prevState => {
+                        let state = prevState
+                        state.search_value = {
+                            lat: location.lat,
+                            lng: location.lng
+                        }
+                        return state
+                    })
+                    break
+                case SEARCH_BY_EVENT:
+                    this.setState(prevState => {
+                        let state = prevState
+                        state.filters.location = {
+                            lat: location.lat,
+                            lng: location.lng
+                        }
+                        return state
+                    })
+                    break;
+                default: break;
+            }
     }
 
     configureSearchByPlace = () => {
@@ -69,7 +105,7 @@ class SearchBar extends React.Component {
                     this.setState(
                         (prevState, props) => {
                             let state = prevState
-                            state.search_value = places[0]
+                            state.search_value = this.placeToLocation(places[0])
                             return state
                         },
                         () => this.searchEvents())
@@ -96,7 +132,7 @@ class SearchBar extends React.Component {
                     this.setState(
                         (prevState, props) => {
                             let state = prevState
-                            state.filters.location = places[0]
+                            state.filters.location = this.placeToLocation(places[0])
                             return state
                         }, () => this.searchEvents())
                 }
@@ -112,14 +148,28 @@ class SearchBar extends React.Component {
         })
     }
 
-    search = (searchApi, data, place) => {
-        searchApi(data, () => this.props.onError(place), events => this.onResults(events, place))
+    placeToLocation = place => {
+        if (place && place.geometry && place.geometry.location) {
+            let location = place.geometry.location
+            return location = {
+                lng: location.lng(),
+                lat: location.lat()
+            }
+        } else {
+            return undefined
+        }
     }
 
-    onResults = (events, place) => {
+    search = (searchApi, data, location) => {
+        if (this.props.onLocationChange)
+            this.props.onLocationChange(location)
+        searchApi(data, () => this.props.onError(location), events => this.onResults(events, location))
+    }
+
+    onResults = (events, location) => {
         this.props.onChange({
             events: events,
-            place: place
+            location: location
         })
     }
 
@@ -136,27 +186,27 @@ class SearchBar extends React.Component {
                 operator: ">="
             }
         }
+        let distance = filters.distance * 1000
         switch(this.props.searchBy) {
             case SEARCH_BY_PLACE:
-                let place = state.search_value
-                if (place) {
-                    let location = place.geometry.location
+                let location = state.search_value
+                if (location) {
                     data.event.location = {
-                        lng: location.lng(),
-                        lat: location.lat(),
-                        maxDistanceInMetres: filters.distance
+                        lng: location.lng,
+                        lat: location.lat,
+                        maxDistanceInMetres: distance
                     }
                 }
-                this.search(ApiService.searchNearestEvents, data, place)
+                this.search(ApiService.searchNearestEvents, data, location)
                 break
             case SEARCH_BY_EVENT:
                 data.event.name = state.search_value
                 if (filters.location) {
-                    let location = filters.location.geometry.location
+                    let location = filters.location
                     data.event.location = {
-                        lng: location.lng(),
-                        lat: location.lat(),
-                        maxDistanceInMetres: filters.distance
+                        lng: location.lng,
+                        lat: location.lat,
+                        maxDistanceInMetres: distance
                     }
                 }
                 this.search(state.search_value ? ApiService.searchEvents : ApiService.getEvents, data)
@@ -204,7 +254,7 @@ class SearchBar extends React.Component {
                     <label htmlFor={this.location_filter_id} className="m-0">Località</label>
                     <input
                         id={this.location_filter_id}
-                        name="location"
+                        name={this.location_filter_id}
                         type="text"
                         className="form-control"
                         placeholder={this.location_input_placeholder}
@@ -218,7 +268,8 @@ class SearchBar extends React.Component {
                     <select defaultValue={"placeholder"}
                             onChange={this.updateTypology}
                             className="form-control"
-                            id="typology"
+                            id={this.typology_filter_id}
+                            name={this.typology_filter_id}
                     >
                         <option value="placeholder" disabled hidden>Tipo</option>
                         <option value={PARTY}>Festa</option>
@@ -232,8 +283,8 @@ class SearchBar extends React.Component {
                 <div key="date">
                     <label htmlFor="date" className="m-0">Data</label>
                     <input
-                        id="date"
-                        name="date"
+                        id={this.date_filter_id}
+                        name={this.date_filter_id}
                         type="date"
                         className="form-control"
                         onChange={this.updateDate}
@@ -247,8 +298,8 @@ class SearchBar extends React.Component {
                     <div className="d-flex justify-content-between align-items-center">
                         <span>{this.minDistance}km</span>
                         <input
-                            id="distance"
-                            name="distance"
+                            id={this.distance_filter_id}
+                            name={this.distance_filter_id}
                             type="range"
                             min={this.minDistance}
                             max={this.maxDistance}
@@ -266,12 +317,39 @@ class SearchBar extends React.Component {
                 {filters}
                 {
                     filters.length > 0 ?
-                        <div className={"d-flex justify-content-end align-items-center"}>
-                            <button className={"btn btn-danger"}>Reset</button>
+                        <div className={"d-flex justify-content-end align-items-center mt-1"}>
+                            <button className={"btn btn-danger"}
+                                    onClick={this.clearFilters}>
+                                Reset
+                            </button>
                         </div> : <div/>
                 }
             </div>
         )
+    }
+
+    clearFilters = () => {
+        this.setState(prevState => {
+            let state = prevState
+            state.filters.location = ""
+            state.filters.date = ""
+            state.filters.typology = ""
+            state.filters.distance = this.defaultDistance
+            return state
+        }, () => {
+            let typology = document.getElementById(this.typology_filter_id)
+            let date = document.getElementById(this.date_filter_id)
+            let distance = document.getElementById(this.distance_filter_id)
+            let location = document.getElementById(this.location_filter_id)
+            if (typology)
+                typology.value = "placeholder"
+            if (date)
+                date.value = ""
+            if (distance)
+                distance.value = this.defaultDistance
+            if (location)
+                location.value = ""
+        })
     }
 
     hideFilters = () => {

@@ -87,9 +87,9 @@ exports.getEventsFromIndex = (req, res) => {
 }
 
 exports.getEventsNear = (req, res) => {
-    EventService.getEvent(req.query, response => {
-        network.replayResponse(response, res);
-    })
+    EventService.getEvent(req.query,
+            response => network.replayResponse(response, res),
+            error => network.replayError(error, res))
 }
 exports.createEvent = (req, res) => {
     var tempPath = req.file.path
