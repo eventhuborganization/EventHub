@@ -2,7 +2,13 @@ import React from 'react'
 import {EventsMap} from "./Maps"
 import {SearchBar, SEARCH_BY_PLACE} from "../search_bar/SearchBar"
 import GeoLocation from "../../services/location/GeoLocation";
-import {BOTTOM_RIGHT, FloatingButton, ROUNDED_CIRCLE, SQUARE, TOP_CENTER} from "../floating_button/FloatingButton";
+import {
+    BOTTOM_LEFT,
+    BOTTOM_RIGHT,
+    FloatingButton,
+    ROUNDED_CIRCLE,
+    SQUARE
+} from "../floating_button/FloatingButton";
 
 class Map extends React.Component {
 
@@ -18,12 +24,12 @@ class Map extends React.Component {
                 lng: 0
             }
         }
-        this.setCurrentPositionAsCenter()
     }
 
     componentDidMount() {
         this.updateMapHeight()
         window.onorientationchange = this.updateMapHeight
+        this.setCurrentPositionAsCenter()
     }
 
     setCurrentPositionAsCenter = () => {
@@ -109,7 +115,7 @@ class Map extends React.Component {
                                  show={true}
                                  invertedColors={true}
                                  onClick={this.searchInMapLocation}
-                                 position={TOP_CENTER}
+                                 position={BOTTOM_LEFT}
                                  shape={SQUARE}
                  />
                  <FloatingButton icon={{name: "dot-circle", size:"2x"}}
