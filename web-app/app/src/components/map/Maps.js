@@ -5,6 +5,7 @@ import {EventHeaderBanner} from '../event/Event'
 import {PARTY, MEETING, SPORT} from "../event/Event"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
 import {CallableComponent} from "../redirect/Redirect"
+import GeoLocation from "../../services/location/GeoLocation";
 
 let images = require.context("../../assets/images", true)
 
@@ -30,6 +31,7 @@ class EventsMap extends CallableComponent {
     updateMap = () => {
         this.infoWindows = []
         this.map = this.createGoogleMap()
+        this.createCurrentLocationMarkerMarker(this.map)
         this.props.events.forEach(event => this.createEventMarker(event, this.map))
     }
 
@@ -103,6 +105,25 @@ class EventsMap extends CallableComponent {
         marker.addListener('click', () => {
             this.infoWindows.forEach(element => element.close())
             infoWindow.open(map, marker)
+        })
+    }
+
+    createCurrentLocationMarkerMarker = (map) => {
+        GeoLocation.getCurrentLocation(() => {}, position => {
+            let location = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            }
+            new window.google.maps.Marker({
+                position: location,
+                icon: {
+                    url: images(`./${"circle-solid.png"}`),
+                    scaledSize: new window.google.maps.Size(12, 12),
+                    origin: new window.google.maps.Point(0, 0),
+                    anchor: new window.google.maps.Point(0, 12)
+                },
+                map: map
+            })
         })
     }
 

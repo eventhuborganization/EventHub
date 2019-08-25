@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 
 let TOP_CENTER = 0
 let BOTTOM_RIGHT = 1
+let BOTTOM_LEFT = 2
 
 let SQUARE = 0
 let ROUNDED = 1
@@ -30,6 +31,9 @@ let FloatingButton = (props) => {
         case BOTTOM_RIGHT:
             posClass = " fixed-bottom floating-button "
             break
+        case BOTTOM_LEFT:
+            posClass = " fixed-bottom floating-button-bottom-left "
+            break
         default: break
     }
     let shape = ""
@@ -45,7 +49,7 @@ let FloatingButton = (props) => {
         default: break
     }
     let btnClass = props.invertedColors ? " btn-inverted-primary " : " btn-primary "
-    let className = "btn btn-lg d-flex justify-content-center align-items-center px-2 " + btnClass + shape
+    let className = "btn btn-lg d-flex justify-content-center align-items-center px-2 " + btnClass + shape + posClass
     let renderContent = () => {
         if (props.icon && props.icon.name) {
             let iconClass = "fas fa-" + props.icon.name + (props.icon.size ? " fa-" + props.icon.size : "")
@@ -55,13 +59,11 @@ let FloatingButton = (props) => {
         }
     }
     return props.show ? (
-        <div className={posClass}>
             <button className={className}
                     type="button"
                     onClick={props.onClick}>
                 {renderContent()}
             </button>
-        </div>
     ) : <div/>
 }
 
@@ -91,5 +93,6 @@ export {
     BOTTOM_RIGHT,
     ROUNDED,
     ROUNDED_CIRCLE,
-    SQUARE
+    SQUARE,
+    BOTTOM_LEFT
 }
