@@ -47,9 +47,14 @@ class EventCard extends React.Component {
                     <Link className="card bg-secondary" id={this.state.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.state.eventInfo._id }>
                         <div className={"myCard"}>
                             <img src={ApiService.getImageUrl(this.state.eventInfo.thumbnail)}
-                                 className={"card-img img-fluid" + (this.state.eventInfo.thumbnail ? "" : " d-none ")}
+                                 className={"card-img img-fluid myCard" + (this.state.eventInfo.thumbnail ? "" : " d-none ")}
                                  alt="locandina evento"
                             />
+                            <div className={(this.state.eventInfo.thumbnail ? " d-none " : "" )}>
+                                <div className={"bg-secondary text-white my-card d-flex justify-content-center align-items-center"}>
+                                    <em className="far fa-image fa-9x"></em>
+                                </div>
+                            </div>
                         </div>
                         <div className="card-img-overlay text-white">
                             <div className="d-flex align-items-start flex-column h-100">
