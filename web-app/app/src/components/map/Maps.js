@@ -2,10 +2,9 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server';
 import GoogleMapsProperties from '../../services/google_cloud/Properties'
 import {EventHeaderBanner} from '../event/Event'
-import {PARTY, MEETING, SPORT} from "../event/Event";
-import GoogleApi from "../../services/google_cloud/GoogleMaps";
-import GeoLocation from "../../services/location/GeoLocation";
-import {CallableComponent} from "../redirect/Redirect";
+import {PARTY, MEETING, SPORT} from "../event/Event"
+import GoogleApi from "../../services/google_cloud/GoogleMaps"
+import {CallableComponent} from "../redirect/Redirect"
 
 let images = require.context("../../assets/images", true)
 
@@ -15,44 +14,28 @@ class EventsMap extends CallableComponent {
         super(props)
         this.googleMapDivId = "google-map"
         this.infoWindows = []
-        this.currentPosition = {
-            lat: 0,
-            lng: 0
-        }
+        this.map = undefined
     }
 
-    updateCenterPosition = location => {
-        if (location && location.lat && location.lng) {
-            this.currentPosition = {
-                lat: location.lat,
-                lng: location.lng
+    getCurrentPosition = () => {
+        if (this.map) {
+            let center = this.map.getCenter()
+            return {
+                lat: center.lat(),
+                lng: center.lng()
             }
-            this.updateMap()
         }
     }
-
 
     updateMap = () => {
         this.infoWindows = []
-        let map = this.createGoogleMap()
-        this.props.events.forEach(event => this.createEventMarker(event, map))
+        this.map = this.createGoogleMap()
+        this.props.events.forEach(event => this.createEventMarker(event, this.map))
     }
 
     componentDidMount() {
         super.componentDidMount()
-        GoogleApi.loadGoogleMapsScript(() => {
-            GeoLocation.getCurrentLocation(
-                () => this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione"),
-                position => {
-                    this.currentPosition = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    }
-                    this.updateMap()
-                    this.props.onCenterChanged(this.currentPosition)
-                }
-            )
-        })
+        GoogleApi.loadGoogleMapsScript(this.updateMap)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -72,24 +55,15 @@ class EventsMap extends CallableComponent {
         let noPoiMapName = 'no_poi_map'
         let noPoiMap = new window.google.maps.StyledMapType(styles,{name: noPoiMapName});
         let map = new window.google.maps.Map(document.getElementById(this.googleMapDivId), {
-            zoom: 12,
-            center: this.currentPosition,
+            zoom: 14,
+            center: this.props.center,
             disableDefaultUI: true,
             mapTypeControlOptions: {
                 mapTypeIds: ['roadmap', noPoiMapName]
             }
         })
-        map.addListener('center_changed', () => {
-            let center = map.getCenter()
-            let location = {
-                lat: center.lat(),
-                lng: center.lng()
-            }
-            this.currentPosition = location
-            this.props.onCenterChanged(location)
-        })
-        map.mapTypes.set(noPoiMapName, noPoiMap);
-        map.setMapTypeId(noPoiMapName);
+        map.mapTypes.set(noPoiMapName, noPoiMap)
+        map.setMapTypeId(noPoiMapName)
         return map
     }
 
