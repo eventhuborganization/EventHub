@@ -12,10 +12,11 @@ class EventInfo extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            eventInfo: undefined
+            eventInfo: undefined,
+            redirectHome: false
         }
         ApiService.getEventInformation(props.match.params.id,
-            error => props.onError("Errore nel caricare le informazioni dell'evento. Ricaricare la pagina."),
+            () => props.onError("Errore nel caricare le informazioni dell'evento. Ricaricare la pagina."),
                 event => {
                     GoogleApi.getPlaceInformationByLocation(event.location,
                         () => props.onError("Errore nel caricare le informazioni riguardanti il luogo dell'evento. Ricaricare la pagina."),
@@ -37,11 +38,16 @@ class EventInfo extends React.Component {
             )
     }
 
+    redirectToHome = () => {
+        return this.state.redirectHome ? 
+            <Redirect from={this.props.from} to={"/"} /> : <div/>
+    }
+
     render() {
         if (this.state.eventInfo)
             return (
                 <main className="main-container">
-
+                    {this.redirectToHome()}
                     <section className="row">
                         <div className="col px-0 text-center">
                             <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
@@ -68,6 +74,7 @@ class EventInfo extends React.Component {
                                                    state.eventInfo.followers = event.followers
                                                    return state
                                                })}
+                                               onEventDeleted = {() => this.setState({redirectHome: true})}
                         />
                     </section>
 

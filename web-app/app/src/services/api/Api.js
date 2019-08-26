@@ -424,6 +424,20 @@ let deselectEvent = (data, onError, onSuccess) => {
 }
 
 /**
+ * @param eventId {string}
+ * @param onError {function(error)}
+ * @param onSuccess {function(response)}
+ */
+let deleteEvent = (eventId, onError, onSuccess) => {
+    managePromise(
+        Axios.delete("/events/info/" + eventId),
+        [200],
+        onError,
+        () => onSuccess()
+    )
+}
+
+/**
  * @param fromIndex {number}
  * @param onError {function(error)}
  * @param onSuccess {function(response)}
@@ -779,6 +793,7 @@ let getAvatarUrl = (imageName) => {
 
 export default {
     createNewEvent,
+    deleteEvent,
     getEvents,
     searchEvents,
     searchNearestEvents,
