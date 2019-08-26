@@ -109,16 +109,35 @@ exports.updateEventById = (req, res) => {
     let conditions = { '_id': req.params.uuid, 'organizator' : event.organizator }
     delete event.organizator
     if (typeof(event.maximumParticipants)==='number') {
-        conditions.$where = event.maximumParticipants + '>=this.maximumParticipants'
+        conditions.$where = event.maximumParticipants + '>=this.participants.length'
     }
-    if(req.body.event){
-        Event.findOneAndUpdate(conditions, {$set: event}, (err, event) => {
-            if(err)
+    if (event.location) {
+        event.location = {
+            city: event.location.address,
+            geo: {
+                type: 'Point',
+                coordinates: [
+                    event.location.lng,
+                    event.location.lat
+                ]
+            }
+        }
+    }
+    if (event.date) {
+        event.eventDate=event.date
+        delete event.date
+    }    
+    if(event){
+        Event.findOneAndUpdate(conditions, {$set: event}, (err, finalEvent) => {
+            if(err) {
                 network.internalError(res,err)
-            else if(event)
-                network.resultWithJSON(res, event)
-            else 
+            }
+            else if(finalEvent) {
+                network.resultWithJSON(res, finalEvent)
+            }
+            else {
                 network.badRequest(res)
+            }
         })
     }
 }

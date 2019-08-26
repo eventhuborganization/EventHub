@@ -25,6 +25,7 @@ class EventEditor extends React.Component {
             ){
             this.state.oldEvent = {...props.location.state.event}
             this.state.oldEvent.date = new Date(this.state.oldEvent.date)
+            this.state.oldEvent.location = {...props.location.state.event.location}
             this.state.event = props.location.state.event
             this.state.event.thumbnailPreview = undefined
             this.state.eventId = props.location.state.event._id
