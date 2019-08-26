@@ -5,6 +5,10 @@ import RegistrationForm from './RegistrationForm'
 import { RegistrationTab } from '../menu_tab/MenuTab'
 import {LoginRedirect, LoginSuccessfullRedirect} from '../redirect/Redirect'
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 class Registration extends React.Component {
 
     constructor(props) {
@@ -40,10 +44,10 @@ class Registration extends React.Component {
     onRegistration = (data, privateUser) => {
         let hashedPwd = this.security.sha512(data[data.componentIds.password]);
         let message = {
-            name: data[data.componentIds.name],
+            name: capitalizeFirstLetter(data[data.componentIds.name]),
             email: data[data.componentIds.email],
             address: {
-                city: data[data.componentIds.city]
+                city: capitalizeFirstLetter(data[data.componentIds.city])
             },
             organization: !privateUser,
             password: hashedPwd,
@@ -53,12 +57,12 @@ class Registration extends React.Component {
             message.phone = data[data.componentIds.phone]
         }
         if(privateUser){
-            message.surname = data[data.componentIds.surname]
+            message.surname = capitalizeFirstLetter(data[data.componentIds.surname])
             message.gender = data[data.componentIds.sex]
             message.birthdate = data[data.componentIds.birthdate]
         } else {
-            message.address.province = data[data.componentIds.province]
-            message.address.address = data[data.componentIds.address]
+            message.address.province = capitalizeFirstLetter(data[data.componentIds.province])
+            message.address.address = capitalizeFirstLetter(data[data.componentIds.address])
         }
         Api.register(
             message, 

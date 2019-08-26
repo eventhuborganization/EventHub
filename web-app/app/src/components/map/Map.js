@@ -115,7 +115,7 @@ class Map extends React.Component {
                           className="col-12 px-0"
                           style={{
                               height: this.state.mapContainerHeight,
-                              "margin-top": this.state.mapContainerMarginTop
+                              marginTop: this.state.mapContainerMarginTop
                           }}
                      >
                          <EventsMap center={this.state.center}

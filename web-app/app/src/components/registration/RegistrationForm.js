@@ -130,6 +130,8 @@ class RegistrationForm extends React.Component {
         event.preventDefault();
         if(!this.state.pwdCorrect){
             this.props.onError("Le password non coincidono!");
+        } else if(new Date() - new Date(this.state[this.state.componentIds.birthdate]) < 0){
+            this.props.onError("La data di nascita non è valida")
         } else {
             this.props.onRegistration(this.state, this.props.privateUser)
         }
