@@ -382,9 +382,15 @@ class SearchBar extends CallableComponent {
     }
 
     render() {
-        let navBarClassName = " row navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
+        let navBarClassName = (this.props.fixedTop ? "" : " row ") +
+            " navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
+        let containerClass = ""
+        if (this.props.stickyTop)
+            containerClass = " sticky-top "
+        if (this.props.fixedTop)
+            containerClass = " fixed-top "
         return (
-            <div className={(this.props.stickyTop ? " sticky-top " : "")}>
+            <div className={containerClass}>
                 <nav id="search-bar" className={navBarClassName}>
                     <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1">EH</h1>
                     <div className="col form-inline container-fluid px-1 pb-1">
@@ -406,7 +412,7 @@ class SearchBar extends CallableComponent {
                         </div>
                     </div>
                 </nav>
-                <div className="collapse w-100 my-1" id="filters">
+                <div className={"collapse w-100 " + (this.props.fixedTop ? " px-3 " : " mt-1 ")} id="filters">
                     {this.renderFilters()}
                 </div>
             </div>

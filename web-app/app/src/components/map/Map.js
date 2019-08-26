@@ -16,6 +16,7 @@ class Map extends React.Component {
         super(props)
         this.state = {
             mapContainerHeight: 0,
+            mapContainerMarginTop: 0,
             events: [],
             searchBarRef: undefined,
             mapRef: undefined,
@@ -59,7 +60,7 @@ class Map extends React.Component {
         let searchBarHeight = document.getElementById('search-bar').offsetHeight
         let footerHeight = document.getElementById('footer').offsetHeight
         let mapContainerHeight = window.screen.height - searchBarHeight - footerHeight
-        this.setState({mapContainerHeight: mapContainerHeight})
+        this.setState({mapContainerHeight: mapContainerHeight, mapContainerMarginTop: searchBarHeight})
     }
 
     onSearchResults = response => {
@@ -104,12 +105,19 @@ class Map extends React.Component {
                                 date: true,
                                 distance: true
                             }}
+                            fixedTop
                             onError={this.onSearchError}
                             onLocationChange={this.updateCenterPositionWithSearchResults}
                             onRef={ref => this.setState({searchBarRef: ref})}
                  />
                  <div className="row">
-                     <div id="map-container" className="col-12 px-0" style={{height: this.state.mapContainerHeight}}>
+                     <div id="map-container"
+                          className="col-12 px-0"
+                          style={{
+                              height: this.state.mapContainerHeight,
+                              "margin-top": this.state.mapContainerMarginTop
+                          }}
+                     >
                          <EventsMap center={this.state.center}
                                     events={this.state.events}
                                     onRef={ref => this.setState({mapRef: ref})}
