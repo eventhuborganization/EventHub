@@ -288,40 +288,48 @@ class EventEditor extends React.Component {
     updateEvent = () => {
         let errorFound = this.checkErrors()
         if (!errorFound) {
+            let somethingIsChanged = false
             let newEvent = {}
             let event = this.state.event
             let oldEvent = this.state.oldEvent
             if(event.name !== oldEvent.name){
                 newEvent.name = event.name
             }
-            if(event.date !== oldEvent.date){
+            if(event.date.getTime() !== oldEvent.date.getTime()){
                 newEvent.date = event.date
+                somethingIsChanged = true
             }
             if(event.description !== oldEvent.description){
                 newEvent.description = event.description
+                somethingIsChanged = true
             }
             if(event.thumbnail !== oldEvent.thumbnail){
                 newEvent.thumbnail = event.thumbnail
+                somethingIsChanged = true
             }
             if(event.location !== oldEvent.location){
                 newEvent.location = event.location
+                somethingIsChanged = true
             }
             if(event.maxParticipants !== oldEvent.maxParticipants){
                 if(event.maxParticipants > oldEvent.numParticipants){
                     newEvent.maxParticipants = event.maxParticipants
+                    somethingIsChanged = true
                 } else {
                     errorFound = true
                 }
             }
-            if(!errorFound){
+            if(!errorFound && somethingIsChanged){
                 ApiService.updateEventInfo(
                     this.state.oldEvent._id, 
                     newEvent,
                     () => this.props.onError("Errore nella modifica dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
                     () => this.setState({eventCreated: true})
                 )
-            } else {
+            } else if(errorFound){
                 this.props.onError("Hai inserito un numero di partecipanti massimi troppo basso, hai già più di " + event.maxParticipants + "utenti iscritti")
+            } else {
+                this.setState({eventCreated: true})
             }
         }
     }
