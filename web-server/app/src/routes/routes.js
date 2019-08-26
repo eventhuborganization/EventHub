@@ -41,6 +41,10 @@ module.exports = (app) => {
             upload.single("thumbnail"), 
             eventController.updateEvent
         )
+        .delete(
+            loginChecker,
+            eventcontroller.deleteEvent
+        )
 
     app.route('/events/position/near')
         .get(eventController.getEventsNear)
