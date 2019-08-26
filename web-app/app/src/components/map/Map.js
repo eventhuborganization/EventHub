@@ -132,11 +132,12 @@ class Map extends React.Component {
                                  position={BOTTOM_LEFT}
                                  shape={SQUARE}
                  />
-                 <FloatingButton icon={{name: "dot-circle", size:"2x"}}
+                 <FloatingButton icon={{name: "crosshairs", size:"2x"}}
                                  show={true}
                                  onClick={this.setCurrentPositionAsCenter}
                                  position={BOTTOM_RIGHT}
                                  shape={ROUNDED_CIRCLE}
+                                 invertedColors={true}
                  />
              </div>
          )
