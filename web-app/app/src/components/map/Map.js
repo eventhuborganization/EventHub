@@ -47,7 +47,7 @@ class Map extends React.Component {
 
     searchInNewLocation = location => {
         if(this.state.searchBarRef)
-            this.state.searchBarRef.locationChanged(location)
+            this.state.searchBarRef.searchInNewLocation(location)
     }
 
     searchInMapLocation = () => {
@@ -89,6 +89,11 @@ class Map extends React.Component {
 
     }
 
+    onCenterChanged = location => {
+        if(this.state.searchBarRef)
+            this.state.searchBarRef.locationChanged(location)
+    }
+
     render() {
         return (
              <div>
@@ -108,6 +113,7 @@ class Map extends React.Component {
                          <EventsMap center={this.state.center}
                                     events={this.state.events}
                                     onRef={ref => this.setState({mapRef: ref})}
+                                    onCenterChanged={this.onCenterChanged}
                          />
                      </div>
                  </div>

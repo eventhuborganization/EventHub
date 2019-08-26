@@ -64,6 +64,13 @@ class EventsMap extends CallableComponent {
                 mapTypeIds: ['roadmap', noPoiMapName]
             }
         })
+        map.addListener("center_changed", () => {
+            let center = map.getCenter()
+            this.props.onCenterChanged({
+                lat: center.lat(),
+                lng: center.lng(),
+            })
+        })
         map.mapTypes.set(noPoiMapName, noPoiMap)
         map.setMapTypeId(noPoiMapName)
         return map

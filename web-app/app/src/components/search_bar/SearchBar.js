@@ -68,7 +68,11 @@ class SearchBar extends CallableComponent {
         }
     }
 
-    locationChanged = location => {
+    searchInNewLocation = location => {
+        this.locationChanged(location, this.searchEvents)
+    }
+
+    locationChanged = (location, callback = () => {}) => {
         if (location && location.lat && location.lng) {
             switch(this.props.searchBy) {
                 case SEARCH_BY_PLACE:
@@ -79,7 +83,7 @@ class SearchBar extends CallableComponent {
                             lng: location.lng
                         }
                         return state
-                    }, () => this.searchEvents())
+                    }, () => callback())
                     break
                 case SEARCH_BY_EVENT:
                     this.setState(prevState => {
@@ -89,7 +93,7 @@ class SearchBar extends CallableComponent {
                             lng: location.lng
                         }
                         return state
-                    }, () => this.searchEvents())
+                    }, () => callback())
                     break
                 default: break
             }
@@ -266,13 +270,12 @@ class SearchBar extends CallableComponent {
             filters.push(
                 <div key="typology">
                     <label className="m-0" htmlFor="typology">Typology</label>
-                    <select defaultValue={"placeholder"}
-                            onChange={this.updateTypology}
+                    <select onChange={this.updateTypology}
                             className="form-control"
                             id={this.typology_filter_id}
                             name={this.typology_filter_id}
                     >
-                        <option value="placeholder" disabled hidden>Tipo</option>
+                        <option value="">Tutti</option>
                         <option value={PARTY}>Festa</option>
                         <option value={MEETING}>Incontro</option>
                         <option value={SPORT}>Sport</option>
@@ -350,6 +353,7 @@ class SearchBar extends CallableComponent {
                 distance.value = this.defaultDistance
             if (location)
                 location.value = ""
+            this.searchEvents()
         })
     }
 
