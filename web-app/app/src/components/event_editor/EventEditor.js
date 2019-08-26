@@ -1,12 +1,12 @@
 import React from 'react'
 import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizatorInfo} from "../event/Event"
-import Contacts from "../contacts/Contacts";
-import {ConfirmButton} from "../floating_button/FloatingButton";
-import ApiService from "../../services/api/Api";
-import {LoginRedirect, RedirectComponent} from "../redirect/Redirect";
-import GoogleApi from "../../services/google_cloud/GoogleMaps";
+import Contacts from "../contacts/Contacts"
+import {ConfirmButton} from "../floating_button/FloatingButton"
+import ApiService from "../../services/api/Api"
+import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
+import GoogleApi from "../../services/google_cloud/GoogleMaps"
 
-class EventCreator extends React.Component {
+class EventEditor extends React.Component {
 
     minDateTime = 60 * 60 * 1000 // 1 hour
     timeMatchRegex = "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
@@ -20,8 +20,8 @@ class EventCreator extends React.Component {
             timeSet: onUpdate,
             eventCreated: false,
         }
-        if(props.location && props.location.state && props.location.state.event){
-            this.state.oldEvent = props.location.state.event
+        if(props.location && props.location.state && props.location.state.event) {
+            this.state.oldEvent = {...props.location.state.event}
             this.state.event = props.location.state.event
             this.state.event.thumbnailPreview = undefined
             this.state.eventId = props.location.state.event._id
@@ -251,7 +251,7 @@ class EventCreator extends React.Component {
             addErrorClassAndfocus("date")
         if (!this.state.timeSet)
             addErrorClassAndfocus("time")
-        if (!event.location.place_id)
+        if (!event.location.lat || !event.location.lng)
             addErrorClassAndfocus("address")
         if (!event.maxParticipants)
             addErrorClassAndfocus("max-participants")
@@ -313,7 +313,7 @@ class EventCreator extends React.Component {
                 ApiService.updateEventInfo(
                     this.state.oldEvent._id, 
                     newEvent,
-                    () => this.props.onError("Errore nella creazione dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
+                    () => this.props.onError("Errore nella modifica dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
                     () => this.setState({eventCreated: true})
                 )
             } else {
@@ -374,9 +374,9 @@ class EventCreator extends React.Component {
     }
 
     renderDate = () => {
-        var date = new Date(this.state.event.date);
-        var currentDate = date.toISOString().slice(0,10);
-        var currentTime = date.getHours() + ':' + date.getMinutes();
+        var date = this.state.event.date
+        var currentDate = date.toISOString().slice(0,10)
+        var currentTime = date.getHours().toString().padStart(2,"0") + ':' + date.getMinutes().toString().padStart(2,"0")
         document.getElementById("date").value = currentDate
         document.getElementById("time").value = currentTime
     }
@@ -511,7 +511,7 @@ class EventCreator extends React.Component {
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6>Descrizione</h6>
-                                    <textarea id="description" className="w-75 text-justify" onChange={this.updateDescription} />
+                                    <textarea id="description" className="w-100 form-control" onChange={this.updateDescription} />
                                 </div>
                             </div>
                         </div>
@@ -529,4 +529,4 @@ class EventCreator extends React.Component {
     }
 }
 
-export default EventCreator
+export default EventEditor

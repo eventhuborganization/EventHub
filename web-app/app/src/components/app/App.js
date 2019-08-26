@@ -10,7 +10,7 @@ import Login from '../login/Login'
 import EventInfo from '../event_info/EventInfo'
 import Registration from '../registration/Registration'
 import Notifications from '../notifications/Notifications'
-import EventCreator from '../event_creator/EventCreator'
+import EventEditor from '../event_editor/EventEditor'
 import { PersonalProfile, UserProfile } from '../profile/ProfileType'
 import Friends from '../friends/Friends'
 import Map from '../map/Map'
@@ -152,17 +152,17 @@ class App extends React.Component {
                 />} 
             />
             <Route path="/event/new" exact render={(props) =>
-                <EventCreator {...props}
-                    isLogged={this.state.isLogged}
-                    onError={this.onError}
-                    loggedUser={this.state.user}
+                <EventEditor {...props}
+                             isLogged={this.state.isLogged}
+                             onError={this.onError}
+                             loggedUser={this.state.user}
                 />}
             />
             <Route path="/event/:id/update" exact render={(props) => 
-                <EventCreator {...props}
-                    isLogged={this.state.isLogged}
-                    onError={this.onError}
-                    loggedUser={this.state.user}
+                <EventEditor {...props}
+                             isLogged={this.state.isLogged}
+                             onError={this.onError}
+                             loggedUser={this.state.user}
                 />} 
             />
             <Route path="/event/:id" exact render={(props) => 
