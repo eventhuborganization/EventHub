@@ -374,9 +374,9 @@ class EventCreator extends React.Component {
     }
 
     renderDate = () => {
-        var date = new Date(this.state.event.date);
-        var currentDate = date.toISOString().slice(0,10);
-        var currentTime = date.getHours() + ':' + date.getMinutes();
+        var date = this.state.event.date
+        var currentDate = date.toISOString().slice(0,10)
+        var currentTime = date.getHours().toString().padStart(2,"0") + ':' + date.getMinutes().toString().padStart(2,"0")
         document.getElementById("date").value = currentDate
         document.getElementById("time").value = currentTime
     }
@@ -511,7 +511,7 @@ class EventCreator extends React.Component {
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6>Descrizione</h6>
-                                    <textarea id="description" className="w-75 text-justify" onChange={this.updateDescription} />
+                                    <textarea id="description" className="w-100 form-control" onChange={this.updateDescription} />
                                 </div>
                             </div>
                         </div>
