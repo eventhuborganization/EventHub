@@ -156,6 +156,7 @@ class App extends React.Component {
                              isLogged={this.state.isLogged}
                              onError={this.onError}
                              loggedUser={this.state.user}
+                             onUpdate={false}
                 />}
             />
             <Route path="/event/:id/update" exact render={(props) => 
@@ -163,6 +164,7 @@ class App extends React.Component {
                              isLogged={this.state.isLogged}
                              onError={this.onError}
                              loggedUser={this.state.user}
+                             onUpdate={true}
                 />} 
             />
             <Route path="/event/:id" exact render={(props) => 
