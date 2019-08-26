@@ -57,15 +57,15 @@ class App extends React.Component {
     }
 
     showMessageElement = (elem) => {
-      this.setState((prevState, props) => {
+      this.setState((prevState) => {
           let state = prevState
           state.showMessageElement = elem
           return state
       })
   }
 
-  onError = (message) => {
-    this.state.showMessageElement.showModal({body: message, title: "Errore"})
+  onError = (message, onErrorFunction) => {
+    this.state.showMessageElement.showModal({body: message, title: "Errore", okFun: onErrorFunction})
   }
 
   onSuccess = (message) => {
@@ -259,10 +259,11 @@ class Modal extends CallableComponent {
   }
 
   showModal = (data) => {
-      this.setState((prevState, props) => {
+      this.setState((prevState) => {
           let state = prevState
           state.body = data.body
           state.title = data.title
+          state.okFun = data.okFun
           return state
       })
     document.getElementById("triggerButton").click()
@@ -285,7 +286,13 @@ class Modal extends CallableComponent {
                 {this.state.body}
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" data-dismiss="modal">{this.props.closeLabel}</button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  data-dismiss="modal" 
+                  onClick={this.state.okFun ? this.state.okFun : () => {}}>
+                  {this.props.closeLabel}
+                </button>
               </div>
             </div>
           </div>
