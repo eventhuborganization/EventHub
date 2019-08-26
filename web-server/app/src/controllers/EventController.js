@@ -136,8 +136,7 @@ exports.createEvent = (req, res) => {
 }
 
 exports.updateEvent = (req, res) => {
-    var event = req.body
-    let message = {organizator = req.user._id}
+    let message = {'organizator': req.user._id}
     let event = JSON.parse(req.body.data)
     if (event.name)
         message.name = event.name
