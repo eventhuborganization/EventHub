@@ -1,4 +1,5 @@
 import React from 'react'
+import {Redirect} from 'react-router-dom'
 import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizatorInfo} from "../event/Event"
 import Contacts from "../contacts/Contacts"
 import {ConfirmButton} from "../floating_button/FloatingButton"
@@ -8,20 +9,22 @@ import GoogleApi from "../../services/google_cloud/GoogleMaps"
 
 class EventEditor extends React.Component {
 
-    minDateTime = 60 * 60 * 1000 // 1 hour
+    minDateTime = 1 *60 * 60 * 1000 // 1 hour
     timeMatchRegex = "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
 
     constructor(props) {
         super(props)
-        let onUpdate = props.location && props.location.state && props.location.state.event
         this.state = {
-            onUpdate: onUpdate,
-            dateSet: onUpdate,
-            timeSet: onUpdate,
+            onUpdate: props.onUpdate,
+            dateSet: props.onUpdate,
+            timeSet: props.onUpdate,
             eventCreated: false,
         }
-        if(props.location && props.location.state && props.location.state.event) {
+        if(props.onUpdate && props.location && props.location.state 
+                && props.location.state.event && props.location.state.event.organizator._id === props.loggedUser._id 
+            ){
             this.state.oldEvent = {...props.location.state.event}
+            this.state.oldEvent.date = new Date(this.state.oldEvent.date)
             this.state.event = props.location.state.event
             this.state.event.thumbnailPreview = undefined
             this.state.eventId = props.location.state.event._id
@@ -44,6 +47,7 @@ class EventEditor extends React.Component {
                     organizator: props.loggedUser
             }
             this.state.eventId = undefined
+            this.state.redirectHome = props.onUpdate
         }
     }
 
@@ -98,7 +102,7 @@ class EventEditor extends React.Component {
                     }
                 })
             })
-        if(this.state.onUpdate){
+        if(this.state.onUpdate && !this.state.redirectHome){
             document.getElementById("name").value = this.state.event.name
             document.getElementById("address").value = this.state.event.location.address
             document.getElementById("max-participants").value = this.state.event.maxParticipants
@@ -381,12 +385,17 @@ class EventEditor extends React.Component {
         document.getElementById("time").value = currentTime
     }
 
+    redirectToHome = () => {
+        return this.state.redirectHome ? 
+            <Redirect from={this.props.from} to={"/"} /> : <div/>
+    }
+
     render() {
         let image = this.state.onUpdate && !this.state.event.thumbnailPreview ? 
             ApiService.getImageUrl(this.state.event.thumbnail) : this.state.event.thumbnailPreview
-
         return (
             <form className="main-container">
+                {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.renderRedirect()}
                 <section className="row">

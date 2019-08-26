@@ -12,6 +12,7 @@ class AbstractProfile extends React.Component {
         
         this.state = {
             profileComp: undefined,
+            redirectHome: false,
             user: {
                 name: "",
                 avatar: undefined,
@@ -60,7 +61,11 @@ class AbstractProfile extends React.Component {
     getUserInformation = () => {
         Api.getUserInformation(
             this.state.user._id,
-            () => this.props.onError("Si è verificato un errore durante l'ottenimento dei dati"),
+            () => 
+                this.props.onError(
+                    "Si è verificato un errore durante l'ottenimento dei dati, verrai ridirezionato alla homepage", 
+                    () => this.setState({redirectHome: true})
+                ),
             user => {
                 let name = user.name + (user.organization ? "" : " " + user.surname)
                 let futureEvents =  user.eventsSubscribed.filter(x => x.date > Date.now())
@@ -97,6 +102,11 @@ class AbstractProfile extends React.Component {
         this.setState({profileComp: component})
     }
 
+    redirectToHome = () => {
+        return this.state.redirectHome ? 
+            <Redirect from={this.props.from} to={"/"} /> : <div/>
+    }
+
     render = () => {
         return <div></div>
     }
@@ -116,6 +126,7 @@ class PersonalProfile extends AbstractProfile {
     render = () => {
         return (
             <div>
+                {this.redirectToHome()}
                 <Profile {...this.props} 
                     isLocalUser={true} 
                     updateState={this.changeState} 
@@ -142,7 +153,7 @@ class UserProfile extends AbstractProfile {
         }
     }
 
-    renderRedirect = () => {
+    redirectToProfile = () => {
         return this.props.user._id === this.props.match.params.id ? 
             <Redirect from={this.props.from} to={"/profile"} /> : <div/>
     }
@@ -150,7 +161,8 @@ class UserProfile extends AbstractProfile {
     render = () => {
         return (
             <div>
-                {this.renderRedirect()}
+                {this.redirectToHome()}
+                {this.redirectToProfile()}
                 <Route 
                     path={"/users/:id/friends"}
                     exact 
