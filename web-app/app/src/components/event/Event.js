@@ -191,9 +191,13 @@ let EventInteractionPanel = (props) => {
     return (
         <div className="row">
             <div className="col-3 my-auto">
-                <EventBadge {...props}
+                {
+                    props.hideBadge ? <div/> : 
+                        <EventBadge {...props}
                             key={props.event._id + "badge"}
-                            event={props.event} />
+                            event={props.event} 
+                        />
+                }
             </div>
             <div className="col-9 d-flex justify-content-end">
                 {

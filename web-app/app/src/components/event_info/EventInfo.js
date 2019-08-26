@@ -56,6 +56,7 @@ class EventInfo extends React.Component {
                         <EventInteractionPanel {...this.props}
                                                key={this.state.eventInfo._id}
                                                event={this.state.eventInfo}
+                                               hideBadge={true}
                                                onEventParticipated={event =>  this.setState(prevState => {
                                                    let state = prevState
                                                    state.eventInfo.participants = event.participants
