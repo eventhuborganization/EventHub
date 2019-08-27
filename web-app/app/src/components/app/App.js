@@ -72,6 +72,17 @@ class App extends React.Component {
     this.state.showMessageElement.showModal({body: message, title: "Operazione completata!"})
   }
 
+  showModal = (configurations, onConfirmFunction, onDiscardFunction) => {
+    this.state.showMessageElement.showModal({
+      body: configurations.message,
+      title: configurations.title,
+      confirmMessage: configurations.confirmMessage,
+      discardMessage: configurations.discardMessage,
+      okFun: onConfirmFunction,
+      cancelFun: onDiscardFunction
+    })
+  }
+
   onLoginSuccessfull = (user_data) => {
     this.setState((prevState) =>{
         let state = prevState
@@ -148,7 +159,8 @@ class App extends React.Component {
                   }}
                   isLogged={this.state.isLogged} 
                   onError={this.onError}
-                  onSuccess={this.onSuccess} 
+                  onSuccess={this.onSuccess}
+                  showMessage={this.showModal} 
                 />} 
             />
             <Route path="/event/new" exact render={(props) =>
@@ -171,6 +183,7 @@ class App extends React.Component {
                 <EventInfo {...props} 
                    isLogged={this.state.isLogged}
                    onError={this.onError}
+                   showMessage={this.showModal}
                    user={{
                        _id: this.state.user._id
                    }}
@@ -265,7 +278,10 @@ class Modal extends CallableComponent {
           let state = prevState
           state.body = data.body
           state.title = data.title
+          state.confirmMessage = data.confirmMessage
+          state.discardMessage = data.discardMessage
           state.okFun = data.okFun
+          state.cancelFun = data.cancelFun
           return state
       })
     document.getElementById("triggerButton").click()
@@ -290,10 +306,17 @@ class Modal extends CallableComponent {
               <div className="modal-footer">
                 <button 
                   type="button" 
+                  className={this.state.discardMessage ? "btn btn-outline-primary" : "d-none"} 
+                  data-dismiss="modal" 
+                  onClick={this.state.discardMessage ? this.state.cancelFun : () => {}}>
+                  {this.state.discardMessage}
+                </button>
+                <button 
+                  type="button" 
                   className="btn btn-primary" 
                   data-dismiss="modal" 
                   onClick={this.state.okFun ? this.state.okFun : () => {}}>
-                  {this.props.closeLabel}
+                  {this.state.confirmMessage ? this.state.confirmMessage : this.props.closeLabel}
                 </button>
               </div>
             </div>

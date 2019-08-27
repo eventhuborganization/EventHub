@@ -149,11 +149,21 @@ function UpdateButton(props){
 class DeleteButton extends React.Component {
 
     onClick = () => {
-        ApiService.deleteEvent(
-            this.props.event._id,
-            () => this.props.onError("Si è verificato un errore. Riprovare."),
-            () => this.props.onSuccess(this.props.event._id)
-        )
+        this.props.showMessage(
+            {
+                title: "Sei sicuro?",
+                message: "Sei sicuro di voler eliminare l'evento? L'operazione è irreversibile",
+                confirmMessage: "Elimina", 
+                discardMessage: "Annulla"
+            },
+            () => {
+                ApiService.deleteEvent(
+                    this.props.event._id,
+                    () => this.props.onError("Si è verificato un errore. Riprovare."),
+                    () => this.props.onSuccess(this.props.event._id)
+                )
+            },
+            () => {})
     }
 
     render () {
