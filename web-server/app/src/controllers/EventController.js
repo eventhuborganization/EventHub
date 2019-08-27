@@ -106,7 +106,7 @@ exports.createEvent = (req, res) => {
             if (error) {
                 console.log(error)
                 for(let notDone = 4; notDone; ) {
-                    EventService.deleteEvent(response.data._id, response => {
+                    EventService.deleteEvent(response.data._id, req.user.id, response => {
                         notDone = false
                         network.internalError(res, error)
                     }, error => notDone--)
@@ -165,9 +165,43 @@ exports.updateEvent = (req, res) => {
             }
         })
     }    
-    EventService.updateEventById(req.params.uuid, message, response => network.replayResponse(response, res), error => network.replayError(error, res))
+    EventService.updateEventById(req.params.uuid, message, 
+        response => {
+            network.replayResponse(response, res)
+        }, error => network.replayError(error, res))
 }
 
 exports.deleteEvent = (req, res) => {
-    //TODO
+    EventService.deleteEvent(req.params.uuid, req.user.id, 
+        response => {
+            let event = response.data
+            event.participants.forEach(userId => {
+                for(let notDone = 4; notDone; ){
+                    axios.delete(`${UserServiceServer}/users/${userId}/events`, {data: {participant: userId}})
+                        .then(() => {
+                            notDone=false
+                            for(let notDone2 = 4; notDone2; ) {
+                                axios.post(`${UserServiceServer}/users/${req.body.uuid}/notifications/`, {typology: 11, sender: req.user._id, data: event})
+                                    .then(() => notDone2=false)
+                                    .catch(()=> notDone2--)
+                            }
+                        })
+                        .catch(()=> notDone--)
+                }
+            })
+            event.followers.forEach(userId => {
+                for(let notDone = 4; notDone; ){
+                    axios.delete(`${UserServiceServer}/users/${userId}/events`, {data: {follower: userId}})
+                        .then(() => {
+                            notDone=false
+                            for(let notDone2 = 4; notDone2; ) {
+                                axios.post(`${UserServiceServer}/users/${req.body.uuid}/notifications/`, {typology: 11, sender: req.user._id, data: event})
+                                    .then(() => notDone2=false)
+                                    .catch(()=> notDone2--)
+                            }
+                        })
+                        .catch(()=> notDone--)
+                }
+            })
+        }, error => network.replayError(error, res))
 }
