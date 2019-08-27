@@ -141,38 +141,9 @@ function UpdateButton(props){
                 state: {event: props.event}
             }} 
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
-            Modifica
+            Modifica evento
         </Link>
     )
-}
-
-class DeleteButton extends React.Component {
-
-    onClick = () => {
-        this.props.showMessage(
-            {
-                title: "Sei sicuro?",
-                message: "Sei sicuro di voler eliminare l'evento? L'operazione è irreversibile",
-                confirmMessage: "Elimina", 
-                discardMessage: "Annulla"
-            },
-            () => {
-                ApiService.deleteEvent(
-                    this.props.event._id,
-                    () => this.props.onError("Si è verificato un errore. Riprovare."),
-                    () => this.props.onSuccess(this.props.event._id)
-                )
-            },
-            () => {})
-    }
-
-    render () {
-        return (
-            <button className={"btn btn-danger"} onClick={this.onClick}>
-                Elimina
-            </button>
-        )
-    }
 }
 
 let EventBadge = (props) => {
@@ -234,10 +205,7 @@ let EventInteractionPanel = (props) => {
                         <div>{followButton} {subscribeButton}</div> :
                         (
                             props.user._id === props.event.organizator._id ? 
-                            <div> 
-                                <DeleteButton {...props} onSuccess={props.onEventDeleted} event={props.event}/> 
-                                <UpdateButton {...props} event={props.event}/> 
-                            </div>: <div/>
+                            <UpdateButton {...props} event={props.event}/> : <div/>
                         )
                 }
             </div>

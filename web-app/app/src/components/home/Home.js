@@ -59,12 +59,6 @@ class Home extends React.Component {
                             <EventCard {...this.props}
                                        key={event._id}
                                        eventInfo={event}
-                                       onEventDeleted = {id => 
-                                        this.setState((prevState) => {
-                                            let state = prevState
-                                            state.eventsLoaded = state.eventsLoaded.filter(event => event._id !== id)
-                                            return state
-                                        })}
                             />)
                     }
                     {this.renderNoNotificationPlaceHolder()}

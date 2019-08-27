@@ -7,6 +7,49 @@ import ApiService from "../../services/api/Api"
 import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
 
+class DeleteButton extends React.Component {
+
+    constructor(props){
+        super(props)
+        this.state = {redirectHome: false}
+        console.log(this.props)
+    }
+
+    onClick = () => {
+        this.props.showMessage(
+            {
+                title: "Sei sicuro?",
+                message: "Sei sicuro di voler eliminare l'evento? L'operazione è irreversibile",
+                confirmMessage: "Elimina", 
+                discardMessage: "Annulla"
+            },
+            () => {
+                ApiService.deleteEvent(
+                    this.props.event._id,
+                    () => this.props.onError("Si è verificato un errore durante l'eliminazione, riprova."),
+                    () => this.setState({redirectHome: true})
+                )  
+            },
+            () => {})
+    }
+
+    redirectToHome = () => {
+        return this.state.redirectHome ? 
+            <Redirect from={this.props.from} to={"/"} /> : <div/>
+    }
+
+    render () {
+        return (
+            <div>
+                {this.redirectToHome()}
+                <div role="button" className={"btn btn-danger btn-block"} onClick={this.onClick}>
+                    Elimina
+                </div>
+            </div>
+        )
+    }
+}
+
 class EventEditor extends React.Component {
 
     minDateTime = 1 *60 * 60 * 1000 // 1 hour
@@ -540,6 +583,16 @@ class EventEditor extends React.Component {
 
                 <Contacts event={this.state.event}/>
 
+                {
+                    this.state.onUpdate ? 
+                        <div className="row mt-4">
+                            <div className="col">
+                                <DeleteButton showMessage={this.props.showMessage} event={this.state.oldEvent._id}/>
+                            </div>
+                        </div>
+                        : <div/>
+                }
+                
                 <ConfirmButton onClick={this.state.onUpdate ? this.updateEvent : this.createEvent} />
 
             </form>

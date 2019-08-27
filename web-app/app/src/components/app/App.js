@@ -175,6 +175,7 @@ class App extends React.Component {
                 <EventEditor {...props}
                              isLogged={this.state.isLogged}
                              onError={this.onError}
+                             showMessage={this.showModal} 
                              loggedUser={this.state.user}
                              onUpdate={true}
                 />} 
