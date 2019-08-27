@@ -201,8 +201,8 @@ exports.EventService = class EventService{
      * @param {Function} successCallback da eseguire in caso di successo
      * @param {Function} errorCallback da eseguire in caso di errore
      */
-    deleteEvent(eventUuid, successCallback = defaultCallback, errorCallback = defaultCallback){
-        axios.delete(`${this.hostport}/events/${eventUuid}`)
+    deleteEvent(eventUuid, userUuid, successCallback = defaultCallback, errorCallback = defaultCallback){
+        axios.delete(`${this.hostport}/events/${eventUuid}`, {data: {userUuid: userUuid}})
         .then(successCallback)
         .catch(errorCallback);
     }

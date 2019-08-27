@@ -255,10 +255,11 @@ exports.newEvent = (req, res) => {
 }
 
 exports.deleteEvent = (req, res) => {
-    Event.findByIdAndDelete(req.params.uuid, (err) => {
+    let conditions = { '_id': req.params.uuid, 'organizator' : req.body.userUuid }
+    Event.findOneAndDelete(conditions, (err, event) => {
         if (err)
             network.internalError(res,err)
         else
-            network.result(res)
+            network.resultWithJSON(res, event)
     })
 }
