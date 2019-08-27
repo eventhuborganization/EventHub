@@ -198,8 +198,6 @@ class Profile extends CallableComponent {
                         linkedUsers={this.state.user.linkedUsers}
                         emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.user.organization ? "follower" : "amico")}
                         typology={this.state.user.organization ? "Followers" : "Amici"}
-                        numberToShow={this.state.user.avatarsToShow}
-                        emptyAvatarSize={this.state.user.emptyAvatarSize}
                         moreLinkedUsersLink={this.props.isLocalUser ? "/friends" : `${this.props.match.url}/friends`}
                     />
                 </section>

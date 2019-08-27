@@ -267,10 +267,10 @@ let EventHeaderBanner = props => {
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
                         <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
-                            {date}
+                            <em className="far fa-calendar-alt"></em> {date}
                         </h6>
                         <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
-                            {props.event.location.address}
+                            <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
                         </h6>
                     </div>
                     <div className="col-4 d-flex justify-content-end px-1">

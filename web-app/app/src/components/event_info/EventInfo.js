@@ -1,12 +1,14 @@
 import React from 'react'
 import {Redirect} from 'react-router-dom'
+import ShowMore from 'react-show-more'
 import {EventHeaderBanner, EventInteractionPanel, EventLocation, EventOrganizatorInfo} from "../event/Event"
 import Contacts from '../contacts/Contacts'
 import ApiService from '../../services/api/Api'
 import GoogleApi from '../../services/google_cloud/GoogleMaps'
-import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
-import {Link} from "react-router-dom";
-import {IMAGE, ImageForCard} from "../image/Image";
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
+import {Link} from "react-router-dom"
+import {IMAGE, ImageForCard} from "../image/Image"
+import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
 
 class EventInfo extends React.Component {
 
@@ -83,10 +85,28 @@ class EventInfo extends React.Component {
                         <div className="col">
                             <div className="container-fluid">
                                 <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
+
+                                <MultipleUsersBanner 
+                                    users={this.state.eventInfo.participants}
+                                    emptyLabel={"Nessun partecipante al momento"}
+                                    typology={"Partecipanti"}
+                                    moreUsersLink={"ciao"}
+                                    noPadding={true}
+                                    margin={"mt-2"}
+                                    level={"h5"}
+                                />
+
+
                                 <div className="row mt-2">
                                     <div className="col-12 px-0">
                                         <h5>Descrizione</h5>
-                                        <p className="text-justify">{this.state.eventInfo.description}</p>
+                                        <ShowMore
+                                            lines={5}
+                                            more='Altro'
+                                            less='Mostra meno'
+                                        >
+                                            {this.state.eventInfo.description}
+                                        </ShowMore>
                                     </div>
                                 </div>
                             </div>

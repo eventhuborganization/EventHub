@@ -81,7 +81,6 @@ class EventCard extends React.Component {
                                                         <div className="col-11">{this.state.eventInfo.location.address}</div>
                                                     </div> : <div/>
                                             }
-                                            <p className="m-0 d-none">{this.state.eventInfo.description}</p>
                                         </div>
                                     </div>
                                 </div>

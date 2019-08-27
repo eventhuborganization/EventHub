@@ -23,39 +23,6 @@ class AbstractProfile extends React.Component {
                 futureEvents: []
             }
         }
-
-        let toShow = this.displayWindowSize()
-        this.state.user.avatarsToShow = toShow[0]
-        this.state.user.emptyAvatarSize = toShow[1]
-    }
-
-    displayWindowSize = () => {
-        let width = window.innerWidth;
-        if(width < 767.98){
-            return [3,4]
-        } else if (width > 767.98 && width < 991.98){
-            return [7,5]
-        } else if (width > 991.98 && width < 1199.98){
-            return [10,6]
-        } else {
-            return [12,7]
-        }
-    };
-
-    componentDidMount = () => {
-        window.onresize = () => {
-            let toShow = this.displayWindowSize()
-            this.setState((prevState) => {
-                let state = prevState
-                state.user.avatarsToShow = toShow[0]
-                state.user.emptyAvatarSize = toShow[1]
-                return state
-            })
-        }
-    }
-
-    componentWillUnmount = () => {
-        window.onresize = undefined
     }
 
     getUserInformation = () => {
@@ -80,9 +47,7 @@ class AbstractProfile extends React.Component {
                     points: user.points,
                     futureEvents: futureEvents,
                     pastEvents: pastEvents,
-                    groups: user.groups,
-                    avatarsToShow:  this.state.user.avatarsToShow,
-                    emptyAvatarSize: this.state.user.emptyAvatarSize
+                    groups: user.groups
                 }
                 this.setState({user: data})
                 if(this.state.profileComp){
@@ -93,8 +58,6 @@ class AbstractProfile extends React.Component {
     }
 
     changeState = (newState) => {
-        newState.avatarsToShow = this.state.user.avatarsToShow
-        newState.emptyAvatarSize = this.state.user.emptyAvatarSize
         this.setState({user: newState})
     }
 
