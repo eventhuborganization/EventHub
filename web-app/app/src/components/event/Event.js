@@ -250,28 +250,7 @@ let EventHeaderBanner = props => {
             return <EventBadge event={props.event} />
     }
 
-    let renderDate = () => {
-        let date = props.event.date
-        if (!(date instanceof Date)) {
-            date = new Date(date)
-        }
-        let hours = date && date.getHours() >= 0
-            ? date.getHours().toString().padStart(2,"0")
-            : undefined
-        let minutes = date && date.getMinutes() >= 0
-            ? date.getMinutes().toString().padStart(2,"0")
-            : undefined
-        let displayTime = hours && minutes
-            ? hours + ":" + minutes
-            : undefined
-        let displayDate = date && date.getDate() && date.getMonth() && date.getFullYear()
-            ? date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
-            : undefined
-        return displayDate && displayTime
-            ? displayDate + " - " + displayTime
-            : "Data e orario non specificati"
-    }
-
+    let date = require("../../utils/Utils").renderDate(props.event.date)
     return (
         <section className={"row pt-2 " + getBannerClassName()}>
             <div className="col container-fluid">
@@ -288,7 +267,7 @@ let EventHeaderBanner = props => {
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
                         <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
-                            {renderDate()}
+                            {date}
                         </h6>
                         <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
                             {props.event.location.address}

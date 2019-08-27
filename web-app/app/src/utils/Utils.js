@@ -1,421 +1,442 @@
+
+let monthArray = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
+
+exports.renderDate = (date) => {
+    let hours = date && date.getHours() >= 0
+        ? date.getHours().toString().padStart(2,"0")
+        : undefined
+    let minutes = date && date.getMinutes() >= 0
+        ? date.getMinutes().toString().padStart(2,"0")
+        : undefined
+    let displayTime = hours && minutes
+        ? hours + ":" + minutes
+        : undefined
+    let displayDate = date && date.getDate() && date.getMonth() && date.getFullYear()
+        ? date.getDate() + " " + monthArray[date.getMonth()] + " " + date.getFullYear()
+        : undefined
+    return displayDate && displayTime
+        ? displayDate + " - " + displayTime
+        : "Data e orario non specificati"
+}
+
 exports.dummyLinkedUserList = [{
     _id: "ciao11",
     name: "Francesco Manara",
-    city: "Ravenna",
+    address: { city: "Ravenna"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao2",
     name: "Luca Giurato",
-    city: "Milano",
+    address: { city: "Milano"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao3",
     name: "Grant Gustin",
-    city: "Los Angeles",
+    address: { city: "Los Angeles"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao4",
     name: "Mimmo Calabro",
-    city: "Catanzaro",
+    address: { city: "Catanzaro"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Charles Leclerc",
-    city: "Montecarlo",
+    address: { city: "Montecarlo"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Ferrari",
-    city: "Maranello",
+    address: { city: "Maranello"},
     organization: true,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "McLaren",
-    city: "Woking",
+    address: { city: "Woking"},
     organization: true,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Francesco Grandinetti",
-    city: "Imola",
+    address: { city: "Imola"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Andrea Giannini",
-    city: "Rimini",
+    address: { city: "Rimini"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Simone Gollinucci",
-    city: "Riccione",
+    address: { city: "Riccione"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "ciao5",
     name: "Sasuke Uchiha",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }, {
     _id: "my_id",
     name: "Ciccio maliccio",
-    city: "Konoha",
+    address: { city: "Konoha"},
     organization: false,
     avatar: "gatto.jpeg"
 }]
@@ -439,6 +460,6 @@ exports.dummyLoggedUser = {
     eventsSubscribed: [],
     eventsFollowed: [],
     address: {
-        city: "Imola"
+        address: { city: "Imola"}
     }
 }
