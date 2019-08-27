@@ -43,7 +43,7 @@ module.exports = (app) => {
         )
         .delete(
             loginChecker,
-            eventcontroller.deleteEvent
+            eventController.deleteEvent
         )
 
     app.route('/events/position/near')
