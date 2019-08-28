@@ -45,6 +45,8 @@ module.exports = (app) => {
             loginChecker,
             eventController.deleteEvent
         )
+    app.route('/events/info/complete/:uuid')
+        .get(loginChecker, eventController.envetCompleteInfo)
 
     app.route('/events/position/near')
         .get(eventController.getEventsNear)
@@ -52,12 +54,15 @@ module.exports = (app) => {
     app.route('/events/search/:name')
         .get(eventController.searchEventByName)
 
-    app.route("/events/:fromIndex")
+    app.route('/events/:fromIndex')
         .get(eventController.getEventsFromIndex)
 
     app.route('/user/event')
         .post(loginChecker, eventController.addUserToEvent)
         .delete(loginChecker, eventController.removeUserToEvent)
+    
+    app.route('/friend/participant/:eventId')
+        .post(loginChecker, eventController.findFirendParticipant)
 
     /* ----------------------------------------------- */
 
@@ -101,7 +106,7 @@ module.exports = (app) => {
 
     app.route("/profile/credentials")
         .put(userController.updateCredentials)
-
+    
     app.route('/invite/:uuid')
         .get(loginChecker, userController.inviteFriends)
 

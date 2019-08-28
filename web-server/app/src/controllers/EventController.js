@@ -16,6 +16,10 @@ function formatUserForEvent (req) {
     return data
 }
 
+exports.findFirendParticipant = (req,res) => { 
+    network.internalError(res, {description: "Ancora da implementare !!"})
+}
+
 exports.addUserToEvent = (req, res) => {
     EventService.addUserToEvent(req.body.event, formatUserForEvent(req),
             response => network.replayResponse(response, res),
@@ -30,15 +34,48 @@ exports.removeUserToEvent = (req, res) => {
 
 exports.eventInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, response => {
-        let event = response.data;
+        let event = response.data
         axios.get(`${UserServiceServer}/users/${event.organizator}`)
-            .then(organizator => {
-                event.organizator = organizator.data;
-                network.resultWithJSON(res, event)
+        .then(organizator => {
+            event.organizator = organizator.data;
+            network.resultWithJSON(res, event)
+        })
+        .catch(err => {
+            network.internalError(res, err)
+        })
+    }, err => network.internalError(res, err))
+}
+exports.envetCompleteInfo = (req, res) => {
+    EventService.getEventById(req.params.uuid, response => {
+        let event = response.data;
+        var organization = axios.get(`${UserServiceServer}/users/${event.organizator}`)
+        var participant = []
+        var follower = []
+        if(event.participants){
+            participant = event.participants.map(p =>  axios.get(`${UserServiceServer}/users/${p}`))
+        }
+        if(event.followers){
+            follower = event.followers.map(f =>  axios.get(`${UserServiceServer}/users/${f}`))
+        }
+        //Aggancio callback a tutte le richieste di info al servizio utenti
+        Promise.all([Promise.all(participant), Promise.all(follower), organization])
+        .then(responses => {
+            //Aggiungo info dei partecipanti alle info dell'evento
+            event.participants = event.follower.map(userId => {
+                responses[0].data.find(user => user._id === userId)
             })
-            .catch(err => {
-                network.internalError(res, err)
+            //Aggiungo info dei follower alle info dell'evento
+            event.followers = event.follower.map(userId => {
+                responses[1].data.find(user => user._id === userId)
             })
+            network.resultWithJSON(res, event)
+        })
+        .catch(err => {
+            network.internalError(res, {
+                description: "Un piccolo errore in \n >EventControlle.js->findFirendParticipant\n",
+                error: err
+            })
+        })
     }, err => network.internalError(res, err))
 }
 
