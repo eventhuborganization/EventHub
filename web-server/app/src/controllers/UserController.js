@@ -3,7 +3,6 @@ const axios = require('axios')
 const path = require('path')
 const fs = require("fs")
 
-
 exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
     axios.delete(`${UserServiceServer}/users/linkedUsers`, {data: data})
@@ -12,8 +11,10 @@ exports.removeLinkedUser = (req, res) => {
 }
 
 exports.inviteFriends = (req, res) => {
-    var data = {typology: 0, sender: req.user._id}
-    axios.post(`${UserServiceServer}/users/${req.body.user}`, data)
+    //invito per l'evento req.body.event
+    // TODO - Controllo lato servizio se l'utente ha gia una notifica (non letta) con l'invito al medesimo evento
+    var data = {typology: 0, sender: req.user._id, data: {eventId: req.body.event}}
+    axios.post(`${UserServiceServer}/users/${req.body.user}/notifications`, data)
     .then((response) => {
         network.result(res)
     })
