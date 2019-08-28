@@ -40,13 +40,18 @@ class EventCard extends React.Component {
         })
     }
 
+    renderDate = () => {
+        let utils = require("../../utils/Utils")
+        return utils.renderDate(this.state.eventInfo.date)
+    }
+
     render() {
         return (
             <div className="row">
                 <div className="col-11 card shadow my-2 mx-auto px-0">
                     <Link className="card bg-secondary" id={this.state.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.state.eventInfo._id }>
                         <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
-                        <div className="card-img-overlay text-white">
+                        <div className="card-img-overlay text-white pb-1">
                             <div className="d-flex align-items-start flex-column h-100">
                                 <div className="container-fluid">
                                     <div className="row">
@@ -63,11 +68,19 @@ class EventCard extends React.Component {
                                     <div className="row">
                                         <div className="col-12 px-0 card-text event-text">
                                             {
-                                                this.state.eventInfo.location && this.state.eventInfo.location.address ? 
-                                                    <div className="event-place"><em className="fas fa-map-marker-alt"></em> {this.state.eventInfo.location.address}</div>
-                                                    : ""
+                                                this.state.eventInfo.date ? 
+                                                    <div className="event-place row">
+                                                        <div className="col-1 pr-0"><em className="far fa-calendar-alt"></em></div> 
+                                                        <div className="col-11">{this.renderDate()}</div>
+                                                    </div> : <div/>
                                             }
-                                            <p className="m-0">{this.state.eventInfo.description}</p>
+                                            {
+                                                this.state.eventInfo.location && this.state.eventInfo.location.address ? 
+                                                    <div className="event-place row">
+                                                        <div className="col-1 pr-0"><em className="fas fa-map-marker-alt"></em></div>  
+                                                        <div className="col-11">{this.state.eventInfo.location.address}</div>
+                                                    </div> : <div/>
+                                            }
                                         </div>
                                     </div>
                                 </div>
