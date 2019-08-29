@@ -14,7 +14,7 @@ class Home extends React.Component {
             eventsLoaded: []
         }
         ApiService.getEvents({fromIndex: 0},
-            () => this.props.onError("Errore nel caricare gli eventi. Ricaricare la pagina."),
+            error => this.onSearchError(null, error),
             response => this.onSearchResults({events: response}))
     }
 
@@ -27,9 +27,12 @@ class Home extends React.Component {
             })
     }
 
-    onSearchError = () => {
+    onSearchError = (location, error) => {
         this.setState({eventsLoaded: []},
-            () => this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare."))
+            () => {
+                if ((error.status && error.status !== 404) || (error.response && error.response.status !== 404))
+                    this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare.")
+            })
     }
 
     renderNoNotificationPlaceHolder = () => {

@@ -6,6 +6,7 @@ import {ConfirmButton} from "../floating_button/FloatingButton"
 import ApiService from "../../services/api/Api"
 import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
+import {ImageForCard, LOCAL} from "../image/Image"
 
 class DeleteButton extends React.Component {
 
@@ -111,7 +112,7 @@ class EventEditor extends React.Component {
                             let city = undefined
                             let political = undefined
                             place.address_components.forEach(component => {
-                                if (!streetNumber && component.types.includes("street_number"))
+                                if (!streetNumber && component.types.includes("street_number") && !isNaN(parseInt(component.short_name)))
                                     streetNumber = component.short_name
                                 else if (!streetAddress && component.types.includes("route"))
                                     streetAddress = component.short_name
@@ -451,14 +452,7 @@ class EventEditor extends React.Component {
                 {this.renderRedirect()}
                 <section className="row">
                     <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
-                        <div className={"text-secondary " + (this.state.event.thumbnail ? " d-none " : "" )}>
-                            <em className="far fa-image fa-9x"></em>
-                            <h4>Clicca per aggiungere un'immagine</h4>
-                        </div>
-                        <img src={image}
-                             alt="Event thumbnail"
-                             className={"img-fluid w-100 " + (this.state.event.thumbnail ? "" : " d-none ")}
-                        />
+                        <ImageForCard imageName={image} type={LOCAL} text={"Clicca per aggiungere un'immagine"}/>
                     </div>
                     <div className="d-none">
                         <label htmlFor="thumbnail" >Copertina dell'evento.</label>

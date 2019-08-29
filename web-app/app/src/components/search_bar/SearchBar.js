@@ -168,7 +168,7 @@ class SearchBar extends CallableComponent {
     search = (searchApi, data, location) => {
         if (this.props.onLocationChange)
             this.props.onLocationChange(location)
-        searchApi(data, () => this.props.onError(location), events => this.onResults(events, location))
+        searchApi(data, error => this.props.onError(location, error), events => this.onResults(events, location))
     }
 
     onResults = (events, location) => {
