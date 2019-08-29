@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import styles from './MultipleElementsBanner.module.css'
 import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
+import Api from '../../services/api/Api'
 
 function UserAvatar(props){
     return (
@@ -58,24 +59,56 @@ class MultipleUsersBanner extends React.Component {
 
     constructor(props){
         super(props)
-        this.state = {}
+        this.state = {
+            users: props.users
+        }
         let toShow = this.displayWindowSize()
         this.state.avatarsToShow = toShow[0]
         this.state.emptyAvatarSize = toShow[1]
     }
 
-    displayWindowSize = () => {
-        let width = window.innerWidth;
-        if(width < 767.98){
-            return [3,4]
-        } else if (width > 767.98 && width < 991.98){
-            return [7,5]
-        } else if (width > 991.98 && width < 1199.98){
-            return [10,6]
-        } else {
-            return [12,7]
+    componentDidUpdate = (prevProps) => {
+        if(prevProps !== this.props){
+            if(this.props.usersInfoIncomplete){
+                this.loadUsersInfo(this.props.users, this.state.avatarsToShow)
+            } else {
+                this.setState({users: this.props.users})
+            }
         }
     }
+
+    displayWindowSize = () => {
+        let width = window.innerWidth;
+        let data;
+        if(width < 767.98){
+            data = [3,4]
+        } else if (width > 767.98 && width < 991.98){
+            data = [7,5]
+        } else if (width > 991.98 && width < 1199.98){
+            data = [10,6]
+        } else {
+            data = [12,7]
+        }
+        this.loadUsersInfo(this.props.users, data[0] + 1)
+        return data
+    }
+
+    loadUsersInfo = (users, limit) => {
+        if(this.props.usersInfoIncomplete){
+            let shownUsers = users.slice(0, limit + 1)
+            Api.getUsersInformation(
+                shownUsers, 
+                (err) => console.log(err),
+                usersDetail => {
+                    usersDetail.forEach(user => {
+                        let index = users.findIndex(u => u._id === user._id)
+                        users[index] = user
+                    })
+                    this.setState({users: users})
+                }
+            )
+        }
+    } 
 
     componentDidMount = () => {
        window.onresize = () => {
@@ -92,7 +125,7 @@ class MultipleUsersBanner extends React.Component {
     }
 
     render = () => {
-        let users = this.props.users
+        let users = this.state.users
         let limit = this.state.avatarsToShow
         let avatars = []
         if(users.length > 0){
