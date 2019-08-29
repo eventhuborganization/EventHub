@@ -570,8 +570,10 @@ let logout = (onError, onSuccess) => {
  */
 let register = (data, onError, onSuccess) => {
     let form = new FormData()
-    form.append('avatar', data.avatar)
-    delete data.avatar
+    if (data.avatar) {
+        form.append('avatar', data.avatar)
+        delete data.avatar
+    }
     form.append('data', JSON.stringify(data));
     managePromise(
         Axios.post('/registration', form, {

@@ -28,7 +28,8 @@ exports.registration = (req, res) => {
     let data = JSON.parse(req.body.data)
     data.sex = data.gender
     data.phoneNumber = data.phone
-    data.profilePicture = req.file ? path.extname(req.file.originalname).toLowerCase() : ""
+    if (req.file)
+        data.profilePicture = path.extname(req.file.originalname).toLowerCase()
     delete data.gender
     delete data.phone
     delete data.avatar

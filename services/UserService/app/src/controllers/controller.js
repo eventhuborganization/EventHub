@@ -38,16 +38,20 @@ exports.createNewUser = (req, res) => {
                     if (err) {
                         network.internalError(res, err);
                     } else {
-                        user.profilePicture = user._id + Date.now() + user.profilePicture
-                        user.save((err, finalUser) => {
-                            if (err) {
-                                Users.findByIdAndDelete(user._id, () => {
-                                    network.internalError()
-                                })
-                            }
-                            let user_data = commons.deleteUserPrivateInformations(finalUser);
-                            network.userCreated(res, user_data);
-                        })
+                        if(user.profilePicture){
+                            user.profilePicture = user._id + Date.now() + user.profilePicture
+                            user.save((err, finalUser) => {
+                                if (err) {
+                                    Users.findByIdAndDelete(user._id, () => {
+                                        network.internalError()
+                                    })
+                                }
+                                let user_data = commons.deleteUserPrivateInformations(finalUser);
+                                network.userCreated(res, user_data);
+                            })
+                        } else {
+                            network.userCreated(res, user);
+                        }
                     }
                 });
             } else {
@@ -167,7 +171,7 @@ exports.getUserNotifications = (req, res) => {
             network.internalError(res, err);
         } else if(user == null){
             network.userNotFound(res);
-        } else {
+        } else {            
             let limit = req.params.fromIndex + NUM_NOTIFICATIONS_TO_SHOW;
             let notificationsToShow = user.notifications.filter(not => !not.read).slice(req.params.fromIndex, limit);
             network.resultWithJSON(res, {
