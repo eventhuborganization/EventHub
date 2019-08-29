@@ -4,6 +4,7 @@ import './Image.css'
 
 let AVATAR = 0
 let IMAGE = 1
+let LOCAL = 2
 
 let BORDER_PRIMARY = 0
 
@@ -13,7 +14,8 @@ let PLACEHOLDER_IMAGE = 0
 /**
  * @param props {{
  *     imageName: string,
- *     type: number
+ *     type: number,
+ *     text: string
  * }}
  * @return {*}
  * @constructor
@@ -27,15 +29,26 @@ let ImageForCard = props => {
         case IMAGE:
             url = ApiService.getImageUrl(props.imageName)
             break
+        case LOCAL:
+            url = props.imageName
+            break
         default: break
+    }
+    let altDisplayClass = props.text
+        ? " d-flex flex-column justify-content-center align-items-center "
+        : " d-flex justify-content-center align-items-center "
+    let renderText = () => {
+        if (props.text)
+            return <h4>{props.text}</h4>
     }
     return (props.imageName && url ?
         <img src={url}
              className={"card-img img-fluid myCard"}
              alt="Immagine profilo utente"
         /> :
-        <div className={"bg-secondary text-white myCard d-flex justify-content-center align-items-center"}>
+        <div className={"bg-secondary text-white myCard" + altDisplayClass}>
             <em className="far fa-image fa-9x"></em>
+            {renderText()}
         </div>)
 }
 
@@ -104,4 +117,4 @@ let EmptyAvatar = props => {
     )
 }
 
-export {ImageForCard, AVATAR, IMAGE, RoundedSmallImage, BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_IMAGE, PLACEHOLDER_USER_CIRCLE}
+export {ImageForCard, AVATAR, IMAGE, RoundedSmallImage, BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_IMAGE, PLACEHOLDER_USER_CIRCLE, LOCAL}

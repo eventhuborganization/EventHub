@@ -28,6 +28,7 @@ class EventInfo extends React.Component {
                             state.eventInfo.location.place_id = result.place_id
                             return state
                         }))
+                    event.participants = event.participants.map(id => {return {_id: id}})
                     this.setState({eventInfo: event})
                 })
     }
@@ -94,6 +95,7 @@ class EventInfo extends React.Component {
                                     noPadding={true}
                                     margin={"mt-2"}
                                     level={"h5"}
+                                    usersInfoIncomplete={true}
                                 />
 
 
