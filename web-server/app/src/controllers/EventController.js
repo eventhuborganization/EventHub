@@ -216,14 +216,13 @@ exports.updateEvent = (req, res) => {
 
 
 exports.deleteEvent = (req, res) => {
-    EventService.deleteEvent(req.params.uuid, req.user.id, 
-        response => {
+    EventService.deleteEvent(req.params.uuid, req.user._id, 
+        response => {            
             let event = response.data
             network.replayResponse(response,res)
             let users = new Set(event.participants.concat(event.followers))
             users.forEach(userId => {
-                deleteEventToUser(req.user._id, event_id, 5)
-                sendNotification(userId,{typology: 11, sender: req.user._id, data: event}, 5)
+                deleteEventToUser(userId, event, 5)
             })
             
         }, error => network.replayError(error, res))
@@ -238,9 +237,9 @@ var sendNotification = (userId, notification, counter) => { //{typology: 7, send
         })
 }
 
-var deleteEventToUser = (userId, eventId, counter) => {
-    axios.delete(`${UserServiceServer}/users/${userId}/events`, {data: {participant: enventId, follower: eventId}})
-        .then(() => {})
+var deleteEventToUser = (userId, event, counter) => {
+    axios.delete(`${UserServiceServer}/users/${userId}/events`, {data: {participant: event._id, follower: event._id}})
+        .then(() => {sendNotification(userId,{typology: 11, sender: req.user._id, data: event}, 5)})
         .catch(()=> {
             if (counter>0)
                 deleteEventToUser(userId, eventId, --counter)

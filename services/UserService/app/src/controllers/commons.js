@@ -27,7 +27,7 @@ exports.updateUserEvents = (req, res, updates) => {
 }
 
 exports.isEventUpdateWellFormed = (body) => {
-    return (body.participant && !body.follower) || (!body.participant && body.follower);
+    return body.participant || body.follower
 }
 
 exports.retrieveEventsToUpdate = (body) => {
