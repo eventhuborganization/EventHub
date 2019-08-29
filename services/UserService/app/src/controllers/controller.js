@@ -185,29 +185,46 @@ exports.addUserNotification = (req, res) => {
         data.typology = req.body.typology;
         data.sender = req.body.sender;
         data.data = req.body.data;
-        if (data.typology === 1) {
-            Users.findById(req.params.uuid, (err, user) => {
-                if (err) {
-                    network.userNotFound(res);
-                }
-                if (user.notifications.filter(e => e.typology === 1 &&
-                                            e.sender === data.sender &&
-                                            e.read === false).length === 0 ) {
-                    user.notifications.push(data)
-                    user.save(() => network.result(res))
-                } else {
-                    network.badRequest(res)
-                }
-            });
-        } else {
-            Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {
-                if (err) {
-                    network.userNotFound(res);
-                }
-                network.result(res);
-            });
+        switch (data.tipology) {
+            case 0: // Invito ad un evento
+                Users.findById(req.params.uuid, (err, user) => {
+                    if (err) {
+                        network.userNotFound(res);
+                    }
+                    if (user.notifications.filter(e => e.typology === 0 &&
+                                                e.sender === data.sender &&
+                                                e.read === false).length === 0 ) {
+                        user.notifications.push(data)
+                        user.save(() => network.result(res))
+                    } else {
+                        network.badRequest(res)
+                    }
+                });
+                break;
+            case 1: // Invito richiesta di amicizia
+                Users.findById(req.params.uuid, (err, user) => {
+                    if (err) {
+                        network.userNotFound(res);
+                    }
+                    if (user.notifications.filter(e => e.typology === 1 &&
+                                                e.sender === data.sender &&
+                                                e.read === false).length === 0 ) {
+                        user.notifications.push(data)
+                        user.save(() => network.result(res))
+                    } else {
+                        network.badRequest(res)
+                    }
+                });
+                break;
+            default:
+                Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {
+                    if (err) {
+                        network.userNotFound(res);
+                    }
+                    network.result(res);
+                });
+                break;
         }
-        
     } else {
         network.badRequest(res);
     }

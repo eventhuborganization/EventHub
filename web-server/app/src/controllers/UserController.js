@@ -12,7 +12,6 @@ exports.removeLinkedUser = (req, res) => {
 
 exports.inviteFriends = (req, res) => {
     //invito per l'evento req.body.event
-    // TODO - Controllo lato servizio se l'utente ha gia una notifica (non letta) con l'invito al medesimo evento
     var data = {typology: 0, sender: req.user._id, data: {eventId: req.body.event}}
     axios.post(`${UserServiceServer}/users/${req.body.user}/notifications`, data)
     .then((response) => {
