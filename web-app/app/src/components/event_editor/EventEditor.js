@@ -12,7 +12,6 @@ class DeleteButton extends React.Component {
     constructor(props){
         super(props)
         this.state = {redirectHome: false}
-        console.log(this.props)
     }
 
     onClick = () => {
@@ -587,7 +586,11 @@ class EventEditor extends React.Component {
                     this.state.onUpdate ? 
                         <div className="row mt-4">
                             <div className="col">
-                                <DeleteButton showMessage={this.props.showMessage} event={this.state.oldEvent._id}/>
+                                <DeleteButton
+                                    onError={this.props.onError} 
+                                    showMessage={this.props.showMessage} 
+                                    event={this.state.oldEvent}
+                                />
                             </div>
                         </div>
                         : <div/>
