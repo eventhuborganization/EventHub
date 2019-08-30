@@ -142,12 +142,7 @@ exports.createEvent = (req, res) => {
         fs.rename(tempPath, targetPath, error => {
             if (error) {
                 console.log(error)
-                for(let notDone = 4; notDone; ) {
-                    EventService.deleteEvent(response.data._id, req.user.id, response => {
-                        notDone = false
-                        network.internalError(res, error)
-                    }, error => notDone--)
-                }
+                tryDeleteEvent(req.user.id, response.data._id, error, 5)
                 network.internalError(res, error)
             } else {
                 if (event.public) {
@@ -160,8 +155,10 @@ exports.createEvent = (req, res) => {
                                     axios.post(`${UserServiceServer}/users/${user}/notifications`, {typology: 6, sender: req.user._id})
                                 })
                             })
+                            .catch(err => network.internalError(res, err))
                         }
                     })
+                    .catch(err => network.internalError(res, err))
                 }
                 network.resultWithJSON(res,response.data)
             }
@@ -235,6 +232,12 @@ var sendNotification = (userId, notification, counter) => { //{typology: 7, send
             if (counter>0)
                 sendNotification(userId, notification, --counter)
         })
+}
+
+var tryDeleteEvent = (userId, eventId, error, counter) => { 
+    EventService.deleteEvent(eventId, userId, 
+        response => {}, 
+        error => {if (counter>0) tryDeleteEvent(userId,eventId, --counter)})
 }
 
 var deleteEventToUser = (userId, event, counter) => {
