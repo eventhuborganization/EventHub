@@ -35,6 +35,9 @@ class App extends React.Component {
           notifications: []
       }
       ApiService.setNotAuthenticatedBehaviour(this.onNotAuthenticated)
+      if(applicationState){
+        this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
+      }
   }
 
   componentDidMount() {
@@ -104,6 +107,7 @@ class App extends React.Component {
                 this.removeSubscriptions()
                 this.setState({
                     user: {},
+                    notifications: [],
                     isLogged: false
                 }, () => this.saveUserDataToLocalStorage())
             }
@@ -144,6 +148,11 @@ class App extends React.Component {
         this.setState({isLogged: false}, () => this.saveUserDataToLocalStorage())
     }
 
+  renderNotificationBadge = () => {
+    return this.state.isLogged && this.state.notifications.length > 0 ? 
+      <span className={"badge badge-danger align-top ml-1"}>{this.state.notifications.length}</span> : <div/>
+  }
+
   render() {
     return (
         <Router>
@@ -164,7 +173,13 @@ class App extends React.Component {
                   showMessage={this.showModal} 
                 />} 
             />
-            <Route path="/menu" exact render={() => <Menu />} />
+            <Route path="/menu" exact render={() => 
+                <Menu 
+                  notifications={this.state.notifications}
+                  isLogged={this.state.isLogged}
+                  onLogout={this.logout}
+                />
+            } />
             <Route path="/event/new" exact render={(props) =>
                 <EventEditor {...props}
                              isLogged={this.state.isLogged}
@@ -253,7 +268,6 @@ class App extends React.Component {
                     onChangeUserInfo={this.updateUserInfo}
                     onError={this.onError}
                     onSuccess={this.onSuccess}
-                    logout={this.logout}
                 />}
               />
           </Switch>
@@ -264,7 +278,7 @@ class App extends React.Component {
               <div className="col text-center my-auto"><Link to="/friends"><em className="fas fa-users fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/menu">
                 <em className="fas fa-bars fa-lg"/>
-                <span className="badge badge-danger align-top ml-1 d-none">1</span>
+                {this.renderNotificationBadge()}
               </Link></div>
           </footer>
         </Router>
