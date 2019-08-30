@@ -1,13 +1,13 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import styles from './MultipleElementsBanner.module.css'
-import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
+import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage, MoreAvatar} from "../image/Image"
 import Api from '../../services/api/Api'
 
 function UserAvatar(props){
     return (
         <Link 
-            className={"col d-flex align-items-center justify-content-center " + (!!props.margin ? "" : "pr-0")} 
+            className={"col " + (!!props.margin ? "" : "pr-0")} 
             to={"/users/" + props.user._id}>
             <RoundedSmallImage imageName={props.user.avatar} borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </Link>
@@ -16,7 +16,7 @@ function UserAvatar(props){
 
 function EmptyUserAvatar(props){
     return (
-        <div className={"col d-flex justify-content-center " + (!!props.margin ? "" : " pr-0 ")}>
+        <div className={"col " + (!!props.margin ? "" : " pr-0 ")}>
             <EmptyAvatar borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </div>
     )
@@ -24,13 +24,9 @@ function EmptyUserAvatar(props){
 
 function MoreUsers(props){
     return (
-        <div className="col d-flex justify-content-center align-items-center">
-            <Link 
-                to={props.moreUsersLink}
-                className={"border border-primary rounded-circle w-100 h-100 d-flex justify-content-center align-items-center " + styles.avatarIcon}>
-                    <em className="fas fa-ellipsis-h text-dark"></em>
-            </Link>
-        </div>
+        <Link to={props.moreUsersLink} className="col">
+                <MoreAvatar borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
+        </Link>
     )
 }
 
