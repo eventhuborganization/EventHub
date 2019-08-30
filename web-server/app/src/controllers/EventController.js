@@ -153,7 +153,7 @@ exports.createEvent = (req, res) => {
                             axios.get(`${UserServiceServer}/users/${req.user._id}/linkedUsers`)
                             .then(resLinkedUsers => {
                                 resLinkedUsers.data.linkedUsers.forEach(user =>{
-                                    sendNotification(user, {typology: 6, sender: req.user._id, data: finalEvent}, 5)
+                                    sendNotification(user, {typology: 6, sender: req.user._id, data: {event: finalEvent}}, 5)
                                 })
                             })
                             .catch(err => network.internalError(res, err))
@@ -206,7 +206,7 @@ exports.updateEvent = (req, res) => {
             network.replayResponse(response, res)
             let users = new Set(event.participants.concat(event.followers))
             users.forEach(userId => {
-                sendNotification(userId, {typology: 7, sender: req.user._id, data: event}, 5)
+                sendNotification(userId, {typology: 7, sender: req.user._id, data: {event: event}}, 5)
             })
         }, error => network.replayError(error, res))
 }
@@ -243,7 +243,7 @@ var tryDeleteEvent = (userId, eventId, error, counter) => {
 
 var deleteEventToUser = (userId, event, counter) => {
     axios.delete(`${UserServiceServer}/users/${userId}/events`, {data: {participant: event._id, follower: event._id}})
-        .then(() => {sendNotification(userId,{typology: 11, sender: req.user._id, data: event}, 5)})
+        .then(() => {sendNotification(userId,{typology: 11, sender: req.user._id, data: {event: event}}, 5)})
         .catch(()=> {
             if (counter>0)
                 deleteEventToUser(userId, eventId, --counter)
