@@ -67,6 +67,9 @@ function runApp() {
         console.log('')
         next()
     })
+    
+    //allow to use the whole content of the folder build
+    //app.use(express.static(path.join(__dirname, 'build')))
     routes(app)
 
     app.use(function(req, res) {
