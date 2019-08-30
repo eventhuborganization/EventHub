@@ -5,14 +5,16 @@ module.exports = (app) => {
     var loginController = require('../controllers/LoginController')
     const {loginChecker} = require('../API/passport')
     var multer = require('multer')
+    const path = require('path')
 
     const upload = multer({
         dest: __dirname + "../../../temp/files"
     });
 
     app.route("/")
-        .get(loginChecker,(req, res) => {
-            res.sendFile(`${appRoot}/views/home.html`)
+        .get((req, res) => {
+            //res.sendFile(path.join(__dirname, 'build', 'index.html'))
+            res.status(200).end()
         })
 
     app.route('/images/:name')

@@ -7,6 +7,7 @@ import ScrollToTop from '../scroll_to_top/ScrollToTop'
 import './App.css'
 import Home from '../home/Home'
 import Login from '../login/Login'
+import Menu from '../menu/Menu'
 import EventInfo from '../event_info/EventInfo'
 import Registration from '../registration/Registration'
 import Notifications from '../notifications/Notifications'
@@ -163,6 +164,7 @@ class App extends React.Component {
                   showMessage={this.showModal} 
                 />} 
             />
+            <Route path="/menu" exact render={() => <Menu />} />
             <Route path="/event/new" exact render={(props) =>
                 <EventEditor {...props}
                              isLogged={this.state.isLogged}
@@ -202,7 +204,7 @@ class App extends React.Component {
                   onLoginSuccessfull={this.onLoginSuccessfull}
                 />} 
             />
-            <Route path="/notification" exact render={(props) =>
+            <Route path="/notifications" exact render={(props) =>
                 <Notifications {...props}
                     isLogged={this.state.isLogged}
                     onError={this.onError}
@@ -260,7 +262,10 @@ class App extends React.Component {
               <div className="col text-center my-auto"><Link to={"/profile"}><em className="fas fa-user fa-lg" /></Link></div>
               <div className="col text-center my-auto"><Link to="/"><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
               <div className="col text-center my-auto"><Link to="/friends"><em className="fas fa-users fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to="/notification"><em className="fas fa-bell fa-lg" /></Link></div>
+              <div className="col text-center my-auto"><Link to="/menu">
+                <em className="fas fa-bars fa-lg"/>
+                <span className="badge badge-danger align-top ml-1 d-none">1</span>
+              </Link></div>
           </footer>
         </Router>
     )
