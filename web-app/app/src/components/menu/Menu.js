@@ -29,13 +29,19 @@ function LinkToPage(props){
 
 
 export default function Menu(props){
-    let logout = props.isLogged ? 
+    let logout = props.isLogged ?
+    <div>
+        <LinkToPage 
+            page="/settings"
+            icon={{name: "cog", size: "lg"}}
+            name="Impostazioni"/>
         <LinkToPage 
             page="/"
             onClick={props.onLogout}
             icon={{name: "sign-out-alt", size: "lg"}}
             name="Logout"/>
-        : <div/>
+    </div> 
+    : <div/>
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>

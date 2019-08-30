@@ -268,7 +268,6 @@ class App extends React.Component {
                     onChangeUserInfo={this.updateUserInfo}
                     onError={this.onError}
                     onSuccess={this.onSuccess}
-                    logout={this.logout}
                 />}
               />
           </Switch>
