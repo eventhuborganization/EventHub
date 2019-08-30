@@ -107,6 +107,7 @@ class App extends React.Component {
                 this.removeSubscriptions()
                 this.setState({
                     user: {},
+                    notifications: [],
                     isLogged: false
                 }, () => this.saveUserDataToLocalStorage())
             }
@@ -148,7 +149,7 @@ class App extends React.Component {
     }
 
   renderNotificationBadge = () => {
-    return this.state.notifications.length > 0 ? 
+    return this.state.isLogged && this.state.notifications.length > 0 ? 
       <span className={"badge badge-danger align-top ml-1"}>{this.state.notifications.length}</span> : <div/>
   }
 
@@ -173,7 +174,11 @@ class App extends React.Component {
                 />} 
             />
             <Route path="/menu" exact render={() => 
-              <Menu notifications={this.state.notifications}/>
+                <Menu 
+                  notifications={this.state.notifications}
+                  isLogged={this.state.isLogged}
+                  onLogout={this.logout}
+                />
             } />
             <Route path="/event/new" exact render={(props) =>
                 <EventEditor {...props}

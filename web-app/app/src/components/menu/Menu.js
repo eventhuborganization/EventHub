@@ -9,6 +9,7 @@ function LinkToPage(props){
         <li className="row">
             <Link
                 to={props.page}
+                onClick={props.onClick ? props.onClick : () => {}}
                 className={"col-11 py-2 border border-secondary rounded mx-auto mb-2"} 
                 style={{textDecoration: "none"}}>
                     <div className="row d-flex align-items-center">
@@ -28,6 +29,13 @@ function LinkToPage(props){
 
 
 export default function Menu(props){
+    let logout = props.isLogged ? 
+        <LinkToPage 
+            page="/"
+            onClick={props.onLogout}
+            icon={{name: "sign-out-alt", size: "lg"}}
+            name="Logout"/>
+        : <div/>
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>
@@ -35,7 +43,7 @@ export default function Menu(props){
                     page="/notifications"
                     icon={{style: "far", name: "bell", size: "lg"}}
                     name="Le mie notifiche" 
-                    showBadge={props.notifications && props.notifications.length > 0}
+                    showBadge={props.isLogged && props.notifications && props.notifications.length > 0}
                     badgeInfo={props.notifications.length}/>
                 <LinkToPage 
                     page="/groups"
@@ -49,6 +57,7 @@ export default function Menu(props){
                     page="/reviews"
                     icon={{name: "pen", size: "lg"}}
                     name="Le mie recensioni"/>
+                {logout}
             </ul>
         </div>
     )
