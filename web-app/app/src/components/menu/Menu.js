@@ -41,7 +41,10 @@ export default function Menu(props){
             icon={{name: "sign-out-alt", size: "lg"}}
             name="Logout"/>
     </div> 
-    : <div/>
+    : <LinkToPage 
+        page="/login"
+        icon={{name: "sign-in-alt", size: "lg"}}
+        name="Login"/>
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>
