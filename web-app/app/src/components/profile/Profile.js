@@ -159,7 +159,8 @@ class Profile extends CallableComponent {
                                             <ProfileAction
                                                 id="addButton"
                                                 iconName={"plus"}
-                                                show={!this.props.isLocalUser && !isMyFriend && this.props.isLogged && !this.props.user.organization}
+                                                show={!this.props.isLocalUser && !isMyFriend 
+                                                    && this.props.isLogged && !this.props.localUser.organization}
                                                 actionSelected={this.addFriend}
                                             />
                                             <ProfileAction
@@ -232,7 +233,7 @@ class UserFriends extends React.Component {
     }
 
     cantAddFriend = (friend) => {
-        return !this.props.isLogged || this.props.user.linkedUsers.includes(friend) || friend._id === this.props.user._id
+        return !this.props.isLogged || this.props.localUser.linkedUsers.includes(friend) || friend._id === this.props.localUser._id
     }
 
     getAllFriends = () => {
