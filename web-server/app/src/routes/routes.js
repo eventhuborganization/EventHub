@@ -48,7 +48,7 @@ module.exports = (app) => {
             eventController.deleteEvent
         )
     app.route('/events/info/complete/:uuid')
-        .get(loginChecker, eventController.envetCompleteInfo)
+        .get(loginChecker, eventController.eventCompleteInfo)
 
     app.route('/events/position/near')
         .get(eventController.getEventsNear)

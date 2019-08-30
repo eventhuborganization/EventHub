@@ -45,7 +45,7 @@ exports.eventInfo = (req, res) => {
         })
     }, err => network.internalError(res, err))
 }
-exports.envetCompleteInfo = (req, res) => {
+exports.eventCompleteInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, response => {
         let event = response.data;
         var organization = axios.get(`${UserServiceServer}/users/${event.organizator}`)
