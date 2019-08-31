@@ -4,8 +4,9 @@ module.exports = (app) => {
     var notificationController = require('../controllers/NotificationController')
     var loginController = require('../controllers/LoginController')
     var reviewController = require('../controllers/ReviewController')
+    let groupController = require('../controllers/GroupController')
     const {loginChecker} = require('../API/passport')
-    var multer = require('multer')
+    let multer = require('multer')
     const path = require('path')
 
     const upload = multer({
@@ -87,6 +88,19 @@ module.exports = (app) => {
     
     app.route("/users/:uuid")
         .get(userController.getInfoUser)
+    
+
+    // TODO ------- da debuggare ----------------
+
+    app.route("/users/groups")
+        .get(loginChecker, groupController.getGroupName)
+        .post(loginChecker, groupController.createGroup)    
+
+    app.route("/users/groups/:groupId")
+        .get(loginChecker, groupController.getGroupInfo) 
+        .post(loginChecker, groupController.add_remove_UserToGroup)//
+        .delete(loginChecker, groupController.deleteGroup)//
+    // TODO ----------------------------------------
 
     app.route('/notifications')
         .post(loginChecker, notificationController.markNotificationAsReaded)
@@ -110,8 +124,8 @@ module.exports = (app) => {
     app.route("/profile/credentials")
         .put(userController.updateCredentials)
     
-    app.route('/invite/:uuid')
-        .get(loginChecker, userController.inviteFriends)
+    app.route('/invite')
+        .post(loginChecker, userController.inviteFriends)
 
     /* ----------------------------------------------- */
 

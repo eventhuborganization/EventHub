@@ -9,6 +9,7 @@ import NotificationService from "../../services/notification/Notification"
 class Notifications extends React.Component {
 
     #notificationServiceSubscriptionCode = undefined
+    #isMounted = false
 
     constructor(props) {
         super(props)
@@ -19,6 +20,7 @@ class Notifications extends React.Component {
     }
 
     componentDidMount() {
+        this.#isMounted = true
         if (this.props.isLogged) {
             ApiService.getNotifications(0,() => {},notifications => {
                 this.setState({
@@ -32,6 +34,7 @@ class Notifications extends React.Component {
     componentWillUnmount() {
         NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
         this.#notificationServiceSubscriptionCode = undefined
+        this.#isMounted = false
     }
 
     renderNoNotificationPlaceHolder = () => {
@@ -52,7 +55,8 @@ class Notifications extends React.Component {
     }
 
     onNotificationLoaded = notifications => {
-        this.setState({notifications: notifications})
+        if(this.#isMounted)
+            this.setState({notifications: notifications})
     }
 
     render() {

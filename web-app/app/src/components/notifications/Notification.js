@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 import './Notification.css'
 import {EventInteractionPanel} from '../event/Event'
 import ApiService from '../../services/api/Api'
@@ -12,14 +13,14 @@ class Notification extends React.Component {
         super(props)
         this.state = {
             notificationTypes: {
-                0: "Ti ha invitato ad un evento.",
+                0: "Ti ha invitato all'evento",
                 1: "Ti ha inviato una richiesta d'amicizia.",
                 2: "Ha iniziato a seguirti.",
                 3: "Nuovo badge ottenuto.",
                 4: "Vuole sapere la tua posizione.",
                 5: "Ti ha (fatto una domanda/risposto).",
-                6: "Ha organizzato un nuovo evento.",
-                7: "Ha modificato l'evento.",
+                6: "Ha organizzato un nuovo evento",
+                7: "Ha modificato l'evento ",
                 8: "Ha accettato la tua richiesta d'amicizia.",
                 9: "Ti ha inviato la sua posizione.",
                 10: "Non ha accettato di inviarti la sua posizione."
@@ -125,35 +126,28 @@ class Notification extends React.Component {
         }
     }
 
+    getParentComponentByType(type, child) {
+        return this.isEventType(type) ? 
+            <Link 
+                to={"/event/" + this.props.notification.event._id} 
+                className="text-dark"
+                style={{textDecoration: "none"}}>{child}</Link>
+            : child
+    }
+
     getDescriptionComponentByType(type) {
-        switch(type) {
-            case 0:
-            case 5:
-            case 6:
-            case 7:
-                return <Eventdescription event={this.props.notification.event} />
-            case 1:
-            case 3:
-            case 4:
-            case 8:
-            case 9:
-            case 10:
-            case 2:
-                return <UserDescription description={this.state.notificationTypes[type]} />
-            default:
-                break
-        }
+        return this.isEventType(type) ? 
+            <Eventdescription description={this.state.notificationTypes[type]} event={this.props.notification.event} />
+            : <UserDescription description={this.state.notificationTypes[type]} />
     }
 
     getBottomBarByType(type) {
-        if (this.isEventType(type)) {
-            return <EventInteractionPanel {...this.props}
-                                          key={this.props.notification._id}
-                                          event={this.props.notification.event}
-                                          onEventParticipated={() => {}}
-                                          onEventFollowed={() =>  {}}
-            />
-        }
+        return this.isEventType(type) ? 
+            <EventInteractionPanel {...this.props}
+                                    key={this.props.notification._id}
+                                    event={this.props.notification.event}
+                                    hideInteractionButtons={true}
+            /> : <div/>
     }
 
     isEventType = (type) => {
@@ -166,20 +160,21 @@ class Notification extends React.Component {
             <div className="row">
                 <div className="col card shadow my-2 mx-2 px-0">
                     <div className="card-body container-fluid py-2">
-                        <div className="row">
-                            <div className="col-8">
-                                <NotificationSenderInformation notification={this.props.notification}
-                                                               description={(this.isEventType(type) ? this.state.notificationTypes[type].toString() : "")} />
-                                <div className="row mt-2">
-                                    <div className="col-12">
-                                        {this.getDescriptionComponentByType(type)}
+                        {this.getParentComponentByType(type, 
+                            <div className="row">
+                                <div className="col-8">
+                                    <NotificationSenderInformation notification={this.props.notification} />
+                                    <div className="row mt-2">
+                                        <div className="col-12">
+                                            {this.getDescriptionComponentByType(type)}
+                                        </div>
                                     </div>
                                 </div>
+                                <div className="col-4 pl-0 pr-1 pt-1">
+                                    {this.rightComponentByType(type)}
+                                </div>
                             </div>
-                            <div className="col-4 pl-0 pr-1 pt-1">
-                                {this.rightComponentByType(type)}
-                            </div>
-                        </div>
+                        )}
                         {this.getBottomBarByType(type)}
                     </div>
                 </div>
@@ -247,7 +242,7 @@ let EventImage = (props) => {
 }
 
 let Eventdescription = (props) => {
-    return (<h5 className="font-weight-bold">{props.event.name}</h5>)
+    return (<p>{props.description} <b>{props.event.name}</b></p>)
 }
 
 let UserDescription = (props) => {

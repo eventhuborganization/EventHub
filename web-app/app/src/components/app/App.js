@@ -19,6 +19,7 @@ import Settings from '../settings/Settings'
 import NotificationService from "../../services/notification/Notification"
 import ApiService from "../../services/api/Api"
 import LocalStorage from "local-storage"
+import Invite from "../invite/Invite";
 
 class App extends React.Component {
 
@@ -269,6 +270,13 @@ class App extends React.Component {
                     onError={this.onError}
                     onSuccess={this.onSuccess}
                 />}
+              />
+              <Route path="/invite" exact render={(props) =>
+                  <Invite {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                  />}
               />
           </Switch>
           <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">

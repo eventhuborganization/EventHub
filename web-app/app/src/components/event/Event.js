@@ -1,10 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { LoginRedirect } from '../redirect/Redirect'
 import './Event.css'
 import { LocationMap } from '../map/Maps'
 import ApiService from '../../services/api/Api'
-import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
 
 let PARTY = "party"
 let SPORT = "sport"
@@ -133,7 +133,7 @@ class UnsubscribeButton extends React.Component {
     }
 }
 
-function UpdateButton(props){
+function UpdateButton(props) {
     return (
         <Link 
             to={{
@@ -142,6 +142,19 @@ function UpdateButton(props){
             }} 
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
             Modifica evento
+        </Link>
+    )
+}
+
+function InviteButton(props) {
+    return (
+        <Link
+            to={{
+                pathname: "/invite",
+                event: props.event
+            }}
+            className={getButtonClassName(props.event.typology, PARTICIPATE)}>
+            Invita
         </Link>
     )
 }
@@ -187,12 +200,32 @@ let EventInteractionPanel = (props) => {
             onSuccess={props.onEventParticipated}
         />
 
+    let isOrganizator = () => {
+        return props.user._id === props.event.organizator._id
+    }
+
+    let renderInviteButton = () => {
+        return props.isLogged && (isOrganizator() || !props.event.public) ?
+                <InviteButton {...props} event={props.event} /> : <div/>
+    }
+
+    let renderInteractionButtons = () => {
+        if(props.hideInteractionButtons){
+            return <div/>
+        } else if(props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0){
+            return <div>{followButton} {subscribeButton}</div>
+        } else if(props.user._id === props.event.organizator._id){
+            return <UpdateButton {...props} event={props.event}/>
+        } else {
+            return <div/>
+        }
+    }
 
     return (
         <div className="row">
             <div className="col-3 my-auto">
                 {
-                    props.hideBadge ? <div/> : 
+                    props.hideBadge ? renderInviteButton() :
                         <EventBadge {...props}
                             key={props.event._id + "badge"}
                             event={props.event} 
@@ -200,14 +233,7 @@ let EventInteractionPanel = (props) => {
                 }
             </div>
             <div className="col-9 d-flex justify-content-end">
-                {
-                    props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0 ? 
-                        <div>{followButton} {subscribeButton}</div> :
-                        (
-                            props.user._id === props.event.organizator._id ? 
-                            <UpdateButton {...props} event={props.event}/> : <div/>
-                        )
-                }
+                { renderInteractionButtons() }
             </div>
         </div>
     )

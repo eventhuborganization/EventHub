@@ -154,6 +154,23 @@ let mapNotification = (notification) => {
 }
 
 /**
+ * Map a received group to a well known data structure.
+ * @param group {{
+ *     _id: string,
+ *     name: string,
+ *     avatar: string
+ * }}
+ * @return {{name: string, _id: string, avatar: string}}
+ */
+let mapGroup = (group) => {
+    return {
+        _id: group._id,
+        name: group.name,
+        avatar: group.avatar
+    }
+}
+
+/**
  * @param data {{
  *     event: {
  *         typology: string,
@@ -778,6 +795,57 @@ let removeFriend = (friendId, onError, onSuccess) => {
 }
 
 /**
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let getGroups = (onError, onSuccess) => {
+    managePromise(
+        Axios.get("/users/groups"),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapGroup))
+    )
+}
+
+/**
+ * @param userId {string}
+ * @param eventId {string}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let inviteUser = (userId, eventId, onError, onSuccess) => {
+    let data = {
+        user: userId,
+        event: eventId
+    }
+    managePromise(
+        Axios.post("/invite", data),
+        [200],
+        onError,
+        onSuccess
+    )
+}
+
+/**
+ * @param groupId {string}
+ * @param eventId {string}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let inviteGroup = (groupId, eventId, onError, onSuccess) => {
+    let data = {
+        group: groupId,
+        event: eventId
+    }
+    managePromise(
+        Axios.post("/invite", data),
+        [200],
+        onError,
+        onSuccess
+    )
+}
+
+/**
  * @param imageName {string}
  * @returns {string}
  */
@@ -824,5 +892,8 @@ export default {
     removeFriend,
     getImageUrl,
     getAvatarUrl,
-    setNotAuthenticatedBehaviour
+    setNotAuthenticatedBehaviour,
+    getGroups,
+    inviteUser,
+    inviteGroup
 }

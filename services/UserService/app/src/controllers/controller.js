@@ -580,7 +580,7 @@ exports.createGroup = (req, res) => {
     if(req.body && typeof(req.body.user) == "string" && typeof req.body.name === "string") {
         let newGroup = {};
         newGroup.name = req.body.name;
-        newGroup.members = [req.body.user];
+        newGroup.members = req.body.user;
         let dbGroup = new Groups(newGroup);
         dbGroup.save(function(err, group) {
             if (err) {
