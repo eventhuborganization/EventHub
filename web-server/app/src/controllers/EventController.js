@@ -16,7 +16,7 @@ function formatUserForEvent (req) {
     return data
 }
 
-exports.findFirendParticipant = (req,res) => { 
+exports.findFriendParticipant = (req,res) => { 
     network.internalError(res, {description: "Ancora da implementare !!"})
 }
 
@@ -72,7 +72,7 @@ exports.eventCompleteInfo = (req, res) => {
         })
         .catch(err => {
             network.internalError(res, {
-                description: "Un piccolo errore in \n >EventControlle.js->findFirendParticipant\n",
+                description: "Un piccolo errore in \n >EventControlle.js->findFriendParticipant\n",
                 error: err
             })
         })
