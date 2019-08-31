@@ -180,7 +180,9 @@ exports.getInfoUser = (req, res) => {
                     avatar: user.profilePicture, 
                     _id: user._id, 
                     organization: user.organization,
-                    city: user.address.city
+                    city: user.address.city,
+                    linkedUsers: user.linkedUsers,
+                    eventsSubscribed: user.eventsSubscribed
                 })
             })
             response.groups = []
