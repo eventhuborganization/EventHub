@@ -2,10 +2,10 @@ import React from 'react'
 import Api from '../../services/api/Api'
 
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, EventsBanner, ProfileControls} from './Profiles'
-import UserBanner from '../user_banner/UserBanner'
-import {FriendsTab} from '../menu_tab/MenuTab'
+import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
+import { FriendsTab } from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
-import {AVATAR, ImageForCard} from "../image/Image";
+import {AVATAR, ImageForCard} from "../image/Image"
 
 /**
  * I badge sono ancora da gestire!!!

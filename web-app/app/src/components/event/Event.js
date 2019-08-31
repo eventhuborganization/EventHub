@@ -252,7 +252,9 @@ let EventInteractionPanel = (props) => {
  *         },
  *         numParticipants: number,
  *         maxParticipants: number
- *     }
+ *     },
+ *     isLite: boolean,
+ *     hidePlace: boolean
  * }}
  * @returns {*}
  * @constructor
@@ -276,7 +278,28 @@ let EventHeaderBanner = props => {
             return <EventBadge event={props.event} />
     }
 
-    let date = require("../../utils/Utils").renderDate(props.event.date)
+    let renderOtherInfo = () => {
+        return props.isLite ? <div className={"pt-2"}/> :
+            <div className="row d-flex align-items-center">
+                <div className="col-8 mb-1 px-1">
+                    <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
+                        <em className="far fa-calendar-alt"></em> {date}
+                    </h6>
+                    {
+                        props.hidePlace ? <div/> :
+                            <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
+                                <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
+                            </h6>
+                    }
+                </div>
+                <div className="col-4 d-flex justify-content-end px-1">
+                    <p className={"m-0 " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
+                </div>
+            </div>
+    }
+
+    let dateVal = props.event.date instanceof Date ? props.event.date : new Date(props.event.date)
+    let date = require("../../utils/Utils").renderDate(dateVal)
     return (
         <section className={"row pt-2 " + getBannerClassName()}>
             <div className="col container-fluid">
@@ -286,23 +309,11 @@ let EventHeaderBanner = props => {
                             {props.event.name}
                         </h5>
                     </div>
-                    <div className="col-4 d-flex justify-content-end px-1">
+                    <div className={"col-4 d-flex justify-content-end px-1"}>
                         {renderBadge()}
                     </div>
                 </div>
-                <div className="row d-flex align-items-center">
-                    <div className="col-8 mb-1 px-1">
-                        <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
-                            <em className="far fa-calendar-alt"></em> {date}
-                        </h6>
-                        <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
-                            <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
-                        </h6>
-                    </div>
-                    <div className="col-4 d-flex justify-content-end px-1">
-                        <p className={"m-0 " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
-                    </div>
-                </div>
+                {renderOtherInfo()}
             </div>
         </section>
     )

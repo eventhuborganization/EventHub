@@ -1,9 +1,10 @@
 module.exports = (app) => {    
-    let eventController = require('../controllers/EventController')
-    let userController = require('../controllers/UserController')
-    let notificationController = require('../controllers/NotificationController')
+    var eventController = require('../controllers/EventController')
+    var userController = require('../controllers/UserController')
+    var notificationController = require('../controllers/NotificationController')
+    var loginController = require('../controllers/LoginController')
+    var reviewController = require('../controllers/ReviewController')
     let groupController = require('../controllers/GroupController')
-    let loginController = require('../controllers/LoginController')
     const {loginChecker} = require('../API/passport')
     let multer = require('multer')
     const path = require('path')
@@ -49,7 +50,7 @@ module.exports = (app) => {
             eventController.deleteEvent
         )
     app.route('/events/info/complete/:uuid')
-        .get(loginChecker, eventController.envetCompleteInfo)
+        .get(loginChecker, eventController.eventCompleteInfo)
 
     app.route('/events/position/near')
         .get(eventController.getEventsNear)
@@ -65,7 +66,7 @@ module.exports = (app) => {
         .delete(loginChecker, eventController.removeUserToEvent)
     
     app.route('/friend/participant/:eventId')
-        .post(loginChecker, eventController.findFirendParticipant)
+        .post(loginChecker, eventController.findFriendParticipant)
 
     /* ----------------------------------------------- */
 
@@ -123,8 +124,8 @@ module.exports = (app) => {
     app.route("/profile/credentials")
         .put(userController.updateCredentials)
     
-    app.route('/invite/:uuid')
-        .get(loginChecker, userController.inviteFriends)
+    app.route('/invite')
+        .post(loginChecker, userController.inviteFriends)
 
     /* ----------------------------------------------- */
 
@@ -140,4 +141,17 @@ module.exports = (app) => {
         
     app.route('/logout')
         .post(loginChecker, loginController.logout)
+
+    /* ----------------------------------------------- */
+
+    app.route('/events/info/:uuid/reviews')
+        .get(reviewController.getEventReviews)
+        .post(loginChecker, reviewController.newReview)
+
+    app.route('/users/:uuid/myReviews')
+        .get(reviewController.getUserReviewsDone)
+
+    app.route('/users/:uuid/receivedReviews')
+        .get(reviewController.getUserReviewsReceived)
+
 }

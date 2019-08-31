@@ -41,7 +41,7 @@ exports.retrieveEventsToUpdate = (body) => {
     }
     return {
         eventsSubscribed: eventsSubscribed,
-        eventFollowed: eventsFollowed
+        eventsFollowed: eventsFollowed
     };
 };
 

@@ -2,36 +2,43 @@ import React from "react"
 import {FriendsTab} from "../menu_tab/MenuTab"
 import {LoginRedirect} from "../redirect/Redirect"
 import ApiService from "../../services/api/Api"
-import {Link, Redirect} from "react-router-dom";
-import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import {Redirect} from "react-router-dom"
+import {LinkMakerBanner, INVITE_BUTTON, INVITED_BUTTON} from "../link_maker_banner/LinkMakerBanner"
+import LocalStorage from "local-storage"
+import {EventHeaderBanner} from "../event/Event"
 
 class Invite extends React.Component {
 
     buttonId = "friendGroupBtn"
+    #inviteEventStateLocalStorageName = "invite-event"
 
     constructor(props) {
         super(props)
+        let localSavedEvent = LocalStorage(this.#inviteEventStateLocalStorageName)
+        let event = props.location.event || undefined
+        if (!event && localSavedEvent)
+            event = localSavedEvent
         this.state = {
             filter: "",
             linkedUsers: [],
             groups: [],
-            event: {
-                _id: props.location.event ? props.location.event._id : undefined
-            },
+            event: event,
             redirectHome: false
         }
-        if (props.isLogged && props.location && props.location.event && props.location.event._id) {
+        if (props.isLogged && event) {
+            LocalStorage(this.#inviteEventStateLocalStorageName, this.state.event)
             ApiService.getUserInformation(props.user._id, () => {},user => {
-                this.setState({
-                    linkedUsers: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-                })
+                let users = user.linkedUsers
+                    .filter(friend => !friend.organization)
+                    .sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                this.setState({linkedUsers: users})
             })
             ApiService.getGroups(() => {}, groups => this.setState({groups: groups}))
         }
     }
 
     componentDidMount() {
-        if (!(this.props.isLogged && this.props.location && this.props.location.event && this.props.location.event._id)) {
+        if (!(this.props.isLogged && this.state.event._id)) {
             this.props.onError(
                 "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
                 () => this.setState({redirectHome: true})
@@ -99,14 +106,16 @@ class Invite extends React.Component {
             .filter(elem => filterFun(elem))
             .map(elem => {
                 let id = "friend" + x++
+                let enabled = showFun(elem)
                 return (
                     <LinkMakerBanner key={id}
                                      border={true}
                                      elem={elem}
                                      onClick={() => fun(elem)}
-                                     showButton={showFun(elem)}
-                                     buttonType={INVITE_BUTTON}
+                                     showButton={true}
+                                     buttonType={enabled ? INVITE_BUTTON : INVITED_BUTTON}
                                      buttonId={this.buttonId + elem._id}
+                                     buttonDisabled={!enabled}
                     />
                 )
             })
@@ -152,7 +161,8 @@ class Invite extends React.Component {
             <div className="main-container">
                 {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                <form className="row mb-2 sticky-top bg-white py-2">
+                <EventHeaderBanner event={this.state.event} hidePlace={true} />
+                <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
                     <label htmlFor="tf-search" className="d-none">Cerca amico</label>
                     <input
                         className="col-11 mx-auto form-control"
@@ -167,73 +177,6 @@ class Invite extends React.Component {
             </div>
         )
     }
-}
-
-const INVITE_BUTTON = 0
-const ADD_FRIEND_BUTTON = 1
-
-/**
- *
- * @param props {{
- *     elem: {
- *         _id: string,
- *         name: string,
- *         surname: string,
- *         avatar: string,
- *         organization: boolean,
- *         address: {
- *             city: string
- *         }
- *     }
- *     isGroup: boolean,
- *     onClick: function,
- *     showButton: boolean,
- *     buttonType: number,
- *     buttonId: string
- * }}
- * @return {*}
- * @constructor
- */
-let LinkMakerBanner = props => {
-    let buttonText = ""
-    switch(props.buttonType) {
-        case INVITE_BUTTON:
-            buttonText = "Invita"
-            break
-        case ADD_FRIEND_BUTTON:
-            buttonText = props.elem.organization ? "Segui" : "Aggiungi"
-            break
-        default: break
-    }
-    return props.elem.name && (props.isGroup ? props.buttonType !== ADD_FRIEND_BUTTON : true) ? (
-        <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
-            <Link
-                to={"/users/" + props.elem._id}
-                className={"col-4 col-md-2 col-lg-1" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
-                style={{textDecoration: "none"}}
-            >
-                <RoundedSmallImage imageName={props.elem.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
-            </Link>
-            <Link to={"/users/" + props.elem._id} className="col px-0" style={{textDecoration: "none"}}>
-                <div className="font-weight-bold text-dark">{props.elem.name}</div>
-                {
-                    props.isGroup
-                        ? <div/>
-                        : <div className="text-muted small">
-                            {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.city}
-                        </div>
-                }
-            </Link>
-            <div className="col-3 text-center px-0">
-                {
-                    props.showButton ?
-                        <button id={props.buttonId} className="btn btn-sm btn-primary" onClick={props.onClick}>
-                            {buttonText}
-                        </button> : <div/>
-                }
-            </div>
-        </div>
-    ) : <div/>
 }
 
 export default Invite
