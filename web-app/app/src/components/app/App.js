@@ -1,10 +1,13 @@
 import React from 'react'
+import LocalStorage from "local-storage"
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
+
+import './App.css'
+import ApiService from "../../services/api/Api"
 
 import {CallableComponent} from '../redirect/Redirect'
 import ScrollToTop from '../scroll_to_top/ScrollToTop'
 
-import './App.css'
 import Home from '../home/Home'
 import Login from '../login/Login'
 import Menu from '../menu/Menu'
@@ -17,9 +20,8 @@ import Friends from '../friends/Friends'
 import Map from '../map/Map'
 import Settings from '../settings/Settings'
 import NotificationService from "../../services/notification/Notification"
-import ApiService from "../../services/api/Api"
-import LocalStorage from "local-storage"
-import Invite from "../invite/Invite";
+import Invite from "../invite/Invite"
+import Groups from '../groups/Groups'
 
 class App extends React.Component {
 
@@ -273,6 +275,13 @@ class App extends React.Component {
               />
               <Route path="/invite" exact render={(props) =>
                   <Invite {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                  />}
+              />
+              <Route path="/groups" exact render={(props) =>
+                  <Groups {...props}
                           isLogged={this.state.isLogged}
                           user={this.state.user}
                           onError={this.onError}

@@ -75,6 +75,14 @@ let CreateNewEventButton = (props) => {
         )
 }
 
+let CreateNewGroupButton = () => {
+    return (
+        <Link to={"/groups/new"}>
+            <FloatingButton icon={{name: "plus", size:"2x"}} show={true} position={BOTTOM_RIGHT} shape={ROUNDED_CIRCLE} />
+        </Link>
+        )
+}
+
 /**
  *
  * @param props: {function}
@@ -87,6 +95,7 @@ let ConfirmButton = (props) => {
 
 export {
     CreateNewEventButton,
+    CreateNewGroupButton,
     ConfirmButton,
     FloatingButton,
     TOP_CENTER,
