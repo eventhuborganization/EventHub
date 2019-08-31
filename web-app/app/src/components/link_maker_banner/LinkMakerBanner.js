@@ -73,15 +73,16 @@ export function LinkMakerBanner(props) {
 }
 
 export function UserBanner(props) {
-    props.user.name = props.user.name + (props.user.organization ? "" : " " + props.user.surname)
+    let user = {...props.user}
+    user.name = props.user.name + (props.user.organization ? "" : " " + props.user.surname)
     if(props.user.address && props.user.address.city)
-        props.user.city = props.user.address.city
+        user.city = props.user.address.city
     return props.user.name ? 
         <LinkMakerBanner
             buttonId={"friendBtn" + props.user._id}
             buttonType={ADD_FRIEND_BUTTON}
             border={props.border}
-            elem={props.user}
+            elem={user}
             isGroup={false}
             onClick={props.onAddFriend}
             showButton={props.showAddFriendButton}
