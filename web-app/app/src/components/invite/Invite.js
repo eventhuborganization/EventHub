@@ -2,28 +2,48 @@ import React from "react"
 import {FriendsTab} from "../menu_tab/MenuTab"
 import {LoginRedirect} from "../redirect/Redirect"
 import ApiService from "../../services/api/Api"
-import { LinkMakerBanner, INVITE_BUTTON } from "../link_maker_banner/LinkMakerBanner"
+import {Redirect} from "react-router-dom"
+import {LinkMakerBanner, INVITE_BUTTON, INVITED_BUTTON} from "../link_maker_banner/LinkMakerBanner"
+import LocalStorage from "local-storage"
+import {EventHeaderBanner} from "../event/Event"
 
 class Invite extends React.Component {
 
     buttonId = "friendGroupBtn"
+    #inviteEventStateLocalStorageName = "invite-event"
 
     constructor(props) {
         super(props)
+        let localSavedEvent = LocalStorage(this.#inviteEventStateLocalStorageName)
+        let event = props.location.event || undefined
+        if (!event && localSavedEvent)
+            event = localSavedEvent
         this.state = {
             filter: "",
             linkedUsers: [],
             groups: [],
-            event: {
-                _id: props.location.event ? props.location.event._id : undefined
-            }
+            event: event,
+            redirectHome: false
         }
-        ApiService.getUserInformation(props.user._id, () => {},user => {
-            this.setState({
-                linkedUsers: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+        if (props.isLogged && event) {
+            LocalStorage(this.#inviteEventStateLocalStorageName, this.state.event)
+            ApiService.getUserInformation(props.user._id, () => {},user => {
+                let users = user.linkedUsers
+                    .filter(friend => !friend.organization)
+                    .sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                this.setState({linkedUsers: users})
             })
-        })
-        ApiService.getGroups(() => {}, groups => this.setState({groups: groups}))
+            ApiService.getGroups(() => {}, groups => this.setState({groups: groups}))
+        }
+    }
+
+    componentDidMount() {
+        if (!(this.props.isLogged && this.state.event._id)) {
+            this.props.onError(
+                "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
+                () => this.setState({redirectHome: true})
+            )
+        }
     }
 
     onFilter = (event) => {
@@ -86,14 +106,16 @@ class Invite extends React.Component {
             .filter(elem => filterFun(elem))
             .map(elem => {
                 let id = "friend" + x++
+                let enabled = showFun(elem)
                 return (
                     <LinkMakerBanner key={id}
                                      border={true}
                                      elem={elem}
                                      onClick={() => fun(elem)}
-                                     showButton={showFun(elem)}
-                                     buttonType={INVITE_BUTTON}
+                                     showButton={true}
+                                     buttonType={enabled ? INVITE_BUTTON : INVITED_BUTTON}
                                      buttonId={this.buttonId + elem._id}
+                                     buttonDisabled={!enabled}
                     />
                 )
             })
@@ -123,7 +145,11 @@ class Invite extends React.Component {
         return Object.freeze({ tag: tag, elem: elem})
     }
 
-    render = () => {
+    redirectToHome = () => {
+        return this.state.redirectHome ? <Redirect to={"/"} /> : <div/>
+    }
+
+    render() {
         let tabs = []
         if(this.props.isLogged){
             tabs.push(
@@ -133,8 +159,10 @@ class Invite extends React.Component {
         }
         return (
             <div className="main-container">
+                {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                <form className="row mb-2 sticky-top bg-white py-2">
+                <EventHeaderBanner event={this.state.event} hidePlace={true} />
+                <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
                     <label htmlFor="tf-search" className="d-none">Cerca amico</label>
                     <input
                         className="col-11 mx-auto form-control"

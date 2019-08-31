@@ -4,6 +4,7 @@ import {PLACEHOLDER_USER_CIRCLE, PLACEHOLDER_GROUP_CIRCLE, RoundedSmallImage} fr
 
 export const INVITE_BUTTON = 0
 export const ADD_FRIEND_BUTTON = 1
+export const INVITED_BUTTON = 2
 
 //"friendBtn" + props.user._id
 
@@ -25,7 +26,8 @@ export const ADD_FRIEND_BUTTON = 1
  *     onClick: function,
  *     showButton: boolean,
  *     buttonType: number,
- *     buttonId: string
+ *     buttonId: string,
+ *     buttonDisabled: boolean
  * }}
  * @return {*}
  * @constructor
@@ -35,6 +37,9 @@ export function LinkMakerBanner(props) {
     switch(props.buttonType) {
         case INVITE_BUTTON:
             buttonText = "Invita"
+            break
+        case INVITED_BUTTON:
+            buttonText = "Invitato"
             break
         case ADD_FRIEND_BUTTON:
             buttonText = props.elem.organization ? "Segui" : "Aggiungi"
@@ -66,7 +71,7 @@ export function LinkMakerBanner(props) {
             <div className="col-3 text-center px-0">
                 {
                     props.showButton ?
-                        <button id={props.buttonId} className="btn btn-sm btn-primary" onClick={props.onClick}>
+                        <button id={props.buttonId} className={"btn btn-sm btn-primary " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
                             {buttonText}
                         </button> : <div/>
                 }
