@@ -1,19 +1,56 @@
 const network = require('./network')
 const axios = require('axios')
 const path = require('path')
+const UserService = require('../API/UserServiceAPI')
 const fs = require("fs")
 
 exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
-    axios.delete(`${UserServiceServer}/users/linkedUsers`, {data: data})
+    UserService.removeLinkedUser(data)
         .then((response) => network.replayResponse(response, res))
         .catch(err => network.replayError(err, res))
 }
 
 exports.inviteFriends = (req, res) => {
-    //invito per l'evento req.body.event
-    var data = {typology: 0, sender: req.user._id, data: {eventId: req.body.event}}
-    axios.post(`${UserServiceServer}/users/${req.body.user}/notifications`, data)
+    let option = {
+        event: req.body.event,
+        group: '',
+        user:''
+    }
+    if(req.body.group){
+        option.group = req.body.group
+        inviteGroup(res,option)
+    }else if (req.body.user){
+        option.user = req.body.user
+        inviteUser(res,option)
+    } else {
+        network.badRequest(res)
+    }
+}
+
+let inviteGroup = (res, option) => {
+    UserService.getGroupInfo(option.group)
+    .then(response => {
+        let userPromise = response.data.members.map(m => {
+            var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
+            return UserService.sendNotification(m, data)
+        })
+        Promise.all(userPromise)
+        .then((response) => {
+            network.result(res)
+        })
+        .catch((err) => {
+            network.internalError(res, err)
+        })
+    })    
+    .catch((err) => {
+        network.internalError(res, err)
+    })
+}
+
+let inviteUser = (res, option) => {
+    var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
+    UserService.sendNotification(option.user, data)
     .then((response) => {
         network.result(res)
     })
@@ -23,9 +60,9 @@ exports.inviteFriends = (req, res) => {
 }
 
 exports.addFollower = (req, res) => {
-    axios.post(`${UserServiceServer}/users/linkedUsers`, {uuid1: req.body.uuid, uuid2: req.user._id})
+    UserService.addLinkedUser({uuid1: req.body.uuid, uuid2: req.user._id})
         .then(() => {
-            return axios.post(`${UserServiceServer}/users/${req.body.uuid}/notifications/`, {typology: 2, sender: req.user._id})
+            return  UserService.sendNotification(req.body.uuid, {typology: 2, sender: req.user._id})
         })
         .then(response => {
             network.replayResponse(response, res);
@@ -39,7 +76,7 @@ exports.addFollower = (req, res) => {
 exports.userFriendRequest = (req, res) => {
     if (req.user._id !== req.body.friend) {
         var data = {typology: 1, sender: req.user._id}
-        axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, data)
+        UserService.sendNotification(req.body.friend, data)
             .then(() => network.result(res))
             .catch((err) => network.internalError(res, err))
     } else {
@@ -49,12 +86,12 @@ exports.userFriendRequest = (req, res) => {
 
 exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
-        axios.post(`${UserServiceServer}/users/linkedUsers`, {uuid1: req.body.friend, uuid2: req.user._id})
+        UserService.addLinkedUser({uuid1: req.body.friend, uuid2: req.user._id})
             .then(() => {
-                return axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications/`, {typology: 8, sender: req.user._id})
+                return  UserService.sendNotification(req.body.friend, {typology: 8, sender: req.user._id})
             })
             .then(() => {
-                return axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
+                return UserService.readNotification(req.user._id, req.body._id)
             })
             .then(response => {
                 network.replayResponse(response, res);
@@ -64,14 +101,14 @@ exports.friendshipAnswer = (req, res) => {
                 network.internalError(res, error);
             })
     } else {
-        axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
+        UserService.readNotification(req.user._id, req.body._id)
             .then(response => network.replayResponse(response, res))
             .catch (error => network.internalError(res, error))
     }
 }
 
 exports.requestFriendPosition = (req, res) => {
-    axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, {
+    UserService.sendNotification(req.body.friend,{
         typology: 4, 
         sender: req.user._id, 
     })
@@ -81,7 +118,7 @@ exports.requestFriendPosition = (req, res) => {
 
 exports.responseFriendPosition = (req, res) => {
     if (req.body.accepted) {
-        axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, {
+        UserService.sendNotification(req.body.friend, {
             typology: 9, 
             sender: req.user._id, 
             data: {
@@ -92,15 +129,15 @@ exports.responseFriendPosition = (req, res) => {
             }
         })
         .then(() => {
-            return axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
+            return UserService.readNotification(req.user._id, req.body._id)
         })
         .then( response => network.replayResponse(response, res))
         .catch(error => network.internalError(res, error))
     } else {
         let data = { typology: 10, sender: req.user._id }
-        axios.put(`${UserServiceServer}/users/${req.user._id}/notifications/${req.body._id}`, {})
+        UserService.readNotification(req.user._id, req.body._id)
             .then(() => {
-                return axios.post(`${UserServiceServer}/users/${req.body.friend}/notifications`, data)
+                return  UserService.sendNotification(req.body.friend, data)
             })
             .then(response => network.replayResponse(response, res))
             .catch(error => network.internalError(res, error))
@@ -150,28 +187,28 @@ exports.updateCredentials = (req, res) => {
     badges(last 3): [{name, icon, _id}], points, n.reviewDone, n.reviewReceived, 
     eventsSubscribed(last k attended + next k that he wants to participate), eventsFollowed(future events)}*/
 exports.getInfoUser = (req, res) => {
-    axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
+    UserService.getUserInfo(req.params.uuid)
     .then( resComplete => {
         let response = resComplete.data
         response.avatar = response.profilePicture
         delete response.profilePicture 
         linkedUsersPromise = []
         response.linkedUsers.forEach(user => {
-            linkedUsersPromise.push(exports.getLinkedUserInfo(user))
+            linkedUsersPromise.push(UserService.getUserInfo(user))
         })
         groupsPromise = []
         response.groups.forEach(group => {
-            groupsPromise.push(exports.getGroupInfoRequest(group))
+            groupsPromise.push(UserService.getGroupInfo(group))
         })
         eventsSubscribedPromise = []
         response.eventsSubscribed.forEach(event => {
-            eventsSubscribedPromise.push(exports.getEventInfo(event))
+            eventsSubscribedPromise.push(UserService.getEventInfo(event))
         })
         eventsFollowedPromise = []
         response.eventsFollowed.forEach(event => {
-            eventsFollowedPromise.push(exports.getEventInfo(event))
+            eventsFollowedPromise.push(UserService.getEventInfo(event))
         })
-        Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), exports.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
+        Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), UserService.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
         .then( result => {
             response.linkedUsers = []
             result[0].map(obj => obj.data).forEach(user => {
@@ -243,7 +280,7 @@ exports.getInfoUser = (req, res) => {
 
 /* user: {_id, name, surname, avatar, city, organization}*/
 exports.getLightweightInfoUser = (req, res) => {
-    axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
+    UserService.getUserInfo(req.params.uuid)
         .then(resComplete => {
             let user = resComplete.data
             network.resultWithJSON(res, {
@@ -264,28 +301,4 @@ exports.searchUser = (req, res) => {
     axios.get(`${UserServiceServer}/users/search/${req.params.name}`, req.body)
         .then((response) => network.resultWithJSON(res, {users: response.data}))
         .catch((err) => network.internalError(res, err))
-}
-
-exports.getLinkedUserInfo = (uuid) => {
-    return axios.get(`${UserServiceServer}/users/${uuid}`)
-}
-
-exports.getGroupInfoRequest = (uuid) => {
-    return axios.get(`${UserServiceServer}/group/${uuid}`)
-}
-
-exports.getBadgePoints = (uuid) => {
-    return axios.get(`${UserServiceServer}/users/${uuid}/levels`)
-}
-
-exports.getEventInfo = (uuid) => {
-    return axios.get(`${EventServiceServer}/events/${uuid}`);
-}
-
-exports.getReviewsWritten = (uuid) => {
-    return axios.get(`${UserServiceServer}/users/${uuid}/reviews/written`)
-}
-
-exports.getReviewsReceived = (uuid) => {
-    return axios.get(`${UserServiceServer}/users/${uuid}/reviews/received`)
 }

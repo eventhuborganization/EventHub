@@ -1,14 +1,15 @@
 const network = require('./network')
+const UserService = require('../API/UserServiceAPI')
 const axios = require('axios')
 
 exports.getGroupName = (req, res) => {
-    axios.get(`${UserServiceServer}/users/${req.user._id}`)
+    UserService.getUserInfo(req.user._id)
     .then(response => {
-        groups = response.data.groups
+        let groups = response.data.groups
         if(groups == null || groups.length == 0){
             //Response group not found
         } else {
-            let promise = groups.map(g => exports.getGroupInfoRequest(g))
+            let promise = groups.map(g => UserService.getGroupInfo(g))
             Promise.all(promise)
             .then(response => {
                 let results = []
@@ -25,9 +26,12 @@ exports.createGroup = (req, res) => {
     if(req.body.name){
         let data = {
             name: req.body.name,
-            user: req.user._id,
+            user: [req.user._id],
         }
-        axios.post(`${UserServiceServer}/group`, data)
+        if(req.body.users){
+            data.user = data.user.concat(req.body.users)
+        }
+        UserService.createGroup(data)
         .then(resposne => network.replayResponse(resposne, res))
         .catch((err) => network.internalError(res, err))
     } else {
@@ -53,7 +57,7 @@ exports.add_remove_UserToGroup = (req, res) => {
 }
 
 exports.getGroupInfo = (req, res) => {
-    axios.delete(`${UserServiceServer}/group/${req.params.groupId}`)
+    UserService.getGroupInfo(req.params.groupId)
     .then(resposne => {
         let group = response.data
         let partPromise = group.members.map(m => axios.get(`${UserServiceServer}/users/${m}`))
@@ -68,7 +72,7 @@ exports.getGroupInfo = (req, res) => {
 }
 
 exports.deleteGroup = (req, res) => {
-    axios.delete(`${UserServiceServer}/group/${req.params.groupId}`)
+    UserService.deleteGroup(req.params.groupId)
     .then(resposne => network.replayResponse(resposne, res))
     .catch((err) => network.internalError(res, err))
 }

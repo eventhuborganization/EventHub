@@ -16,7 +16,7 @@ function formatUserForEvent (req) {
     return data
 }
 
-exports.findFirendParticipant = (req,res) => { 
+exports.findFriendParticipant = (req,res) => { 
     network.internalError(res, {description: "Ancora da implementare !!"})
 }
 
@@ -45,7 +45,7 @@ exports.eventInfo = (req, res) => {
         })
     }, err => network.internalError(res, err))
 }
-exports.envetCompleteInfo = (req, res) => {
+exports.eventCompleteInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, response => {
         let event = response.data;
         var organization = axios.get(`${UserServiceServer}/users/${event.organizator}`)
@@ -72,7 +72,7 @@ exports.envetCompleteInfo = (req, res) => {
         })
         .catch(err => {
             network.internalError(res, {
-                description: "Un piccolo errore in \n >EventControlle.js->findFirendParticipant\n",
+                description: "Un piccolo errore in \n >EventControlle.js->findFriendParticipant\n",
                 error: err
             })
         })
