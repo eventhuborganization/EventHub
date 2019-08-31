@@ -819,7 +819,7 @@ let inviteUser = (userId, eventId, onError, onSuccess) => {
         event: eventId
     }
     managePromise(
-        Axios.post("/event/invite/user", data),
+        Axios.post("/invite", data),
         [200],
         onError,
         onSuccess
@@ -838,7 +838,7 @@ let inviteGroup = (groupId, eventId, onError, onSuccess) => {
         event: eventId
     }
     managePromise(
-        Axios.post("/event/invite/group", data),
+        Axios.post("/invite", data),
         [200],
         onError,
         onSuccess
