@@ -161,7 +161,7 @@ exports.getInfoUser = (req, res) => {
         })
         groupsPromise = []
         response.groups.forEach(group => {
-            groupsPromise.push(exports.getGroupInfo(group))
+            groupsPromise.push(exports.getGroupInfoRequest(group))
         })
         eventsSubscribedPromise = []
         response.eventsSubscribed.forEach(event => {
@@ -262,7 +262,7 @@ exports.getLinkedUserInfo = (uuid) => {
     return axios.get(`${UserServiceServer}/users/${uuid}`)
 }
 
-exports.getGroupInfo = (uuid) => {
+exports.getGroupInfoRequest = (uuid) => {
     return axios.get(`${UserServiceServer}/group/${uuid}`)
 }
 
