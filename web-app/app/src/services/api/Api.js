@@ -166,7 +166,8 @@ let mapGroup = (group) => {
     return {
         _id: group._id,
         name: group.name,
-        avatar: group.avatar
+        avatar: group.avatar,
+        members: group.members.map(mapUser)
     }
 }
 
@@ -808,6 +809,82 @@ let getGroups = (onError, onSuccess) => {
 }
 
 /**
+ * @param name {String}
+ * @param members {Array}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let createGroup = (name, members, onError, onSuccess) => {
+    let data = {name: name, users: members}
+    managePromise(
+        Axios.post("/users/groups", data),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapGroup))
+    )
+}
+
+/**
+ * @param groupId {String}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let getGroupInfo = (groupId, onError, onSuccess) => {
+    managePromise(
+        Axios.get("/users/groups/" + groupId),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapGroup))
+    )
+}
+
+/**
+ * @param groupId {String}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let deleteGroup = (groupId, onError, onSuccess) => {
+    managePromise(
+        Axios.delete("/users/groups/" + groupId),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapGroup))
+    )
+}
+
+/**
+ * @param groupId {String}
+ * @param member {Array}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let addMemberToGroup = (groupId, member, onError, onSuccess) => {
+    let data = {isToRemove: false, user: member}
+    managePromise(
+        Axios.post("/users/groups" + groupId, data),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapGroup))
+    )
+}
+
+/**
+ * @param groupId {String}
+ * @param member {Array}
+ * @param onError {function}
+ * @param onSuccess {function}
+ */
+let removeMemberFromGroup = (groupId, member, onError, onSuccess) => {
+    let data = {isToRemove: true, user: member}
+    managePromise(
+        Axios.post("/users/groups" + groupId, data),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapGroup))
+    )
+}
+
+/**
  * @param userId {string}
  * @param eventId {string}
  * @param onError {function}
@@ -894,6 +971,11 @@ export default {
     getAvatarUrl,
     setNotAuthenticatedBehaviour,
     getGroups,
+    getGroupInfo,
+    createGroup,
+    deleteGroup,
+    addMemberToGroup,
+    removeMemberFromGroup,
     inviteUser,
     inviteGroup
 }
