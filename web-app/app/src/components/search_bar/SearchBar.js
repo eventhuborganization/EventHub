@@ -420,4 +420,20 @@ class SearchBar extends CallableComponent {
     }
 }
 
-export {SearchBar, SEARCH_BY_EVENT, SEARCH_BY_PLACE}
+function SimpleSearchBar(props){
+    return (
+        <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
+            <label htmlFor="tf-search" className="d-none">{props.placeholder}</label>
+            <input 
+                className="col-11 mx-auto form-control"
+                id="tf-search" 
+                name="tf-search" 
+                type="search" 
+                placeholder={props.placeholder}
+                value={props.value}
+                onChange={props.onChange}/>
+        </form>
+    )
+}
+
+export {SearchBar, SimpleSearchBar, SEARCH_BY_EVENT, SEARCH_BY_PLACE}
