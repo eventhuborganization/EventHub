@@ -204,7 +204,7 @@ exports.getInfoUser = (req, res) => {
             let k = 3 //numero di eventi da mostrare
             response.lastEventSubscribed = []
             response.nextEventSubscribed = []
-            response.nextEventSubscribed = []
+            response.nextEventFollowed = []
             if(result[3].length > 0){
                 let indexSub = 0
                 //find first index of an event that has to occur yet
@@ -212,10 +212,14 @@ exports.getInfoUser = (req, res) => {
                     indexSub++
                 }
                 for (var count=1; count<=k && (indexSub-count)>=0; count++) {
-                    response.lastEventSubscribed.push(result[3][indexSub-count])
+                    let event = result[3][indexSub-count]
+                    event.organizator = {_id: event.organizator}
+                    response.lastEventSubscribed.push(event)
                 }
                 for (var count=0; count<k && (indexSub+count)<result[3].length; count++) {
-                    response.nextEventSubscribed.push(result[3][indexSub+count])
+                    let event = result[3][indexSub+count]
+                    event.organizator = {_id: event.organizator}
+                    response.nextEventSubscribed.push(event)
                 }
             }
             if(result[4].length > 0){
@@ -225,7 +229,9 @@ exports.getInfoUser = (req, res) => {
                     indexFol++
                 }
                 for (var count=0; count<k && (indexFol+count)<result[4].length; count++) {
-                    response.nextEventFollowed.push(result[4][indexFol+count])
+                    let event = result[4][indexFol+count]
+                    event.organizator = {_id: event.organizator}
+                    response.nextEventFollowed.push(event)
                 }
             }         
             network.resultWithJSON(res, response)
