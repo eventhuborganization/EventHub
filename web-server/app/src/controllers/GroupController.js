@@ -26,7 +26,10 @@ exports.createGroup = (req, res) => {
     if(req.body.name){
         let data = {
             name: req.body.name,
-            user: req.user._id,
+            user: [req.user._id],
+        }
+        if(req.body.users){
+            data.user = data.user.concat(req.body.users)
         }
         UserService.createGroup(data)
         .then(resposne => network.replayResponse(resposne, res))

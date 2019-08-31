@@ -123,8 +123,8 @@ module.exports = (app) => {
     app.route("/profile/credentials")
         .put(userController.updateCredentials)
     
-    app.route('/invite/:uuid')
-        .get(loginChecker, userController.inviteFriends)
+    app.route('/invite')
+        .post(loginChecker, userController.inviteFriends)
 
     /* ----------------------------------------------- */
 
