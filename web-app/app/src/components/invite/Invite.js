@@ -2,8 +2,7 @@ import React from "react"
 import {FriendsTab} from "../menu_tab/MenuTab"
 import {LoginRedirect} from "../redirect/Redirect"
 import ApiService from "../../services/api/Api"
-import {Link} from "react-router-dom";
-import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import { LinkMakerBanner, INVITE_BUTTON } from "../link_maker_banner/LinkMakerBanner"
 
 class Invite extends React.Component {
 
@@ -150,73 +149,6 @@ class Invite extends React.Component {
             </div>
         )
     }
-}
-
-const INVITE_BUTTON = 0
-const ADD_FRIEND_BUTTON = 1
-
-/**
- *
- * @param props {{
- *     elem: {
- *         _id: string,
- *         name: string,
- *         surname: string,
- *         avatar: string,
- *         organization: boolean,
- *         address: {
- *             city: string
- *         }
- *     }
- *     isGroup: boolean,
- *     onClick: function,
- *     showButton: boolean,
- *     buttonType: number,
- *     buttonId: string
- * }}
- * @return {*}
- * @constructor
- */
-let LinkMakerBanner = props => {
-    let buttonText = ""
-    switch(props.buttonType) {
-        case INVITE_BUTTON:
-            buttonText = "Invita"
-            break
-        case ADD_FRIEND_BUTTON:
-            buttonText = props.elem.organization ? "Segui" : "Aggiungi"
-            break
-        default: break
-    }
-    return props.elem.name && (props.isGroup ? props.buttonType !== ADD_FRIEND_BUTTON : true) ? (
-        <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
-            <Link
-                to={"/users/" + props.elem._id}
-                className={"col-4 col-md-2 col-lg-1" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
-                style={{textDecoration: "none"}}
-            >
-                <RoundedSmallImage imageName={props.elem.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
-            </Link>
-            <Link to={"/users/" + props.elem._id} className="col px-0" style={{textDecoration: "none"}}>
-                <div className="font-weight-bold text-dark">{props.elem.name}</div>
-                {
-                    props.isGroup
-                        ? <div/>
-                        : <div className="text-muted small">
-                            {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.city}
-                        </div>
-                }
-            </Link>
-            <div className="col-3 text-center px-0">
-                {
-                    props.showButton ?
-                        <button id={props.buttonId} className="btn btn-sm btn-primary" onClick={props.onClick}>
-                            {buttonText}
-                        </button> : <div/>
-                }
-            </div>
-        </div>
-    ) : <div/>
 }
 
 export default Invite

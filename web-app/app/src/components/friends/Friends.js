@@ -2,7 +2,7 @@ import React from 'react'
 import Api from '../../services/api/Api'
 
 import './Friends.css'
-import UserBanner from '../user_banner/UserBanner'
+import {UserBanner} from '../link_maker_banner/LinkMakerBanner'
 import MultipleElementsCard from '../multiple_elements_card/MultipleElementsCard'
 
 class Friends extends React.Component {
