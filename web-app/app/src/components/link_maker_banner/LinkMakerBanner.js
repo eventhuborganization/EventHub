@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
+import {PLACEHOLDER_USER_CIRCLE, PLACEHOLDER_GROUP_CIRCLE, RoundedSmallImage} from "../image/Image"
 
 export const INVITE_BUTTON = 0
 export const ADD_FRIEND_BUTTON = 1
@@ -41,16 +41,19 @@ export function LinkMakerBanner(props) {
             break
         default: break
     }
+    let link = (props.isGroup ? "/groups/" : "/users/") + props.elem._id
     return props.elem.name && (props.isGroup ? props.buttonType !== ADD_FRIEND_BUTTON : true) ? (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link
-                to={"/users/" + props.elem._id}
+                to={link}
                 className={"col-4 col-md-2 col-lg-1" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
                 style={{textDecoration: "none"}}
             >
-                <RoundedSmallImage imageName={props.elem.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
+                <RoundedSmallImage 
+                    imageName={props.elem.avatar} 
+                    placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}/>
             </Link>
-            <Link to={"/users/" + props.elem._id} className="col px-0" style={{textDecoration: "none"}}>
+            <Link to={link} className="col px-0" style={{textDecoration: "none"}}>
                 <div className="font-weight-bold text-dark">{props.elem.name}</div>
                 {
                     props.isGroup

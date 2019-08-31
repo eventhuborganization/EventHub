@@ -1,6 +1,11 @@
-.avatar-size {
+.small-avatar-size {
     height: 60px;
     width: 60px;
+}
+
+.big-avatar-size {
+    height: 90px;
+    width: 90px;
 }
 
 .friendsIcon {

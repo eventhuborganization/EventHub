@@ -1,5 +1,5 @@
 import React from "react"
-import ApiService from "../../services/api/Api";
+import ApiService from "../../services/api/Api"
 import './Image.css'
 
 let AVATAR = 0
@@ -9,7 +9,8 @@ let LOCAL = 2
 let BORDER_PRIMARY = 0
 
 let PLACEHOLDER_USER_CIRCLE = 0
-let PLACEHOLDER_IMAGE = 0
+let PLACEHOLDER_GROUP_CIRCLE = 1
+let PLACEHOLDER_IMAGE = 2
 
 /**
  * @param props {{
@@ -62,7 +63,7 @@ let ImageForCard = props => {
  * @return {*}
  * @constructor
  */
-let RoundedSmallImage = props => {
+let RoundedImage = props => {
     let borderClass = ""
     switch(props.borderType) {
         case BORDER_PRIMARY:
@@ -70,21 +71,28 @@ let RoundedSmallImage = props => {
             break
         default: break
     }
+    let size = ""
     let placeholderIcon = " fas fa-"
     switch(props.placeholderType) {
         case PLACEHOLDER_USER_CIRCLE:
             placeholderIcon += "user-circle "
+            size = " fa-3x"
+            break
+        case PLACEHOLDER_GROUP_CIRCLE:
+            placeholderIcon += "users "
+            size = " fa-2x"
             break
         case PLACEHOLDER_IMAGE:
             placeholderIcon += "image "
+            size = " fa-3x"
             break
         default:
             placeholderIcon = ""
+            size = " fa-3x"
             break
     }
-    let imgClass = " img-fluid border rounded-circle avatar-size" + borderClass
-    let placeholderClass = " avatar-size rounded-circle d-flex justify-content-center align-items-center border " + borderClass
-
+    let imgClass = props.size + " img-fluid border rounded-circle " + borderClass
+    let placeholderClass = props.size + " rounded-circle d-flex justify-content-center align-items-center border " + borderClass
     return (
         props.imageName ?
         <img src={ApiService.getAvatarUrl(props.imageName)}
@@ -92,9 +100,37 @@ let RoundedSmallImage = props => {
              alt={props.alt}
         /> :
         <div className={placeholderClass}>
-            <em className={placeholderIcon + " fa-3x "}></em>
+            <em className={placeholderIcon + size}></em>
         </div>
     )
+}
+
+/**
+ * @param props {{
+ *     imageName: string,
+ *     borderType: number,
+ *     placeholderType: number,
+ *     alt: string
+ * }}
+ * @return {*}
+ * @constructor
+ */
+let RoundedSmallImage = props => {
+     return <RoundedImage {...props} size={"small-avatar-size"} />
+}
+
+/**
+ * @param props {{
+ *     imageName: string,
+ *     borderType: number,
+ *     placeholderType: number,
+ *     alt: string
+ * }}
+ * @return {*}
+ * @constructor
+ */
+let RoundedBigImage = props => {
+    return <RoundedImage {...props} size={"big-avatar-size"} />
 }
 
 /**
@@ -106,6 +142,7 @@ let RoundedSmallImage = props => {
  */
 let EmptyAvatar = props => {
     let borderClass = ""
+    let size = props.size ? props.size : "small-avatar-size"
     switch(props.borderType) {
         case BORDER_PRIMARY:
             borderClass = " friendsIcon border-primary "
@@ -113,7 +150,7 @@ let EmptyAvatar = props => {
         default: break
     }
     return (
-        <div className={" avatar-size border rounded-circle " + borderClass}></div>
+        <div className={size + " border rounded-circle " + borderClass}></div>
     )
 }
 
@@ -126,6 +163,7 @@ let EmptyAvatar = props => {
  */
 let MoreAvatar = props => {
     let borderClass = ""
+    let size = props.size ? props.size : "small-avatar-size"
     switch(props.borderType) {
         case BORDER_PRIMARY:
             borderClass = " friendsIcon border-primary "
@@ -133,7 +171,7 @@ let MoreAvatar = props => {
         default: break
     }
     return (
-        <div className={"d-flex justify-content-center align-items-center avatar-size border rounded-circle " + borderClass}>
+        <div className={size + " d-flex justify-content-center align-items-center border rounded-circle " + borderClass}>
             <em className={"fas fa-ellipsis-h text-dark"}></em>
         </div> 
     )
@@ -145,9 +183,11 @@ export {
     BORDER_PRIMARY,
     PLACEHOLDER_IMAGE,
     PLACEHOLDER_USER_CIRCLE,
+    PLACEHOLDER_GROUP_CIRCLE,
     LOCAL,
     ImageForCard, 
     RoundedSmallImage,
+    RoundedBigImage,
     EmptyAvatar,
     MoreAvatar
 }
