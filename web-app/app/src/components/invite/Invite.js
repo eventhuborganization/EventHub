@@ -2,7 +2,7 @@ import React from "react"
 import {FriendsTab} from "../menu_tab/MenuTab"
 import {LoginRedirect} from "../redirect/Redirect"
 import ApiService from "../../services/api/Api"
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 
 class Invite extends React.Component {
@@ -17,14 +17,26 @@ class Invite extends React.Component {
             groups: [],
             event: {
                 _id: props.location.event ? props.location.event._id : undefined
-            }
+            },
+            redirectHome: false
         }
-        ApiService.getUserInformation(props.user._id, () => {},user => {
-            this.setState({
-                linkedUsers: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+        if (props.isLogged && props.location && props.location.event && props.location.event._id) {
+            ApiService.getUserInformation(props.user._id, () => {},user => {
+                this.setState({
+                    linkedUsers: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                })
             })
-        })
-        ApiService.getGroups(() => {}, groups => this.setState({groups: groups}))
+            ApiService.getGroups(() => {}, groups => this.setState({groups: groups}))
+        }
+    }
+
+    componentDidMount() {
+        if (!(this.props.isLogged && this.props.location && this.props.location.event && this.props.location.event._id)) {
+            this.props.onError(
+                "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
+                () => this.setState({redirectHome: true})
+            )
+        }
     }
 
     onFilter = (event) => {
@@ -124,7 +136,11 @@ class Invite extends React.Component {
         return Object.freeze({ tag: tag, elem: elem})
     }
 
-    render = () => {
+    redirectToHome = () => {
+        return this.state.redirectHome ? <Redirect to={"/"} /> : <div/>
+    }
+
+    render() {
         let tabs = []
         if(this.props.isLogged){
             tabs.push(
@@ -134,6 +150,7 @@ class Invite extends React.Component {
         }
         return (
             <div className="main-container">
+                {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <form className="row mb-2 sticky-top bg-white py-2">
                     <label htmlFor="tf-search" className="d-none">Cerca amico</label>

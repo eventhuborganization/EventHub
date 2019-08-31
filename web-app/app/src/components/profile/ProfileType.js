@@ -31,7 +31,7 @@ class AbstractProfile extends React.Component {
             () => 
                 this.props.onError(
                     "Si è verificato un errore durante l'ottenimento dei dati, verrai ridirezionato alla homepage", 
-                    () => this.setState({redirectHome: true})
+                    () => {}, () => this.setState({redirectHome: true})
                 ),
             user => {
                 let name = user.name + (user.organization ? "" : " " + user.surname)
