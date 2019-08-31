@@ -3,6 +3,7 @@ module.exports = (app) => {
     var userController = require('../controllers/UserController')
     var notificationController = require('../controllers/NotificationController')
     var loginController = require('../controllers/LoginController')
+    var reviewController = require('../controllers/ReviewController')
     const {loginChecker} = require('../API/passport')
     var multer = require('multer')
     const path = require('path')
@@ -126,4 +127,17 @@ module.exports = (app) => {
         
     app.route('/logout')
         .post(loginChecker, loginController.logout)
+
+    /* ----------------------------------------------- */
+
+    app.route('/events/info/:uuid/reviews')
+        .get(reviewController.getEventReviews)
+        .post(loginChecker, reviewController.newReview)
+
+    app.route('/users/:uuid/myReviews')
+        .get(reviewController.getUserReviewsDone)
+
+    app.route('/users/:uuid/receivedReviews')
+        .get(reviewController.getUserReviewsReceived)
+
 }
