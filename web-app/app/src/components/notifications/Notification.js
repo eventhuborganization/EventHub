@@ -146,10 +146,7 @@ class Notification extends React.Component {
             <EventInteractionPanel {...this.props}
                                     key={this.props.notification._id}
                                     event={this.props.notification.event}
-                                    onEventParticipated={() => {}}
-                                    onEventFollowed={() =>  {}}
-                                    onEventUnfollowed={() => {}}
-                                    onEventUnsubscribed={() => {}}
+                                    hideInteractionButtons={true}
             /> : <div/>
     }
 

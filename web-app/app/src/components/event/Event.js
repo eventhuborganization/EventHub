@@ -209,6 +209,18 @@ let EventInteractionPanel = (props) => {
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
+    let renderInteractionButtons = () => {
+        if(props.hideInteractionButtons){
+            return <div/>
+        } else if(props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0){
+            return <div>{followButton} {subscribeButton}</div>
+        } else if(props.user._id === props.event.organizator._id){
+            return <UpdateButton {...props} event={props.event}/>
+        } else {
+            return <div/>
+        }
+    }
+
     return (
         <div className="row">
             <div className="col-3 my-auto">
@@ -221,14 +233,7 @@ let EventInteractionPanel = (props) => {
                 }
             </div>
             <div className="col-9 d-flex justify-content-end">
-                {
-                    props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0 ? 
-                        <div>{followButton} {subscribeButton}</div> :
-                        (
-                            props.user._id === props.event.organizator._id ?
-                            <UpdateButton {...props} event={props.event}/> : <div/>
-                        )
-                }
+                { renderInteractionButtons() }
             </div>
         </div>
     )
