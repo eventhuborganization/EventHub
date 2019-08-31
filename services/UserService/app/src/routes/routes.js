@@ -61,7 +61,8 @@ module.exports = function(app) {
         .post(controller.createGroup);
 
     app.route("/group/:uuid")
-        .get(controller.getGroup);
+        .get(controller.getGroup)
+        .delete(controller.getGroup) // TODO Aggiungere funzione per eliminare un gruppo dal db
 
     /*/users/:uuid
     - GET => tutte le info dell'utente [Return: 200 | 404]

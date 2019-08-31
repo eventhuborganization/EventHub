@@ -117,4 +117,37 @@ let EmptyAvatar = props => {
     )
 }
 
-export {ImageForCard, AVATAR, IMAGE, RoundedSmallImage, BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_IMAGE, PLACEHOLDER_USER_CIRCLE, LOCAL}
+/**
+ * @param props {{
+ *     borderType: number
+ * }}
+ * @return {*}
+ * @constructor
+ */
+let MoreAvatar = props => {
+    let borderClass = ""
+    switch(props.borderType) {
+        case BORDER_PRIMARY:
+            borderClass = " friendsIcon border-primary "
+            break
+        default: break
+    }
+    return (
+        <div className={"d-flex justify-content-center align-items-center avatar-size border rounded-circle " + borderClass}>
+            <em className={"fas fa-ellipsis-h text-dark"}></em>
+        </div> 
+    )
+}
+
+export {
+    AVATAR,
+    IMAGE,
+    BORDER_PRIMARY,
+    PLACEHOLDER_IMAGE,
+    PLACEHOLDER_USER_CIRCLE,
+    LOCAL,
+    ImageForCard, 
+    RoundedSmallImage,
+    EmptyAvatar,
+    MoreAvatar
+}

@@ -42,14 +42,12 @@ exports.registration = (req, res) => {
                     if (error) {
                         data.profilePicture = ""
                         console.log(error)
-                        for(let notDone=4; notDone; ) {
-                            axios.put(`${UserServiceServer}/users/${response.data._id}`, data)
-                                .then(user => {
-                                    notDone=false
-                                    network.resultWithJSONNoImage(res, user.data)
-                                })
-                                .catch(err => {notDone--})
+                        var tryDeleteWrongAvatarLink = (userId, data, counter) => {
+                            axios.put(`${UserServiceServer}/users/${userId}`, data)
+                                .then(user => network.resultWithJSONNoImage(res, user.data))
+                                .catch(err => {if (counter>0) tryAddDataUser(userId,data, --counter)})
                         }
+                        tryDeleteWrongAvatarLink(response.data._id, data, 5)
                         network.resultWithJSONNoImage(res, user.data)
                     } else {
                         network.replayResponse(response, res)
@@ -61,3 +59,4 @@ exports.registration = (req, res) => {
         })
         .catch(err => network.internalError(res, err))
 }
+
