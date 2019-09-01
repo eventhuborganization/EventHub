@@ -6,6 +6,7 @@ import {Redirect} from "react-router-dom"
 import {LinkMakerBanner, INVITE_BUTTON, INVITED_BUTTON} from "../link_maker_banner/LinkMakerBanner"
 import LocalStorage from "local-storage"
 import {EventHeaderBanner} from "../event/Event"
+import { SimpleSearchBar } from "../search_bar/SearchBar"
 
 class Invite extends React.Component {
 
@@ -162,17 +163,11 @@ class Invite extends React.Component {
                 {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <EventHeaderBanner event={this.state.event} hidePlace={true} />
-                <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
-                    <label htmlFor="tf-search" className="d-none">Cerca amico</label>
-                    <input
-                        className="col-11 mx-auto form-control"
-                        id="tf-search"
-                        name="tf-search"
-                        type="search"
-                        placeholder="Cerca"
-                        value={this.state.filter}
-                        onChange={this.onFilter}/>
-                </form>
+                <SimpleSearchBar
+                    placeholder="Cerca"
+                    value={this.state.filter}
+                    onChange={this.onFilter}
+                />
                 <FriendsTab tabs={tabs} />
             </div>
         )
