@@ -14,7 +14,7 @@ let PARTICIPATE = 1
 
 let routes = require("../../services/routes/Routes")
 
-let getButtonClassName = (eventType, buttonType) => {
+let getButtonClassName = (eventType, buttonType, noMargin) => {
     var buttonClass = ""
     switch(buttonType) {
         case FOLLOW:
@@ -25,12 +25,13 @@ let getButtonClassName = (eventType, buttonType) => {
             break
         default: break
     }
+    let margin = noMargin ? "" : " ml-2"
     if (eventType === PARTY)
-        return "btn partyButton partyButton" + buttonClass + " ml-2"
+        return "btn partyButton partyButton" + buttonClass + margin
     else if (eventType === MEETING)
-        return "btn meetingButton meetingButton" + buttonClass + " ml-2"
+        return "btn meetingButton meetingButton" + buttonClass + margin
     else if (eventType === SPORT)
-        return "btn sportButton sportButton" + buttonClass + " ml-2"
+        return "btn sportButton sportButton" + buttonClass + margin
 }
 
 class FollowButton extends React.Component {
@@ -155,7 +156,7 @@ function InviteButton(props) {
                 pathname: routes.invite,
                 event: props.event
             }}
-            className={getButtonClassName(props.event.typology, PARTICIPATE)}>
+            className={getButtonClassName(props.event.typology, PARTICIPATE, true)}>
             Invita
         </Link>
     )
@@ -225,7 +226,7 @@ let EventInteractionPanel = (props) => {
 
     return (
         <div className="row">
-            <div className="col-3 my-auto">
+            <div className={" col-3 " + (props.hideBadge ? "" : " my-auto ")}>
                 {
                     props.hideBadge ? renderInviteButton() :
                         <EventBadge {...props}
@@ -380,6 +381,7 @@ export {
     EventHeaderBanner,
     EventLocation,
     EventOrganizatorInfo,
+    InviteButton,
     PARTY,
     SPORT,
     MEETING

@@ -41,7 +41,7 @@ class Invite extends React.Component {
     }
 
     componentDidMount() {
-        if (!(this.props.isLogged && this.state.event._id)) {
+        if (!(this.props.isLogged && this.state.event)) {
             this.props.onError(
                 "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
                 () => this.setState({redirectHome: true})
