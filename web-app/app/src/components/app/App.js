@@ -22,6 +22,7 @@ import Settings from '../settings/Settings'
 import NotificationService from "../../services/notification/Notification"
 import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
+import GroupCreator from '../group_creator/GroupCreator'
 
 let routes = require("../../services/routes/Routes")
 
@@ -122,6 +123,14 @@ class App extends React.Component {
         state.user.linkedUsers = state.user.linkedUsers.map(id => {return {_id: id, name: ""}})
         return state
       }, () => {
+        ApiService.getUsersInformation(
+          this.state.user.linkedUsers,
+          () => {},
+          users => this.setState(prevState => {
+            prevState.user.linkedUsers = users
+            return prevState
+          }, () => this.saveUserDataToLocalStorage())
+        )
         this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         this.saveUserDataToLocalStorage()
     })
@@ -306,6 +315,13 @@ class App extends React.Component {
               />
               <Route path={routes.myGroups} exact render={(props) =>
                   <Groups {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                  />}
+              />
+              <Route path={routes.newGroup} exact render={(props) =>
+                  <GroupCreator {...props}
                           isLogged={this.state.isLogged}
                           user={this.state.user}
                           onError={this.onError}
