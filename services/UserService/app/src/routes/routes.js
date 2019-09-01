@@ -48,6 +48,9 @@ module.exports = function(app) {
     app.route("/users/:uuid/reviews/received")
         .get(controller.getReceivedReviews);
 
+    app.route("/events/:uuid/reviews")
+        .get(controller.getEventReviews)
+
     app.route("/users/:uuid/actions")
         .get(controller.getUserActions)
         .post(controller.addUserAction);

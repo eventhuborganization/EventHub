@@ -629,3 +629,13 @@ exports.searchUser = (req, res) => {
         }
     });
 }
+
+
+exports.getEventReviews = (req, res) => {
+    Reviews.find({event: req.params.uuid}, (err, reviews) => {
+        if (err)
+            network.notContentRetrieved(res)
+        else 
+            network.resultWithJSON(res,reviews) 
+    }) 
+}
