@@ -1,3 +1,5 @@
+const axios = require('axios')
+
 exports.getUserInfo = (uuid) => {
     return axios.get(`${UserServiceServer}/users/${uuid}`)
 } 
