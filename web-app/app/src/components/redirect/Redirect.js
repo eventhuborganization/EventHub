@@ -1,6 +1,8 @@
 import React from 'react'
 import {Redirect} from 'react-router-dom'
 
+let routes = require("../../services/routes/Routes")
+
 class CallableComponent extends React.Component {
     componentDidMount() {
         if (this.props.onRef)
@@ -73,12 +75,12 @@ class LoginRedirect extends CallableComponent {
 
     render() {
         let from = this.props.location && this.props.location.pathname
-            ? this.props.location.pathname : "/"
+            ? this.props.location.pathname : routes.home
         return (
             <div>
                 <RedirectComponent {...this.props}
                                    from={from}
-                                   to={"/login"}
+                                   to={routes.login}
                                    redirectNow={this.props.redirectIfNotLogged && !this.props.isLogged}
                                    onRef={ref => this.saveRedirectComponentRef(ref)}/>
             </div>
@@ -110,7 +112,7 @@ class LoginSuccessfullRedirect extends CallableComponent {
         return (
             <div>
                 <RedirectComponent {...this.props}
-                                   to={"/"}
+                                   to={routes.home}
                                    redirectNow={false}
                                    onRef={ref => this.saveRedirectComponentRef(ref)}/>
             </div>

@@ -23,6 +23,8 @@ import NotificationService from "../../services/notification/Notification"
 import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
 
+let routes = require("../../services/routes/Routes")
+
 class App extends React.Component {
 
     #notificationServiceSubscriptionCode = undefined
@@ -187,7 +189,7 @@ class App extends React.Component {
             closeLabel="Chiudi"
           /> 
           <Switch>
-            <Route path="/" exact render={(props) => 
+            <Route path={routes.home} exact render={(props) => 
                 <Home {...props}
                   user={{
                       _id: this.state.user._id
@@ -198,14 +200,14 @@ class App extends React.Component {
                   showMessage={this.showModal} 
                 />} 
             />
-            <Route path="/menu" exact render={() => 
+            <Route path={routes.menu} exact render={() => 
                 <Menu 
                   notifications={this.state.notifications}
                   isLogged={this.state.isLogged}
                   onLogout={this.logout}
                 />
             } />
-            <Route path="/event/new" exact render={(props) =>
+            <Route path={routes.newEvent} exact render={(props) =>
                 <EventEditor {...props}
                              isLogged={this.state.isLogged}
                              onError={this.onError}
@@ -213,7 +215,7 @@ class App extends React.Component {
                              onUpdate={false}
                 />}
             />
-            <Route path="/event/:id/update" exact render={(props) => 
+            <Route path={routes.updateEvent} exact render={(props) => 
                 <EventEditor {...props}
                              isLogged={this.state.isLogged}
                              onError={this.onError}
@@ -222,7 +224,7 @@ class App extends React.Component {
                              onUpdate={true}
                 />} 
             />
-            <Route path="/event/:id" exact render={(props) => 
+            <Route path={routes.event} exact render={(props) => 
                 <EventInfo {...props} 
                    isLogged={this.state.isLogged}
                    onError={this.onError}
@@ -232,19 +234,19 @@ class App extends React.Component {
                    }}
                 />} 
             />
-            <Route path="/login" exact render={(props) => 
+            <Route path={routes.login} exact render={(props) => 
                 <Login {...props}
                   onError={this.onError} 
                   onLoginSuccessfull={this.onLoginSuccessfull} 
                 />} 
             />
-            <Route path="/register" exact render={(props) => 
+            <Route path={routes.registration} exact render={(props) => 
                 <Registration {...props} 
                   onError={this.onError}
                   onLoginSuccessfull={this.onLoginSuccessfull}
                 />} 
             />
-            <Route path="/notifications" exact render={(props) =>
+            <Route path={routes.myNotifications} exact render={(props) =>
                 <Notifications {...props}
                     isLogged={this.state.isLogged}
                     onError={this.onError}
@@ -254,14 +256,14 @@ class App extends React.Component {
                     }}
                 />}
             />
-            <Route path="/profile" exact render={(props) =>
+            <Route path={routes.myProfile} exact render={(props) =>
                 <PersonalProfile {...props}
                     isLogged={this.state.isLogged}
                     userId={this.state.user._id}
                     onError={this.onError}
                 />}
             />
-            <Route path="/users/:id" render={(props) => 
+            <Route path={routes.user} render={(props) => 
                 <UserProfile {...props}
                     isLogged={this.state.isLogged}
                     user={{
@@ -274,19 +276,19 @@ class App extends React.Component {
                     manageLinkedUser={this.manageLinkedUser}
                 />} 
             />
-            <Route path="/friends" exact render={(props) =>
+            <Route path={routes.myFriends} exact render={(props) =>
                 <Friends {...props}
                     isLogged={this.state.isLogged}
                     loggedUser={this.state.user}  
                     onError={this.onError}
                 />}
               />
-            <Route path="/map" exact render={(props) =>
+            <Route path={routes.map} exact render={(props) =>
                 <Map {...props}
                     onError={this.onError}
                 />}
               />
-            <Route path="/settings" exact render={(props) =>
+            <Route path={routes.settings} exact render={(props) =>
                 <Settings {...props}
                     isLogged={this.state.isLogged}
                     user={this.state.user}
@@ -295,14 +297,14 @@ class App extends React.Component {
                     onSuccess={this.onSuccess}
                 />}
               />
-              <Route path="/invite" exact render={(props) =>
+              <Route path={routes.invite} exact render={(props) =>
                   <Invite {...props}
                           isLogged={this.state.isLogged}
                           user={this.state.user}
                           onError={this.onError}
                   />}
               />
-              <Route path="/groups" exact render={(props) =>
+              <Route path={routes.myGroups} exact render={(props) =>
                   <Groups {...props}
                           isLogged={this.state.isLogged}
                           user={this.state.user}
@@ -311,11 +313,11 @@ class App extends React.Component {
               />
           </Switch>
           <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
-              <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to={"/profile"}><em className="fas fa-user fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to="/"><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
-              <div className="col text-center my-auto"><Link to="/friends"><em className="fas fa-users fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to="/menu">
+              <div className="col text-center my-auto"><Link to={routes.map}><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
+              <div className="col text-center my-auto"><Link to={routes.myProfile}><em className="fas fa-user fa-lg" /></Link></div>
+              <div className="col text-center my-auto"><Link to={routes.home}><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
+              <div className="col text-center my-auto"><Link to={routes.myFriends}><em className="fas fa-users fa-lg" /></Link></div>
+              <div className="col text-center my-auto"><Link to={routes.menu}>
                 <em className="fas fa-bars fa-lg"/>
                 {this.renderNotificationBadge()}
               </Link></div>

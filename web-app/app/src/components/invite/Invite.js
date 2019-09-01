@@ -8,6 +8,8 @@ import LocalStorage from "local-storage"
 import {EventHeaderBanner} from "../event/Event"
 import { SimpleSearchBar } from "../search_bar/SearchBar"
 
+let routes = require("../../services/routes/Routes")
+
 class Invite extends React.Component {
 
     buttonId = "friendGroupBtn"
@@ -147,7 +149,7 @@ class Invite extends React.Component {
     }
 
     redirectToHome = () => {
-        return this.state.redirectHome ? <Redirect to={"/"} /> : <div/>
+        return this.state.redirectHome ? <Redirect to={routes.home} /> : <div/>
     }
 
     render() {

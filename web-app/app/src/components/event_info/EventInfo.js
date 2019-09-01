@@ -10,6 +10,8 @@ import {Link} from "react-router-dom"
 import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
 
+let routes = require("../../services/routes/Routes")
+
 class EventInfo extends React.Component {
 
     constructor(props) {
@@ -44,7 +46,7 @@ class EventInfo extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render() {
@@ -128,7 +130,7 @@ class EventInfo extends React.Component {
                     <div className={"row"}>
                         <div className={"col-12"}>
                             <div className={"text-right h4 mt-2"}>
-                                <Link to={"/"}>Ritorna alla home</Link>
+                                <Link to={routes.home}>Ritorna alla home</Link>
                             </div>
                         </div>
                     </div>

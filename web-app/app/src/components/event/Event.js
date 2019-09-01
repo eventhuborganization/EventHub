@@ -12,6 +12,8 @@ let MEETING = "meeting"
 let FOLLOW = 0
 let PARTICIPATE = 1
 
+let routes = require("../../services/routes/Routes")
+
 let getButtonClassName = (eventType, buttonType) => {
     var buttonClass = ""
     switch(buttonType) {
@@ -137,7 +139,7 @@ function UpdateButton(props) {
     return (
         <Link 
             to={{
-                pathname: "/event/" + props.event._id + "/update",
+                pathname: routes.updateEventFromId(props.event._id),
                 state: {event: props.event}
             }} 
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
@@ -150,7 +152,7 @@ function InviteButton(props) {
     return (
         <Link
             to={{
-                pathname: "/invite",
+                pathname: routes.invite,
                 event: props.event
             }}
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
@@ -349,13 +351,13 @@ let EventOrganizatorInfo = props => {
                     <span className={props.level}>Organizzatore</span>
                 </div>
                 <Link
-                    to={"/users/" + props.organizator._id} 
+                    to={routes.userFromId(props.organizator._id)} 
                     className="col-3 px-0"
                     style={{textDecoration: "none"}}>
                     <RoundedSmallImage imageName={props.organizator.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} />
                 </Link>
                 <Link 
-                    to={"/users/" + props.organizator._id}
+                    to={routes.userFromId(props.organizator._id)}
                     className="col-9 d-flex justify-content-start align-items-center"
                     style={{textDecoration: "none"}}>
                     <span className="text-invited font-weight-bold text-dark">

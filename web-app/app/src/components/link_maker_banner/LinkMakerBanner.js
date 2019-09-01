@@ -6,6 +6,8 @@ export const INVITE_BUTTON = 0
 export const ADD_FRIEND_BUTTON = 1
 export const INVITED_BUTTON = 2
 
+let routes = require("../../services/routes/Routes")
+
 //"friendBtn" + props.user._id
 
 /**
@@ -46,7 +48,7 @@ export function LinkMakerBanner(props) {
             break
         default: break
     }
-    let link = (props.isGroup ? "/groups/" : "/users/") + props.elem._id
+    let link = props.isGroup ? routes.groupFromId(props.elem._id) : routes.userFromId(props.elem._id)
     return props.elem.name && (props.isGroup ? props.buttonType !== ADD_FRIEND_BUTTON : true) ? (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link

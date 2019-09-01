@@ -4,11 +4,13 @@ import styles from './MultipleElementsBanner.module.css'
 import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage, MoreAvatar} from "../image/Image"
 import Api from '../../services/api/Api'
 
+let routes = require("../../services/routes/Routes")
+
 function UserAvatar(props){
     return (
         <Link 
             className={"col " + (!!props.margin ? "" : "pr-0")} 
-            to={"/users/" + props.user._id}>
+            to={routes.userFromId(props.user._id)}>
             <RoundedSmallImage imageName={props.user.avatar} borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </Link>
     )

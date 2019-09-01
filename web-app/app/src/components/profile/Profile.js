@@ -8,6 +8,8 @@ import { CallableComponent } from '../redirect/Redirect'
 import {AVATAR, ImageForCard} from "../image/Image"
 import { SimpleSearchBar } from '../search_bar/SearchBar'
 
+let routes = require("../../services/routes/Routes")
+
 /**
  * I badge sono ancora da gestire!!!
  */
@@ -147,7 +149,7 @@ class Profile extends CallableComponent {
                                     isLocalUser={this.props.isLocalUser}
                                     isMyFriend={isMyFriend} 
                                     _id={this.state.user._id}
-                                    settingsLink={"/settings"}
+                                    settingsLink={routes.settings}
                                     removeClicked={this.removeFriend}
                                 />
                                 <div className="container-fluid mt-auto">
@@ -200,7 +202,7 @@ class Profile extends CallableComponent {
                         linkedUsers={this.state.user.linkedUsers}
                         emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.user.organization ? "follower" : "amico")}
                         typology={this.state.user.organization ? "Followers" : "Amici"}
-                        moreLinkedUsersLink={this.props.isLocalUser ? "/friends" : `${this.props.match.url}/friends`}
+                        moreLinkedUsersLink={this.props.isLocalUser ? routes.myFriends : routes.usersFriendsFromPath(this.props.match.url)}
                     />
                 </section>
 

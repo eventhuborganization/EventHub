@@ -8,6 +8,8 @@ import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
 import {ImageForCard, LOCAL} from "../image/Image"
 
+let routes = require("../../services/routes/Routes")
+
 class DeleteButton extends React.Component {
 
     constructor(props){
@@ -35,7 +37,7 @@ class DeleteButton extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render () {
@@ -381,8 +383,8 @@ class EventEditor extends React.Component {
     renderRedirect() {
         if (this.state.eventCreated)
             return <RedirectComponent {...this.props}
-                                      from={"/"}
-                                      to={"/event/" + this.state.eventId}
+                                      from={routes.home}
+                                      to={routes.eventFromId(this.state.eventId)}
                                       redirectNow={true}
             />
     }
@@ -439,7 +441,7 @@ class EventEditor extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render() {

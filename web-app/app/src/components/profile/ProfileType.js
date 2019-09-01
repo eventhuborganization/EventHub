@@ -5,6 +5,8 @@ import Api from '../../services/api/Api'
 import { LoginRedirect } from '../redirect/Redirect'
 import { Profile, UserFriends } from './Profile'
 
+let routes = require("../../services/routes/Routes")
+
 class AbstractProfile extends React.Component {
 
     constructor(props) {
@@ -67,7 +69,7 @@ class AbstractProfile extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render = () => {
@@ -118,7 +120,7 @@ class UserProfile extends AbstractProfile {
 
     redirectToProfile = () => {
         return this.props.user._id === this.props.match.params.id ? 
-            <Redirect from={this.props.from} to={"/profile"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.myProfile} /> : <div/>
     }
 
     render = () => {
@@ -127,7 +129,7 @@ class UserProfile extends AbstractProfile {
                 {this.redirectToHome()}
                 {this.redirectToProfile()}
                 <Route 
-                    path={"/users/:id/friends"}
+                    path={routes.userFriends}
                     exact 
                     render={() => {
                         return <UserFriends {...this.props}
