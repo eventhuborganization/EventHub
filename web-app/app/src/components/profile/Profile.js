@@ -2,10 +2,11 @@ import React from 'react'
 import Api from '../../services/api/Api'
 
 import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, EventsBanner, ProfileControls} from './Profiles'
-import UserBanner from '../user_banner/UserBanner'
-import {FriendsTab} from '../menu_tab/MenuTab'
+import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
+import { FriendsTab } from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
-import {AVATAR, ImageForCard} from "../image/Image";
+import {AVATAR, ImageForCard} from "../image/Image"
+import { SimpleSearchBar } from '../search_bar/SearchBar'
 
 /**
  * I badge sono ancora da gestire!!!
@@ -291,17 +292,11 @@ class UserFriends extends React.Component {
         }
         return (
             <div className="main-container">
-                <form className="row mb-2 sticky-top bg-white py-2">
-                    <label htmlFor="tf-search" className="d-none">Cerca amico</label>
-                    <input 
-                        className="col-11 mx-auto form-control"
-                        id="tf-search" 
-                        name="tf-search" 
-                        type="search" 
-                        placeholder="Cerca amico"
-                        value={this.state.filter}
-                        onChange={this.onFilter}/>
-                </form>
+                <SimpleSearchBar
+                    placeholder="Cerca amico"
+                    value={this.state.filter}
+                    onChange={this.onFilter}
+                />
                 <FriendsTab tabs={tabs} />
             </div>
         )

@@ -1,10 +1,13 @@
 import React from 'react'
+import LocalStorage from "local-storage"
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
+
+import './App.css'
+import ApiService from "../../services/api/Api"
 
 import {CallableComponent} from '../redirect/Redirect'
 import ScrollToTop from '../scroll_to_top/ScrollToTop'
 
-import './App.css'
 import Home from '../home/Home'
 import Login from '../login/Login'
 import Menu from '../menu/Menu'
@@ -17,9 +20,8 @@ import Friends from '../friends/Friends'
 import Map from '../map/Map'
 import Settings from '../settings/Settings'
 import NotificationService from "../../services/notification/Notification"
-import ApiService from "../../services/api/Api"
-import LocalStorage from "local-storage"
-import Invite from "../invite/Invite";
+import Invite from "../invite/Invite"
+import Groups from '../groups/Groups'
 
 class App extends React.Component {
 
@@ -33,7 +35,8 @@ class App extends React.Component {
           isLogged: applicationState && applicationState.isLogged,
           user: applicationState && applicationState.user ? applicationState.user : {},
           showMessageElement: undefined,
-          notifications: []
+          notifications: [],
+          nextErrorToShow: undefined
       }
       ApiService.setNotAuthenticatedBehaviour(this.onNotAuthenticated)
       if(applicationState){
@@ -66,26 +69,47 @@ class App extends React.Component {
           let state = prevState
           state.showMessageElement = elem
           return state
+      }, () => {
+          let error = this.state.nextErrorToShow ? {...this.state.nextErrorToShow} : undefined
+          this.setState({nextErrorToShow: undefined}, () => {
+              if (error)
+                  this.showModal(error.configurations, error.onConfirmFunction, error.onDiscardFunction, error.onExitFunction)
+          })
       })
   }
 
-  onError = (message, onErrorFunction) => {
-    this.state.showMessageElement.showModal({body: message, title: "Errore", okFun: onErrorFunction})
+  onError = (message, onErrorFunction, onExitFunction) => {
+      let configurations = {
+          message: message,
+          title: "Errore"
+      }
+      this.showModal(configurations, onErrorFunction, () => {}, onExitFunction)
   }
 
   onSuccess = (message) => {
-    this.state.showMessageElement.showModal({body: message, title: "Operazione completata!"})
+        this.showModal({message: message, title: "Operazione completata!"})
   }
 
-  showModal = (configurations, onConfirmFunction, onDiscardFunction) => {
-    this.state.showMessageElement.showModal({
-      body: configurations.message,
-      title: configurations.title,
-      confirmMessage: configurations.confirmMessage,
-      discardMessage: configurations.discardMessage,
-      okFun: onConfirmFunction,
-      cancelFun: onDiscardFunction
-    })
+  showModal = (configurations, onConfirmFunction, onDiscardFunction, onExitFunction) => {
+        if (this.state.showMessageElement)
+            this.state.showMessageElement.showModal({
+                body: configurations.message,
+                title: configurations.title,
+                confirmMessage: configurations.confirmMessage,
+                discardMessage: configurations.discardMessage,
+                okFun: onConfirmFunction,
+                cancelFun: onDiscardFunction,
+                exitFun: onExitFunction
+            })
+        else
+            this.setState({
+                nextErrorToShow: {
+                    configurations: configurations,
+                    onConfirmFunction: onConfirmFunction,
+                    onDiscardFunction: onDiscardFunction,
+                    onExitFunction: onExitFunction
+                }
+            })
   }
 
   onLoginSuccessfull = (user_data) => {
@@ -278,6 +302,13 @@ class App extends React.Component {
                           onError={this.onError}
                   />}
               />
+              <Route path="/groups" exact render={(props) =>
+                  <Groups {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                  />}
+              />
           </Switch>
           <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
               <div className="col text-center my-auto"><Link to="/map"><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
@@ -309,10 +340,27 @@ class Modal extends CallableComponent {
           state.confirmMessage = data.confirmMessage
           state.discardMessage = data.discardMessage
           state.okFun = data.okFun
+          state.exitFun = data.exitFun
           state.cancelFun = data.cancelFun
           return state
+      }, () => {
+          if (this.state.exitFun instanceof Function) {
+              let modal = document.getElementById('errorLog')
+              let config = { attributes: true}
+              let state = this.state
+              let callback = function(mutationsList, observer) {
+                  for(let mutation of mutationsList) {
+                      if (mutation.attributeName === "aria-hidden" && mutation.target.attributes["aria-hidden"]) {
+                          state.exitFun()
+                          observer.disconnect()
+                      }
+                  }
+              }
+              const observer = new MutationObserver(callback)
+              observer.observe(modal, config)
+          }
+          document.getElementById("triggerButton").click()
       })
-    document.getElementById("triggerButton").click()
   }
 
   render = () => {
