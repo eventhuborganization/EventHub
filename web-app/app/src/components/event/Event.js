@@ -162,6 +162,26 @@ function InviteButton(props) {
     )
 }
 
+/**
+ * @param props {{
+ *     event: {
+ *         typology: string
+ *     },
+ *     onSent: function,
+ *     showReviewModal: function
+ * }}
+ * @return {*}
+ * @constructor
+ */
+let WriteReviewButton = props => {
+    return (
+        <button className={getButtonClassName(props.event.typology, PARTICIPATE)}
+                onClick={() => props.showReviewModal(props.event, props.onSent)}>
+            Scrivi una recensione
+        </button>
+    )
+}
+
 let EventBadge = (props) => {
     var typeClass = ""
     var label = ""
@@ -203,22 +223,23 @@ let EventInteractionPanel = (props) => {
             onSuccess={props.onEventParticipated}
         />
 
-    let isOrganizator = () => {
-        return props.user._id === props.event.organizator._id
-    }
+    let isEventPast = props.event.date - new Date() < 0
+    let isOrganizator = props.user._id === props.event.organizator._id
 
     let renderInviteButton = () => {
-        return props.isLogged && (isOrganizator() || props.event.public) ?
+        return props.isLogged && (isOrganizator || props.event.public) && !isEventPast ?
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
     let renderInteractionButtons = () => {
-        if(props.hideInteractionButtons){
+        if(props.hideInteractionButtons) {
             return <div/>
-        } else if(props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0){
+        } else if(!isOrganizator && props.event.date - new Date() > 0){
             return <div>{followButton} {subscribeButton}</div>
-        } else if(props.user._id === props.event.organizator._id){
+        } else if(isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>
+        } else if (isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
+            return <WriteReviewButton onSent={props.onSent} event={props.event} showReviewModal={props.showReviewModal} />
         } else {
             return <div/>
         }

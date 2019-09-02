@@ -149,6 +149,7 @@ class Notification extends React.Component {
                                     key={this.props.notification._id}
                                     event={this.props.notification.event}
                                     hideInteractionButtons={true}
+                                    showReviewModal={this.props.showReviewModal}
             /> : <div/>
     }
 

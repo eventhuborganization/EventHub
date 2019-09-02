@@ -97,6 +97,7 @@ class EventCard extends React.Component {
                                                onEventFollowed={this.onEventFollowed}
                                                onEventUnfollowed={this.onEventFollowInteraction}
                                                onEventUnsubscribed={this.onEventParticipateInteraction}
+                                               showReviewModal={this.props.showReviewModal}
                         />
                     </div>
                 </div>

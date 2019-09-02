@@ -923,6 +923,20 @@ let inviteGroup = (groupId, eventId, onError, onSuccess) => {
 }
 
 /**
+ * @param review {{
+ *     writerId: string,
+ *     eventId: string,
+ *     text: string,
+ *     evaluation: number
+ * }}
+ * @param onError
+ * @param onSuccess
+ */
+let writeReview = (review, onError, onSuccess) => {
+    onError()
+}
+
+/**
  * @param imageName {string}
  * @returns {string}
  */
@@ -977,5 +991,6 @@ export default {
     addMemberToGroup,
     removeMemberFromGroup,
     inviteUser,
-    inviteGroup
+    inviteGroup,
+    writeReview
 }

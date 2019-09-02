@@ -81,6 +81,7 @@ class EventInfo extends React.Component {
                                                    return state
                                                })}
                                                onEventDeleted = {() => this.setState({redirectHome: true})}
+                                               showReviewModal={this.props.showReviewModal}
                         />
                     </section>
 
