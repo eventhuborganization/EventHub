@@ -374,14 +374,14 @@ exports.getWrittenReviews = (req, res) => {
                 if (err)
                     network.notContentRetrieved(res);
                 else
-                    network.resultWithJSON(res, { reviews: reviews});
+                    network.resultWithJSON(res, { writer: {_id: user._id, name: user.name, surname: user.surname, avatar: user.profilePicture}, reviews: reviews});
             });
         }
     });
 };
 
 exports.createNewReview = (req, res) => {
-    let newReview = req.body;
+    let newReview = req.body;    
     if(!commons.isNewReviewWellFormed(newReview))
         network.badRequest(res);
     else {
@@ -393,10 +393,18 @@ exports.createNewReview = (req, res) => {
                 Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [review._id]}}, (err, model) => {
                     if (err)
                         network.internalError(res, err);
-                    else if (!model)
+                    else if (!model) {
                         network.userNotFound(res);
-                    else
-                        network.itemCreated(res, review);
+                    } else {
+                        Users.findByIdAndUpdate(newReview.eventOrganizator, {$push: {reviewsReceived: [review._id]}}, (err, result) => {
+                            if (err)
+                                network.internalError(res, err);
+                            else if (!result) {
+                                network.userNotFound(res);
+                            } else
+                                network.itemCreated(res, review);
+                        });
+                    }  
                 });
             }
         });
@@ -430,8 +438,17 @@ exports.getReceivedReviews = (req, res) => {
             Reviews.find({_id: {$in: user.reviewsReceived}}, (err, reviews) => {
                 if (err)
                     network.notContentRetrieved(res);
-                else
+                else {
+                    reviews.forEach(review => {
+                        getUserById(review.writer, (err, writer) => {
+                            if (err)
+                                network.internalError(res)
+                            else
+                                review.writer = {_id: writer._id, name: writer.name, surname: writer.surname, avatar: writer.profilePicture}
+                        })
+                    })
                     network.resultWithJSON(res, { reviews: reviews});
+                }
             });
         }
     });
@@ -635,7 +652,16 @@ exports.getEventReviews = (req, res) => {
     Reviews.find({event: req.params.uuid}, (err, reviews) => {
         if (err)
             network.notContentRetrieved(res)
-        else 
+        else {
+            reviews.forEach(review => {
+                getUserById(review.writer, (err, writer) => {
+                    if (err)
+                        network.internalError(res)
+                    else
+                        review.writer = {_id: writer._id, name: writer.name, surname: writer.surname, avatar: writer.profilePicture}
+                })
+            })
             network.resultWithJSON(res,reviews) 
+        }
     }) 
 }
