@@ -45,7 +45,7 @@ class App extends React.Component {
           reviewModalRef: undefined
       }
       ApiService.setNotAuthenticatedBehaviour(this.onNotAuthenticated)
-      if(applicationState){
+      if(applicationState && this.state.isLogged){
         this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
       }
   }
