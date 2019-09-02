@@ -7,7 +7,7 @@ import {CreateNewGroupButton} from "../floating_button/FloatingButton"
 import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
 import { LinkMakerBanner } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
-import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder';
+import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
 
 export default class Groups extends React.Component {
 
@@ -15,8 +15,21 @@ export default class Groups extends React.Component {
         super(props)
         this.state = {
             filter: "",
-            groups: []
+            groups: [{
+                _id: "fovmorvorworwg",
+                name: "Fanatici della Formula 1",
+                members: [{
+                    _id: "vfomvorwmr",
+                    name: "Giovanni",
+                    surname: "Storti",
+                    address:{
+                        city:"California"
+                    },
+                    organization: false
+                }]
+            }]
         }
+        this.state.groups[0].members.push(this.props.user)
         Api.getGroups(
             () => this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova"),
             groups => this.setState({groups : groups})

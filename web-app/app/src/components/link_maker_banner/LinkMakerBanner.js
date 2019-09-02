@@ -48,7 +48,11 @@ export function LinkMakerBanner(props) {
             break
         default: break
     }
-    let link = props.isGroup ? routes.groupFromId(props.elem._id) : routes.userFromId(props.elem._id)
+    let link = props.isGroup ? 
+        {
+            pathname: routes.groupFromId(props.elem._id),
+            group: props.elem
+        } : routes.userFromId(props.elem._id)
     let name = props.elem.name + " " + (props.elem.surname ? props.elem.surname : "")
     return props.elem.name && (props.isGroup ? props.buttonType !== ADD_FRIEND_BUTTON : true) ? (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
@@ -86,15 +90,12 @@ export function LinkMakerBanner(props) {
 }
 
 export function UserBanner(props) {
-    let user = {...props.user}
-    if(props.user.address && props.user.address.city)
-        user.city = props.user.address.city
     return props.user.name ? 
         <LinkMakerBanner
             buttonId={"friendBtn" + props.user._id}
             buttonType={ADD_FRIEND_BUTTON}
             border={props.border}
-            elem={user}
+            elem={props.user}
             isGroup={false}
             onClick={props.onAddFriend}
             showButton={props.showAddFriendButton}
