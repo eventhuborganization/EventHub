@@ -1,6 +1,10 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
+
 import { LoginRedirect } from '../redirect/Redirect'
 import { RoundedSmallImage, PLACEHOLDER_USER_CIRCLE, PLACEHOLDER_GROUP_CIRCLE, RoundedBigImage, BORDER_PRIMARY } from '../image/Image'
+
+import Api from '../../services/api/Api'
 
 let routes = require('../../services/routes/Routes')
 
@@ -13,7 +17,9 @@ export default class GroupCreator extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            name: ""
+            name: "",
+            friends: new Set(),
+            redirectGroups: false
         }
     }
 
@@ -21,12 +27,48 @@ export default class GroupCreator extends React.Component {
         this.setState({name: capitalizeFirstLetter(ev.target.value)})
     }
 
+    onFriendChange = (id, adding) => {
+        if(adding){
+            this.setState(prevState => {
+                prevState.friends.add(id)
+                return prevState
+            })
+        } else {
+            this.setState(prevState => {
+                prevState.friends.delete(id)
+                return prevState
+            })
+        }
+    }
+
+    submitForm = (ev) => {
+        ev.preventDefault()
+        if(!this.state.name){
+            this.props.onError("Devi inserire il nome del gruppo!")
+        } else if(this.state.friends.size === 0) {
+            this.props.onError("Devi selezionare almeno un amico per creare un gruppo!")
+        } else {
+            Api.createGroup(
+                this.state.name,
+                this.state.friends,
+                () => this.props.onError("Errore durante la creazione del gruppo, riprova"),
+                () => this.setState({redirectGroups: true})
+            )
+        }
+    }
+
+    redirectToHome = () => {
+        return this.state.redirectHome ? 
+            <Redirect from={this.props.from} to={routes.myGroups} /> : <div/>
+    }
+
     render = () => {
         return (
             <div className="main-container">
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
+                {this.redirectToHome()}
 
-                <form onSubmit={ev => ev.preventDefault()} className="mt-3">
+                <form onSubmit={this.submitForm} className="mt-3">
 
                     <div className="row mt-2">
                         <div className="col d-flex justify-content-center">
@@ -71,6 +113,8 @@ export default class GroupCreator extends React.Component {
                                             elem={user}
                                             border={true}
                                             name={"friend" + user._id}
+                                            addFriend={id => this.onFriendChange(id, true)}
+                                            removeFriend={id => this.onFriendChange(id, false)}
                                         />
                                     )
                             }
@@ -129,9 +173,18 @@ class ToggableMenu extends React.Component {
 
 function SelectableFriendBanner(props){
     
+    let handleChange = (check) => {
+        if(check.checked){
+            props.addFriend(props.elem._id)
+        } else {
+            props.removeFriend(props.elem._id)
+        }
+    }
+    
     let toggleCheck = () => {
         let check = document.getElementById(props.id)
         check.checked = !check.checked
+        handleChange(check)
     }
 
     return (
@@ -156,6 +209,7 @@ function SelectableFriendBanner(props){
                     type="checkbox" 
                     name={props.name} value={props.elem._id} 
                     aria-label={props.elem.name + " " + props.elem.surname}
+                    onClick={ev => handleChange(ev.target)}
                 />
             </div>
         </div>
