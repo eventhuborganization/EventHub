@@ -80,7 +80,7 @@ let RoundedImage = props => {
             break
         case PLACEHOLDER_GROUP_CIRCLE:
             placeholderIcon += "users "
-            size = " fa-2x"
+            size = (props.bigger ? " fa-3x" : " fa-2x")
             break
         case PLACEHOLDER_IMAGE:
             placeholderIcon += "image "
@@ -130,7 +130,7 @@ let RoundedSmallImage = props => {
  * @constructor
  */
 let RoundedBigImage = props => {
-    return <RoundedImage {...props} size={"big-avatar-size"} />
+    return <RoundedImage {...props} size={"big-avatar-size"} bigger={true} />
 }
 
 /**
