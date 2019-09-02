@@ -5,7 +5,9 @@ import {EventInteractionPanel} from '../event/Event'
 import ApiService from '../../services/api/Api'
 import GeoLocation from '../../services/location/GeoLocation'
 import {LocationMap} from "../map/Maps"
-import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
+
+let routes = require("../../services/routes/Routes")
 
 class Notification extends React.Component {
 
@@ -129,7 +131,7 @@ class Notification extends React.Component {
     getParentComponentByType(type, child) {
         return this.isEventType(type) ? 
             <Link 
-                to={"/event/" + this.props.notification.event._id} 
+                to={routes.eventFromId(this.props.notification.event._id)} 
                 className="text-dark"
                 style={{textDecoration: "none"}}>{child}</Link>
             : child
@@ -147,6 +149,7 @@ class Notification extends React.Component {
                                     key={this.props.notification._id}
                                     event={this.props.notification.event}
                                     hideInteractionButtons={true}
+                                    showReviewModal={this.props.showReviewModal}
             /> : <div/>
     }
 

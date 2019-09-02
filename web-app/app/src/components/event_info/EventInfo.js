@@ -10,6 +10,8 @@ import {Link} from "react-router-dom"
 import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
 
+let routes = require("../../services/routes/Routes")
+
 class EventInfo extends React.Component {
 
     constructor(props) {
@@ -44,7 +46,7 @@ class EventInfo extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render() {
@@ -79,39 +81,39 @@ class EventInfo extends React.Component {
                                                    return state
                                                })}
                                                onEventDeleted = {() => this.setState({redirectHome: true})}
+                                               showReviewModal={this.props.showReviewModal}
                         />
                     </section>
 
                     <section className="row mt-2">
-                        <div className="col">
+                        <div className="col-12">
                             <div className="container-fluid">
                                 <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
-
-                                <MultipleUsersBanner 
-                                    users={this.state.eventInfo.participants}
-                                    emptyLabel={"Nessun partecipante al momento"}
-                                    typology={"Partecipanti"}
-                                    moreUsersLink={"ciao"}
-                                    noPadding={true}
-                                    margin={"mt-2"}
-                                    level={"h5"}
-                                    usersInfoIncomplete={true}
-                                />
-
-
-                                <div className="row mt-2">
-                                    <div className="col-12 px-0">
-                                        <h5>Descrizione</h5>
-                                        <ShowMore
-                                            lines={5}
-                                            more='Altro'
-                                            less='Mostra meno'
-                                        >
-                                            {this.state.eventInfo.description}
-                                        </ShowMore>
-                                    </div>
-                                </div>
                             </div>
+                        </div>
+                    </section>
+
+                    <MultipleUsersBanner
+                        users={this.state.eventInfo.participants}
+                        emptyLabel={"Nessun partecipante al momento"}
+                        typology={"Partecipanti"}
+                        moreUsersLink={"ciao"}
+                        noPadding={false}
+                        margin={"mt-2"}
+                        level={"h5"}
+                        usersInfoIncomplete={true}
+                    />
+
+                    <section className="row mt-2">
+                        <div className="col-12">
+                            <h5>Descrizione</h5>
+                            <ShowMore
+                                lines={5}
+                                more='Altro'
+                                less='Mostra meno'
+                            >
+                                {this.state.eventInfo.description}
+                            </ShowMore>
                         </div>
                     </section>
 
@@ -128,7 +130,7 @@ class EventInfo extends React.Component {
                     <div className={"row"}>
                         <div className={"col-12"}>
                             <div className={"text-right h4 mt-2"}>
-                                <Link to={"/"}>Ritorna alla home</Link>
+                                <Link to={routes.home}>Ritorna alla home</Link>
                             </div>
                         </div>
                     </div>

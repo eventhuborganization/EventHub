@@ -4,6 +4,8 @@ import Api from '../../services/api/Api'
 import { LoginSuccessfullRedirect } from '../redirect/Redirect'
 import { Link } from 'react-router-dom'
 
+let routes = require("../../services/routes/Routes")
+
 class Login extends React.Component {
 
     constructor(props) {
@@ -102,7 +104,7 @@ class Login extends React.Component {
                             />
                         </div>
                         <div className="d-flex justify-content-around">
-                            <Link to="/register" className={"btn btn-outline-light " + styles.btn}>Registrati</Link>
+                            <Link to={routes.registration} className={"btn btn-outline-light " + styles.btn}>Registrati</Link>
                             <input type="submit" value="Login" className={"btn btn-light ml-3 " + styles.btn}/>
                         </div>
                     </form>

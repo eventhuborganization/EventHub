@@ -1,6 +1,6 @@
 import React from 'react'
 import './FloatingButton.css'
-import {Link} from "react-router-dom";
+import {Link} from "react-router-dom"
 
 let TOP_CENTER = 0
 let BOTTOM_RIGHT = 1
@@ -9,6 +9,8 @@ let BOTTOM_LEFT = 2
 let SQUARE = 0
 let ROUNDED = 1
 let ROUNDED_CIRCLE = 2
+
+let routes = require("../../services/routes/Routes")
 
 /**
  *
@@ -69,7 +71,7 @@ let FloatingButton = (props) => {
 
 let CreateNewEventButton = (props) => {
     return (
-        <Link to={"/event/new"}>
+        <Link to={routes.newEvent}>
             <FloatingButton icon={{name: "plus", size:"2x"}} show={props.isLogged} position={BOTTOM_RIGHT} shape={ROUNDED_CIRCLE} />
         </Link>
         )
@@ -77,7 +79,7 @@ let CreateNewEventButton = (props) => {
 
 let CreateNewGroupButton = () => {
     return (
-        <Link to={"/groups/new"}>
+        <Link to={routes.newGroup}>
             <FloatingButton icon={{name: "plus", size:"2x"}} show={true} position={BOTTOM_RIGHT} shape={ROUNDED_CIRCLE} />
         </Link>
         )

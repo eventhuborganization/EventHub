@@ -4,11 +4,13 @@ import styles from './MultipleElementsBanner.module.css'
 import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage, MoreAvatar} from "../image/Image"
 import Api from '../../services/api/Api'
 
+let routes = require("../../services/routes/Routes")
+
 function UserAvatar(props){
     return (
         <Link 
             className={"col " + (!!props.margin ? "" : "pr-0")} 
-            to={"/users/" + props.user._id}>
+            to={routes.userFromId(props.user._id)}>
             <RoundedSmallImage imageName={props.user.avatar} borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </Link>
     )
@@ -32,14 +34,15 @@ function MoreUsers(props){
 
 function MultipleElementsBanner(props){
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
+    let padding = props.noPadding ? " px-0 " : ""
     return (
         <div>
-            <div className={"row " + (props.noPadding ? " px-0 " : "") + (props.margin ? props.margin : "" )}>
-                <div className={"col" + (props.noPadding ? " px-0" : "")}>
+            <div className={"row " + padding + (props.margin ? props.margin : "" )}>
+                <div className={"col" + padding}>
                     <div className={props.level}><em className={iconClass}></em> {props.title}</div>
                 </div>
             </div>
-            <div className="row">
+            <div className={"row "}>
                 {
                     props.elements.length > 0 ? props.elements : 
                     <div className={"col-11 col-md-6 mx-auto border border-primary p-2 " + styles.emptyList}> 

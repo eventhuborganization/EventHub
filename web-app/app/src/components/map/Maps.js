@@ -8,6 +8,7 @@ import {CallableComponent} from "../redirect/Redirect"
 import GeoLocation from "../../services/location/GeoLocation";
 
 let images = require.context("../../assets/images", true)
+let routes = require("../../services/routes/Routes")
 
 class EventsMap extends CallableComponent {
 
@@ -79,7 +80,7 @@ class EventsMap extends CallableComponent {
     createEventMarker = (event, map) => {
         let eventBanner =
             <div className={"container-fluid"}>
-                <a href={"/event/" + event._id}>
+                <a href={routes.eventFromId(event._id)}>
                     <EventHeaderBanner event={event}/>
                 </a>
             </div>

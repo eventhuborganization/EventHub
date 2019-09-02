@@ -12,7 +12,9 @@ let MEETING = "meeting"
 let FOLLOW = 0
 let PARTICIPATE = 1
 
-let getButtonClassName = (eventType, buttonType) => {
+let routes = require("../../services/routes/Routes")
+
+let getButtonClassName = (eventType, buttonType, noMargin) => {
     var buttonClass = ""
     switch(buttonType) {
         case FOLLOW:
@@ -23,12 +25,13 @@ let getButtonClassName = (eventType, buttonType) => {
             break
         default: break
     }
+    let margin = noMargin ? "" : " ml-2"
     if (eventType === PARTY)
-        return "btn partyButton partyButton" + buttonClass + " ml-2"
+        return "btn partyButton partyButton" + buttonClass + margin
     else if (eventType === MEETING)
-        return "btn meetingButton meetingButton" + buttonClass + " ml-2"
+        return "btn meetingButton meetingButton" + buttonClass + margin
     else if (eventType === SPORT)
-        return "btn sportButton sportButton" + buttonClass + " ml-2"
+        return "btn sportButton sportButton" + buttonClass + margin
 }
 
 class FollowButton extends React.Component {
@@ -137,7 +140,7 @@ function UpdateButton(props) {
     return (
         <Link 
             to={{
-                pathname: "/event/" + props.event._id + "/update",
+                pathname: routes.updateEventFromId(props.event._id),
                 state: {event: props.event}
             }} 
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
@@ -150,12 +153,32 @@ function InviteButton(props) {
     return (
         <Link
             to={{
-                pathname: "/invite",
+                pathname: routes.invite,
                 event: props.event
             }}
-            className={getButtonClassName(props.event.typology, PARTICIPATE)}>
+            className={getButtonClassName(props.event.typology, PARTICIPATE, true)}>
             Invita
         </Link>
+    )
+}
+
+/**
+ * @param props {{
+ *     event: {
+ *         typology: string
+ *     },
+ *     onSent: function,
+ *     showReviewModal: function
+ * }}
+ * @return {*}
+ * @constructor
+ */
+let WriteReviewButton = props => {
+    return (
+        <button className={getButtonClassName(props.event.typology, PARTICIPATE)}
+                onClick={() => props.showReviewModal(props.event, props.onSent)}>
+            Scrivi una recensione
+        </button>
     )
 }
 
@@ -200,22 +223,23 @@ let EventInteractionPanel = (props) => {
             onSuccess={props.onEventParticipated}
         />
 
-    let isOrganizator = () => {
-        return props.user._id === props.event.organizator._id
-    }
+    let isEventPast = props.event.date - new Date() < 0
+    let isOrganizator = props.user._id === props.event.organizator._id
 
     let renderInviteButton = () => {
-        return props.isLogged && (isOrganizator() || props.event.public) ?
+        return props.isLogged && (isOrganizator || props.event.public) && !isEventPast ?
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
     let renderInteractionButtons = () => {
-        if(props.hideInteractionButtons){
+        if(props.hideInteractionButtons) {
             return <div/>
-        } else if(props.user._id !== props.event.organizator._id && props.event.date - new Date() > 0){
+        } else if(!isOrganizator && props.event.date - new Date() > 0){
             return <div>{followButton} {subscribeButton}</div>
-        } else if(props.user._id === props.event.organizator._id){
+        } else if(isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>
+        } else if (isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
+            return <WriteReviewButton onSent={props.onSent} event={props.event} showReviewModal={props.showReviewModal} />
         } else {
             return <div/>
         }
@@ -223,7 +247,7 @@ let EventInteractionPanel = (props) => {
 
     return (
         <div className="row">
-            <div className="col-3 my-auto">
+            <div className={" col-3 " + (props.hideBadge ? "" : " my-auto ")}>
                 {
                     props.hideBadge ? renderInviteButton() :
                         <EventBadge {...props}
@@ -349,13 +373,13 @@ let EventOrganizatorInfo = props => {
                     <span className={props.level}>Organizzatore</span>
                 </div>
                 <Link
-                    to={"/users/" + props.organizator._id} 
+                    to={routes.userFromId(props.organizator._id)} 
                     className="col-3 px-0"
                     style={{textDecoration: "none"}}>
                     <RoundedSmallImage imageName={props.organizator.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} />
                 </Link>
                 <Link 
-                    to={"/users/" + props.organizator._id}
+                    to={routes.userFromId(props.organizator._id)}
                     className="col-9 d-flex justify-content-start align-items-center"
                     style={{textDecoration: "none"}}>
                     <span className="text-invited font-weight-bold text-dark">
@@ -378,6 +402,7 @@ export {
     EventHeaderBanner,
     EventLocation,
     EventOrganizatorInfo,
+    InviteButton,
     PARTY,
     SPORT,
     MEETING

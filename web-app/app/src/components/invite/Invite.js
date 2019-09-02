@@ -6,6 +6,9 @@ import {Redirect} from "react-router-dom"
 import {LinkMakerBanner, INVITE_BUTTON, INVITED_BUTTON} from "../link_maker_banner/LinkMakerBanner"
 import LocalStorage from "local-storage"
 import {EventHeaderBanner} from "../event/Event"
+import { SimpleSearchBar } from "../search_bar/SearchBar"
+
+let routes = require("../../services/routes/Routes")
 
 class Invite extends React.Component {
 
@@ -38,7 +41,7 @@ class Invite extends React.Component {
     }
 
     componentDidMount() {
-        if (!(this.props.isLogged && this.state.event._id)) {
+        if (!(this.props.isLogged && this.state.event)) {
             this.props.onError(
                 "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
                 () => this.setState({redirectHome: true})
@@ -146,7 +149,7 @@ class Invite extends React.Component {
     }
 
     redirectToHome = () => {
-        return this.state.redirectHome ? <Redirect to={"/"} /> : <div/>
+        return this.state.redirectHome ? <Redirect to={routes.home} /> : <div/>
     }
 
     render() {
@@ -162,17 +165,11 @@ class Invite extends React.Component {
                 {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <EventHeaderBanner event={this.state.event} hidePlace={true} />
-                <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
-                    <label htmlFor="tf-search" className="d-none">Cerca amico</label>
-                    <input
-                        className="col-11 mx-auto form-control"
-                        id="tf-search"
-                        name="tf-search"
-                        type="search"
-                        placeholder="Cerca"
-                        value={this.state.filter}
-                        onChange={this.onFilter}/>
-                </form>
+                <SimpleSearchBar
+                    placeholder="Cerca"
+                    value={this.state.filter}
+                    onChange={this.onFilter}
+                />
                 <FriendsTab tabs={tabs} />
             </div>
         )

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import {EventInteractionPanel} from '../event/Event'
 import {IMAGE, ImageForCard} from "../image/Image"
 
+let routes = require("../../services/routes/Routes")
+
 class EventCard extends React.Component {
 
     constructor(props) {
@@ -49,7 +51,7 @@ class EventCard extends React.Component {
         return (
             <div className="row">
                 <div className="col-11 card shadow my-2 mx-auto px-0">
-                    <Link className="card bg-secondary" id={this.state.eventInfo._id} from={this.props.location.pathname} to={"/event/" + this.state.eventInfo._id }>
+                    <Link className="card bg-secondary" id={this.state.eventInfo._id} from={this.props.location.pathname} to={routes.eventFromId(this.state.eventInfo._id)}>
                         <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
                         <div className="card-img-overlay text-white pb-1">
                             <div className="d-flex align-items-start flex-column h-100">
@@ -95,6 +97,7 @@ class EventCard extends React.Component {
                                                onEventFollowed={this.onEventFollowed}
                                                onEventUnfollowed={this.onEventFollowInteraction}
                                                onEventUnsubscribed={this.onEventParticipateInteraction}
+                                               showReviewModal={this.props.showReviewModal}
                         />
                     </div>
                 </div>

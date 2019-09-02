@@ -29,41 +29,42 @@ function LinkToPage(props){
 
 
 export default function Menu(props){
+    let routes = require('../../services/routes/Routes')
     let logout = props.isLogged ?
     <div>
         <LinkToPage 
-            page="/settings"
+            page={routes.settings}
             icon={{name: "cog", size: "lg"}}
             name="Impostazioni"/>
         <LinkToPage 
-            page="/"
+            page={routes.home}
             onClick={props.onLogout}
             icon={{name: "sign-out-alt", size: "lg"}}
             name="Logout"/>
     </div> 
     : <LinkToPage 
-        page="/login"
+        page={routes.login}
         icon={{name: "sign-in-alt", size: "lg"}}
         name="Login"/>
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>
                 <LinkToPage 
-                    page="/notifications"
+                    page={routes.myNotifications}
                     icon={{style: "far", name: "bell", size: "lg"}}
                     name="Le mie notifiche" 
                     showBadge={props.isLogged && props.notifications && props.notifications.length > 0}
                     badgeInfo={props.notifications.length}/>
                 <LinkToPage 
-                    page="/groups"
+                    page={routes.myGroups}
                     icon={{style: "far", name: "address-book", size: "lg"}}
                     name="I miei gruppi"/>
                 <LinkToPage 
-                    page="/myEvents"
+                    page={routes.myEvents}
                     icon={{style: "far", name: "calendar-alt", size: "lg"}}
                     name="I miei eventi"/>
                 <LinkToPage 
-                    page="/reviews"
+                    page={routes.myReviews}
                     icon={{name: "pen", size: "lg"}}
                     name="Le mie recensioni"/>
                 {logout}

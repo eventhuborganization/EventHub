@@ -8,6 +8,8 @@ import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
 import {ImageForCard, LOCAL} from "../image/Image"
 
+let routes = require("../../services/routes/Routes")
+
 class DeleteButton extends React.Component {
 
     constructor(props){
@@ -35,7 +37,7 @@ class DeleteButton extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render () {
@@ -62,6 +64,7 @@ class EventEditor extends React.Component {
             dateSet: props.onUpdate,
             timeSet: props.onUpdate,
             eventCreated: false,
+            eventUpdated: false
         }
         if(props.onUpdate && props.location && props.location.state 
                 && props.location.state.event && props.location.state.event.organizator._id === props.loggedUser._id 
@@ -368,23 +371,25 @@ class EventEditor extends React.Component {
                     this.state.oldEvent._id, 
                     newEvent,
                     () => this.props.onError("Errore nella modifica dell'evento. Riprovare. Se l'errore persiste ricaricare la pagina."),
-                    () => this.setState({eventCreated: true})
+                    () => this.setState({eventUpdated: true})
                 )
             } else if(errorFound){
                 this.props.onError("Hai inserito un numero di partecipanti massimi troppo basso, hai già più di " + event.maxParticipants + "utenti iscritti")
             } else {
-                this.setState({eventCreated: true})
+                this.setState({eventUpdated: true})
             }
         }
     }
 
     renderRedirect() {
-        if (this.state.eventCreated)
+        if (this.state.eventUpdated)
             return <RedirectComponent {...this.props}
-                                      from={"/"}
-                                      to={"/event/" + this.state.eventId}
+                                      from={routes.home}
+                                      to={routes.eventFromId(this.state.eventId)}
                                       redirectNow={true}
             />
+        else if (this.state.eventCreated)
+            return <Redirect to={{pathname: routes.invite, event: this.state.event}} />
     }
 
     renderEventLocationMap = () => {
@@ -439,7 +444,7 @@ class EventEditor extends React.Component {
 
     redirectToHome = () => {
         return this.state.redirectHome ? 
-            <Redirect from={this.props.from} to={"/"} /> : <div/>
+            <Redirect from={this.props.from} to={routes.home} /> : <div/>
     }
 
     render() {
