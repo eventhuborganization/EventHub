@@ -71,14 +71,16 @@ export function LinkMakerBanner(props) {
                         </div>
                 }
             </Link>
-            <div className="col-3 text-center px-0">
-                {
-                    props.showButton ?
-                        <button id={props.buttonId} className={"btn btn-sm btn-primary " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
-                            {buttonText}
-                        </button> : <div/>
-                }
-            </div>
+            {
+                props.showButton ? 
+                <div className="col-3 text-center px-0">
+                    <button id={props.buttonId} className={"btn btn-sm btn-primary " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
+                        {buttonText}
+                    </button>
+                </div> :
+                <Link to={link} className="col-1"></Link>
+            }
+            
         </div>
     ) : <div/>
 }
