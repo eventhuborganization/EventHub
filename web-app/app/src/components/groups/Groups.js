@@ -7,6 +7,7 @@ import {CreateNewGroupButton} from "../floating_button/FloatingButton"
 import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
 import { LinkMakerBanner } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
+import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
 
 export default class Groups extends React.Component {
 
@@ -15,14 +16,24 @@ export default class Groups extends React.Component {
         this.state = {
             filter: "",
             groups: [{
-                _id: "coemvoremvorwmgok4rgor",
-                name: "Gruppo della Formula 1"
+                _id: "fovmorvorworwg",
+                name: "Fanatici della Formula 1",
+                members: [{
+                    _id: "vfomvorwmr",
+                    name: "Giovanni",
+                    surname: "Storti",
+                    address:{
+                        city:"California"
+                    },
+                    organization: false
+                }]
             }]
         }
-        /*Api.getGroups(
+        this.state.groups[0].members.push(this.props.user)
+        Api.getGroups(
             () => this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova"),
             groups => this.setState({groups : groups})
-        )*/
+        )
     }
 
     onFilterChange = (event) => {
@@ -30,12 +41,16 @@ export default class Groups extends React.Component {
     }
 
     renderGroups = () => {
-        return this.state.groups.filter(group => group.name.toLowerCase().includes(this.state.filter.toLowerCase()))
-                .map(group => <LinkMakerBanner key={group._id}
-                                border={true}
-                                elem={group}
-                                showButton={false}
-                                isGroup={true} /> )
+        if(this.state.groups.length > 0){
+            return this.state.groups.filter(group => group.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+                    .map(group => <LinkMakerBanner key={group._id}
+                                    border={true}
+                                    elem={group}
+                                    showButton={false}
+                                    isGroup={true} /> )
+        } else {
+            return <NoItemsPlaceholder placeholder="Al momento non fai parte di nessun gruppo" />
+        }
     }
 
     render = () => {

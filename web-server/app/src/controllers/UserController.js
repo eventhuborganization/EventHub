@@ -213,11 +213,14 @@ exports.getInfoUser = (req, res) => {
             response.linkedUsers = []
             result[0].map(obj => obj.data).forEach(user => {
                 response.linkedUsers.push({
-                    name: `${user.name} ${user.surname}`, 
+                    name: user.name,
+                    surname: user.surname, 
                     avatar: user.profilePicture, 
                     _id: user._id, 
                     organization: user.organization,
-                    city: user.address.city,
+                    address: {
+                        city: user.address.city
+                    },
                     linkedUsers: user.linkedUsers,
                     eventsSubscribed: user.eventsSubscribed
                 })

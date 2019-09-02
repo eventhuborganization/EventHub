@@ -223,7 +223,11 @@ let EventInteractionPanel = (props) => {
             onSuccess={props.onEventParticipated}
         />
 
-    let isEventPast = props.event.date - new Date() < 0
+    let date = props.event.date
+    if(!(date instanceof Date)) {
+        date = new Date(date)
+    }
+    let isEventPast = date - new Date() < 0
     let isOrganizator = props.user._id === props.event.organizator._id
 
     let renderInviteButton = () => {
@@ -234,7 +238,7 @@ let EventInteractionPanel = (props) => {
     let renderInteractionButtons = () => {
         if(props.hideInteractionButtons) {
             return <div/>
-        } else if(!isOrganizator && props.event.date - new Date() > 0){
+        } else if(!isOrganizator && !isEventPast){
             return <div>{followButton} {subscribeButton}</div>
         } else if(isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>

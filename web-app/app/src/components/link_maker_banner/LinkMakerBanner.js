@@ -48,7 +48,12 @@ export function LinkMakerBanner(props) {
             break
         default: break
     }
-    let link = props.isGroup ? routes.groupFromId(props.elem._id) : routes.userFromId(props.elem._id)
+    let link = props.isGroup ? 
+        {
+            pathname: routes.groupFromId(props.elem._id),
+            group: props.elem
+        } : routes.userFromId(props.elem._id)
+    let name = props.elem.name + " " + (props.elem.surname ? props.elem.surname : "")
     return props.elem.name && (props.isGroup ? props.buttonType !== ADD_FRIEND_BUTTON : true) ? (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link
@@ -61,38 +66,36 @@ export function LinkMakerBanner(props) {
                     placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}/>
             </Link>
             <Link to={link} className="col px-0" style={{textDecoration: "none"}}>
-                <div className="font-weight-bold text-dark">{props.elem.name}</div>
+                <div className="font-weight-bold text-dark">{name}</div>
                 {
                     props.isGroup
                         ? <div/>
                         : <div className="text-muted small">
-                            {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.city}
+                            {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.address.city}
                         </div>
                 }
             </Link>
-            <div className="col-3 text-center px-0">
-                {
-                    props.showButton ?
-                        <button id={props.buttonId} className={"btn btn-sm btn-primary " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
-                            {buttonText}
-                        </button> : <div/>
-                }
-            </div>
+            {
+                props.showButton ? 
+                <div className="col-3 text-center px-0">
+                    <button id={props.buttonId} className={"btn btn-sm btn-primary " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
+                        {buttonText}
+                    </button>
+                </div> :
+                <Link to={link} className="col-1"></Link>
+            }
+            
         </div>
     ) : <div/>
 }
 
 export function UserBanner(props) {
-    let user = {...props.user}
-    user.name = props.user.name + (props.user.organization ? "" : " " + props.user.surname)
-    if(props.user.address && props.user.address.city)
-        user.city = props.user.address.city
     return props.user.name ? 
         <LinkMakerBanner
             buttonId={"friendBtn" + props.user._id}
             buttonType={ADD_FRIEND_BUTTON}
             border={props.border}
-            elem={user}
+            elem={props.user}
             isGroup={false}
             onClick={props.onAddFriend}
             showButton={props.showAddFriendButton}

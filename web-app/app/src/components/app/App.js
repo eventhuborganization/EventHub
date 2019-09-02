@@ -24,6 +24,7 @@ import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
 import {EventHeaderBanner} from "../event/Event"
 import GroupCreator from '../group_creator/GroupCreator'
+import GroupInfo from '../group_info/GroupInfo'
 
 let routes = require("../../services/routes/Routes")
 
@@ -38,13 +39,14 @@ class App extends React.Component {
       this.state = {
           isLogged: applicationState && applicationState.isLogged,
           user: applicationState && applicationState.user ? applicationState.user : {},
-          showMessageElement: undefined,
           notifications: [],
+          events: applicationState && applicationState.events ? applicationState.events : [],
+          showMessageElement: undefined,
           nextErrorToShow: undefined,
           reviewModalRef: undefined
       }
       ApiService.setNotAuthenticatedBehaviour(this.onNotAuthenticated)
-      if(applicationState){
+      if(applicationState && this.state.isLogged){
         this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
       }
   }
@@ -62,10 +64,15 @@ class App extends React.Component {
         this.removeSubscriptions()
     }
 
+    saveToStateAndLocalStorage = (newState) => {
+        this.setState(newState, () => this.saveUserDataToLocalStorage())
+    }
+
     saveUserDataToLocalStorage = () => {
         LocalStorage(this.#applicationStateLocalStorageName,{
             isLogged: this.state.isLogged,
-            user: this.state.user
+            user: this.state.user,
+            events: this.state.events
         })
     }
 
@@ -137,10 +144,10 @@ class App extends React.Component {
         ApiService.getUsersInformation(
           this.state.user.linkedUsers,
           () => {},
-          users => this.setState(prevState => {
+          users => this.saveToStateAndLocalStorage(prevState => {
             prevState.user.linkedUsers = users
             return prevState
-          }, () => this.saveUserDataToLocalStorage())
+          })
         )
         this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         this.saveUserDataToLocalStorage()
@@ -152,25 +159,25 @@ class App extends React.Component {
             () => {},
             () => {
                 this.removeSubscriptions()
-                this.setState({
+                this.saveToStateAndLocalStorage({
                     user: {},
                     notifications: [],
                     isLogged: false
-                }, () => this.saveUserDataToLocalStorage())
+                })
             }
         )
   }
   
   updateUserInfo = (user) => {
-      this.setState((prevState) => {
+    this.saveToStateAndLocalStorage((prevState) => {
           let state = prevState
           state.user = user
           return state
-      }, () => this.saveUserDataToLocalStorage())
+    })
   }
 
   manageLinkedUser = (user, add) => {
-    this.setState((prevState) =>{
+    this.saveToStateAndLocalStorage((prevState) =>{
       let state = prevState
       if (add) {
         state.user.linkedUsers.push(user)
@@ -178,7 +185,7 @@ class App extends React.Component {
         state.user.linkedUsers = state.user.linkedUsers.filter(u => u._id !== user._id)
       }
       return state
-    }, () => this.saveUserDataToLocalStorage())
+    })
   }
 
   onNotificationLoaded = (notifications) => {
@@ -192,7 +199,20 @@ class App extends React.Component {
 
     onNotAuthenticated = () => {
         this.removeSubscriptions()
-        this.setState({isLogged: false}, () => this.saveUserDataToLocalStorage())
+        this.saveToStateAndLocalStorage({isLogged: false})
+    }
+
+    updateUserChanges = (changes) => {
+        this.saveToStateAndLocalStorage(prevState => {
+            changes.forEach(change => {
+                prevState.user[change[1]] = change[0]
+            })
+            return prevState
+        })
+    }
+
+    updateEvents = (events) => {
+        this.saveToStateAndLocalStorage({events: events})
     }
 
   renderNotificationBadge = () => {
@@ -218,11 +238,13 @@ class App extends React.Component {
                   user={{
                       _id: this.state.user._id
                   }}
+                  events={this.state.events}
                   isLogged={this.state.isLogged} 
                   onError={this.onError}
                   onSuccess={this.onSuccess}
                   showMessage={this.showModal}
                   showReviewModal={this.showReviewModal}
+                  updateEvents={this.updateEvents}
                 />} 
             />
             <Route path={routes.menu} exact render={() => 
@@ -286,18 +308,15 @@ class App extends React.Component {
             <Route path={routes.myProfile} exact render={(props) =>
                 <PersonalProfile {...props}
                     isLogged={this.state.isLogged}
-                    userId={this.state.user._id}
+                    user={this.state.user}
                     onError={this.onError}
+                    updateUser={this.updateUserInfo}
                 />}
             />
             <Route path={routes.user} render={(props) => 
                 <UserProfile {...props}
                     isLogged={this.state.isLogged}
-                    user={{
-                      _id: this.state.user._id,
-                      linkedUsers: this.state.user.linkedUsers ? this.state.user.linkedUsers : [],
-                      organization: this.state.user.organization
-                    }}
+                    user={this.state.user}
                     onError={this.onError}
                     onSuccess={this.onSuccess}
                     manageLinkedUser={this.manageLinkedUser}
@@ -308,6 +327,7 @@ class App extends React.Component {
                     isLogged={this.state.isLogged}
                     loggedUser={this.state.user}  
                     onError={this.onError}
+                    updateUser={this.updateUserChanges}
                 />}
               />
             <Route path={routes.map} exact render={(props) =>
@@ -340,6 +360,13 @@ class App extends React.Component {
               />
               <Route path={routes.newGroup} exact render={(props) =>
                   <GroupCreator {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                  />}
+              />
+              <Route path={routes.group} exact render={(props) =>
+                  <GroupInfo {...props}
                           isLogged={this.state.isLogged}
                           user={this.state.user}
                           onError={this.onError}
