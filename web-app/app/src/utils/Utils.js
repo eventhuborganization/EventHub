@@ -2,6 +2,9 @@
 let monthArray = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
 
 exports.renderDate = (date) => {
+    if(!(date instanceof Date)){
+        date = new Date(date)
+    }
     let hours = date && date.getHours() >= 0
         ? date.getHours().toString().padStart(2,"0")
         : undefined

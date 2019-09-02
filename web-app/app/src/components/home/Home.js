@@ -1,21 +1,24 @@
-import React from 'react';
-import './Home.css';
-import EventCard from "../event_card/EventCard";
-import {CreateNewEventButton} from "../floating_button/FloatingButton";
-import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar";
+import React from 'react'
+import './Home.css'
+import EventCard from "../event_card/EventCard"
+import {CreateNewEventButton} from "../floating_button/FloatingButton"
+import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
-import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 
 class Home extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            eventsLoaded: []
+            eventsLoaded: props.events
         }
         ApiService.getEvents({fromIndex: 0},
             error => this.onSearchError(null, error),
-            response => this.onSearchResults({events: response}))
+            response => {
+                this.onSearchResults({events: response})
+                this.props.updateEvents(response)
+            })
     }
 
     onSearchResults = response => {

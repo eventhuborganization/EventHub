@@ -188,7 +188,7 @@ class Profile extends CallableComponent {
                         {
                             this.state.user.organization ? 
                             <div><em className="text-secondary fas fa-user-tie"></em> {this.state.user.name}</div> :
-                            <div>{this.state.user.name}</div>
+                            <div>{this.state.user.name + " " + this.state.user.surname}</div>
                         }
                     </h2>
                 </section>

@@ -23,8 +23,8 @@ class Invite extends React.Component {
             event = localSavedEvent
         this.state = {
             filter: "",
-            linkedUsers: [],
-            groups: [],
+            linkedUsers: props.user.linkedUsers || [],
+            groups: props.user.groups || [],
             event: event,
             redirectHome: false
         }
@@ -58,21 +58,17 @@ class Invite extends React.Component {
     }
 
     inviteFriend = friend => {
-        this.setButtonEnabled(friend, false)
-        ApiService.inviteGroup(friend._id, this.state.event._id,
-            () => {
-                this.props.onError("Non è stato possibile invitare il tuo amico all'evento, riprovare.")
-                this.setButtonEnabled(friend, true)
-            },() => {})
+        ApiService.inviteUser(friend._id, this.state.event._id,
+            () => this.props.onError("Non è stato possibile invitare il tuo amico all'evento, riprovare."),
+            () => this.setButtonEnabled(friend, false)
+        )
     }
 
     inviteGroup = group => {
-        this.setButtonEnabled(group, false)
         ApiService.inviteGroup(group._id, this.state.event._id,
-            () => {
-                this.props.onError("Non è stato possibile invitare questo gruppo all'evento, riprovare.")
-                this.setButtonEnabled(group, true)
-            },() => {})
+            () => this.props.onError("Non è stato possibile invitare questo gruppo all'evento, riprovare."),
+            () => this.setButtonEnabled(group, false)
+        )
     }
 
     setButtonEnabled = (elem, enabled) => {

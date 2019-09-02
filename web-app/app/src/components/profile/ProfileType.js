@@ -27,7 +27,7 @@ class AbstractProfile extends React.Component {
         }
     }
 
-    getUserInformation = () => {
+    getUserInformation = (callback) => {
         Api.getUserInformation(
             this.state.user._id,
             () => 
@@ -36,24 +36,18 @@ class AbstractProfile extends React.Component {
                     () => {}, () => this.setState({redirectHome: true})
                 ),
             user => {
-                let name = user.name + (user.organization ? "" : " " + user.surname)
                 let futureEvents =  user.eventsSubscribed.filter(x => x.date > Date.now())
                 let pastEvents =  user.eventsSubscribed.filter(x => x.date < Date.now())
-                let data = {
-                    _id : user._id,
-                    name: name,
-                    avatar: user.avatar,
-                    organization: user.organization,
-                    linkedUsers: user.linkedUsers,
-                    badges: user.badges,
-                    points: user.points,
-                    futureEvents: futureEvents,
-                    pastEvents: pastEvents,
-                    groups: user.groups
-                }
+                let data = {...user}
+                data.futureEvents = futureEvents
+                data.pastEvents = pastEvents
+                data.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
                 this.setState({user: data})
                 if(this.state.profileComp){
                     this.state.profileComp.newData(data)
+                }
+                if(callback instanceof Function){
+                    callback(user)
                 }
             }
         )
@@ -82,9 +76,15 @@ class PersonalProfile extends AbstractProfile {
 
     constructor(props){
         super(props)
-        if(!!props.isLogged){
-            this.state.user._id = props.userId
-            this.getUserInformation()
+        if(!!props.isLogged) {
+            this.state.user = {...props.user}
+            if(!this.state.user.pastEvents)
+                this.state.user.pastEvents = []
+            if(!this.state.user.futureEvents)
+                this.state.user.futureEvents = []
+            this.getUserInformation(user => {
+                props.updateUser(user)
+            })
         }
     }
 

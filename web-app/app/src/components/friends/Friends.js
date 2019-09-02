@@ -45,6 +45,7 @@ class Friends extends React.Component {
                         friendsArray: result,
                         friends: friends
                     })
+                    this.props.updateUser([[result, "linkedUsers"]])
                 })
         }
     }
