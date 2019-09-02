@@ -34,14 +34,15 @@ function MoreUsers(props){
 
 function MultipleElementsBanner(props){
     let iconClass = props.iconName ? "fas fa-" + props.iconName : ""
+    let padding = props.noPadding ? " px-0 " : ""
     return (
         <div>
-            <div className={"row " + (props.noPadding ? " px-0 " : "") + (props.margin ? props.margin : "" )}>
-                <div className={"col" + (props.noPadding ? " px-0" : "")}>
+            <div className={"row " + padding + (props.margin ? props.margin : "" )}>
+                <div className={"col" + padding}>
                     <div className={props.level}><em className={iconClass}></em> {props.title}</div>
                 </div>
             </div>
-            <div className="row">
+            <div className={"row "}>
                 {
                     props.elements.length > 0 ? props.elements : 
                     <div className={"col-11 col-md-6 mx-auto border border-primary p-2 " + styles.emptyList}> 

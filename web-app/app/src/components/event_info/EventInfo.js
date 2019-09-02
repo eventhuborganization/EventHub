@@ -86,35 +86,34 @@ class EventInfo extends React.Component {
                     </section>
 
                     <section className="row mt-2">
-                        <div className="col">
+                        <div className="col-12">
                             <div className="container-fluid">
                                 <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
-
-                                <MultipleUsersBanner 
-                                    users={this.state.eventInfo.participants}
-                                    emptyLabel={"Nessun partecipante al momento"}
-                                    typology={"Partecipanti"}
-                                    moreUsersLink={"ciao"}
-                                    noPadding={true}
-                                    margin={"mt-2"}
-                                    level={"h5"}
-                                    usersInfoIncomplete={true}
-                                />
-
-
-                                <div className="row mt-2">
-                                    <div className="col-12 px-0">
-                                        <h5>Descrizione</h5>
-                                        <ShowMore
-                                            lines={5}
-                                            more='Altro'
-                                            less='Mostra meno'
-                                        >
-                                            {this.state.eventInfo.description}
-                                        </ShowMore>
-                                    </div>
-                                </div>
                             </div>
+                        </div>
+                    </section>
+
+                    <MultipleUsersBanner
+                        users={this.state.eventInfo.participants}
+                        emptyLabel={"Nessun partecipante al momento"}
+                        typology={"Partecipanti"}
+                        moreUsersLink={"ciao"}
+                        noPadding={false}
+                        margin={"mt-2"}
+                        level={"h5"}
+                        usersInfoIncomplete={true}
+                    />
+
+                    <section className="row mt-2">
+                        <div className="col-12">
+                            <h5>Descrizione</h5>
+                            <ShowMore
+                                lines={5}
+                                more='Altro'
+                                less='Mostra meno'
+                            >
+                                {this.state.eventInfo.description}
+                            </ShowMore>
                         </div>
                     </section>
 
