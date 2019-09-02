@@ -21,7 +21,15 @@ exports.newReview = (req, res) => {
     if (req.body.evaluation && req.body.evaluation >= 0 && req.body.evaluation <= 5) {
         review.evaluation = req.body.evaluation
         axios.post(`${UserServiceServer}/users/${req.params.uuid}/reviews/written`, review)
-            .then(response => network.replayResponse(response, res))
+            .then(response => {
+                let tryAddReviewToEvent = (eventId, reviewId, counter) => {
+                    EventService.addEventReviews(eventId, reviewId,
+                        result => {},
+                        error => {tryAddReviewToEvent(eventId,reviewId, --counter)})
+                }
+                tryAddReviewToEvent(review.event, response.data._id, 5)
+                network.replayResponse(response, res)
+            })
             .catch(error => network.replayError(error, res))
     } else {
         network.badRequest(res)
