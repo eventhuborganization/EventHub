@@ -102,7 +102,7 @@ exports.EventService = class EventService{
      * @param {Function} errorCallback da eseguire in caso di errore
      */
     addEventReviews(eventUuid, reviewsUuid,  successCallback = defaultCallback, errorCallback = defaultCallback){
-        let data = JSON.stringify({reviews:{reviews: [reviewsUuid]}})
+        let data = {reviews:{reviews: [reviewsUuid]}}
         axios.post(`${this.hostport}/events/${eventUuid}/reviews`, data)
         .then(successCallback)
         .catch(errorCallback);
