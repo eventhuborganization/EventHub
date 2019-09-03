@@ -24,6 +24,7 @@ import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
 import {EventHeaderBanner} from "../event/Event"
 import GroupCreator from '../group_creator/GroupCreator'
+import Reviews from "../reviews/Reviews"
 import GroupInfo from '../group_info/GroupInfo'
 
 let routes = require("../../services/routes/Routes")
@@ -365,6 +366,14 @@ class App extends React.Component {
                           onError={this.onError}
                   />}
               />
+              <Route path={routes.reviews} exact render={(props) =>
+                  <Reviews {...props}
+                                isLogged={this.state.isLogged}
+                                user={this.state.user}
+                                onError={this.onError}
+                  />}
+              />
+
               <Route path={routes.group} exact render={(props) =>
                   <GroupInfo {...props}
                           isLogged={this.state.isLogged}

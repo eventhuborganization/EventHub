@@ -243,7 +243,7 @@ let EventInteractionPanel = (props) => {
         } else if(isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>
         } else if (isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
-            return <WriteReviewButton onSent={props.onSent} event={props.event} showReviewModal={props.showReviewModal} />
+            return <WriteReviewButton onSent={props.onReviewSent} event={props.event} showReviewModal={props.showReviewModal} />
         } else {
             return <div/>
         }
@@ -307,33 +307,38 @@ let EventHeaderBanner = props => {
     }
 
     let renderOtherInfo = () => {
-        return props.isLite ? <div className={"pt-2"}/> :
-            <div className="row d-flex align-items-center">
-                <div className="col-8 mb-1 px-1">
-                    <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
-                        <em className="far fa-calendar-alt"></em> {date}
-                    </h6>
-                    {
-                        props.hidePlace ? <div/> :
-                            <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
-                                <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
-                            </h6>
-                    }
+        if (props.isLite)
+            return <div className={"pt-2"}/>
+        else {
+            let dateVal = props.event.date instanceof Date ? props.event.date : new Date(props.event.date)
+            let date = require("../../utils/Utils").renderDate(dateVal)
+            return (
+                <div className="row d-flex align-items-center">
+                    <div className="col-8 mb-1 pl-1 pr-0">
+                        <h6 className={"m-0 text-left " + (props.event.date || props.event.time ? "" : " d-none ")}>
+                            <em className="far fa-calendar-alt"></em> {date}
+                        </h6>
+                        {
+                            props.hidePlace ? <div/> :
+                                <h6 className={"m-0 text-left " + (props.event.location.address ? "" : " d-none ")}>
+                                    <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
+                                </h6>
+                        }
+                    </div>
+                    <div className="col-4 d-flex justify-content-end px-1">
+                        <p className={"m-0 " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
+                    </div>
                 </div>
-                <div className="col-4 d-flex justify-content-end px-1">
-                    <p className={"m-0 " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
-                </div>
-            </div>
+            )
+        }
     }
 
-    let dateVal = props.event.date instanceof Date ? props.event.date : new Date(props.event.date)
-    let date = require("../../utils/Utils").renderDate(dateVal)
     return (
         <section className={"row pt-2 " + getBannerClassName()}>
             <div className="col container-fluid">
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
-                        <h5 className={"m-0 " + (props.event.name ? "" : " d-none ")}>
+                        <h5 className={"m-0 text-left " + (props.event.name ? "" : " d-none ")}>
                             {props.event.name}
                         </h5>
                     </div>
