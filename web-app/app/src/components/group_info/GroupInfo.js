@@ -4,18 +4,18 @@ import Api from '../../services/api/Api'
 import { Link, Redirect } from "react-router-dom"
 import LocalStorage from "local-storage"
 import { UserBanner, LinkMakerBanner, ADDED_FRIEND_BUTTON, ADD_FRIEND_BUTTON } from '../link_maker_banner/LinkMakerBanner'
-import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_GROUP_CIRCLE } from '../image/Image'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
+import AvatarHeader from '../avatar_header/AvatarHeader'
 
 let routes = require("../../services/routes/Routes")
 
 class GroupInfo extends React.Component {
 
-     #groupInfoStateLocalStorageName = "group-info"
+     groupInfoStateLocalStorageName = "group-info"
 
     constructor(props){
         super(props)
-        let localSavedGroup = LocalStorage(this.#groupInfoStateLocalStorageName)
+        let localSavedGroup = LocalStorage(this.groupInfoStateLocalStorageName)
         let group = props.location && props.location.group ? props.location.group : undefined
         if (!group && localSavedGroup){
             let groupSaved = localSavedGroup
@@ -32,7 +32,7 @@ class GroupInfo extends React.Component {
         }
 
         if(this.state.isMember){
-            LocalStorage(this.#groupInfoStateLocalStorageName, this.state.group)
+            LocalStorage(this.groupInfoStateLocalStorageName, this.state.group)
             Api.getGroupInfo(
                 props.match.params.id,
                 () => this.props.onError("Errore nel caricare le info del gruppo"),
@@ -116,19 +116,10 @@ class GroupInfo extends React.Component {
                 {this.redirectToHome()}
                 {this.redirectToGroups()}
 
-                <div className="row mt-2">
-                    <div className="col d-flex justify-content-center">
-                        <div className="d-flex flex-column text-center">
-                            <div className="col d-flex justify-content-center">
-                                <RoundedBigImage
-                                    borderType={BORDER_PRIMARY} 
-                                    placeholderType={PLACEHOLDER_GROUP_CIRCLE}
-                                />
-                            </div>
-                            <h5 className="mt-1 font-weight-bold">{this.state.group.name}</h5>
-                        </div>
-                    </div>
-                </div>
+                <AvatarHeader
+                    elem={this.state.group}
+                    isGroup={true}
+                />
 
                 <div className="row my-2">
                     <div className="col-12 d-flex justify-content-around">
@@ -269,19 +260,10 @@ class GroupAdder extends React.Component {
             <div className="main-container">
                 {this.redirectToHome()}
                 
-                <div className="row mt-2">
-                    <div className="col d-flex justify-content-center">
-                        <div className="d-flex flex-column text-center">
-                            <div className="col d-flex justify-content-center">
-                                <RoundedBigImage
-                                    borderType={BORDER_PRIMARY} 
-                                    placeholderType={PLACEHOLDER_GROUP_CIRCLE}
-                                />
-                            </div>
-                            <h5 className="mt-1 font-weight-bold">{this.state.group.name}</h5>
-                        </div>
-                    </div>
-                </div>
+                <AvatarHeader
+                    elem={this.state.group}
+                    isGroup={true}
+                />
 
                 <SimpleSearchBar
                     placeholder="Cerca amico"
