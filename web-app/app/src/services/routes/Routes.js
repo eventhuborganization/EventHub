@@ -20,7 +20,7 @@ exports.myNotifications = "/notifications"
 exports.myFriends = "/friends"
 exports.myGroups = "/groups"
 exports.myEvents = "/myEvents"
-exports.myReviews = "/myReviews"
+exports.reviews = "/reviews"
 
 exports.updateEventFromId = id => "/events/" + id + "/update"
 exports.eventFromId = id => "/events/" + id

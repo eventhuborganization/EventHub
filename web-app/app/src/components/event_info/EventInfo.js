@@ -30,7 +30,7 @@ class EventInfo extends React.Component {
                             state.eventInfo.location.place_id = result.place_id
                             return state
                         }))
-                    event.participants = event.participants.map(id => {return {_id: id}})
+                    event.participantsFilled = event.participants.map(id => {return {_id: id}})
                     this.setState({eventInfo: event})
                 })
     }
@@ -94,7 +94,7 @@ class EventInfo extends React.Component {
                     </section>
 
                     <MultipleUsersBanner
-                        users={this.state.eventInfo.participants}
+                        users={this.state.eventInfo.participantsFilled}
                         emptyLabel={"Nessun partecipante al momento"}
                         typology={"Partecipanti"}
                         moreUsersLink={"ciao"}

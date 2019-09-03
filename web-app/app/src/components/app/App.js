@@ -24,6 +24,7 @@ import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
 import {EventHeaderBanner} from "../event/Event"
 import GroupCreator from '../group_creator/GroupCreator'
+import Reviews from "../reviews/Reviews";
 
 let routes = require("../../services/routes/Routes")
 
@@ -343,6 +344,13 @@ class App extends React.Component {
                           isLogged={this.state.isLogged}
                           user={this.state.user}
                           onError={this.onError}
+                  />}
+              />
+              <Route path={routes.reviews} exact render={(props) =>
+                  <Reviews {...props}
+                                isLogged={this.state.isLogged}
+                                user={this.state.user}
+                                onError={this.onError}
                   />}
               />
           </Switch>

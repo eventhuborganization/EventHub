@@ -29,7 +29,8 @@ let routes = require("../../services/routes/Routes")
  *     showButton: boolean,
  *     buttonType: number,
  *     buttonId: string,
- *     buttonDisabled: boolean
+ *     buttonDisabled: boolean,
+ *     isLite: boolean
  * }}
  * @return {*}
  * @constructor
@@ -63,7 +64,7 @@ export function LinkMakerBanner(props) {
             <Link to={link} className="col px-0" style={{textDecoration: "none"}}>
                 <div className="font-weight-bold text-dark">{props.elem.name}</div>
                 {
-                    props.isGroup
+                    props.isGroup || props.isLite
                         ? <div/>
                         : <div className="text-muted small">
                             {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.city}
@@ -96,6 +97,7 @@ export function UserBanner(props) {
             isGroup={false}
             onClick={props.onAddFriend}
             showButton={props.showAddFriendButton}
+            isLite={props.isLite}
         /> : 
         <div/>
 }

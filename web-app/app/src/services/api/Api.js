@@ -922,18 +922,51 @@ let inviteGroup = (groupId, eventId, onError, onSuccess) => {
     )
 }
 
+let mapReview = review => {
+    return {
+        _id: review._id,
+        writer: mapUser(review.writer),
+        eventId: review.event,
+        date: review.date,
+        text: review.text,
+        evaluation: review.evaluation
+    }
+}
+
 /**
  * @param review {{
- *     writerId: string,
  *     eventId: string,
  *     text: string,
  *     evaluation: number
  * }}
- * @param onError
- * @param onSuccess
+ * @param onError: function
+ * @param onSuccess: function
  */
 let writeReview = (review, onError, onSuccess) => {
-    onError()
+    let data = {
+        text: review.text,
+        evaluation: review.evaluation
+    }
+    managePromise(
+        Axios.post("/events/info/" + review.eventId + "/reviews", data),
+        [200],
+        onError,
+        review => onSuccess(mapReview(review))
+    )
+}
+
+/**
+ * @param eventId: string
+ * @param onError: function
+ * @param onSuccess: function
+ */
+let getReviewsForEvent = (eventId, onError, onSuccess) => {
+    managePromise(
+        Axios.get("/events/info/" + eventId + "/reviews"),
+        [200],
+        onError,
+        reviews => onSuccess(reviews.map(mapReview))
+    )
 }
 
 /**
@@ -992,5 +1025,6 @@ export default {
     removeMemberFromGroup,
     inviteUser,
     inviteGroup,
-    writeReview
+    writeReview,
+    getReviewsForEvent
 }
