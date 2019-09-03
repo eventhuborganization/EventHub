@@ -59,6 +59,21 @@ class Notifications extends React.Component {
             this.setState({notifications: notifications})
     }
 
+    setAllNotificationsAsRead = () => {
+        let notifications = []
+        let count = 0
+        notifications = notifications.concat(this.state.notificationsRead)
+        notifications = notifications.concat(this.state.notifications)
+        notifications.forEach(notification => 
+            ApiService.notificationRead(notification._id, () => {}, () => {
+                count++
+                if(count === notifications.length){
+                    this.setState({notifications: [], notificationsRead: []})
+                }
+            })
+        )
+    }
+
     render() {
         let notificationsToShow = this.state.notifications.concat(this.state.notificationsRead)
             .sort((n1,n2) => n2.timestamp - n1.timestamp)
@@ -69,31 +84,39 @@ class Notifications extends React.Component {
                     <h1 className="col ml-1">Notifiche</h1>
                 </section>
 
-                <main className="main-container">
+                <main className="main-container notification-main-container">
                     {
-                        notificationsToShow.map(notification => {
-                            let notificationComponent = <Notification {...this.props}
-                                                                      key={notification._id}
-                                                                      notification={notification}
-                                                                      deleteNotification={this.deleteNotification}
-                                                        />
-                            return this.isNotificationToBeReadOnce(notification.typology) ?
-                                (<TrackVisibility key={"tracker-" + notification._id} once>
-                                    {({ isVisible }) => {
-                                        if (isVisible && this.state.notificationsRead.filter(n => n._id === notification._id).length <= 0) {
-                                            this.setState(prevState => {
-                                                let state = prevState
-                                                state.notificationsRead.push(notification)
-                                                state.notifications = prevState.notifications.filter(n => n._id !== notification._id)
-                                                return state
-                                            }, () => ApiService.notificationRead(notification._id, () => {}, () => {}))
-                                        }
-                                        return notificationComponent
-                                    }}
-                                </TrackVisibility>)
-                                : notificationComponent
+                        <div>
+                            {
+                                notificationsToShow.map(notification => {
+                                    let notificationComponent = <Notification {...this.props}
+                                                                            key={notification._id}
+                                                                            notification={notification}
+                                                                            deleteNotification={this.deleteNotification}
+                                                                />
+                                    return this.isNotificationToBeReadOnce(notification.typology) ?
+                                        (<TrackVisibility key={"tracker-" + notification._id} once>
+                                            {({ isVisible }) => {
+                                                if (isVisible && this.state.notificationsRead.filter(n => n._id === notification._id).length <= 0) {
+                                                    this.setState(prevState => {
+                                                        let state = prevState
+                                                        state.notificationsRead.push(notification)
+                                                        state.notifications = prevState.notifications.filter(n => n._id !== notification._id)
+                                                        return state
+                                                    }, () => ApiService.notificationRead(notification._id, () => {}, () => {}))
+                                                }
+                                                return notificationComponent
+                                            }}
+                                        </TrackVisibility>)
+                                        : notificationComponent
 
-                        })
+                                })
+                            }
+                            <button className="fixed-bottom btn btn-primary" onClick={this.setAllNotificationsAsRead}
+                                style={{marginBottom: "22%", width: "94%", marginLeft: "3%", marginRight: "3%"}}>
+                                Segna tutte le notifiche come lette
+                            </button>
+                        </div>
                     }
                     {this.renderNoNotificationPlaceHolder()}
                 </main>

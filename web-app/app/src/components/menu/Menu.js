@@ -75,7 +75,7 @@ export default function Menu(props){
                         pathname: routes.reviews,
                         receivedReviews: true
                     }}
-                    icon={{name: "pen", size: "lg"}}
+                    icon={{style: "far", name: "comment", size: "lg"}}
                     name="Recensioni ricevute"/>
                 {logout}
             </ul>

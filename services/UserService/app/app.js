@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 const fs = require('fs')
 var mongoose = require('mongoose')
 var User = require('./src/models/model')
+var routes = require('./src/routes/routes')
 
 const app = express()
 const port = 3001;
@@ -41,8 +42,6 @@ function connect(reconnectTries, reconnectInterval) {
 function runApp() {
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
-
-    var routes = require('./src/routes/routes')
     routes(app)
 
     app.use(function(req, res) {

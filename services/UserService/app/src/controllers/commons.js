@@ -55,7 +55,7 @@ exports.isNewReviewWellFormed = (review) => {
         && typeof(review.writer) == "string"  
         && typeof(review.event) == "string" 
         && typeof(review.text) == "string"  
-        && review.date instanceof Date
+        && typeof(review.date) == "number"
         && typeof(review.evaluation) == "string";
 };
 

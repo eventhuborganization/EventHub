@@ -72,7 +72,7 @@ let RoundedImage = props => {
         default: break
     }
     let size = ""
-    let placeholderIcon = " fas fa-"
+    let placeholderIcon = " text-primary fas fa-"
     switch(props.placeholderType) {
         case PLACEHOLDER_USER_CIRCLE:
             placeholderIcon += "user-circle "

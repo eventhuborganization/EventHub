@@ -72,7 +72,10 @@ class Review extends React.Component {
                                             </ShowMore>
                                         </div>
                                     </div>
-                                    <ReviewEventInfo data={this.state.footerData}/>
+                                    {
+                                        this.props.type === RECEIVED_REVIEW ?
+                                            <ReviewEventInfo event={this.state.event} /> : <div/>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -137,7 +140,6 @@ let ReviewUserInfo = props => {
  *             name: string,
  *             typology: string
  *         },
- *         showEvaluation: boolean,
  *         evaluation: number
  * }}
  * @constructor
