@@ -222,8 +222,8 @@ class App extends React.Component {
     updateEvents = (events) => {
         let moddedEvents = events.map(event => {
             delete event.creationDate
-            delete event.followers
-            delete event.participants
+            event.followers = []
+            event.participants = []
             delete event.reviews
             delete event.description
             return event
