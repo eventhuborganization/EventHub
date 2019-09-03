@@ -50,15 +50,20 @@ export default class GroupCreator extends React.Component {
         } else {
             Api.createGroup(
                 this.state.name,
-                this.state.friends,
+                Array.from(this.state.friends),
                 () => this.props.onError("Errore durante la creazione del gruppo, riprova"),
-                () => this.setState({redirectGroups: true})
+                (group) => {
+                    let groups = this.props.user.groups
+                    groups.push(group)
+                    this.props.updateUserInfo([[groups, "groups"]])
+                    this.setState({redirectGroups: true})
+                }
             )
         }
     }
 
-    redirectToHome = () => {
-        return this.state.redirectHome ? 
+    redirectToGroups = () => {
+        return this.state.redirectGroups ? 
             <Redirect from={this.props.from} to={routes.myGroups} /> : <div/>
     }
 
@@ -66,7 +71,7 @@ export default class GroupCreator extends React.Component {
         return (
             <div className="main-container">
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                {this.redirectToHome()}
+                {this.redirectToGroups()}
 
                 <form onSubmit={this.submitForm} className="mt-3">
 

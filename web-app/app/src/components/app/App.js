@@ -22,10 +22,10 @@ import Settings from '../settings/Settings'
 import NotificationService from "../../services/notification/Notification"
 import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
-import {EventHeaderBanner} from "../event/Event"
+import { EventHeaderBanner } from "../event/Event"
 import GroupCreator from '../group_creator/GroupCreator'
 import Reviews from "../reviews/Reviews"
-import GroupInfo from '../group_info/GroupInfo'
+import { GroupInfo, GroupAdder } from '../group_info/GroupInfo'
 
 let routes = require("../../services/routes/Routes")
 
@@ -150,6 +150,13 @@ class App extends React.Component {
             return prevState
           })
         )
+        ApiService.getGroups(
+            () => {},
+            groups => this.saveToStateAndLocalStorage(prevState => {
+              prevState.user.groups = groups
+              return prevState
+            })
+          )
         this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         this.saveUserDataToLocalStorage()
     })
@@ -213,7 +220,15 @@ class App extends React.Component {
     }
 
     updateEvents = (events) => {
-        this.saveToStateAndLocalStorage({events: events})
+        let moddedEvents = events.map(event => {
+            delete event.creationDate
+            delete event.followers
+            delete event.participants
+            delete event.reviews
+            delete event.description
+            return event
+        })
+        this.saveToStateAndLocalStorage({events: moddedEvents})
     }
 
   renderNotificationBadge = () => {
@@ -345,7 +360,7 @@ class App extends React.Component {
                     onSuccess={this.onSuccess}
                 />}
               />
-              <Route path={routes.invite} exact render={(props) =>
+              <Route path={routes.inviteEvent} exact render={(props) =>
                   <Invite {...props}
                           isLogged={this.state.isLogged}
                           user={this.state.user}
@@ -364,6 +379,23 @@ class App extends React.Component {
                           isLogged={this.state.isLogged}
                           user={this.state.user}
                           onError={this.onError}
+                          updateUserInfo={this.updateUserChanges}
+                  />}
+              />
+              <Route path={routes.group} exact render={(props) =>
+                  <GroupInfo {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                          updateUserInfo={this.updateUserChanges}
+                  />}
+              />
+              <Route path={routes.inviteGroup} exact render={(props) =>
+                  <GroupAdder {...props}
+                          isLogged={this.state.isLogged}
+                          user={this.state.user}
+                          onError={this.onError}
+                          updateUserInfo={this.updateUserChanges}
                   />}
               />
               <Route path={routes.reviews} exact render={(props) =>
@@ -371,14 +403,6 @@ class App extends React.Component {
                                 isLogged={this.state.isLogged}
                                 user={this.state.user}
                                 onError={this.onError}
-                  />}
-              />
-
-              <Route path={routes.group} exact render={(props) =>
-                  <GroupInfo {...props}
-                          isLogged={this.state.isLogged}
-                          user={this.state.user}
-                          onError={this.onError}
                   />}
               />
           </Switch>
