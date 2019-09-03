@@ -25,8 +25,8 @@ let checkIfIsNotAuthenticated = response => {
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            /*console.log("RESPONSE: ")
-            console.log(response)*/
+            console.log("RESPONSE: ")
+            console.log(response)
             if (checkIfIsNotAuthenticated(response))
                 onNotAuthenticated(onError, response)
             else if (!response || !httpSuccessfulCodes.includes(response.status))
@@ -37,9 +37,9 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
             }
         })
         .catch(error => {
-            /*console.log("ERROR: ")
+            console.log("ERROR: ")
             console.log(error)
-            console.log(error.response)*/
+            console.log(error.response)
             if (checkIfIsNotAuthenticated(error.response))
                 onNotAuthenticated(onError, error)
             else
@@ -705,6 +705,7 @@ let getUserInformation = (userId, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let getUsersInformation = (users, onError, onSuccess) => {
+    console.log(users)
     let promises = users.map(user => Axios.get('/users/' + user._id + '/info'))
     Axios.all(promises)
         .then(res => {
@@ -925,7 +926,7 @@ let inviteGroup = (groupId, eventId, onError, onSuccess) => {
 let mapReview = review => {
     return {
         _id: review._id,
-        writer: mapUser(review.writer),
+        writer: review.writer,
         eventId: review.event,
         date: review.date,
         text: review.text,
@@ -943,15 +944,16 @@ let mapReview = review => {
  * @param onSuccess: function
  */
 let writeReview = (review, onError, onSuccess) => {
+    console.log(review)
     let data = {
         text: review.text,
         evaluation: review.evaluation
     }
     managePromise(
         Axios.post("/events/info/" + review.eventId + "/reviews", data),
-        [200],
+        [201],
         onError,
-        review => onSuccess(mapReview(review))
+        response => onSuccess(mapReview(response.data))
     )
 }
 
@@ -965,7 +967,25 @@ let getReviewsForEvent = (eventId, onError, onSuccess) => {
         Axios.get("/events/info/" + eventId + "/reviews"),
         [200],
         onError,
-        reviews => onSuccess(reviews.map(mapReview))
+        response => onSuccess(response.data.map(mapReview))
+    )
+}
+
+let getWrittenReviews = (userId, onError, onSuccess) => {
+    managePromise(
+        Axios.get("/users/" + userId + "/myReviews"),
+        [200],
+        onError,
+        response => onSuccess(response.data.reviews.map(mapReview))
+    )
+}
+
+let getReceivedReviews = (userId, onError, onSuccess) => {
+    managePromise(
+        Axios.get("/users/" + userId + "/receivedReviews"),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapReview))
     )
 }
 
@@ -1026,5 +1046,7 @@ export default {
     inviteUser,
     inviteGroup,
     writeReview,
-    getReviewsForEvent
+    getReviewsForEvent,
+    getWrittenReviews,
+    getReceivedReviews
 }

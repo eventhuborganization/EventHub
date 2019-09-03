@@ -499,6 +499,7 @@ class ReviewModal extends CallableComponent {
      * }}
      */
     showModal = (data) => {
+        console.log(data)
         this.setState({
                 event : data.event,
                 onSent: data.onSent
@@ -508,8 +509,7 @@ class ReviewModal extends CallableComponent {
     writeReview = () => {
         if (!this.checkErrors()) {
             let review = {
-                writer: this.props.user._id,
-                event: this.state.event._id,
+                eventId: this.state.event._id,
                 text: this.state.text,
                 evaluation: this.state.evaluation
             }

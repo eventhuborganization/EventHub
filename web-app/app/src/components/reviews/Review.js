@@ -15,9 +15,11 @@ let RECEIVED_REVIEW = 2
 class Review extends React.Component {
 
     constructor(props) {
+        console.log(props)
         super(props)
         this.state = {
-            event: undefined,
+            writer: undefined,
+            event: undefined
         }
     }
 
@@ -28,22 +30,14 @@ class Review extends React.Component {
                     if (isVisible) {
                         if ((this.props.type === RECEIVED_REVIEW || this.props.type === MY_REVIEW) && !this.state.event) {
                             ApiService.getEventInformation(this.props.review.eventId,
-                                () => this.setState(prevState => {
-                                        let state = prevState
-                                        state.event = {
-                                            _id: "5d6bdb2435b52d10436e2328",
-                                            name: "pipponi",
-                                            avatar: "pipponi",
-                                            typology: "sport"
-                                        }
-                                        return state
-                                    }),
-                                event => this.setState(prevState => {
-                                    let state = prevState
-                                    state.event = event
-                                    return state
-                                })
+                                () => {},
+                                event => this.setState({event: event})
                             )
+                        }
+                        if ((this.props.type === RECEIVED_REVIEW || this.props.type === REVIEW_FOR_EVENT) && !this.state.writer) {
+                            ApiService.getUsersInformation([this.props.review.writer],
+                                () => {},
+                                users => this.setState({writer: users[0]}))
                         }
                     }
                     return (
@@ -57,7 +51,7 @@ class Review extends React.Component {
                                                 evaluation={this.props.review.evaluation}
                                             />
                                             : <ReviewUserInfo
-                                                user={this.props.review.writer}
+                                                user={this.state.writer}
                                                 evaluation={this.props.review.evaluation}
                                             />
                                     }
@@ -74,7 +68,10 @@ class Review extends React.Component {
                                     </div>
                                     {
                                         this.props.type === RECEIVED_REVIEW ?
-                                            <ReviewEventInfo event={this.state.event} /> : <div/>
+                                            <ReviewEventInfo
+                                                event={this.state.event}
+                                                eventId={this.props.review.eventId}
+                                            /> : <div/>
                                     }
                                 </div>
                             </div>
@@ -121,15 +118,17 @@ let ReviewEvaluation = props => {
  */
 let ReviewUserInfo = props => {
     return (
-        props.user ? <div className={"row"}>
-            <div className="col-3 px-0 my-auto">
-                <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
-            </div>
-            <div className="col-9 d-flex flex-column justify-content-center px-1">
-                <span className="text-invited font-weight-bold">{props.user.name} {props.user.surname}</span>
-                <ReviewEvaluation evaluation={props.evaluation}/>
-            </div>
-        </div> : <div/>
+        props.user ?
+            <div className={"row"}>
+                <div className="col-3 px-0 my-auto">
+                    <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
+                </div>
+                <div className="col-9 d-flex flex-column justify-content-center px-1">
+                    <span className="text-invited font-weight-bold">{props.user.name} {props.user.surname}</span>
+                    <ReviewEvaluation evaluation={props.evaluation}/>
+                </div>
+            </div> :
+            <h4>Caricamento informazioni recensore</h4>
     )
 }
 
@@ -140,6 +139,7 @@ let ReviewUserInfo = props => {
  *             name: string,
  *             typology: string
  *         },
+ *         eventId: string,
  *         evaluation: number
  * }}
  * @constructor
@@ -148,13 +148,12 @@ let ReviewEventInfo = props => {
     return (
         <div className={"row mt-2"}>
             <div className={"col-12"}>
-                {
-                    props.event ?
-                        <Link to={routes.event + "/" + props.event._id}>
-                            <EventHeaderBanner isLite={true} event={props.event} />
-                        </Link>
-                        : <div/>
-                }
+                <Link to={routes.event + "/" + props.eventId}>
+                    {props.event ?
+                        <EventHeaderBanner isLite={true} event={props.event} />
+                        : "Vai all'evento"
+                    }
+                </Link>
             </div>
             <div className={"col-12 mt-1 px-0"}>
                 {props.evaluation ? <ReviewEvaluation evaluation={props.evaluation} /> : <div/>}

@@ -29,7 +29,7 @@ class Reviews extends React.Component {
             eventId: eventId
         }
         LocalStorage(this.#reviewsLocalStorageName, dataToSave)
-        let dummyReviews = []
+        /*let dummyReviews = []
         for (let i = 0; i < 5; i++) {
             dummyReviews.push({
                 _id: "r" + i,
@@ -43,11 +43,11 @@ class Reviews extends React.Component {
                 text: "la recensione della vita delle vite gaiusfgiuasdghf asasgidgashdifu asdasiudghasiudgsai diasg diusaghiduhasiudhasoijdoashdoiashdabdchbiuew fcisdwaghfiuashdi usa hidfuhsaiudfh as",
                 evaluation: 1
             })
-        }
+        }*/
         this.state = {
             eventId: eventId,
             event: undefined,
-            reviews: dummyReviews,
+            reviews: [],
             type: type
         }
     }
@@ -65,10 +65,16 @@ class Reviews extends React.Component {
                 )
                 break
             case MY_REVIEW:
-                //get writtenReviews
+                ApiService.getWrittenReviews(this.props.user._id,
+                    () => {},
+                    reviews => this.setState({reviews: reviews})
+                )
                 break
             case RECEIVED_REVIEW:
-                //get receivedReviews
+                ApiService.getReceivedReviews(this.props.user._id,
+                    () => {},
+                    reviews => this.setState({reviews: reviews})
+                )
                 break
             default: break
         }

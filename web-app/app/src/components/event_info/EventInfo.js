@@ -17,24 +17,9 @@ class EventInfo extends React.Component {
 
     constructor(props) {
         super(props)
-        let dummyReviews = []
-        for (let i = 0; i < 10; i++) {
-            dummyReviews.push({
-                _id: "r" + i,
-                writer: {
-                    name: "Stefano",
-                    surname: "Righini",
-                    avatar: "sdfgdfgfd"
-                },
-                eventId: "5d6bdb2435b52d10436e2328",
-                date: new Date(),
-                text: "la recensione della vita delle vite gaiusfgiuasdghf asasgidgashdifu asdasiudghasiudgsai diasg diusaghiduhasiudhasoijdoashdoiashdabdchbiuew fcisdwaghfiuashdi usa hidfuhsaiudfh as",
-                evaluation: 4
-            })
-        }
         this.state = {
             eventInfo: undefined,
-            eventReviews: dummyReviews.slice(0,3),
+            eventReviews: [],
             redirectHome: false
         }
         ApiService.getEventInformation(props.match.params.id,
@@ -47,6 +32,7 @@ class EventInfo extends React.Component {
                             state.eventInfo.location.place_id = result.place_id
                             return state
                         }))
+                    ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({eventReviews: reviews.slice(0,3)}))
                     event.participantsFilled = event.participants.map(id => {return {_id: id}})
                     this.setState({eventInfo: event})
                 })
