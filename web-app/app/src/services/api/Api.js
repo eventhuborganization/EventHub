@@ -167,7 +167,12 @@ let mapGroup = (group) => {
         _id: group._id,
         name: group.name,
         avatar: group.avatar,
-        members: group.members.map(mapUser)
+        members: group.members.map(user => {
+            user.name = ""
+            user.surname = ""
+            user.avatar = ""
+            return user
+        })
     }
 }
 
@@ -818,9 +823,9 @@ let createGroup = (name, members, onError, onSuccess) => {
     let data = {name: name, users: members}
     managePromise(
         Axios.post("/users/groups", data),
-        [200],
+        [200, 201],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 
@@ -834,7 +839,7 @@ let getGroupInfo = (groupId, onError, onSuccess) => {
         Axios.get("/users/groups/" + groupId),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 
@@ -848,7 +853,7 @@ let deleteGroup = (groupId, onError, onSuccess) => {
         Axios.delete("/users/groups/" + groupId),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 
@@ -864,7 +869,7 @@ let addMemberToGroup = (groupId, member, onError, onSuccess) => {
         Axios.post("/users/groups" + groupId, data),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 
@@ -880,7 +885,7 @@ let removeMemberFromGroup = (groupId, member, onError, onSuccess) => {
         Axios.post("/users/groups" + groupId, data),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 

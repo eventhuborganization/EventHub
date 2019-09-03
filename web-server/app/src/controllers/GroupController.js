@@ -6,36 +6,48 @@ exports.getGroupName = (req, res) => {
     UserService.getUserInfo(req.user._id)
     .then(response => {
         let groups = response.data.groups
-        if(groups == null || groups.length == 0){
-            //Response group not found
+        if(groups === null || groups.length === 0){
+            network.groupNotFound(res)
         } else {
             let promise = groups.map(g => UserService.getGroupInfo(g))
             Promise.all(promise)
             .then(response => {
-                let results = []
-                response.data.forEach(g => results.push(g))
+                let results = response.map(group => {
+                    let newGroup = group.data
+                    newGroup.members = newGroup.members.map(id => {return {_id: id}})
+                    return newGroup
+                })
                 network.resultWithJSON(res, results)
             })
-            .catch((err) => network.internalError(res, err))
+            .catch((err) => {
+                console.log(err)
+                network.replayError(err, res)
+            })
         }
     })
-    .catch((err) => network.internalError(res, err))
+    .catch((err) => {
+        console.log(err)
+        network.internalError(res, err)
+    })
 }
 
 exports.createGroup = (req, res) => {
     if(req.body.name){
         let data = {
             name: req.body.name,
-            user: [req.user._id],
+            users: [req.user._id],
         }
         if(req.body.users){
-            data.user = data.user.concat(req.body.users)
+            data.users = data.users.concat(req.body.users)
         }
         UserService.createGroup(data)
-        .then(resposne => network.replayResponse(resposne, res))
+        .then(response => {
+            response.data.members = response.data.members.map(id => {return {_id: id}})
+            network.replayResponse(response, res)
+        })
         .catch((err) => network.internalError(res, err))
     } else {
-        network.internalError(res, {description: 'errore interno loool'})
+        network.badRequest(res)
     }
 }
 
