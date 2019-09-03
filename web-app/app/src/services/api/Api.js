@@ -855,7 +855,7 @@ let deleteGroup = (groupId, onError, onSuccess) => {
 
 /**
  * @param groupId {String}
- * @param member {Array}
+ * @param member {String}
  * @param onError {function}
  * @param onSuccess {function}
  */
@@ -871,7 +871,7 @@ let addMemberToGroup = (groupId, member, onError, onSuccess) => {
 
 /**
  * @param groupId {String}
- * @param member {Array}
+ * @param member {String}
  * @param onError {function}
  * @param onSuccess {function}
  */

@@ -4,10 +4,10 @@ import Api from '../../services/api/Api'
 
 import { LoginRedirect } from '../redirect/Redirect'
 import {CreateNewGroupButton} from "../floating_button/FloatingButton"
-import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
 import { LinkMakerBanner } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
 import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
+import AvatarHeader from '../avatar_header/AvatarHeader'
 
 export default class Groups extends React.Component {
 
@@ -15,21 +15,8 @@ export default class Groups extends React.Component {
         super(props)
         this.state = {
             filter: "",
-            groups: [{
-                _id: "fovmorvorworwg",
-                name: "Fanatici della Formula 1",
-                members: [{
-                    _id: "vfomvorwmr",
-                    name: "Giovanni",
-                    surname: "Storti",
-                    address:{
-                        city:"California"
-                    },
-                    organization: false
-                }]
-            }]
+            groups: this.props.user.groups || []
         }
-        this.state.groups[0].members.push(this.props.user)
         Api.getGroups(
             () => this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova"),
             groups => this.setState({groups : groups})
@@ -57,20 +44,10 @@ export default class Groups extends React.Component {
         return (
             <div className="main-container">
 
-                <div className="row mt-2">
-                    <div className="col d-flex justify-content-center">
-                        <div className="d-flex flex-column text-center">
-                            <div className="col d-flex justify-content-center">
-                                <RoundedBigImage 
-                                    imageName={this.props.user.avatar}
-                                    borderType={BORDER_PRIMARY} 
-                                    placeholderType={PLACEHOLDER_USER_CIRCLE}
-                                />
-                            </div>
-                            <h5 className="mt-1 font-weight-bold">{this.props.user.name + " " + this.props.user.surname}</h5>
-                        </div>
-                    </div>
-                </div>
+                <AvatarHeader
+                    elem={this.props.user}
+                    isGroup={false}
+                />
 
                 <CreateNewGroupButton location={this.props.location} isLogged={this.props.isLogged} />
 
