@@ -9,6 +9,7 @@ import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import {Link} from "react-router-dom"
 import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
+import {Review, REVIEW_FOR_EVENT} from "../reviews/Review";
 
 let routes = require("../../services/routes/Routes")
 
@@ -16,8 +17,24 @@ class EventInfo extends React.Component {
 
     constructor(props) {
         super(props)
+        let dummyReviews = []
+        for (let i = 0; i < 10; i++) {
+            dummyReviews.push({
+                _id: "r" + i,
+                writer: {
+                    name: "Stefano",
+                    surname: "Righini",
+                    avatar: "sdfgdfgfd"
+                },
+                eventId: "5d6bdb2435b52d10436e2328",
+                date: new Date(),
+                text: "la recensione della vita delle vite gaiusfgiuasdghf asasgidgashdifu asdasiudghasiudgsai diasg diusaghiduhasiudhasoijdoashdoiashdabdchbiuew fcisdwaghfiuashdi usa hidfuhsaiudfh as",
+                evaluation: 4
+            })
+        }
         this.state = {
             eventInfo: undefined,
+            eventReviews: dummyReviews.slice(0,3),
             redirectHome: false
         }
         ApiService.getEventInformation(props.match.params.id,
@@ -120,6 +137,25 @@ class EventInfo extends React.Component {
                     {this.renderEventLocationMap()}
 
                     <Contacts event={this.state.eventInfo}/>
+
+                    <section className={"row mt-2"}>
+                        <h5 className={"col-12"}>Recensioni</h5>
+                        <div className={"col-12"}>
+                            {this.state.eventReviews.map(review => <Review type={REVIEW_FOR_EVENT} key={"review " + review._id} review={review} />)}
+                        </div>
+                        <div className={"col-12 mt-2 d-flex justify-content-end"}>
+                            <Link
+                                to={{
+                                    pathname: routes.reviews,
+                                    event: this.state.eventInfo
+                                }}
+                            >
+                                <button className={"btn btn-primary"}>
+                                    Vedi tutte le recensioni
+                                </button>
+                            </Link>
+                        </div>
+                    </section>
 
                 </main>
             )

@@ -4,11 +4,13 @@ import ShowMore from "react-show-more"
 import ApiService from "../../services/api/Api"
 import {Link} from "react-router-dom";
 import TrackVisibility from "react-on-screen";
-import {EventHeaderBanner} from "../event/Event";
+import {EventHeaderBanner} from "../event/Event"
+
+let routes = require("../../services/routes/Routes")
 
 let REVIEW_FOR_EVENT = 0
 let MY_REVIEW = 1
-let REVIEW_FOR_MY_EVENT = 2
+let RECEIVED_REVIEW = 2
 
 class Review extends React.Component {
 
@@ -24,12 +26,12 @@ class Review extends React.Component {
             <TrackVisibility key={"review-tracker-" + this.props.review._id} partialVisibility={true} once={true}>
                 {({ isVisible }) => {
                     if (isVisible) {
-                        if ((this.props.type === REVIEW_FOR_MY_EVENT || this.props.type === MY_REVIEW) && !this.state.event) {
+                        if ((this.props.type === RECEIVED_REVIEW || this.props.type === MY_REVIEW) && !this.state.event) {
                             ApiService.getEventInformation(this.props.review.eventId,
                                 () => this.setState(prevState => {
                                         let state = prevState
                                         state.event = {
-                                            _id: "sfgdfgdf",
+                                            _id: "5d6bdb2435b52d10436e2328",
                                             name: "pipponi",
                                             avatar: "pipponi",
                                             typology: "sport"
@@ -45,7 +47,7 @@ class Review extends React.Component {
                         }
                     }
                     return (
-                        <div className={"row mt-2 mx-1"}>
+                        <div className={"row mt-2 px-3"}>
                             <div className="col-12 card shadow">
                                 <div className="card-body container-fluid">
                                     {
@@ -60,7 +62,7 @@ class Review extends React.Component {
                                             />
                                     }
                                     <div className={"row mt-2"}>
-                                        <div className={"col-12 px-1 border"} style={{minHeight: "8rem"}}>
+                                        <div className={"col-12 px-1 border"} style={{minHeight: "6rem"}}>
                                             <ShowMore
                                                 lines={5}
                                                 more='Altro'
@@ -116,7 +118,7 @@ let ReviewEvaluation = props => {
  */
 let ReviewUserInfo = props => {
     return (
-        props.data ? <div className={"row"}>
+        props.user ? <div className={"row"}>
             <div className="col-3 px-0 my-auto">
                 <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
             </div>
@@ -146,7 +148,7 @@ let ReviewEventInfo = props => {
             <div className={"col-12"}>
                 {
                     props.event ?
-                        <Link to={""}>
+                        <Link to={routes.event + "/" + props.event._id}>
                             <EventHeaderBanner isLite={true} event={props.event} />
                         </Link>
                         : <div/>
@@ -159,4 +161,4 @@ let ReviewEventInfo = props => {
     )
 }
 
-export {Review, REVIEW_FOR_EVENT, MY_REVIEW, REVIEW_FOR_MY_EVENT}
+export {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW}

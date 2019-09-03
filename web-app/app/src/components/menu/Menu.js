@@ -64,9 +64,19 @@ export default function Menu(props){
                     icon={{style: "far", name: "calendar-alt", size: "lg"}}
                     name="I miei eventi"/>
                 <LinkToPage 
-                    page={routes.reviews}
+                    page={{
+                        pathname: routes.reviews,
+                        myReview: true
+                    }}
                     icon={{name: "pen", size: "lg"}}
                     name="Le mie recensioni"/>
+                <LinkToPage
+                    page={{
+                        pathname: routes.reviews,
+                        receivedReviews: true
+                    }}
+                    icon={{name: "pen", size: "lg"}}
+                    name="Recensioni ricevute"/>
                 {logout}
             </ul>
         </div>

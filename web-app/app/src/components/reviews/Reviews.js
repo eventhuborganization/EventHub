@@ -1,21 +1,36 @@
 import React from "react"
 import ApiService from "../../services/api/Api"
 import {EventHeaderBanner} from "../event/Event"
-import {Review, REVIEW_FOR_EVENT, MY_REVIEW, REVIEW_FOR_MY_EVENT} from "./Review"
-import {UserBanner} from "../link_maker_banner/LinkMakerBanner";
+import {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW} from "./Review"
+import {UserBanner} from "../link_maker_banner/LinkMakerBanner"
+import LocalStorage from "local-storage"
 
 class Reviews extends React.Component {
+
+    #reviewsLocalStorageName = "reviews-data"
 
     constructor(props) {
         super(props)
         let eventId = props.location.event ? props.location.event._id : undefined
+        let localData = LocalStorage(this.#reviewsLocalStorageName)
         let type = MY_REVIEW
         if (eventId)
             type = REVIEW_FOR_EVENT
-        else if (props.location.madeFromOthersToMe)
-            type = REVIEW_FOR_MY_EVENT
+        else if (props.location.receivedReviews)
+            type = RECEIVED_REVIEW
+        else if (props.location.myReview)
+            type = MY_REVIEW
+        else if (localData && localData.type >= 0) {
+            type = localData.type
+            eventId = localData.eventId
+        }
+        let dataToSave = {
+            type: type,
+            eventId: eventId
+        }
+        LocalStorage(this.#reviewsLocalStorageName, dataToSave)
         let dummyReviews = []
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 5; i++) {
             dummyReviews.push({
                 _id: "r" + i,
                 writer: {
@@ -23,18 +38,16 @@ class Reviews extends React.Component {
                     surname: "Righini",
                     avatar: "sdfgdfgfd"
                 },
-                eventId: "sdgdsfgdfgvsdfllikk",
+                eventId: "5d6bdb2435b52d10436e2328",
                 date: new Date(),
                 text: "la recensione della vita delle vite gaiusfgiuasdghf asasgidgashdifu asdasiudghasiudgsai diasg diusaghiduhasiudhasoijdoashdoiashdabdchbiuew fcisdwaghfiuashdi usa hidfuhsaiudfh as",
-                evaluation: 4
+                evaluation: 1
             })
         }
         this.state = {
             eventId: eventId,
             event: undefined,
             reviews: dummyReviews,
-            reviewsToShow: [],
-            lastReviewFilled: 0,
             type: type
         }
     }
@@ -54,7 +67,7 @@ class Reviews extends React.Component {
             case MY_REVIEW:
                 //get writtenReviews
                 break
-            case REVIEW_FOR_MY_EVENT:
+            case RECEIVED_REVIEW:
                 //get receivedReviews
                 break
             default: break
@@ -63,7 +76,7 @@ class Reviews extends React.Component {
 
     renderHeader = () => {
         if (this.state.event && this.state.type === REVIEW_FOR_EVENT)
-            return <EventHeaderBanner event={this.state.event} />
+            return <EventHeaderBanner event={this.state.event} hidePlace={true} />
         else if (this.props.user && this.state.type === MY_REVIEW)
             return <UserBanner user={this.props.user} isLite={true} />
         else

@@ -310,13 +310,13 @@ let EventHeaderBanner = props => {
             let date = require("../../utils/Utils").renderDate(dateVal)
             return (
                 <div className="row d-flex align-items-center">
-                    <div className="col-8 mb-1 px-1">
-                        <h6 className={"m-0 " + (props.event.date || props.event.time ? "" : " d-none ")}>
+                    <div className="col-8 mb-1 pl-1 pr-0">
+                        <h6 className={"m-0 text-left " + (props.event.date || props.event.time ? "" : " d-none ")}>
                             <em className="far fa-calendar-alt"></em> {date}
                         </h6>
                         {
                             props.hidePlace ? <div/> :
-                                <h6 className={"m-0 " + (props.event.location.address ? "" : " d-none ")}>
+                                <h6 className={"m-0 text-left " + (props.event.location.address ? "" : " d-none ")}>
                                     <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
                                 </h6>
                         }
@@ -334,7 +334,7 @@ let EventHeaderBanner = props => {
             <div className="col container-fluid">
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
-                        <h5 className={"m-0 " + (props.event.name ? "" : " d-none ")}>
+                        <h5 className={"m-0 text-left " + (props.event.name ? "" : " d-none ")}>
                             {props.event.name}
                         </h5>
                     </div>
