@@ -603,18 +603,30 @@ exports.removeUserFromGroup = (req, res) => {
 };
 
 exports.createGroup = (req, res) => {
-    if(req.body && typeof(req.body.user) == "string" && typeof req.body.name === "string") {
+    if(req.body && req.body.users instanceof Array && typeof req.body.name === "string") {
         let newGroup = {};
         newGroup.name = req.body.name;
-        newGroup.members = req.body.user;
+        newGroup.members = req.body.users;
         let dbGroup = new Groups(newGroup);
-        dbGroup.save(function(err, group) {
-            if (err) {
+        Users.find({_id: { "$in" : req.body.users}}, (err, users) => {
+            if(err){
                 network.internalError(res, err);
             } else {
-                network.itemCreated(res, group);
+                dbGroup.save((err2, group) => {
+                    if (err2) {
+                        network.internalError(res, err2);
+                    } else {
+                        users.forEach(user => {
+                            user.groups.push(group._id)
+                            user.save()
+                        })
+                        newGroup.members = users
+                        newGroup._id = group._id
+                        network.itemCreated(res, newGroup);
+                    }
+                })
             }
-        });
+        })
     } else {
         network.badRequest(res);
     }

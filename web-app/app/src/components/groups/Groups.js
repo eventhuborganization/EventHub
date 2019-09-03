@@ -18,8 +18,15 @@ export default class Groups extends React.Component {
             groups: this.props.user.groups || []
         }
         Api.getGroups(
-            () => this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova"),
-            groups => this.setState({groups : groups})
+            err => {
+                if(err.response.status !== 404) {
+                    this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova")
+                }
+            },
+            groups => {
+                console.log(groups)
+                this.setState({groups : groups})
+            }
         )
     }
 
