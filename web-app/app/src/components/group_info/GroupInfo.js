@@ -17,8 +17,12 @@ export default class GroupInfo extends React.Component {
         super(props)
         let localSavedEvent = LocalStorage(this.groupInfoStateLocalStorageName)
         let group = props.location && props.location.group ? props.location.group : undefined
-        if (!group && localSavedEvent)
-            group = localSavedEvent
+        if (!group && localSavedEvent){
+            let groupSaved = localSavedEvent
+            if(groupSaved._id === props.match.params.id){
+                group = localSavedEvent
+            }
+        }
         this.state = {
             filter: "",
             group: group || {members: []},
@@ -107,7 +111,7 @@ export default class GroupInfo extends React.Component {
                 <div className="row my-2">
                     <div className="col-12 d-flex justify-content-around">
                         <button className="btn btn-danger">Esci dal gruppo</button>
-                        <button className="btn btn-primary">Invita amici</button>
+                        <button className="btn btn-primary">Aggiungi membri</button>
                     </div>
                 </div>
 
