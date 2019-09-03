@@ -37,7 +37,7 @@ exports.eventInfo = (req, res) => {
         let event = response.data
         axios.get(`${UserServiceServer}/users/${event.organizator}`)
         .then(organizator => {
-            event.organizator = organizator.data;
+            event.organizator = organizator.data 
             network.resultWithJSON(res, event)
         })
         .catch(err => {
@@ -113,7 +113,14 @@ exports.getEventsFromIndex = (req, res) => {
             .then(usersResponse => {
                 usersResponse.map(user => user.data).forEach(user => {
                     let ev = result.find(event => event.organizator === user._id)
-                    ev.organizator = user
+                    ev.organizator = {
+                            name: user.name,
+                            surname: user.surname, 
+                            avatar: user.profilePicture, 
+                            _id: user._id, 
+                            organization: user.organization,
+                            city: user.address.city
+                    }
                 })
                 network.resultWithJSON(res, result)
             })

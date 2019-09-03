@@ -112,10 +112,15 @@ class Notifications extends React.Component {
 
                                 })
                             }
-                            <button className="fixed-bottom btn btn-primary" onClick={this.setAllNotificationsAsRead}
-                                style={{marginBottom: "22%", width: "94%", marginLeft: "3%", marginRight: "3%"}}>
-                                Segna tutte le notifiche come lette
-                            </button>
+
+                            {
+                                notificationsToShow.length > 0 ?
+                                    <button className="fixed-bottom btn btn-primary" onClick={this.setAllNotificationsAsRead}
+                                        style={{marginBottom: "22%", width: "94%", marginLeft: "3%", marginRight: "3%"}}>
+                                        Segna tutte le notifiche come lette
+                                    </button> :
+                                    <div/>
+                            }
                         </div>
                     }
                     {this.renderNoNotificationPlaceHolder()}

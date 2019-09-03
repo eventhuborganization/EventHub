@@ -5,6 +5,7 @@ import {PLACEHOLDER_USER_CIRCLE, PLACEHOLDER_GROUP_CIRCLE, RoundedSmallImage} fr
 export const INVITE_BUTTON = 0
 export const ADD_FRIEND_BUTTON = 1
 export const INVITED_BUTTON = 2
+export const ADDED_FRIEND_BUTTON = 3
 
 let routes = require("../../services/routes/Routes")
 
@@ -46,6 +47,9 @@ export function LinkMakerBanner(props) {
             break
         case ADD_FRIEND_BUTTON:
             buttonText = props.elem.organization ? "Segui" : "Aggiungi"
+            break
+        case ADDED_FRIEND_BUTTON:
+            buttonText = props.elem.organization ? "Non seguire" : "Aggiunto"
             break
         default: break
     }

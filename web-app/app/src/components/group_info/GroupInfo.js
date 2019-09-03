@@ -1,29 +1,36 @@
 import React from 'react'
 import Api from '../../services/api/Api'
 
-import { Redirect } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 import LocalStorage from "local-storage"
-import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
-import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_GROUP_CIRCLE } from '../image/Image'
+import { UserBanner, LinkMakerBanner, ADDED_FRIEND_BUTTON, ADD_FRIEND_BUTTON } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
+import AvatarHeader from '../avatar_header/AvatarHeader'
 
 let routes = require("../../services/routes/Routes")
 
-export default class GroupInfo extends React.Component {
+class GroupInfo extends React.Component {
 
-    groupInfoStateLocalStorageName = "group-info"
+     groupInfoStateLocalStorageName = "group-info"
 
     constructor(props){
         super(props)
-        let localSavedEvent = LocalStorage(this.groupInfoStateLocalStorageName)
+        let localSavedGroup = LocalStorage(this.groupInfoStateLocalStorageName)
         let group = props.location && props.location.group ? props.location.group : undefined
-        if (!group && localSavedEvent)
-            group = localSavedEvent
+        if (!group && localSavedGroup){
+            let groupSaved = localSavedGroup
+            if(groupSaved._id === props.match.params.id){
+                group = localSavedGroup
+            }
+        }
         this.state = {
             filter: "",
-            group: group || {members: []},
-            isMember: props.isLogged && group && group.members.findIndex(user => user._id === this.props.user._id) >= 0
+            group: group !== undefined ? group : {members: []},
+            isMember: props.isLogged && group && group.members.findIndex(user => user._id === this.props.user._id) >= 0,
+            redirectGroups: false,
+            redirectHome: false
         }
+
         if(this.state.isMember){
             LocalStorage(this.groupInfoStateLocalStorageName, this.state.group)
             Api.getGroupInfo(
@@ -63,6 +70,19 @@ export default class GroupInfo extends React.Component {
         )
     }
 
+    exitFromGroup = () => {
+        Api.removeMemberFromGroup(
+            this.state.group._id,
+            this.props.user._id,
+            () => this.props.onError("Non è stato possibile uscire dal gruppo, riprova"),
+            () => {
+                let groups = this.props.user.groups.filter(groups => groups._id !== this.state.group._id)
+                this.props.updateUserInfo([[groups, "groups"]])
+                this.setState({redirectGroups: true})
+            }
+        )
+    }
+
     renderMembers = () => {
         if(this.state.group.members.length > 0){
             return this.state.group.members
@@ -84,30 +104,34 @@ export default class GroupInfo extends React.Component {
         return this.state.redirectHome ? <Redirect to={routes.home} /> : <div/>
     }
 
+    redirectToGroups = () => {
+        return this.state.redirectGroups ? 
+            <Redirect from={this.props.from} to={routes.myGroups} /> : <div/>
+    }
+
     render = () => {
         return (
             <div className="main-container">
 
                 {this.redirectToHome()}
+                {this.redirectToGroups()}
 
-                <div className="row mt-2">
-                    <div className="col d-flex justify-content-center">
-                        <div className="d-flex flex-column text-center">
-                            <div className="col d-flex justify-content-center">
-                                <RoundedBigImage
-                                    borderType={BORDER_PRIMARY} 
-                                    placeholderType={PLACEHOLDER_GROUP_CIRCLE}
-                                />
-                            </div>
-                            <h5 className="mt-1 font-weight-bold">{this.state.group.name}</h5>
-                        </div>
-                    </div>
-                </div>
+                <AvatarHeader
+                    elem={this.state.group}
+                    isGroup={true}
+                />
 
                 <div className="row my-2">
                     <div className="col-12 d-flex justify-content-around">
-                        <button className="btn btn-danger">Esci dal gruppo</button>
-                        <button className="btn btn-primary">Invita amici</button>
+                        <button className="btn btn-danger" onClick={this.exitFromGroup}>Esci dal gruppo</button>
+                        <Link 
+                            to={{
+                                pathname: routes.inviteGroup,
+                                group: this.state.group
+                            }} 
+                            className="btn btn-primary">
+                            Aggiungi membri
+                        </Link>
                     </div>
                 </div>
 
@@ -123,3 +147,134 @@ export default class GroupInfo extends React.Component {
         )
     }
 } 
+
+class GroupAdder extends React.Component {
+
+    addGroupStateLocalStorageName = "add-group"
+
+    constructor(props) {
+        super(props)
+        let localSavedGroup = LocalStorage(this.addGroupStateLocalStorageName)
+        let group = props.location.group || undefined
+        if (!group && localSavedGroup)
+            group = localSavedGroup
+        this.state = {
+            filter: "",
+            linkedUsers: props.user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())) || [],
+            group: group || {_id: "", name: "", members: []},
+            isAllowed: group !== undefined,
+            redirectHome: false
+        }
+
+        if (props.isLogged && this.state.isAllowed) {
+            LocalStorage(this.localSavedGroup, this.state.group)
+            Api.getUserInformation(props.user._id, () => {},user => {
+                let users = user.linkedUsers
+                    .filter(friend => !friend.organization)
+                    .sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                this.setState({linkedUsers: users})
+            })
+        }
+    }
+
+    componentDidMount() {
+        if (!(this.props.isLogged && this.state.isAllowed)) {
+            this.props.onError(
+                "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
+                () => this.setState({redirectHome: true})
+            )
+        }
+    }
+
+    onFilter = (event) => {
+        this.setState({filter: event.target.value})
+    }
+
+    cannotAdd = (friend) => {
+        return !friend && this.state.group.members.findIndex(user => user._id === friend._id) >= 0
+    }
+
+    inviteFriend = friend => {
+        Api.addMemberToGroup(
+            this.state.group._id,
+            friend._id,
+            () => this.props.onError("Non è stato possibile aggiungere il tuo amico al gruppo, riprova."),
+            () => {
+                this.setButtonEnabled(friend, false)
+                this.state.group.members.push(friend)
+                let groups = this.props.user.groups
+                let index = groups.findIndex(group => group._id === this.state.group._id)
+                groups[index] = this.state.group
+                this.props.updateUserInfo([[groups, "groups"]])
+            }
+        )
+    }
+
+    setButtonEnabled = (elem, enabled) => {
+        let button = document.getElementById(this.buttonId + elem._id)
+        if (enabled) {
+            button.innerHTML = "Aggiungi"
+            button.classList.remove("disabled")
+        } else {
+            button.innerHTML = "Aggiunto"
+            button.classList.add("disabled")
+        }
+        button.blur()
+    }
+
+    getAllFriends = () => {
+        return this.getFriends(
+            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()),
+            elem => !this.cannotAdd(elem),
+            elem => this.inviteFriend(elem)
+        )
+    }
+
+    getFriends = (filterFun, showFun, fun) => {
+        let x = 0;
+        return this.state.linkedUsers
+            .filter(elem => filterFun(elem))
+            .map(elem => {
+                let id = "friend" + x++
+                let enabled = showFun(elem)
+                return (
+                    <LinkMakerBanner key={id}
+                                     border={true}
+                                     elem={elem}
+                                     onClick={() => fun(elem)}
+                                     showButton={true}
+                                     buttonType={enabled ? ADD_FRIEND_BUTTON : ADDED_FRIEND_BUTTON}
+                                     buttonId={this.buttonId + elem._id}
+                                     buttonDisabled={!enabled}
+                    />
+                )
+            })
+    }
+
+    redirectToHome = () => {
+        return this.state.redirectHome ? <Redirect to={routes.home} /> : <div/>
+    }
+
+    render() {
+        return (
+            <div className="main-container">
+                {this.redirectToHome()}
+                
+                <AvatarHeader
+                    elem={this.state.group}
+                    isGroup={true}
+                />
+
+                <SimpleSearchBar
+                    placeholder="Cerca amico"
+                    value={this.state.filter}
+                    onChange={this.onFilter}
+                />
+
+                {this.getAllFriends()}
+            </div>
+        )
+    }
+}
+
+export { GroupInfo, GroupAdder }

@@ -2,9 +2,10 @@ import React from 'react'
 import { Redirect } from 'react-router-dom'
 
 import { LoginRedirect } from '../redirect/Redirect'
-import { RoundedSmallImage, PLACEHOLDER_USER_CIRCLE, PLACEHOLDER_GROUP_CIRCLE, RoundedBigImage, BORDER_PRIMARY } from '../image/Image'
+import { RoundedSmallImage, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
 
 import Api from '../../services/api/Api'
+import AvatarHeader from '../avatar_header/AvatarHeader'
 
 let routes = require('../../services/routes/Routes')
 
@@ -50,15 +51,20 @@ export default class GroupCreator extends React.Component {
         } else {
             Api.createGroup(
                 this.state.name,
-                this.state.friends,
+                Array.from(this.state.friends),
                 () => this.props.onError("Errore durante la creazione del gruppo, riprova"),
-                () => this.setState({redirectGroups: true})
+                (group) => {
+                    let groups = this.props.user.groups
+                    groups.push(group)
+                    this.props.updateUserInfo([[groups, "groups"]])
+                    this.setState({redirectGroups: true})
+                }
             )
         }
     }
 
-    redirectToHome = () => {
-        return this.state.redirectHome ? 
+    redirectToGroups = () => {
+        return this.state.redirectGroups ? 
             <Redirect from={this.props.from} to={routes.myGroups} /> : <div/>
     }
 
@@ -66,28 +72,17 @@ export default class GroupCreator extends React.Component {
         return (
             <div className="main-container">
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                {this.redirectToHome()}
+                {this.redirectToGroups()}
 
                 <form onSubmit={this.submitForm} className="mt-3">
 
-                    <div className="row mt-2">
-                        <div className="col d-flex justify-content-center">
-                            <div className="d-flex flex-column text-center">
-                                <div className="col d-flex justify-content-center">
-                                    <RoundedBigImage
-                                        borderType={BORDER_PRIMARY} 
-                                        placeholderType={PLACEHOLDER_GROUP_CIRCLE}
-                                    />
-                                </div>
-                                <h5 className="mt-1 font-weight-bold">
-                                    {
-                                        this.state.name ? 
-                                        this.state.name : "Scegli nome gruppo"
-                                    }
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
+                    <AvatarHeader
+                        elem={{
+                            name: this.state.name ? 
+                            this.state.name : "Scegli nome gruppo"
+                        }}
+                        isGroup={true}
+                    />
 
                     <div className="form-group">
                         <label htmlFor="groupName">Nome del gruppo:</label>
