@@ -3,7 +3,7 @@ import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
 import ShowMore from "react-show-more"
 import ApiService from "../../services/api/Api"
 import {Link} from "react-router-dom";
-import TrackVisibility from "react-on-screen";
+import TrackVisibility from "react-on-screen"
 import {EventHeaderBanner} from "../event/Event"
 
 let routes = require("../../services/routes/Routes")
@@ -44,9 +44,19 @@ class Review extends React.Component {
                             <div className="col-12 card shadow">
                                 <div className="card-body container-fluid">
                                     {
+                                        this.props.type === RECEIVED_REVIEW ?
+                                            <div className={"mt-2"}>
+                                                <ReviewEventInfo
+                                                    event={this.state.event}
+                                                    eventId={this.props.review.eventId}
+                                                />
+                                            </div> : <div/>
+                                    }
+                                    {
                                         this.props.type === MY_REVIEW
                                             ? <ReviewEventInfo
                                                 event={this.state.event}
+                                                eventId={this.props.review.eventId}
                                                 evaluation={this.props.review.evaluation}
                                             />
                                             : <ReviewUserInfo
@@ -54,23 +64,19 @@ class Review extends React.Component {
                                                 evaluation={this.props.review.evaluation}
                                             />
                                     }
-                                    <div className={"row mt-2"}>
-                                        <div className={"col-12 px-1 border"} style={{minHeight: "6rem"}}>
-                                            <ShowMore
-                                                lines={5}
-                                                more='Altro'
-                                                less='Mostra meno'
-                                            >
-                                                {this.props.review.text}
-                                            </ShowMore>
-                                        </div>
-                                    </div>
                                     {
-                                        this.props.type === RECEIVED_REVIEW ?
-                                            <ReviewEventInfo
-                                                event={this.state.event}
-                                                eventId={this.props.review.eventId}
-                                            /> : <div/>
+                                        this.props.review.text ?
+                                            <div className={"row mt-2"}>
+                                                <div className={"col-12 px-2"}>
+                                                    <ShowMore
+                                                        lines={5}
+                                                        more='Altro'
+                                                        less='Mostra meno'
+                                                    >
+                                                        {this.props.review.text}
+                                                    </ShowMore>
+                                                </div>
+                                            </div> : <div/>
                                     }
                                 </div>
                             </div>
@@ -123,7 +129,7 @@ let ReviewUserInfo = props => {
                     <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
                 </div>
                 <div className="col-9 d-flex flex-column justify-content-center px-1">
-                    <span className="text-invited font-weight-bold">{props.user.name} {props.user.surname}</span>
+                    <span className="text-invited font-weight-bold mb-1">{props.user.name} {props.user.surname}</span>
                     <ReviewEvaluation evaluation={props.evaluation}/>
                 </div>
             </div> :
@@ -145,16 +151,16 @@ let ReviewUserInfo = props => {
  */
 let ReviewEventInfo = props => {
     return (
-        <div className={"row mt-2"}>
+        <div className={"row"}>
             <div className={"col-12"}>
-                <Link to={routes.event + "/" + props.eventId}>
+                <Link to={routes.eventFromId(props.eventId)}>
                     {props.event ?
                         <EventHeaderBanner isLite={true} event={props.event} />
                         : "Vai all'evento"
                     }
                 </Link>
             </div>
-            <div className={"col-12 mt-1 px-0"}>
+            <div className={"col-12 mt-2 pl-1 pr-0"}>
                 {props.evaluation ? <ReviewEvaluation evaluation={props.evaluation} /> : <div/>}
             </div>
         </div>

@@ -1,5 +1,11 @@
 import React from 'react'
-import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_GROUP_CIRCLE, PLACEHOLDER_USER_CIRCLE } from '../image/Image';
+import {
+    RoundedBigImage,
+    BORDER_PRIMARY,
+    PLACEHOLDER_GROUP_CIRCLE,
+    PLACEHOLDER_USER_CIRCLE,
+    RoundedSmallImage
+} from '../image/Image'
 
 /**
  * @param props {{
@@ -12,7 +18,8 @@ import { RoundedBigImage, BORDER_PRIMARY, PLACEHOLDER_GROUP_CIRCLE, PLACEHOLDER_
  *         },
  *         organization: boolean
  *     },
- *     isGroup: boolean
+ *     isGroup: boolean,
+ *     smallImage: boolean
  * }}
  */
 export default function AvatarHeader(props){
@@ -21,11 +28,21 @@ export default function AvatarHeader(props){
             <div className="col d-flex justify-content-center">
                 <div className="d-flex flex-column text-center">
                     <div className="col d-flex justify-content-center">
-                        <RoundedBigImage
-                            imageName={props.elem.avatar}
-                            borderType={BORDER_PRIMARY} 
-                            placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}
-                        />
+                        {
+                            props.smallImage ?
+                                <RoundedSmallImage
+                                    imageName={props.elem.avatar}
+                                    borderType={BORDER_PRIMARY}
+                                    placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}
+                                    alt={"Avatar"}
+                                /> :
+                                <RoundedBigImage
+                                    imageName={props.elem.avatar}
+                                    borderType={BORDER_PRIMARY}
+                                    placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}
+                                    alt={"Avatar"}
+                                />
+                        }
                     </div>
                     <h5 className="mt-1 font-weight-bold">
                         {

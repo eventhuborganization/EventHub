@@ -2,7 +2,6 @@ import React from "react"
 import ApiService from "../../services/api/Api"
 import {EventHeaderBanner} from "../event/Event"
 import {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW} from "./Review"
-import {UserBanner} from "../link_maker_banner/LinkMakerBanner"
 import LocalStorage from "local-storage"
 
 class Reviews extends React.Component {
@@ -29,21 +28,6 @@ class Reviews extends React.Component {
             eventId: eventId
         }
         LocalStorage(this.#reviewsLocalStorageName, dataToSave)
-        /*let dummyReviews = []
-        for (let i = 0; i < 5; i++) {
-            dummyReviews.push({
-                _id: "r" + i,
-                writer: {
-                    name: "Stefano",
-                    surname: "Righini",
-                    avatar: "sdfgdfgfd"
-                },
-                eventId: "5d6bdb2435b52d10436e2328",
-                date: new Date(),
-                text: "la recensione della vita delle vite gaiusfgiuasdghf asasgidgashdifu asdasiudghasiudgsai diasg diusaghiduhasiudhasoijdoashdoiashdabdchbiuew fcisdwaghfiuashdi usa hidfuhsaiudfh as",
-                evaluation: 1
-            })
-        }*/
         this.state = {
             eventId: eventId,
             event: undefined,
@@ -84,21 +68,26 @@ class Reviews extends React.Component {
         if (this.state.event && this.state.type === REVIEW_FOR_EVENT)
             return <EventHeaderBanner event={this.state.event} hidePlace={true} />
         else if (this.props.user && this.state.type === MY_REVIEW)
-            return <UserBanner user={this.props.user} isLite={true} />
+            return <div/>//<AvatarHeader isGroup={false} elem={this.props.user} smallImage={true} />
         else
             return <div/>
     }
 
     renderTitle = () => {
-        return "Recensioni"
+        switch(this.state.type) {
+            case MY_REVIEW: return <h3 className={"m-0 py-1 border-bottom border-primary"}>Le mie recensioni</h3>
+            case RECEIVED_REVIEW: return <h3 className={"m-0 py-1 border-bottom border-primary"}>Recensioni ricevute</h3>
+            case REVIEW_FOR_EVENT:
+            default: return <div/>
+        }
     }
 
     render() {
         return (
             <main className={"main-container"}>
-                <section className="row sticky-top shadow bg-white border-bottom border-primary text-center">
+                <section className="row sticky-top shadow bg-white text-center">
                     <div className={"col-12"}>{this.renderHeader()}</div>
-                    <h1 className="col-12">{this.renderTitle()}</h1>
+                    <div className={"col-12 text-center bg-white px-0"}>{this.renderTitle()}</div>
                 </section>
                 <div>
                     {this.state.reviews.map(review => <Review type={this.state.type} key={"review " + review._id} review={review} />)}
