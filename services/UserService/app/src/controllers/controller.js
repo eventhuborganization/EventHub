@@ -456,15 +456,7 @@ exports.getReceivedReviews = (req, res) => {
                 if (err)
                     network.notContentRetrieved(res);
                 else {
-                    reviews.forEach(review => {
-                        getUserById(review.writer, (err, writer) => {
-                            if (err)
-                                network.internalError(res)
-                            else
-                                review.writer = {_id: writer._id, name: writer.name, surname: writer.surname, avatar: writer.profilePicture}
-                        })
-                    })
-                    network.resultWithJSON(res, { reviews: reviews});
+                    network.resultWithJSON(res, reviews);
                 }
             });
         }
@@ -682,15 +674,7 @@ exports.getEventReviews = (req, res) => {
         if (err)
             network.notContentRetrieved(res)
         else {
-            reviews.forEach(review => {
-                getUserById(review.writer, (err, writer) => {
-                    if (err)
-                        network.internalError(res)
-                    else
-                        review.writer = {_id: writer._id, name: writer.name, surname: writer.surname, avatar: writer.profilePicture}
-                })
-            })
-            network.resultWithJSON(res,reviews) 
+            network.resultWithJSON(res,reviews)
         }
     }) 
 }
