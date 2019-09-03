@@ -15,7 +15,6 @@ let RECEIVED_REVIEW = 2
 class Review extends React.Component {
 
     constructor(props) {
-        console.log(props)
         super(props)
         this.state = {
             writer: undefined,
@@ -35,7 +34,7 @@ class Review extends React.Component {
                             )
                         }
                         if ((this.props.type === RECEIVED_REVIEW || this.props.type === REVIEW_FOR_EVENT) && !this.state.writer) {
-                            ApiService.getUsersInformation([this.props.review.writer],
+                            ApiService.getUsersInformation([{_id: this.props.review.writer}],
                                 () => {},
                                 users => this.setState({writer: users[0]}))
                         }
@@ -128,7 +127,7 @@ let ReviewUserInfo = props => {
                     <ReviewEvaluation evaluation={props.evaluation}/>
                 </div>
             </div> :
-            <h4>Caricamento informazioni recensore</h4>
+            <h6>Caricamento informazioni</h6>
     )
 }
 

@@ -25,8 +25,8 @@ let checkIfIsNotAuthenticated = response => {
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            console.log("RESPONSE: ")
-            console.log(response)
+            /*console.log("RESPONSE: ")
+            console.log(response)*/
             if (checkIfIsNotAuthenticated(response))
                 onNotAuthenticated(onError, response)
             else if (!response || !httpSuccessfulCodes.includes(response.status))
@@ -37,9 +37,9 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
             }
         })
         .catch(error => {
-            console.log("ERROR: ")
+            /*console.log("ERROR: ")
             console.log(error)
-            console.log(error.response)
+            console.log(error.response)*/
             if (checkIfIsNotAuthenticated(error.response))
                 onNotAuthenticated(onError, error)
             else
@@ -705,7 +705,6 @@ let getUserInformation = (userId, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let getUsersInformation = (users, onError, onSuccess) => {
-    console.log(users)
     let promises = users.map(user => Axios.get('/users/' + user._id + '/info'))
     Axios.all(promises)
         .then(res => {
@@ -944,7 +943,6 @@ let mapReview = review => {
  * @param onSuccess: function
  */
 let writeReview = (review, onError, onSuccess) => {
-    console.log(review)
     let data = {
         text: review.text,
         evaluation: review.evaluation
