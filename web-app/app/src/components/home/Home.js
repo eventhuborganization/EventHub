@@ -38,9 +38,16 @@ class Home extends React.Component {
             })
     }
 
-    renderNoNotificationPlaceHolder = () => {
-        if (this.state.eventsLoaded.length <= 0)
+    renderEvents = () => {
+        if (this.state.eventsLoaded.length > 0) {
+            return this.state.eventsLoaded.map(event =>
+                <EventCard {...this.props}
+                           key={event._id}
+                           eventInfo={event}
+                />)
+        } else {
             return <NoItemsPlaceholder placeholder={"Non ci sono eventi disponibili"} />
+        }
     }
 
     render() {
@@ -60,14 +67,7 @@ class Home extends React.Component {
                 <CreateNewEventButton location={this.props.location} isLogged={this.props.isLogged} />
 
                 <main className="main-container">
-                    {
-                        this.state.eventsLoaded.map(event =>
-                            <EventCard {...this.props}
-                                       key={event._id}
-                                       eventInfo={event}
-                            />)
-                    }
-                    {this.renderNoNotificationPlaceHolder()}
+                    { this.renderEvents() }
                 </main>
             </div>
         )
