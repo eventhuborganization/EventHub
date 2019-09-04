@@ -235,7 +235,6 @@ let EventInteractionPanel = (props) => {
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
-    console.log(props.event.reviews)
     let renderInteractionButtons = () => {
         if(props.hideInteractionButtons) {
             return <div/>
