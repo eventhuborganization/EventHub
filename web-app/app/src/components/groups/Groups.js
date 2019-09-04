@@ -17,17 +17,20 @@ export default class Groups extends React.Component {
             filter: "",
             groups: this.props.user.groups || []
         }
-        Api.getGroups(
-            err => {
-                if(err.response.status !== 404) {
-                    this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova")
+
+        if(props.isLogged){
+            Api.getGroups(
+                err => {
+                    if(err.response.status !== 404) {
+                        this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova")
+                    }
+                },
+                groups => {
+                    console.log(groups)
+                    this.setState({groups : groups})
                 }
-            },
-            groups => {
-                console.log(groups)
-                this.setState({groups : groups})
-            }
-        )
+            )
+        }
     }
 
     onFilterChange = (event) => {
