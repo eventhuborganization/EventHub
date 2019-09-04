@@ -267,6 +267,15 @@ let getEvents = (data, onError, onSuccess) => {
     )
 }
 
+let getEventsByOrganizator = (organizatorId, onError, onSuccess) => {
+    managePromise(
+        Axios.get('/events/organizator/' + organizatorId),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapEvent))
+    )
+}
+
 /**
  * @param data {{
  *     event: {
@@ -1010,6 +1019,7 @@ export default {
     createNewEvent,
     deleteEvent,
     getEvents,
+    getEventsByOrganizator,
     searchEvents,
     searchNearestEvents,
     participateToEvent,

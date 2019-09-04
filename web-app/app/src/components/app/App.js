@@ -25,6 +25,7 @@ import GroupCreator from '../group_creator/GroupCreator'
 import Reviews from "../reviews/Reviews"
 import { GroupInfo, GroupAdder } from '../group_info/GroupInfo'
 import { ReviewModal, Modal } from '../modals/Modals'
+import EventsByOrganizator from '../event/EventsByOrganizator'
 
 let routes = require("../../services/routes/Routes")
 
@@ -405,6 +406,17 @@ class App extends React.Component {
                                 isLogged={this.state.isLogged}
                                 user={this.state.user}
                                 onError={this.onError}
+                  />}
+              />
+              <Route path={routes.myEvents} exact render={(props) =>
+                  <EventsByOrganizator {...props}
+                                isLogged={this.state.isLogged}
+                                isLocalUser={true}
+                                organizator={this.state.user}
+                                onError={this.onError}
+                                onSuccess={this.onSuccess}
+                                showMessage={this.showModal}
+                                showReviewModal={this.showReviewModal}
                   />}
               />
           </Switch>
