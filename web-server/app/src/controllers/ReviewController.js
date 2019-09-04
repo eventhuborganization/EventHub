@@ -21,14 +21,14 @@ exports.newReview = (req, res) => {
             review.eventOrganizator = result.data.organizator
             if (req.body.text)
                 review.text = req.body.text
-            if (req.body.evaluation && req.body.evaluation >= 0 && req.body.evaluation <= 5) {
+            if (req.body.evaluation && req.body.evaluation > 0 && req.body.evaluation <= 5) {
                 review.evaluation = req.body.evaluation
                 axios.post(`${UserServiceServer}/users/${req.user._id}/reviews/written`, review)
                     .then(response => {
                         let tryAddReviewToEvent = (eventId, reviewId, counter) => {
                             EventService.addEventReviews(eventId, reviewId,
-                                result => {},
-                                error => {tryAddReviewToEvent(eventId,reviewId, --counter)})
+                                () => {},
+                                () => {tryAddReviewToEvent(eventId,reviewId, --counter)})
                         }
                         tryAddReviewToEvent(review.event, response.data._id, 5)
                         network.replayResponse(response, res)
@@ -37,7 +37,7 @@ exports.newReview = (req, res) => {
             } else {
                 network.badRequest(res)
             }
-        }, error => network.badRequest(res))
+        }, () => network.badRequest(res))
 }
 
 exports.getUserReviewsDone = (req, res) => {

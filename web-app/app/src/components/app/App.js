@@ -327,6 +327,7 @@ class App extends React.Component {
                     isLogged={this.state.isLogged}
                     user={this.state.user}
                     onError={this.onError}
+                    showReviewModal={this.showReviewModal}
                     updateUser={this.updateUserInfo}
                 />}
             />
@@ -336,6 +337,7 @@ class App extends React.Component {
                     user={this.state.user}
                     onError={this.onError}
                     onSuccess={this.onSuccess}
+                    showReviewModal={this.showReviewModal}
                     manageLinkedUser={this.manageLinkedUser}
                 />} 
             />
@@ -571,7 +573,11 @@ class ReviewModal extends CallableComponent {
         if (!this.state.text) {
             addErrorClassAndFocus("review-text")
             this.showError("Non hai inserito nessun testo per la recensione!")
+        } else if (this.state.evaluation === 0){
+            errorFound = true
+            this.showError("Non hai inserito un punteggio valido, devi inserire almeno una stellina!")
         }
+
         return errorFound
     }
 

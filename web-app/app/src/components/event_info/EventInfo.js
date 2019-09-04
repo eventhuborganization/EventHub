@@ -20,6 +20,7 @@ class EventInfo extends React.Component {
         this.state = {
             eventInfo: undefined,
             eventReviews: [],
+            reviewers: [],
             redirectHome: false
         }
         ApiService.getEventInformation(props.match.params.id,
@@ -32,7 +33,10 @@ class EventInfo extends React.Component {
                             state.eventInfo.location.place_id = result.place_id
                             return state
                         }))
-                    ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({eventReviews: reviews.slice(0,3)}))
+                    ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({
+                        reviewers: reviews.map(x => x.writer),
+                        eventReviews: reviews.slice(0,3)
+                    }))
                     event.participantsFilled = event.participants.map(id => {return {_id: id}})
                     this.setState({eventInfo: event})
                 })
@@ -71,6 +75,7 @@ class EventInfo extends React.Component {
                         <EventInteractionPanel {...this.props}
                                                key={this.state.eventInfo._id}
                                                event={this.state.eventInfo}
+                                               isAlreadyBeenReviewed={this.state.reviewers.includes(this.props.user._id)}
                                                hideBadge={true}
                                                onEventParticipated={event =>  this.setState(prevState => {
                                                    let state = prevState

@@ -63,6 +63,7 @@ export function EventsBanner(props) {
                     eventInfo={event}
                     user={props.user}
                     onError={props.onError}
+                    showReviewModal={props.showReviewModal}
                     isLogged={props.isLogged}
                     location={props.location}
     />)

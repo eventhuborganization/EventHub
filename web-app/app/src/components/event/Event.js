@@ -175,7 +175,7 @@ function InviteButton(props) {
  */
 let WriteReviewButton = props => {
     return (
-        <button className={getButtonClassName(props.event.typology, PARTICIPATE)}
+        <button className={getButtonClassName(props.event.typology, PARTICIPATE) + (props.disabled ? " disabled" : "")}
                 onClick={() => props.showReviewModal(props.event, props.onSent)}>
             Scrivi una recensione
         </button>
@@ -235,6 +235,7 @@ let EventInteractionPanel = (props) => {
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
+    console.log(props.event.reviews)
     let renderInteractionButtons = () => {
         if(props.hideInteractionButtons) {
             return <div/>
@@ -243,7 +244,12 @@ let EventInteractionPanel = (props) => {
         } else if(isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>
         } else if (isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
-            return <WriteReviewButton onSent={props.onReviewSent} event={props.event} showReviewModal={props.showReviewModal} />
+            return <WriteReviewButton 
+                        onSent={props.onReviewSent} 
+                        event={props.event} 
+                        showReviewModal={props.showReviewModal}
+                        disabled={props.isAlreadyBeenReviewed}
+                    />
         } else {
             return <div/>
         }
