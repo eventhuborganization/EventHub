@@ -17,10 +17,20 @@ export default class Groups extends React.Component {
             filter: "",
             groups: this.props.user.groups || []
         }
-        Api.getGroups(
-            () => this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova"),
-            groups => this.setState({groups : groups})
-        )
+
+        if(props.isLogged){
+            Api.getGroups(
+                err => {
+                    if(err.response.status !== 404) {
+                        this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, ricarica la pagina")
+                    }
+                },
+                groups => {
+                    groups.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                    this.setState({groups : groups})
+                }
+            )
+        }
     }
 
     onFilterChange = (event) => {

@@ -3,7 +3,7 @@ import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image"
 import ShowMore from "react-show-more"
 import ApiService from "../../services/api/Api"
 import {Link} from "react-router-dom";
-import TrackVisibility from "react-on-screen";
+import TrackVisibility from "react-on-screen"
 import {EventHeaderBanner} from "../event/Event"
 
 let routes = require("../../services/routes/Routes")
@@ -17,7 +17,8 @@ class Review extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            event: undefined,
+            writer: undefined,
+            event: undefined
         }
     }
 
@@ -28,22 +29,14 @@ class Review extends React.Component {
                     if (isVisible) {
                         if ((this.props.type === RECEIVED_REVIEW || this.props.type === MY_REVIEW) && !this.state.event) {
                             ApiService.getEventInformation(this.props.review.eventId,
-                                () => this.setState(prevState => {
-                                        let state = prevState
-                                        state.event = {
-                                            _id: "5d6bdb2435b52d10436e2328",
-                                            name: "pipponi",
-                                            avatar: "pipponi",
-                                            typology: "sport"
-                                        }
-                                        return state
-                                    }),
-                                event => this.setState(prevState => {
-                                    let state = prevState
-                                    state.event = event
-                                    return state
-                                })
+                                () => {},
+                                event => this.setState({event: event})
                             )
+                        }
+                        if ((this.props.type === RECEIVED_REVIEW || this.props.type === REVIEW_FOR_EVENT) && !this.state.writer) {
+                            ApiService.getUsersInformation([{_id: this.props.review.writer}],
+                                () => {},
+                                users => this.setState({writer: users[0]}))
                         }
                     }
                     return (
@@ -51,30 +44,39 @@ class Review extends React.Component {
                             <div className="col-12 card shadow">
                                 <div className="card-body container-fluid">
                                     {
+                                        this.props.type === RECEIVED_REVIEW ?
+                                            <div className={"mt-2"}>
+                                                <ReviewEventInfo
+                                                    event={this.state.event}
+                                                    eventId={this.props.review.eventId}
+                                                />
+                                            </div> : <div/>
+                                    }
+                                    {
                                         this.props.type === MY_REVIEW
                                             ? <ReviewEventInfo
                                                 event={this.state.event}
+                                                eventId={this.props.review.eventId}
                                                 evaluation={this.props.review.evaluation}
                                             />
                                             : <ReviewUserInfo
-                                                user={this.props.review.writer}
+                                                user={this.state.writer}
                                                 evaluation={this.props.review.evaluation}
                                             />
                                     }
-                                    <div className={"row mt-2"}>
-                                        <div className={"col-12 px-1 border"} style={{minHeight: "6rem"}}>
-                                            <ShowMore
-                                                lines={5}
-                                                more='Altro'
-                                                less='Mostra meno'
-                                            >
-                                                {this.props.review.text}
-                                            </ShowMore>
-                                        </div>
-                                    </div>
                                     {
-                                        this.props.type === RECEIVED_REVIEW ?
-                                            <ReviewEventInfo event={this.state.event} /> : <div/>
+                                        this.props.review.text ?
+                                            <div className={"row mt-2"}>
+                                                <div className={"col-12 px-2"}>
+                                                    <ShowMore
+                                                        lines={5}
+                                                        more='Altro'
+                                                        less='Mostra meno'
+                                                    >
+                                                        {this.props.review.text}
+                                                    </ShowMore>
+                                                </div>
+                                            </div> : <div/>
                                     }
                                 </div>
                             </div>
@@ -121,15 +123,17 @@ let ReviewEvaluation = props => {
  */
 let ReviewUserInfo = props => {
     return (
-        props.user ? <div className={"row"}>
-            <div className="col-3 px-0 my-auto">
-                <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
-            </div>
-            <div className="col-9 d-flex flex-column justify-content-center px-1">
-                <span className="text-invited font-weight-bold">{props.user.name} {props.user.surname}</span>
-                <ReviewEvaluation evaluation={props.evaluation}/>
-            </div>
-        </div> : <div/>
+        props.user ?
+            <div className={"row"}>
+                <div className="col-3 px-0 my-auto">
+                    <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
+                </div>
+                <div className="col-9 d-flex flex-column justify-content-center px-1">
+                    <span className="text-invited font-weight-bold mb-1">{props.user.name} {props.user.surname}</span>
+                    <ReviewEvaluation evaluation={props.evaluation}/>
+                </div>
+            </div> :
+            <h6>Caricamento informazioni</h6>
     )
 }
 
@@ -140,23 +144,23 @@ let ReviewUserInfo = props => {
  *             name: string,
  *             typology: string
  *         },
+ *         eventId: string,
  *         evaluation: number
  * }}
  * @constructor
  */
 let ReviewEventInfo = props => {
     return (
-        <div className={"row mt-2"}>
+        <div className={"row"}>
             <div className={"col-12"}>
-                {
-                    props.event ?
-                        <Link to={routes.event + "/" + props.event._id}>
-                            <EventHeaderBanner isLite={true} event={props.event} />
-                        </Link>
-                        : <div/>
-                }
+                <Link to={routes.eventFromId(props.eventId)}>
+                    {props.event ?
+                        <EventHeaderBanner isLite={true} event={props.event} />
+                        : "Vai all'evento"
+                    }
+                </Link>
             </div>
-            <div className={"col-12 mt-1 px-0"}>
+            <div className={"col-12 mt-2 pl-1 pr-0"}>
                 {props.evaluation ? <ReviewEvaluation evaluation={props.evaluation} /> : <div/>}
             </div>
         </div>

@@ -561,68 +561,91 @@ exports.getUserGroups = (req, res) => {
 };
 
 exports.addUserInGroup = (req, res) => {
-    if (req.body && typeof(req.body.group) == "string") {
-        Users.findById(req.param.uuid, (err, user) => {
-            if (err) {
-                network.userNotFound(res);
-            }
-            Groups.findById(req.body.group, (err, group) => {
-                if(err) {
-                    network.groupNotFound(res);
+    if (req.body && typeof(req.body.group) === "string") {
+        Groups.findByIdAndUpdate(
+            req.body.group, 
+            {$addToSet: {members: req.params.uuid}},
+            err2 => {
+                if(err2) {
+                    network.groupNotFound(res)
+                } else {
+                    Users.findByIdAndUpdate(
+                        req.params.uuid,
+                        {$addToSet: {groups: req.body.group}},
+                        err3 => {
+                            if(err3){
+                                network.userNotFound(res)
+                            } else {
+                                network.result(res)
+                            }
+                        }
+                    )
                 }
-                user.groups.push(req.body.group);
-                group.members.push(req.param.uuid);
-                user.save();
-                group.save();
-                network.result(res);
-            });
-        });
+            }
+        )
     } else {
-        network.badRequest(res);
+        network.badRequest(res)
     }
 };
 
 exports.removeUserFromGroup = (req, res) => {
-    if (req.body && typeof(req.body.group) == "string") {
-        Users.findById(req.param.uuid, (err, user) => {
+    if (req.body && typeof(req.body.group) === "string") {
+        Users.findById(req.params.uuid, (err, user) => {
             if (err) {
-                network.userNotFound(res);
+                network.userNotFound(res)
+            } else {
+                Groups.findById(req.body.group, (err2, group) => {
+                    if(err2) {
+                        network.groupNotFound(res)
+                    } else {
+                        user.groups = user.groups.filter(id => id.toString() !== req.body.group)
+                        if(group.members.length > 1){
+                            group.members = group.members.filter(id => id.toString() !== req.params.uuid)
+                            user.save()
+                            group.save()
+                            network.result(res)
+                        } else {
+                            Groups.findByIdAndDelete(req.body.group, err3 => {
+                                if(err3){
+                                    network.internalError(res, err3)
+                                } else {
+                                    user.save()
+                                    network.result(res)
+                                }
+                            })
+                        }
+                    }
+                })
             }
-            Groups.findById(req.body.group, (err, group) => {
-                if(err) {
-                    network.groupNotFound(res);
-                }
-                let indexGroup = user.groups.indexOf(req.body.group);
-                let indexMember= group.members.indexOf(req.param.uuid);
-                if (indexGroup>-1 && indexMember>-1) {
-                    user.groups.splice(indexGroup,1);
-                    group.members.splice(indexMember,1);
-                    user.save();
-                    group.save();
-                    network.result(res);
-                } else {
-                    network.notFound(res,{description: 'Link between user and group not found.'})
-                }
-            });
-        });
+        })
     } else {
-        network.badRequest(res);
+        network.badRequest(res)
     }
 };
 
 exports.createGroup = (req, res) => {
-    if(req.body && typeof(req.body.user) == "string" && typeof req.body.name === "string") {
+    if(req.body && req.body.users instanceof Array && typeof req.body.name === "string") {
         let newGroup = {};
         newGroup.name = req.body.name;
-        newGroup.members = req.body.user;
+        newGroup.members = req.body.users;
         let dbGroup = new Groups(newGroup);
-        dbGroup.save(function(err, group) {
-            if (err) {
+        Users.find({_id: { "$in" : req.body.users}}, (err, users) => {
+            if(err){
                 network.internalError(res, err);
             } else {
-                network.itemCreated(res, group);
+                dbGroup.save((err2, group) => {
+                    if (err2) {
+                        network.internalError(res, err2);
+                    } else {
+                        users.forEach(user => {
+                            user.groups.push(group._id)
+                            user.save()
+                        })
+                        network.itemCreated(res, group);
+                    }
+                })
             }
-        });
+        })
     } else {
         network.badRequest(res);
     }

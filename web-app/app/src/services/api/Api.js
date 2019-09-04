@@ -167,7 +167,24 @@ let mapGroup = (group) => {
         _id: group._id,
         name: group.name,
         avatar: group.avatar,
-        members: group.members.map(mapUser)
+        members: group.members.map(mapUserLightweightInfo)
+    }
+}
+
+let mapUserLightweightInfo = (user) => {
+    let address = user.address ? {
+        city: user.address.city
+    } : {}
+    return {
+        _id: user._id,
+        linkedUsers: user.linkedUsers || [],
+        name: user.name ? user.name : "",
+        surname: user.surname ? user.surname : "",
+        organization: user.organization,
+        gender: user.gender || user.sex,
+        phone: user.phone || user.phoneNumber,
+        avatar: user.avatar || user.profilePicture,
+        address: address
     }
 }
 
@@ -818,9 +835,9 @@ let createGroup = (name, members, onError, onSuccess) => {
     let data = {name: name, users: members}
     managePromise(
         Axios.post("/users/groups", data),
-        [200],
+        [200, 201],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 
@@ -834,21 +851,7 @@ let getGroupInfo = (groupId, onError, onSuccess) => {
         Axios.get("/users/groups/" + groupId),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
-    )
-}
-
-/**
- * @param groupId {String}
- * @param onError {function}
- * @param onSuccess {function}
- */
-let deleteGroup = (groupId, onError, onSuccess) => {
-    managePromise(
-        Axios.delete("/users/groups/" + groupId),
-        [200],
-        onError,
-        response => onSuccess(response.data.map(mapGroup))
+        response => onSuccess(mapGroup(response.data))
     )
 }
 
@@ -861,10 +864,10 @@ let deleteGroup = (groupId, onError, onSuccess) => {
 let addMemberToGroup = (groupId, member, onError, onSuccess) => {
     let data = {isToRemove: false, user: member}
     managePromise(
-        Axios.post("/users/groups" + groupId, data),
+        Axios.post("/users/groups/" + groupId, data),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        () => onSuccess()
     )
 }
 
@@ -877,10 +880,10 @@ let addMemberToGroup = (groupId, member, onError, onSuccess) => {
 let removeMemberFromGroup = (groupId, member, onError, onSuccess) => {
     let data = {isToRemove: true, user: member}
     managePromise(
-        Axios.post("/users/groups" + groupId, data),
+        Axios.post("/users/groups/" + groupId, data),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapGroup))
+        () => onSuccess()
     )
 }
 
@@ -925,7 +928,7 @@ let inviteGroup = (groupId, eventId, onError, onSuccess) => {
 let mapReview = review => {
     return {
         _id: review._id,
-        writer: mapUser(review.writer),
+        writer: review.writer,
         eventId: review.event,
         date: review.date,
         text: review.text,
@@ -949,9 +952,9 @@ let writeReview = (review, onError, onSuccess) => {
     }
     managePromise(
         Axios.post("/events/info/" + review.eventId + "/reviews", data),
-        [200],
+        [201],
         onError,
-        review => onSuccess(mapReview(review))
+        response => onSuccess(mapReview(response.data))
     )
 }
 
@@ -965,7 +968,25 @@ let getReviewsForEvent = (eventId, onError, onSuccess) => {
         Axios.get("/events/info/" + eventId + "/reviews"),
         [200],
         onError,
-        reviews => onSuccess(reviews.map(mapReview))
+        response => onSuccess(response.data.map(mapReview))
+    )
+}
+
+let getWrittenReviews = (userId, onError, onSuccess) => {
+    managePromise(
+        Axios.get("/users/" + userId + "/myReviews"),
+        [200],
+        onError,
+        response => onSuccess(response.data.reviews.map(mapReview))
+    )
+}
+
+let getReceivedReviews = (userId, onError, onSuccess) => {
+    managePromise(
+        Axios.get("/users/" + userId + "/receivedReviews"),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapReview))
     )
 }
 
@@ -1020,11 +1041,12 @@ export default {
     getGroups,
     getGroupInfo,
     createGroup,
-    deleteGroup,
     addMemberToGroup,
     removeMemberFromGroup,
     inviteUser,
     inviteGroup,
     writeReview,
-    getReviewsForEvent
+    getReviewsForEvent,
+    getWrittenReviews,
+    getReceivedReviews
 }

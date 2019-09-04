@@ -70,6 +70,16 @@ module.exports = (app) => {
 
     /* ----------------------------------------------- */
 
+    app.route("/users/groups")
+        .get(loginChecker, groupController.getGroupName)
+        .post(loginChecker, groupController.createGroup)    
+
+    app.route("/users/groups/:groupId")
+        .get(loginChecker, groupController.getGroupInfo) 
+        .post(loginChecker, groupController.addOrRemoveUserToGroup)
+
+    /* ----------------------------------------------- */
+
     app.route("/users/search/:name")
         .get(userController.searchUser)
     
@@ -88,19 +98,6 @@ module.exports = (app) => {
     
     app.route("/users/:uuid")
         .get(userController.getInfoUser)
-    
-
-    // TODO ------- da debuggare ----------------
-
-    app.route("/users/groups")
-        .get(loginChecker, groupController.getGroupName)
-        .post(loginChecker, groupController.createGroup)    
-
-    app.route("/users/groups/:groupId")
-        .get(loginChecker, groupController.getGroupInfo) 
-        .post(loginChecker, groupController.add_remove_UserToGroup)//
-        .delete(loginChecker, groupController.deleteGroup)//
-    // TODO ----------------------------------------
 
     app.route('/notifications')
         .post(loginChecker, notificationController.markNotificationAsReaded)
