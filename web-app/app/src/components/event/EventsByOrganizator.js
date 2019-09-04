@@ -15,12 +15,14 @@ export default class EventsByOrganizator extends React.Component {
             displayEvents: true,
             eventsLoaded: []
         }
-        ApiService.getEventsByOrganizator(
-            props.organizator._id,
-            error => this.onSearchError(error),
-            response => {
-                this.onSearchResults({events: response})
-            })
+        if((props.isLocalUser && props.isLogged) || !props.isLocalUser) {
+            ApiService.getEventsByOrganizator(
+                props.organizator._id,
+                error => this.onSearchError(error),
+                response => {
+                    this.onSearchResults({events: response})
+                })
+        }
     }
 
     onSearchResults = response => {
