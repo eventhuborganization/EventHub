@@ -402,29 +402,37 @@ exports.createNewReview = (req, res) => {
     if(!commons.isNewReviewWellFormed(newReview))
         network.badRequest(res);
     else {
-        let dbReview = new Reviews(newReview);
-        dbReview.save((err, review) => {
+        Reviews.findOne({writer: newReview.writer, event: newReview.event}, (err,review) => {
             if (err)
                 network.internalError(res);
-            else {
-                Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [review._id]}}, (err, model) => {
+            else if (!review){
+                let dbReview = new Reviews(newReview);
+                dbReview.save((err, review) => {
                     if (err)
-                        network.internalError(res, err);
-                    else if (!model) {
-                        network.userNotFound(res);
-                    } else {
-                        Users.findByIdAndUpdate(newReview.eventOrganizator, {$push: {reviewsReceived: [review._id]}}, (err, result) => {
+                        network.internalError(res);
+                    else {
+                        Users.findByIdAndUpdate(req.params.uuid, {$push: {reviewsDone: [review._id]}}, (err, model) => {
                             if (err)
                                 network.internalError(res, err);
-                            else if (!result) {
+                            else if (!model) {
                                 network.userNotFound(res);
-                            } else
-                                network.itemCreated(res, review);
+                            } else {
+                                Users.findByIdAndUpdate(newReview.eventOrganizator, {$push: {reviewsReceived: [review._id]}}, (err, result) => {
+                                    if (err)
+                                        network.internalError(res, err);
+                                    else if (!result) {
+                                        network.userNotFound(res);
+                                    } else
+                                        network.itemCreated(res, review);
+                                });
+                            }  
                         });
-                    }  
+                    }
                 });
-            }
-        });
+            } else 
+                network.badRequest(res)
+        })
+        
     }
 };
 

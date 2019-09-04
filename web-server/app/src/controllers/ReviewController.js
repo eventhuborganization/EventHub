@@ -14,26 +14,30 @@ exports.getEventReviews = (req, res) => {
 exports.newReview = (req, res) => {
     EventService.getEventById(req.params.uuid, 
         result => {
-            let review = {}
-            review.writer = req.user._id
-            review.date = Date.now()
-            review.event = req.params.uuid
-            review.eventOrganizator = result.data.organizator
-            if (req.body.text)
-                review.text = req.body.text
-            if (req.body.evaluation && req.body.evaluation >= 0 && req.body.evaluation <= 5) {
-                review.evaluation = req.body.evaluation
-                axios.post(`${UserServiceServer}/users/${req.user._id}/reviews/written`, review)
-                    .then(response => {
-                        let tryAddReviewToEvent = (eventId, reviewId, counter) => {
-                            EventService.addEventReviews(eventId, reviewId,
-                                result => {},
-                                error => {tryAddReviewToEvent(eventId,reviewId, --counter)})
-                        }
-                        tryAddReviewToEvent(review.event, response.data._id, 5)
-                        network.replayResponse(response, res)
-                    })
-                    .catch(error => network.replayError(error, res))
+            if (new Date(result.data.eventDate) < new Date()) {
+                let review = {}
+                review.writer = req.user._id
+                review.date = Date.now()
+                review.event = req.params.uuid
+                review.eventOrganizator = result.data.organizator
+                if (req.body.text)
+                    review.text = req.body.text
+                if (req.body.evaluation && req.body.evaluation >= 0 && req.body.evaluation <= 5) {
+                    review.evaluation = req.body.evaluation
+                    axios.post(`${UserServiceServer}/users/${req.user._id}/reviews/written`, review)
+                        .then(response => {
+                            let tryAddReviewToEvent = (eventId, reviewId, counter) => {
+                                EventService.addEventReviews(eventId, reviewId,
+                                    result => {},
+                                    error => {tryAddReviewToEvent(eventId,reviewId, --counter)})
+                            }
+                            tryAddReviewToEvent(review.event, response.data._id, 5)
+                            network.replayResponse(response, res)
+                        })
+                        .catch(error => network.replayError(error, res))
+                } else {
+                    network.badRequest(res)
+                }
             } else {
                 network.badRequest(res)
             }
