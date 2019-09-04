@@ -22,11 +22,11 @@ export default class Groups extends React.Component {
             Api.getGroups(
                 err => {
                     if(err.response.status !== 404) {
-                        this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, riprova")
+                        this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, ricarica la pagina")
                     }
                 },
                 groups => {
-                    console.log(groups)
+                    groups.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
                     this.setState({groups : groups})
                 }
             )

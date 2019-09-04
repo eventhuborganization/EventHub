@@ -167,12 +167,24 @@ let mapGroup = (group) => {
         _id: group._id,
         name: group.name,
         avatar: group.avatar,
-        members: group.members.map(user => {
-            user.name = ""
-            user.surname = ""
-            user.avatar = ""
-            return user
-        })
+        members: group.members.map(mapUserLightweightInfo)
+    }
+}
+
+let mapUserLightweightInfo = (user) => {
+    let address = user.address ? {
+        city: user.address.city
+    } : {}
+    return {
+        _id: user._id,
+        linkedUsers: user.linkedUsers || [],
+        name: user.name ? user.name : "",
+        surname: user.surname ? user.surname : "",
+        organization: user.organization,
+        gender: user.gender || user.sex,
+        phone: user.phone || user.phoneNumber,
+        avatar: user.avatar || user.profilePicture,
+        address: address
     }
 }
 
@@ -845,20 +857,6 @@ let getGroupInfo = (groupId, onError, onSuccess) => {
 
 /**
  * @param groupId {String}
- * @param onError {function}
- * @param onSuccess {function}
- */
-let deleteGroup = (groupId, onError, onSuccess) => {
-    managePromise(
-        Axios.delete("/users/groups/" + groupId),
-        [200],
-        onError,
-        response => onSuccess(mapGroup(response.data))
-    )
-}
-
-/**
- * @param groupId {String}
  * @param member {String}
  * @param onError {function}
  * @param onSuccess {function}
@@ -866,10 +864,10 @@ let deleteGroup = (groupId, onError, onSuccess) => {
 let addMemberToGroup = (groupId, member, onError, onSuccess) => {
     let data = {isToRemove: false, user: member}
     managePromise(
-        Axios.post("/users/groups" + groupId, data),
+        Axios.post("/users/groups/" + groupId, data),
         [200],
         onError,
-        response => onSuccess(mapGroup(response.data))
+        () => onSuccess()
     )
 }
 
@@ -882,10 +880,10 @@ let addMemberToGroup = (groupId, member, onError, onSuccess) => {
 let removeMemberFromGroup = (groupId, member, onError, onSuccess) => {
     let data = {isToRemove: true, user: member}
     managePromise(
-        Axios.post("/users/groups" + groupId, data),
+        Axios.post("/users/groups/" + groupId, data),
         [200],
         onError,
-        response => onSuccess(mapGroup(response.data))
+        () => onSuccess()
     )
 }
 
@@ -1043,7 +1041,6 @@ export default {
     getGroups,
     getGroupInfo,
     createGroup,
-    deleteGroup,
     addMemberToGroup,
     removeMemberFromGroup,
     inviteUser,

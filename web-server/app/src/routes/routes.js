@@ -70,17 +70,13 @@ module.exports = (app) => {
 
     /* ----------------------------------------------- */
 
-    // TODO ------- da debuggare ----------------
-
     app.route("/users/groups")
         .get(loginChecker, groupController.getGroupName)
         .post(loginChecker, groupController.createGroup)    
 
     app.route("/users/groups/:groupId")
         .get(loginChecker, groupController.getGroupInfo) 
-        .post(loginChecker, groupController.add_remove_UserToGroup)//
-        .delete(loginChecker, groupController.deleteGroup)//
-    // TODO ----------------------------------------
+        .post(loginChecker, groupController.addOrRemoveUserToGroup)
 
     /* ----------------------------------------------- */
 

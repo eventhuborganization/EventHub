@@ -6,6 +6,7 @@ import LocalStorage from "local-storage"
 import { UserBanner, LinkMakerBanner, ADDED_FRIEND_BUTTON, ADD_FRIEND_BUTTON } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
 import AvatarHeader from '../avatar_header/AvatarHeader'
+import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
 
 let routes = require("../../services/routes/Routes")
 
@@ -84,7 +85,7 @@ class GroupInfo extends React.Component {
     }
 
     renderMembers = () => {
-        if(this.state.group.members.length > 0){
+        if(this.state.group.members.length > 1){
             return this.state.group.members
                     .filter(user => user.name.toLowerCase().includes(this.state.filter.toLowerCase()) && user._id !== this.props.user._id)
                     .map(user => 
@@ -97,6 +98,8 @@ class GroupInfo extends React.Component {
                             showAddFriendButton={this.props.user.linkedUsers.findIndex(elem => elem._id === user._id) < 0}
                         /> 
                     )
+        } else if(this.state.group.members.length === 1) {
+            return <NoItemsPlaceholder placeholder="Il gruppo non ha altri membri oltre a te" /> 
         }
     }
 
@@ -167,7 +170,7 @@ class GroupAdder extends React.Component {
         }
 
         if (props.isLogged && this.state.isAllowed) {
-            LocalStorage(this.localSavedGroup, this.state.group)
+            LocalStorage(this.addGroupStateLocalStorageName, this.state.group)
             Api.getUserInformation(props.user._id, () => {},user => {
                 let users = user.linkedUsers
                     .filter(friend => !friend.organization)
@@ -191,7 +194,7 @@ class GroupAdder extends React.Component {
     }
 
     cannotAdd = (friend) => {
-        return !friend && this.state.group.members.findIndex(user => user._id === friend._id) >= 0
+        return !friend || this.state.group.members.findIndex(user => user._id === friend._id) >= 0
     }
 
     inviteFriend = friend => {

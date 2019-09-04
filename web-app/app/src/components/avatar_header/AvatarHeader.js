@@ -24,7 +24,7 @@ import {
  */
 export default function AvatarHeader(props){
     return (
-        <div className="row mt-2">
+        <div className="row mt-3">
             <div className="col d-flex justify-content-center">
                 <div className="d-flex flex-column text-center">
                     <div className="col d-flex justify-content-center">

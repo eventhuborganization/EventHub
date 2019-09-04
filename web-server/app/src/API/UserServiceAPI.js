@@ -12,14 +12,14 @@ exports.removeLinkedUser = (data) => {
 }
 
 exports.createGroup = (data) => {
-    return axios.post(`${UserServiceServer}/group`, data)
+    return axios.post(`${UserServiceServer}/groups`, data)
 }
 
 exports.getGroupInfo = (uuid) => {
-    return axios.get(`${UserServiceServer}/group/${uuid}`)
+    return axios.get(`${UserServiceServer}/groups/${uuid}`)
 }
 exports.deleteGroup = (uuid) => {
-    return axios.delete(`${UserServiceServer}/group/${uuid}`)
+    return axios.delete(`${UserServiceServer}/groups/${uuid}`)
 }
 
 exports.getBadgePoints = (uuid) => {

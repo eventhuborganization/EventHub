@@ -153,6 +153,7 @@ class App extends React.Component {
         ApiService.getGroups(
             () => {},
             groups => this.saveToStateAndLocalStorage(prevState => {
+              groups.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
               prevState.user.groups = groups
               return prevState
             })

@@ -55,17 +55,16 @@ module.exports = function(app) {
         .get(controller.getUserActions)
         .post(controller.addUserAction);
 
-    app.route("/user/:uuid/groups")
+    app.route("/users/:uuid/groups")
         .get(controller.getUserGroups)
         .post(controller.addUserInGroup)
         .delete(controller.removeUserFromGroup);
 
-    app.route("/group")
+    app.route("/groups")
         .post(controller.createGroup);
 
-    app.route("/group/:uuid")
-        .get(controller.getGroup)
-        .delete(controller.getGroup) // TODO Aggiungere funzione per eliminare un gruppo dal db
+    app.route("/groups/:uuid")
+        .get(controller.getGroup);
 
     /*/users/:uuid
     - GET => tutte le info dell'utente [Return: 200 | 404]
