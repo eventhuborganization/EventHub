@@ -9,7 +9,7 @@ import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import {Link} from "react-router-dom"
 import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
-import {Review, REVIEW_FOR_EVENT} from "../reviews/Review";
+import {Review, REVIEW_FOR_EVENT} from "../reviews/Review"
 
 let routes = require("../../services/routes/Routes")
 
@@ -20,6 +20,7 @@ class EventInfo extends React.Component {
         this.state = {
             eventInfo: undefined,
             eventReviews: [],
+            reviewers: [],
             redirectHome: false
         }
         ApiService.getEventInformation(props.match.params.id,
@@ -32,7 +33,10 @@ class EventInfo extends React.Component {
                             state.eventInfo.location.place_id = result.place_id
                             return state
                         }))
-                    ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({eventReviews: reviews.slice(0,3)}))
+                    ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({
+                        reviewers: reviews.map(x => x.writer),
+                        eventReviews: reviews
+                    }))
                     event.participantsFilled = event.participants.map(id => {return {_id: id}})
                     this.setState({eventInfo: event})
                 })
@@ -45,6 +49,46 @@ class EventInfo extends React.Component {
                     <EventLocation event={this.state.eventInfo} />
                 </div>
             )
+    }
+
+    renderReviews = () => {
+        let date = this.state.eventInfo.date
+        if(!(date instanceof Date)) {
+            date = new Date(date)
+        }
+        let isEventPast = date - new Date() < 0
+        if(isEventPast){
+            return <section className={"row mt-2"}>
+                <h5 className={"col-12"}>Recensioni</h5>
+                <div className={"col-12"}>
+                    {
+                        this.state.eventReviews.length > 0 ? 
+                            this.state.eventReviews
+                                .slice(0,3)
+                                .map(review => <Review type={REVIEW_FOR_EVENT} key={"review " + review._id} review={review} />)
+                            : <NoItemsPlaceholder placeholder={"Ancora non sono state scritte recensioni"} />
+                    }
+                </div>
+                {
+                    this.state.eventReviews.length > 3 ?
+                        <div className={"col-12 mt-2 d-flex justify-content-end"}>
+                            <Link
+                                to={{
+                                    pathname: routes.reviews,
+                                    event: this.state.eventInfo
+                                }}
+                            >
+                                <button className={"btn btn-primary"}>
+                                    Vedi tutte le recensioni
+                                </button>
+                            </Link>
+                        </div> 
+                        : <div/>
+                }
+            </section>
+        } else {
+            return <div/>
+        }
     }
 
     redirectToHome = () => {
@@ -71,6 +115,7 @@ class EventInfo extends React.Component {
                         <EventInteractionPanel {...this.props}
                                                key={this.state.eventInfo._id}
                                                event={this.state.eventInfo}
+                                               isAlreadyBeenReviewed={this.state.reviewers.includes(this.props.user._id)}
                                                hideBadge={true}
                                                onEventParticipated={event =>  this.setState(prevState => {
                                                    let state = prevState
@@ -123,26 +168,8 @@ class EventInfo extends React.Component {
                     {this.renderEventLocationMap()}
 
                     <Contacts event={this.state.eventInfo}/>
-
-                    <section className={"row mt-2"}>
-                        <h5 className={"col-12"}>Recensioni</h5>
-                        <div className={"col-12"}>
-                            {this.state.eventReviews.map(review => <Review type={REVIEW_FOR_EVENT} key={"review " + review._id} review={review} />)}
-                        </div>
-                        <div className={"col-12 mt-2 d-flex justify-content-end"}>
-                            <Link
-                                to={{
-                                    pathname: routes.reviews,
-                                    event: this.state.eventInfo
-                                }}
-                            >
-                                <button className={"btn btn-primary"}>
-                                    Vedi tutte le recensioni
-                                </button>
-                            </Link>
-                        </div>
-                    </section>
-
+                    
+                    { this.renderReviews() }
                 </main>
             )
         else

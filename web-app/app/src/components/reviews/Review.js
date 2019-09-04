@@ -126,7 +126,7 @@ let ReviewUserInfo = props => {
         props.user ?
             <div className={"row"}>
                 <div className="col-3 px-0 my-auto">
-                    <RoundedSmallImage placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
+                    <RoundedSmallImage imageName={props.user.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
                 </div>
                 <div className="col-9 d-flex flex-column justify-content-center px-1">
                     <span className="text-invited font-weight-bold mb-1">{props.user.name} {props.user.surname}</span>

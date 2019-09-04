@@ -28,8 +28,8 @@ exports.newReview = (req, res) => {
                         .then(response => {
                             let tryAddReviewToEvent = (eventId, reviewId, counter) => {
                                 EventService.addEventReviews(eventId, reviewId,
-                                    result => {},
-                                    error => {tryAddReviewToEvent(eventId,reviewId, --counter)})
+                                    () => {},
+                                    () => {tryAddReviewToEvent(eventId,reviewId, --counter)})
                             }
                             tryAddReviewToEvent(review.event, response.data._id, 5)
                             network.replayResponse(response, res)
@@ -41,7 +41,7 @@ exports.newReview = (req, res) => {
             } else {
                 network.badRequest(res)
             }
-        }, error => network.badRequest(res))
+        }, () => network.badRequest(res))
 }
 
 exports.getUserReviewsDone = (req, res) => {

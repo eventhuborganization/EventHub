@@ -3,6 +3,7 @@ import ApiService from "../../services/api/Api"
 import {EventHeaderBanner} from "../event/Event"
 import {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW} from "./Review"
 import LocalStorage from "local-storage"
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 
 class Reviews extends React.Component {
 
@@ -82,6 +83,15 @@ class Reviews extends React.Component {
         }
     }
 
+    renderPlaceholder = () => {
+        switch(this.state.type) {
+            case MY_REVIEW: return "Non hai ancora scritto una recensione"
+            case RECEIVED_REVIEW: return "Non hai ancora ricevuto nessuna recensione"
+            case REVIEW_FOR_EVENT: return "Non sono state scritte recensioni per questo evento"
+            default: return ""
+        }
+    }
+
     render() {
         return (
             <main className={"main-container"}>
@@ -90,7 +100,13 @@ class Reviews extends React.Component {
                     <div className={"col-12 text-center bg-white px-0"}>{this.renderTitle()}</div>
                 </section>
                 <div>
-                    {this.state.reviews.map(review => <Review type={this.state.type} key={"review " + review._id} review={review} />)}
+                    {
+                        this.state.reviews.length > 0 ?
+                            this.state.reviews.map(review => 
+                                <Review type={this.state.type} key={"review " + review._id} review={review} />
+                            )
+                            : <NoItemsPlaceholder placeholder={this.renderPlaceholder()} />
+                    }
                 </div>
             </main>
         )
