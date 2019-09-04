@@ -263,3 +263,13 @@ exports.deleteEvent = (req, res) => {
             network.resultWithJSON(res, event)
     })
 }
+
+exports.getEventByOrganizator = (req, res) => {
+    Event.find({organizator: req.params.uuid}, (err, results) => {
+        if (err) {
+            network.internalError(res, err)
+        } else {
+            network.resultWithJSON(res, results)
+        }
+    })
+}

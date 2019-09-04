@@ -233,6 +233,12 @@ exports.deleteEvent = (req, res) => {
         }, error => network.replayError(error, res))
 }
 
+exports.getEventsByOrganizator = (req, res) => {
+    EventService.getEventByOrganizator(req.params.uuid, 
+        result => network.replayResponse(result, res),
+        error => network.replayError(error,res))
+}
+
 var sendNotification = (userId, notification, counter) => { //{typology: 7, sender: sender, data: event}
     axios.post(`${UserServiceServer}/users/${userId}/notifications/`, notification)
         .then(() => {})

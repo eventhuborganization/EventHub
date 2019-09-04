@@ -12,6 +12,9 @@ module.exports = function(app) {
         .post(eventController.addUserToEvent)
         .delete(eventController.removeUserToEvent)
 
+    app.route('/events/organizator/:uuid')
+        .get(eventController.getEventByOrganizator)
+
     app.route('/events/:uuid/reviews')
         .get(eventController.getEventReviews)
         .post(eventController.addEventReviews)

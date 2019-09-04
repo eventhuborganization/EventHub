@@ -55,6 +55,9 @@ module.exports = (app) => {
     app.route('/events/position/near')
         .get(eventController.getEventsNear)
 
+    app.route('/events/organizator/:uuid')
+        .get(eventController.getEventsByOrganizator)
+
     app.route('/events/search/:name')
         .get(eventController.searchEventByName)
 

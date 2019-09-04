@@ -206,6 +206,12 @@ exports.EventService = class EventService{
         .then(successCallback)
         .catch(errorCallback);
     }
+
+    getEventByOrganizator(organizatorId, successCallback = defaultCallback, errorCallback = defaultCallback){
+        axios.get(`${this.hostport}/events/organizator/${organizatorId}`)
+        .then(successCallback)
+        .catch(errorCallback);
+    }
 }
 
 /**
