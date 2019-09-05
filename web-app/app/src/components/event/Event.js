@@ -153,7 +153,7 @@ function InviteButton(props) {
     return (
         <Link
             to={{
-                pathname: routes.invite,
+                pathname: routes.inviteEvent,
                 event: props.event
             }}
             className={getButtonClassName(props.event.typology, PARTICIPATE, true)}>

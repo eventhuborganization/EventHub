@@ -32,6 +32,7 @@ exports.newReview = (req, res) => {
                                     () => {tryAddReviewToEvent(eventId,reviewId, --counter)})
                             }
                             tryAddReviewToEvent(review.event, response.data._id, 5)
+                            UserService.addAction(req.user._id, 1)
                             network.replayResponse(response, res)
                         })
                         .catch(error => network.replayError(error, res))

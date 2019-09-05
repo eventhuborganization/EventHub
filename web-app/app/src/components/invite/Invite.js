@@ -93,7 +93,7 @@ class Invite extends React.Component {
 
     getAllGroups = () => {
         return this.getGroups(
-            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()) && this.cannotInvite(elem),
+            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()),
             () => true,
             elem => this.inviteGroup(elem)
         )

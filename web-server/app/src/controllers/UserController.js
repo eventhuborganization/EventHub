@@ -7,7 +7,10 @@ const fs = require("fs")
 exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
     UserService.removeLinkedUser(data)
-        .then((response) => network.replayResponse(response, res))
+        .then((response) => {
+            UserService.addAction(req.body.friend, 10)
+            network.replayResponse(response, res)
+        })
         .catch(err => network.replayError(err, res))
 }
 
@@ -19,44 +22,44 @@ exports.inviteFriends = (req, res) => {
     }
     if(req.body.group){
         option.group = req.body.group
-        inviteGroup(res,option)
-    }else if (req.body.user){
+        inviteGroup(req, res, option)
+    } else if (req.body.user && req.body.user !== req.user._id){
         option.user = req.body.user
-        inviteUser(res,option)
+        inviteUser(req, res, option)
     } else {
         network.badRequest(res)
     }
 }
 
-let inviteGroup = (res, option) => {
+let inviteGroup = (req, res, option) => {
     UserService.getGroupInfo(option.group)
     .then(response => {
-        let userPromise = response.data.members.map(m => {
-            var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
-            return UserService.sendNotification(m, data)
-        })
+        let userPromise = response.data.members
+            .filter(member => member !== req.user._id)
+            .map(m => {
+                var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
+                return UserService.sendNotification(m, data)
+            })
         Promise.all(userPromise)
-        .then((response) => {
+            .then(() =>  {
+                UserService.addAction(req.user._id, 7)
+                network.result(res)
+            })
+            .catch((err) => network.replayError(err, res))
+    })
+    .catch((err) => network.internalError(res, err))
+}
+
+let inviteUser = (req, res, option) => {
+    var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
+    UserService.sendNotification(option.user, data)
+        .then(() => {
+            UserService.addAction(req.user._id, 6)
             network.result(res)
         })
         .catch((err) => {
             network.internalError(res, err)
         })
-    })    
-    .catch((err) => {
-        network.internalError(res, err)
-    })
-}
-
-let inviteUser = (res, option) => {
-    var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
-    UserService.sendNotification(option.user, data)
-    .then((response) => {
-        network.result(res)
-    })
-    .catch((err) => {
-        network.internalError(res, err)
-    })
 }
 
 exports.addFollower = (req, res) => {
@@ -64,13 +67,8 @@ exports.addFollower = (req, res) => {
         .then(() => {
             return  UserService.sendNotification(req.body.uuid, {typology: 2, sender: req.user._id})
         })
-        .then(response => {
-            network.replayResponse(response, res);
-        })
-        .catch (error => {
-            console.log(error)
-            network.internalError(res, error);
-        })
+        .then(response => network.replayResponse(response, res))
+        .catch (error => network.internalError(res, error))
 }
 
 exports.userFriendRequest = (req, res) => {
@@ -88,6 +86,8 @@ exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
         UserService.addLinkedUser({uuid1: req.body.friend, uuid2: req.user._id})
             .then(() => {
+                UserService.addAction(req.user._id, 9)
+                UserService.addAction(req.body.friend, 9)
                 return  UserService.sendNotification(req.body.friend, {typology: 8, sender: req.user._id})
             })
             .then(() => {
@@ -129,6 +129,7 @@ exports.responseFriendPosition = (req, res) => {
             }
         })
         .then(() => {
+            UserService.addAction(req.user._id, 8)
             return UserService.readNotification(req.user._id, req.body._id)
         })
         .then( response => network.replayResponse(response, res))

@@ -1,4 +1,6 @@
 import React from 'react'
+import "./EventInfo.css"
+
 import {Redirect} from 'react-router-dom'
 import ShowMore from 'react-show-more'
 import {EventHeaderBanner, EventInteractionPanel, EventLocation, EventOrganizatorInfo} from "../event/Event"
@@ -20,26 +22,32 @@ class EventInfo extends React.Component {
         this.state = {
             eventInfo: undefined,
             eventReviews: [],
+            showDefaultMessage: false,
             reviewers: [],
             redirectHome: false
         }
-        ApiService.getEventInformation(props.match.params.id,
-            () => props.onError("Errore nel caricare le informazioni dell'evento. Ricaricare la pagina."),
-                event => {
-                    GoogleApi.getPlaceInformationByLocation(event.location,
-                        () => props.onError("Errore nel caricare le informazioni riguardanti il luogo dell'evento. Ricaricare la pagina."),
-                        result => this.setState(prevState => {
-                            let state = prevState
-                            state.eventInfo.location.place_id = result.place_id
-                            return state
-                        }))
-                    ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({
-                        reviewers: reviews.map(x => x.writer),
-                        eventReviews: reviews
+        ApiService.getEventInformation(
+            props.match.params.id,
+            () => {
+                this.setState({showDefaultMessage: true})
+                props.onError("Errore nel caricare le informazioni dell'evento. Ricaricare la pagina.")
+            },
+            event => {
+                GoogleApi.getPlaceInformationByLocation(event.location,
+                    () => props.onError("Errore nel caricare le informazioni riguardanti il luogo dell'evento. Ricaricare la pagina."),
+                    result => this.setState(prevState => {
+                        let state = prevState
+                        state.eventInfo.location.place_id = result.place_id
+                        return state
                     }))
-                    event.participantsFilled = event.participants.map(id => {return {_id: id}})
-                    this.setState({eventInfo: event})
-                })
+                ApiService.getReviewsForEvent(event._id, () => {}, reviews => this.setState({
+                    reviewers: reviews.map(x => x.writer),
+                    eventReviews: reviews
+                }))
+                event.participantsFilled = event.participants.map(id => {return {_id: id}})
+                this.setState({eventInfo: event})
+            }
+        )
     }
 
     renderEventLocationMap = () => {
@@ -97,7 +105,15 @@ class EventInfo extends React.Component {
     }
 
     render() {
-        if (this.state.eventInfo)
+        if (!this.state.showDefaultMessage && !this.state.eventInfo) {
+            return ( 
+                <div className={"main-container text-center loading-container"}>
+                    <div className="spinner-border text-primary" id="spinner-loading" role="status">
+                        <span className="sr-only">Caricamento...</span>
+                    </div>
+                </div>
+            )
+        } else if(!this.state.showDefaultMessage && this.state.eventInfo) {
             return (
                 <main className="main-container">
                     {this.redirectToHome()}
@@ -172,7 +188,7 @@ class EventInfo extends React.Component {
                     { this.renderReviews() }
                 </main>
             )
-        else
+        } else {
             return (
                 <div>
                     <NoItemsPlaceholder placeholder={"Le informazioni per questo evento non sono al momento disponibili"} />
@@ -185,6 +201,7 @@ class EventInfo extends React.Component {
                     </div>
                 </div>
                 )
+        }
     }
 }
 

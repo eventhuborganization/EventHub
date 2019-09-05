@@ -194,14 +194,15 @@ exports.addUserNotification = (req, res) => {
                 Users.findById(req.params.uuid, (err, user) => {
                     if (err) {
                         network.userNotFound(res);
-                    }
-                    if (user.notifications.filter(e => e.typology === 0 &&
-                                                e.sender === data.sender &&
-                                                e.read === false).length === 0 ) {
-                        user.notifications.push(data)
-                        user.save(() => network.result(res))
                     } else {
-                        network.badRequest(res)
+                        if (user.notifications.filter(e => e.typology === 0 &&
+                            e.sender.toString() === data.sender &&
+                            e.read === false).length === 0 ) {
+                            user.notifications.push(data)
+                            user.save(() => network.result(res))
+                        } else {
+                            network.result(res)
+                        }
                     }
                 });
                 break
@@ -209,14 +210,15 @@ exports.addUserNotification = (req, res) => {
                 Users.findById(req.params.uuid, (err, user) => {
                     if (err) {
                         network.userNotFound(res);
-                    }
-                    if (user.notifications.filter(e => e.typology === 1 &&
-                                                e.sender === data.sender &&
-                                                e.read === false).length === 0 ) {
-                        user.notifications.push(data)
-                        user.save(() => network.result(res))
                     } else {
-                        network.badRequest(res)
+                        if (user.notifications.filter(e => e.typology === 1 &&
+                            e.sender.toString() === data.sender &&
+                            e.read === false).length === 0 ) {
+                            user.notifications.push(data)
+                            user.save(() => network.result(res))
+                        } else {
+                            network.result(res)
+                        }
                     }
                 });
                 break
@@ -224,25 +226,28 @@ exports.addUserNotification = (req, res) => {
             Users.findById(req.params.uuid, (err, user) => {
                 if (err) {
                     network.userNotFound(res);
+                } else {
+                    let notification = user.notifications.findIndex(e => { 
+                        return  e.typology === 4 && e.sender.toString() === data.sender && e.read === false
+                    })
+    
+                    if (notification >= 0 ) {
+                        user.notifications[notification].read = true
+                        user.notifications.push(data)
+                        user.save(() => network.result(res))
+                    } else {
+                        network.result(res)
+                    }
                 }
-                
-                let notification = user.notifications.findIndex(e => { 
-                    return  e.typology === 4 && e.sender.toString() === data.sender && e.read === false
-                })
-
-                if (notification >= 0 )
-                    user.notifications[notification].read = true
-
-                user.notifications.push(data)
-                user.save(() => network.result(res))
             });
                 break
             default:
                 Users.findByIdAndUpdate(req.params.uuid, {$push: {notifications: data}}, (err) => {
                     if (err) {
                         network.userNotFound(res);
+                    } else {
+                        network.result(res);
                     }
-                    network.result(res);
                 });
                 break;
         }
@@ -256,7 +261,7 @@ exports.notificationRead = (req, res) => {
         if (err) {
             network.userNotFound(res);
         } else if(user.notifications.length > 0){
-            let index = user.notifications.findIndex(not => not._id == req.params.notUuid);
+            let index = user.notifications.findIndex(not => not._id.toString() === req.params.notUuid);
             if(index >= 0){
                 user.notifications[index].read = true;
                 user.save((err) => {
