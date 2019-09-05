@@ -81,7 +81,7 @@ class Notifications extends React.Component {
             <div>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 <section className="row sticky-top shadow bg-white border-bottom border-primary text-center">
-                    <h1 className="col ml-1">Notifiche</h1>
+                    <h2 className="col ml-1">Notifiche</h2>
                 </section>
 
                 <main className="main-container notification-main-container">

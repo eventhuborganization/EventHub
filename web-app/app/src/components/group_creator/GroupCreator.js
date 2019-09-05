@@ -96,10 +96,9 @@ export default class GroupCreator extends React.Component {
                         />
                     </div>
                     <div className="form-group">
-                        <ToggableMenu
-                            title={"Amici"}
-                            children = {
-                                this.props.user.linkedUsers
+                        <ToggableMenu title={"Amici"}>    
+                        {
+                            this.props.user.linkedUsers
                                     .filter(user => !user.organization)
                                     .map(user => 
                                         <SelectableFriendBanner 
@@ -112,8 +111,8 @@ export default class GroupCreator extends React.Component {
                                             removeFriend={id => this.onFriendChange(id, false)}
                                         />
                                     )
-                            }
-                        />
+                        }
+                        </ToggableMenu>
                     </div>
                     <input 
                         type="submit" 
@@ -149,7 +148,7 @@ class ToggableMenu extends React.Component {
                         data-target="#friendsContent" 
                         aria-controls="friendsContent" 
                         aria-expanded="false" 
-                        aria-label="Toggle navigation"
+                        aria-label="Abilita ricerca amici per nome"
                         className="col-12"
                         onClick={this.toggleArrow}>
                         <em id="menuArrow" className="fas fa-angle-down"/>
