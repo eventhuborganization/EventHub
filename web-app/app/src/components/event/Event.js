@@ -141,7 +141,7 @@ function UpdateButton(props) {
         <Link 
             to={{
                 pathname: routes.updateEventFromId(props.event._id),
-                state: {event: props.event}
+                event: props.event
             }} 
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
             Modifica evento

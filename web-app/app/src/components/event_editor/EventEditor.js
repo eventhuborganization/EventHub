@@ -66,15 +66,16 @@ class EventEditor extends React.Component {
             eventCreated: false,
             eventUpdated: false
         }
-        if(props.onUpdate && props.location && props.location.state 
-                && props.location.state.event && props.location.state.event.organizator._id === props.loggedUser._id 
+        if(props.onUpdate && props.location && props.location.event 
+            && props.location.event.organizator._id === props.loggedUser._id 
             ){
-            this.state.oldEvent = {...props.location.state.event}
+            this.state.oldEvent = {...props.location.event}
             this.state.oldEvent.date = new Date(this.state.oldEvent.date)
-            this.state.oldEvent.location = {...props.location.state.event.location}
-            this.state.event = props.location.state.event
+            this.state.oldEvent.location = {...props.location.event.location}
+            this.state.event = props.location.event
+            this.state.event.organizator = props.loggedUser
             this.state.event.thumbnailPreview = undefined
-            this.state.eventId = props.location.state.event._id
+            this.state.eventId = props.location.event._id
         } else {
             this.state.event = {
                     name: "",
@@ -436,6 +437,9 @@ class EventEditor extends React.Component {
 
     renderDate = () => {
         var date = this.state.event.date
+        if(!(date instanceof Date)){
+            date = new Date(date)
+        }
         var currentDate = date.toISOString().slice(0,10)
         var currentTime = date.getHours().toString().padStart(2,"0") + ':' + date.getMinutes().toString().padStart(2,"0")
         document.getElementById("date").value = currentDate

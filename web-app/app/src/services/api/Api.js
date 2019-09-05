@@ -63,7 +63,7 @@ let mapEvent = (event) => {
     return {
         creationDate: new Date(event.creationDate),
         date: event.date ? new Date(event.date) : new Date(event.eventDate),
-        description: event.description,
+        description: event.description ? event.description : "",
         followers: event.followers || [],
         maxParticipants: event.maxParticipants || event.maximumParticipants,
         name: event.name,
