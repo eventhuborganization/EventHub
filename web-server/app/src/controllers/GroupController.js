@@ -42,6 +42,7 @@ exports.createGroup = (req, res) => {
         }
         UserService.createGroup(data)
             .then(response => {
+                UserService.addAction(req.user._id, 11)
                 response.data.members = response.data.members.map(id => {return {_id: id}})
                 network.replayResponse(response, res)
             })

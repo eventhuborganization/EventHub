@@ -45,3 +45,14 @@ exports.sendNotification = (receiver, data) => {
 exports.readNotification = (user, notification) =>{
     return  axios.put(`${UserServiceServer}/users/${user}/notifications/${notification}`, {})
 }
+
+exports.addAction = (user, data, counter = 3) => {
+    axios.post(`${UserServiceServer}/users/${user}/actions`, {type: data})
+    .then()
+    .catch(err => {
+        console.log(err)
+        if(counter>0){
+            this.addAction(user, data, --counter)
+        }
+    })
+}
