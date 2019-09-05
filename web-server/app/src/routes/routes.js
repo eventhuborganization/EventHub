@@ -103,7 +103,7 @@ module.exports = (app) => {
         .get(userController.getInfoUser)
 
     app.route('/notifications')
-        .post(loginChecker, notificationController.markNotificationAsReaded)
+        .post(loginChecker, notificationController.markNotificationAsRead)
     
     app.route('/notifications/:fromIndex')
         .get(loginChecker, notificationController.getNotification)
