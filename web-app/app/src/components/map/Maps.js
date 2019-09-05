@@ -12,11 +12,16 @@ let routes = require("../../services/routes/Routes")
 
 class EventsMap extends CallableComponent {
 
+    defaultZoom = 14
+    maxZoom = 16
+    minZoom = 7
+
     constructor(props) {
         super(props)
         this.googleMapDivId = "google-map"
         this.infoWindows = []
         this.map = undefined
+        this.zoom = this.defaultZoom
     }
 
     getCurrentPosition = () => {
@@ -58,8 +63,10 @@ class EventsMap extends CallableComponent {
         let noPoiMapName = 'no_poi_map'
         let noPoiMap = new window.google.maps.StyledMapType(styles,{name: noPoiMapName});
         let map = new window.google.maps.Map(document.getElementById(this.googleMapDivId), {
-            zoom: 14,
-            center: this.props.center,
+            zoom: this.zoom,
+            minZoom: this.minZoom,
+            maxZoom: this.maxZoom,
+            center: new window.google.maps.LatLng(this.props.center.lat, this.props.center.lng),
             disableDefaultUI: true,
             mapTypeControlOptions: {
                 mapTypeIds: ['roadmap', noPoiMapName]
@@ -71,6 +78,10 @@ class EventsMap extends CallableComponent {
                 lat: center.lat(),
                 lng: center.lng(),
             })
+        })
+        map.addListener("zoom_changed", () => {
+            let zoom = map.getZoom()
+            this.zoom = zoom
         })
         map.mapTypes.set(noPoiMapName, noPoiMap)
         map.setMapTypeId(noPoiMapName)
@@ -86,8 +97,7 @@ class EventsMap extends CallableComponent {
             </div>
         let contentString = ReactDOMServer.renderToString(eventBanner)
         var infoWindow = new window.google.maps.InfoWindow({
-            content: contentString,
-            maxWidth: window.screen.availWidth
+            content: contentString
         })
         var iconName = ""
         if (event.typology === PARTY)
@@ -97,10 +107,7 @@ class EventsMap extends CallableComponent {
         if (event.typology === SPORT)
             iconName = "sport.png"
         let marker = new window.google.maps.Marker({
-            position: {
-                lat: event.location.lat,
-                lng: event.location.lng
-            },
+            position: new window.google.maps.LatLng(event.location.lat, event.location.lng),
             icon: {
                 url: images(`./${iconName}`),
                 scaledSize: new window.google.maps.Size(24, 24),
@@ -118,10 +125,7 @@ class EventsMap extends CallableComponent {
 
     createCurrentLocationMarkerMarker = (map) => {
         GeoLocation.getCurrentLocation(() => {}, position => {
-            let location = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            }
+            let location = new window.google.maps.LatLng(position.coords.latitude, position.coords.longitude)
             new window.google.maps.Marker({
                 position: location,
                 icon: {
