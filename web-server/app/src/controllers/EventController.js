@@ -235,7 +235,29 @@ exports.deleteEvent = (req, res) => {
 
 exports.getEventsByOrganizator = (req, res) => {
     EventService.getEventByOrganizator(req.params.uuid, 
-        result => network.replayResponse(result, res),
+        result => {
+            axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
+                .then(resultUser => {
+                    let user = resultUser.data
+                    let organizator = {
+                        name: user.name,
+                        surname: user.surname, 
+                        avatar: user.profilePicture, 
+                        _id: user._id, 
+                        organization: user.organization,
+                        city: user.address.city
+                    }
+                    let response = result.data.map(event => {
+                        event.organizator = organizator
+                        return event
+                    })
+                    response.sort((a,b) => a.eventDate < b.eventDate)
+                    network.resultWithJSON(res, response)
+                })
+                .catch(err => {
+                    network.replayError(err, res)
+                })
+        },
         error => network.replayError(error,res))
 }
 
