@@ -20,7 +20,7 @@ exports.inviteFriends = (req, res) => {
     if(req.body.group){
         option.group = req.body.group
         inviteGroup(req, res, option)
-    } else if (req.body.user){
+    } else if (req.body.user && req.body.user !== req.user._id){
         option.user = req.body.user
         inviteUser(req, res, option)
     } else {
