@@ -46,6 +46,7 @@ export default function Menu(props){
         page={routes.login}
         icon={{name: "sign-in-alt", size: "lg"}}
         name="Login"/>
+    let showBadge = props.isLogged && props.location && props.location.notifications && props.location.notifications.length > 0
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>
@@ -53,8 +54,8 @@ export default function Menu(props){
                     page={routes.myNotifications}
                     icon={{style: "far", name: "bell", size: "lg"}}
                     name="Le mie notifiche" 
-                    showBadge={props.isLogged && props.notifications && props.notifications.length > 0}
-                    badgeInfo={props.notifications.length}/>
+                    showBadge={showBadge}
+                    badgeInfo={showBadge ? props.location.notifications.length : 0}/>
                 <LinkToPage 
                     page={routes.myGroups}
                     icon={{style: "far", name: "address-book", size: "lg"}}

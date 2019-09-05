@@ -1,6 +1,6 @@
 import React from 'react'
 import LocalStorage from "local-storage"
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 
 import './App.css'
 import ApiService from "../../services/api/Api"
@@ -18,7 +18,6 @@ import { PersonalProfile, UserProfile } from '../profile/ProfileType'
 import Friends from '../friends/Friends'
 import Map from '../map/Map'
 import Settings from '../settings/Settings'
-import NotificationService from "../../services/notification/Notification"
 import Invite from "../invite/Invite"
 import Groups from '../groups/Groups'
 import GroupCreator from '../group_creator/GroupCreator'
@@ -26,31 +25,27 @@ import Reviews from "../reviews/Reviews"
 import { GroupInfo, GroupAdder } from '../group_info/GroupInfo'
 import { ReviewModal, Modal } from '../modals/Modals'
 import EventsByOrganizator from '../event/EventsByOrganizator'
+import NavigationBar from '../navigation_bar/NavigationBar';
 
 let routes = require("../../services/routes/Routes")
 
 class App extends React.Component {
 
-    #notificationServiceSubscriptionCode = undefined
     #applicationStateLocalStorageName = "application-state"
 
-  constructor(props) {
-      super(props)
-      let applicationState = LocalStorage(this.#applicationStateLocalStorageName) || undefined
-      this.state = {
-          isLogged: applicationState && applicationState.isLogged,
-          user: applicationState && applicationState.user ? applicationState.user : {},
-          notifications: [],
-          events: applicationState && applicationState.events ? applicationState.events : [],
-          showMessageElement: undefined,
-          nextErrorToShow: undefined,
-          reviewModalRef: undefined
-      }
-      ApiService.setNotAuthenticatedBehaviour(this.onNotAuthenticated)
-      if(applicationState && this.state.isLogged){
-        this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
-      }
-  }
+    constructor(props) {
+        super(props)
+        let applicationState = LocalStorage(this.#applicationStateLocalStorageName) || undefined
+        this.state = {
+            isLogged: applicationState && applicationState.isLogged,
+            user: applicationState && applicationState.user ? applicationState.user : {},
+            events: applicationState && applicationState.events ? applicationState.events : [],
+            showMessageElement: undefined,
+            nextErrorToShow: undefined,
+            reviewModalRef: undefined
+        }
+        //ApiService.setNotAuthenticatedBehaviour(this.saveToStateAndLocalStorage({isLogged: false}))
+    }
 
   componentDidMount() {
       let applicationState = LocalStorage(this.#applicationStateLocalStorageName) || undefined
@@ -60,10 +55,6 @@ class App extends React.Component {
               user: applicationState.user
           })
   }
-
-    componentWillUnmount() {
-        this.removeSubscriptions()
-    }
 
     saveToStateAndLocalStorage = (newState) => {
         this.setState(newState, () => this.saveUserDataToLocalStorage())
@@ -158,7 +149,6 @@ class App extends React.Component {
               return prevState
             })
           )
-        this.#notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         this.saveUserDataToLocalStorage()
     })
   }
@@ -167,10 +157,8 @@ class App extends React.Component {
         ApiService.logout(
             () => {},
             () => {
-                this.removeSubscriptions()
                 this.saveToStateAndLocalStorage({
                     user: {},
-                    notifications: [],
                     isLogged: false
                 })
             }
@@ -197,20 +185,6 @@ class App extends React.Component {
     })
   }
 
-  onNotificationLoaded = (notifications) => {
-        this.setState({notifications: notifications})
-  }
-
-  removeSubscriptions = () => {
-      NotificationService.removeSubscription(this.#notificationServiceSubscriptionCode)
-      this.#notificationServiceSubscriptionCode = undefined
-  }
-
-    onNotAuthenticated = () => {
-        this.removeSubscriptions()
-        this.saveToStateAndLocalStorage({isLogged: false})
-    }
-
     updateUserChanges = (changes) => {
         this.saveToStateAndLocalStorage(prevState => {
             changes.forEach(change => {
@@ -226,16 +200,10 @@ class App extends React.Component {
             event.followers = []
             event.participants = []
             delete event.reviews
-            delete event.description
             return event
         })
         this.saveToStateAndLocalStorage({events: moddedEvents})
     }
-
-  renderNotificationBadge = () => {
-    return this.state.isLogged && this.state.notifications.length > 0 ? 
-      <span className={"badge badge-danger align-top ml-1"}>{this.state.notifications.length}</span> : <div/>
-  }
 
   render() {
     return (
@@ -264,9 +232,8 @@ class App extends React.Component {
                   updateEvents={this.updateEvents}
                 />} 
             />
-            <Route path={routes.menu} exact render={() => 
-                <Menu 
-                  notifications={this.state.notifications}
+            <Route path={routes.menu} exact render={(props) => 
+                <Menu {...props}
                   isLogged={this.state.isLogged}
                   onLogout={this.logout}
                 />
@@ -420,16 +387,7 @@ class App extends React.Component {
                   />}
               />
           </Switch>
-          <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
-              <div className="col text-center my-auto"><Link to={routes.map}><em className="fas fa-map-marked-alt fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to={routes.myProfile}><em className="fas fa-user fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to={routes.home}><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link></div>
-              <div className="col text-center my-auto"><Link to={routes.myFriends}><em className="fas fa-users fa-lg" /></Link></div>
-              <div className="col text-center my-auto"><Link to={routes.menu}>
-                <em className="fas fa-bars fa-lg"/>
-                {this.renderNotificationBadge()}
-              </Link></div>
-          </footer>
+          <NavigationBar isLogged={this.state.isLogged} />
         </Router>
     )
   }

@@ -5,7 +5,7 @@ class NotificationService {
 
     #fromIndex = 0
     #period = 5000
-    #removedSubscriptionCode = undefined
+    #removedSubscriptionCode = -1
     #subscriptions = []
     #started = false
     #notificationChecker = undefined
@@ -18,9 +18,9 @@ class NotificationService {
     addSubscription = onData => {
         let subscriptionCode = undefined
         if (onData && onData instanceof Function) {
-            if (this.#removedSubscriptionCode) {
+            if (this.#removedSubscriptionCode >= 0) {
                 this.#subscriptions[this.#removedSubscriptionCode] = onData
-                this.#removedSubscriptionCode = undefined
+                this.#removedSubscriptionCode = -1
                 subscriptionCode = this.#removedSubscriptionCode
             } else {
                 this.#subscriptions.push(onData)
@@ -39,7 +39,7 @@ class NotificationService {
             this.#subscriptions.length > 0 &&
             this.#subscriptions[subscriptionCode]) {
             this.#subscriptions[subscriptionCode] = undefined
-            if (this.#subscriptions.filter(subscription => subscription).length === 0)
+            if (this.#subscriptions.filter(subscription => subscription !== undefined).length === 0)
                 this.#stop()
             else
                 this.#removedSubscriptionCode = subscriptionCode
