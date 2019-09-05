@@ -31,10 +31,12 @@ exports.inviteFriends = (req, res) => {
 let inviteGroup = (req, res, option) => {
     UserService.getGroupInfo(option.group)
     .then(response => {
-        let userPromise = response.data.members.map(m => {
-            var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
-            return UserService.sendNotification(m, data)
-        })
+        let userPromise = response.data.members
+            .filter(member => member !== req.user._id)
+            .map(m => {
+                var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
+                return UserService.sendNotification(m, data)
+            })
         Promise.all(userPromise)
             .then(() =>  network.result(res))
             .catch((err) => network.replayError(err, res))
