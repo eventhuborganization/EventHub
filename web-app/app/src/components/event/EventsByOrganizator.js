@@ -20,18 +20,13 @@ export default class EventsByOrganizator extends React.Component {
                 props.organizator._id,
                 error => this.onSearchError(error),
                 response => {
-                    this.onSearchResults({events: response})
+                    this.setState((prevState) => {
+                        let state = prevState
+                        state.eventsLoaded = response
+                        return state
+                    })
                 })
         }
-    }
-
-    onSearchResults = response => {
-        if (response && response.events)
-            this.setState((prevState) => {
-                let state = prevState
-                state.eventsLoaded = response.events
-                return state
-            })
     }
 
     onSearchError = error => {
@@ -47,11 +42,12 @@ export default class EventsByOrganizator extends React.Component {
     renderEvents = () => {
         if (this.state.displayEvents) {
             return this.state.eventsLoaded
-                .filter(event => event.name === this.state.filter)
-                .map(event =>
+                .filter(event => event.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+                .map(event => 
                     <EventCard {...this.props}
-                            key={event._id}
-                            eventInfo={event}
+                        user={this.props.organizator}
+                        key={event._id}
+                        eventInfo={event}
                     />
                 )
         } else {
@@ -60,6 +56,12 @@ export default class EventsByOrganizator extends React.Component {
                 : "L'organizzatore non ha ancora creato un evento"
             return <NoItemsPlaceholder placeholder={message} />
         }
+    }
+
+    renderTitle = () => {
+        return this.props.isLocalUser ?
+                "I miei eventi"
+                : "Gli eventi di " + this.props.organizator.name
     }
 
     onFilterChange = (event) => {
@@ -72,11 +74,32 @@ export default class EventsByOrganizator extends React.Component {
 
                 <LoginRedirect {...this.props} redirectIfNotLogged={this.props.isLocalUser} />
 
-                <SimpleSearchBar
-                    placeholder="Cerca evento"
-                    value={this.state.filter}
-                    onChange={this.onFilterChange}
-                />
+                <section className="row sticky-top shadow bg-white border-bottom border-primary">
+
+                    <div className="col-12">
+                        <div 
+                            data-toggle="collapse" 
+                            data-target="#searchContent" 
+                            aria-controls="searchContent" 
+                            aria-expanded="false"
+                            className="d-flex justify-content-start align-items-center" 
+                            aria-label="Abilita ricerca eventi per nome">
+                            <h2 className="py-2 m-0">{this.renderTitle()}</h2>
+                            <div className={"ml-auto btn btn-primary"}>
+                                <em className="fas fa-search" aria-hidden="true"></em>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 collapse" id="searchContent">
+                        <SimpleSearchBar
+                            placeholder="Cerca per nome"
+                            value={this.state.filter}
+                            onChange={this.onFilterChange}
+                        />
+                    </div>
+                </section>
+
+                
 
                 <CreateNewEventButton location={this.props.location} isLogged={this.props.isLogged} />
 
