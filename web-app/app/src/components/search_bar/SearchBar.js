@@ -48,11 +48,14 @@ class SearchBar extends CallableComponent {
             filters.distance = this.defaultDistance
         this.state = {
             search_value: undefined,
-            filters: filters
+            filters: filters,
+            filtersMarginTop: 0
         }
     }
 
     componentDidMount() {
+        this.updateFiltersMarginTop()
+        window.onorientationchange = this.updateFiltersMarginTop
         super.componentDidMount()
         if (!this.configured) {
             switch(this.props.searchBy) {
@@ -65,6 +68,14 @@ class SearchBar extends CallableComponent {
                 default: break
             }
             this.configured = true
+        }
+    }
+
+    updateFiltersMarginTop = () => {
+        if (this.props.filtersOnlyFixedTop) {
+            let searchBarHeight = document.getElementById('search-bar').offsetHeight
+            let filtersMarginTop = searchBarHeight
+            this.setState({filtersMarginTop: filtersMarginTop})
         }
     }
 
@@ -385,10 +396,13 @@ class SearchBar extends CallableComponent {
         let navBarClassName = (this.props.fixedTop ? "" : " row ") +
             " navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
         let containerClass = ""
-        if (this.props.stickyTop)
-            containerClass = " sticky-top "
-        if (this.props.fixedTop)
-            containerClass = " fixed-top "
+        let filtersClass = "collapse w-100 "
+        if (this.props.stickyTop) {
+            containerClass += " sticky-top "
+        } else if (this.props.fixedTop)
+            containerClass += " fixed-top "
+        else if (this.props.filtersOnlyFixedTop)
+            filtersClass += " fixed-top px-3 "
         return (
             <div className={containerClass}>
                 <nav id="search-bar" className={navBarClassName}>
@@ -412,7 +426,7 @@ class SearchBar extends CallableComponent {
                         </div>
                     </div>
                 </nav>
-                <div className={"collapse w-100 " + (this.props.fixedTop ? " px-3 " : " mt-1 ")} id="filters">
+                <div className={filtersClass/*"collapse w-100 " + (this.props.filtersOnly ? " px-3 " : " mt-1 ")*/} style={{marginTop: this.state.filtersMarginTop}} id="filters">
                     {this.renderFilters()}
                 </div>
             </div>
