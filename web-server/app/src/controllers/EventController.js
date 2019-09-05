@@ -1,5 +1,6 @@
 const network = require('./network')
 const event = require('../API/EventServiceAPI.js')
+const UserService = require('../API/UserServiceAPI')
 const axios = require('axios')
 const path = require('path')
 const fs = require("fs")
@@ -22,7 +23,9 @@ exports.findFriendParticipant = (req,res) => {
 
 exports.addUserToEvent = (req, res) => {
     EventService.addUserToEvent(req.body.event, formatUserForEvent(req),
-            response => network.replayResponse(response, res),
+            response => {
+                network.replayResponse(response, res)
+            },
             error => network.replayError(error, res))
 }
 
@@ -144,6 +147,7 @@ exports.createEvent = (req, res) => {
     event.thumbnail = path.extname(req.file.originalname).toLowerCase()
     event.organizator = req.user._id
     EventService.newEvent(event, (response) => {
+        UserService.addAction(req.user._id, 3)
         let finalEvent = response.data
         let imageName = finalEvent.thumbnail
         let targetPath = path.join(__dirname, ("../../public/images/events/" + imageName))

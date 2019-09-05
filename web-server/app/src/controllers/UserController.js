@@ -7,7 +7,10 @@ const fs = require("fs")
 exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
     UserService.removeLinkedUser(data)
-        .then((response) => network.replayResponse(response, res))
+        .then((response) => {
+            UserService.addAction(req.body.friend, 10)
+            network.replayResponse(response, res)
+        })
         .catch(err => network.replayError(err, res))
 }
 
@@ -38,7 +41,10 @@ let inviteGroup = (req, res, option) => {
                 return UserService.sendNotification(m, data)
             })
         Promise.all(userPromise)
-            .then(() =>  network.result(res))
+            .then(() =>  {
+                UserService.addAction(req.user._id, 7)
+                network.result(res)
+            })
             .catch((err) => network.replayError(err, res))
     })
     .catch((err) => network.internalError(res, err))
@@ -48,6 +54,7 @@ let inviteUser = (req, res, option) => {
     var data = {typology: 0, sender: req.user._id, data: {eventId: option.event}}
     UserService.sendNotification(option.user, data)
         .then(() => {
+            UserService.addAction(req.user._id, 6)
             network.result(res)
         })
         .catch((err) => {
@@ -79,6 +86,8 @@ exports.friendshipAnswer = (req, res) => {
     if (req.body.accepted) {
         UserService.addLinkedUser({uuid1: req.body.friend, uuid2: req.user._id})
             .then(() => {
+                UserService.addAction(req.user._id, 9)
+                UserService.addAction(req.body.friend, 9)
                 return  UserService.sendNotification(req.body.friend, {typology: 8, sender: req.user._id})
             })
             .then(() => {
@@ -120,6 +129,7 @@ exports.responseFriendPosition = (req, res) => {
             }
         })
         .then(() => {
+            UserService.addAction(req.user._id, 8)
             return UserService.readNotification(req.user._id, req.body._id)
         })
         .then( response => network.replayResponse(response, res))
