@@ -512,33 +512,38 @@ exports.addUserAction = (req, res) => {
                     } else {
                         user.actions.push({
                             action: action._id,
-                            date: Date.now()
+                            date: new Date()
                         });
                         user.points += action.points;
+                        user.save(err => {
+                            if(err)
+                                network.internalError(res, err);
+                        });
                         Badges.find({}, function(err, badges) {
                             if(err)
                                 network.internalError(res, err);
-                            else if (badges) {
-                                //removing already acquired badges
-                                let badgesDiff = badges.filter(elem => user.badges.indexOf(elem._id) < 0);
+                            else {
+                                if (badges) {
+                                    //removing already acquired badges
+                                    let badgesDiff = badges.filter(elem => user.badges.indexOf(elem._id) < 0);
 
-                                // count all user's actions
-                                let map = new Map();
-                                user.actions.forEach(element => {
-                                    var value = map.get(element);
-                                    if(!element)
-                                        value = 0;
-                                    value++;
-                                    map.set(element, value);
-                                });
+                                    // count all user's actions
+                                    let map = new Map();
+                                    user.actions.forEach(element => {
+                                        var value = map.get(element.action);
+                                        if(!value)
+                                            value = 0;
+                                        value++;
+                                        map.set(element.action, value);
+                                    });
 
-                                // check if there is a new badge earned
-                                badgesDiff.forEach(badge => {
-                                    if(commons.isBadgeEarned(badge, map)){
-                                        user.badges.push(badge._id);
-                                    }
-                                });
-
+                                    // check if there is a new badge earned
+                                    badgesDiff.forEach(badge => {
+                                        if(commons.isBadgeEarned(badge, map)){
+                                            user.badges.push(badge._id);
+                                        }
+                                    });
+                                }
                                 user.save(err => {
                                     if(err){
                                         network.internalError(res, err);
@@ -546,7 +551,6 @@ exports.addUserAction = (req, res) => {
                                         network.result(res);
                                     }
                                 });
-
                             }
                         });
                     }
