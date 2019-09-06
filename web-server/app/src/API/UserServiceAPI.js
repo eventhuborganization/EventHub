@@ -38,6 +38,10 @@ exports.getReviewsReceived = (uuid) => {
     return axios.get(`${UserServiceServer}/users/${uuid}/reviews/received`)
 }
 
+exports.getEventReviews = (uuid) => {
+    return axios.get(`${UserServiceServer}/events/${uuid}/reviews`)
+}
+
 exports.sendNotification = (receiver, data) => {
     return axios.post(`${UserServiceServer}/users/${receiver}/notifications`,data)
 }
