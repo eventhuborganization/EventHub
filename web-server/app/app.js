@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const path = require('path')
 const fs = require('fs')
 const bodyParser = require('body-parser')
-const passport = require("./src/API/passport");
-const task = require("./src/controllers/PeriodicTaskController");
+const passport = require("./src/API/passport")
 const app = express()
 
 const _cfg = JSON.parse(fs.readFileSync('app.config'))
@@ -79,6 +78,8 @@ function runApp() {
         res.status(404).send({url: req.originalUrl + ' not found'})
     })
 
+    const task = require("./src/controllers/PeriodicTaskController")
+    
     //eseguito segli eveti svoltisi ieri
     setInterval(task.partecipateActions, _Day)
     
