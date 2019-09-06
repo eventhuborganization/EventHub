@@ -166,14 +166,14 @@ db.actions.insert({
 
 db.actions.insert({
     'typology': 10,
-    'points': 5,
+    'points': -5,
     'desc_it': 'Rimozione di un amico o follow'
 })
 
 db.actions.insert({
     'typology': 11,
     'points': 5,
-    'desc_it': 'Entrata in un gruppo'
+    'desc_it': 'Aggiunto utente ad un gruppo'
 })
 
 db.actions.insert({
