@@ -5,7 +5,8 @@ import {EventHeaderBanner} from '../event/Event'
 import {PARTY, MEETING, SPORT} from "../event/Event"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
 import {CallableComponent} from "../redirect/Redirect"
-import GeoLocation from "../../services/location/GeoLocation";
+import GeoLocation from "../../services/location/GeoLocation"
+import LocalStorage from "local-storage"
 
 let images = require.context("../../assets/images", true)
 let routes = require("../../services/routes/Routes")
@@ -18,10 +19,12 @@ class EventsMap extends CallableComponent {
 
     constructor(props) {
         super(props)
+        let data = LocalStorage("pippo")
+
         this.googleMapDivId = "google-map"
         this.infoWindows = []
         this.map = undefined
-        this.zoom = this.defaultZoom
+        this.zoom = data && data.zoom ? data.zoom : this.defaultZoom
     }
 
     getCurrentPosition = () => {
@@ -82,6 +85,7 @@ class EventsMap extends CallableComponent {
         map.addListener("zoom_changed", () => {
             let zoom = map.getZoom()
             this.zoom = zoom
+            LocalStorage("pippo", {zoom: zoom})
         })
         map.mapTypes.set(noPoiMapName, noPoiMap)
         map.setMapTypeId(noPoiMapName)

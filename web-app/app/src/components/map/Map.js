@@ -8,16 +8,22 @@ import {
     FloatingButton,
     ROUNDED_CIRCLE,
     SQUARE
-} from "../floating_button/FloatingButton";
+} from "../floating_button/FloatingButton"
+import LocalStorage from "local-storage"
 
 class Map extends React.Component {
 
+    #mapDataLocalStorageName = "map-data"
+
     constructor(props) {
         super(props)
+        let data = LocalStorage(this.#mapDataLocalStorageName)
+        let events = []
+        if (data && data.events)
+            events = data.events
         this.state = {
             mapContainerHeight: 0,
-            mapContainerMarginTop: 0,
-            events: [],
+            events: events,
             searchBarRef: undefined,
             mapRef: undefined,
             center: {
@@ -25,6 +31,9 @@ class Map extends React.Component {
                 lng: 0
             }
         }
+        LocalStorage(this.#mapDataLocalStorageName, {
+            events: this.state.events
+        })
     }
 
     componentDidMount() {
@@ -114,8 +123,7 @@ class Map extends React.Component {
                      <div id="map-container"
                           className="col-12 px-0"
                           style={{
-                              height: this.state.mapContainerHeight,
-                              marginTop: this.state.mapContainerMarginTop
+                              height: this.state.mapContainerHeight
                           }}
                      >
                          <EventsMap center={this.state.center}
