@@ -5,6 +5,7 @@ import { SimpleSearchBar } from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import { LoginRedirect } from '../redirect/Redirect'
+import LoadingSpinner from '../loading_spinner/LoadingSpinner'
 
 export default class EventsByOrganizator extends React.Component {
 
@@ -40,7 +41,7 @@ export default class EventsByOrganizator extends React.Component {
     }
 
     renderEvents = () => {
-        if (this.state.displayEvents) {
+        if (this.state.displayEvents && this.state.eventsLoaded.length > 0) {
             return this.state.eventsLoaded
                 .filter(event => event.name.toLowerCase().includes(this.state.filter.toLowerCase()))
                 .map(event => 
@@ -50,6 +51,8 @@ export default class EventsByOrganizator extends React.Component {
                         eventInfo={event}
                     />
                 )
+        } else if(this.state.displayEvents) {
+            return <LoadingSpinner />  
         } else {
             let message = this.props.isLocalUser ?
                 "Non hai creato nessun evento al momento"
