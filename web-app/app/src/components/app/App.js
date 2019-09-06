@@ -195,7 +195,7 @@ class App extends React.Component {
     }
 
     updateEvents = (events) => {
-        let moddedEvents = events.map(event => {
+        let moddedEvents = events.slice(0, 5).map(event => {
             delete event.creationDate
             event.followers = []
             event.participants = []
