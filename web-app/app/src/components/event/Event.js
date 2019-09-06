@@ -138,11 +138,11 @@ class UnsubscribeButton extends React.Component {
 
 function UpdateButton(props) {
     return (
-        <Link 
+        <Link
             to={{
                 pathname: routes.updateEventFromId(props.event._id),
                 event: props.event
-            }} 
+            }}
             className={getButtonClassName(props.event.typology, PARTICIPATE)}>
             Modifica evento
         </Link>
@@ -227,6 +227,7 @@ let EventInteractionPanel = (props) => {
     if(!(date instanceof Date)) {
         date = new Date(date)
     }
+
     let isEventPast = date - new Date() < 0
     let isOrganizator = props.user._id === props.event.organizator._id
 
@@ -240,9 +241,9 @@ let EventInteractionPanel = (props) => {
             return <div/>
         } else if(!isOrganizator && !isEventPast){
             return <div>{followButton} {subscribeButton}</div>
-        } else if(isOrganizator && !isEventPast) {
+        } else if(props.isLogged && isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>
-        } else if (isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
+        } else if (props.isLogged && isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
             return <WriteReviewButton 
                         onSent={props.onReviewSent} 
                         event={props.event} 

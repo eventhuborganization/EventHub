@@ -30,6 +30,11 @@ class RedirectComponent extends CallableComponent {
         this.setRedirect(false)
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.redirectNow !== this.props.redirectNow)
+            this.state.redirect = !!this.props.redirectNow
+    }
+
     renderRedirect() {
         if (this.state.redirect)
             return <Redirect from={this.props.from} to={this.props.to} />
@@ -52,8 +57,6 @@ class LoginRedirect extends CallableComponent {
             redirectComponent: undefined
         }
     }
-
-    componentDidMount() {}
 
     doIfLoggedOrElseRedirect(toDo) {
         if (this.props.isLogged)

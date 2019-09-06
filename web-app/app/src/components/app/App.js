@@ -44,7 +44,7 @@ class App extends React.Component {
             nextErrorToShow: undefined,
             reviewModalRef: undefined
         }
-        //ApiService.setNotAuthenticatedBehaviour(this.saveToStateAndLocalStorage({isLogged: false}))
+        ApiService.setNotAuthenticatedBehaviour(() => this.saveToStateAndLocalStorage({isLogged: false, user: {}}))
     }
 
   componentDidMount() {
@@ -220,9 +220,7 @@ class App extends React.Component {
           <Switch>
             <Route path={routes.home} exact render={(props) => 
                 <Home {...props}
-                  user={{
-                      _id: this.state.user._id
-                  }}
+                  user={this.state.user}
                   events={this.state.events}
                   isLogged={this.state.isLogged} 
                   onError={this.onError}
