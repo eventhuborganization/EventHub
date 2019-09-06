@@ -495,6 +495,7 @@ exports.getUserActions = (req, res) => {
 
 exports.addUserAction = (req, res) => {
     let newAction = req.body;
+    console.log(newAction);
     if(!commons.isNewActionWellFormed(newAction)) {
         network.badRequest(res);
     } else {
@@ -504,26 +505,28 @@ exports.addUserAction = (req, res) => {
             else if (!user)
                 network.userNotFound(res);
             else {
+                console.log("utente trovato");
                 Actions.findOne({typology: newAction.typology}, (err, action) => {
                     if(err){
                         network.internalError(res, err);
                     } else if(!action){
+                        console.log("azione non trovata");
                         network.notFound(res, {description: "Action not found"});
                     } else {
                         user.actions.push({
                             action: action._id,
                             date: new Date()
                         });
+                        console.log(user.points + " + " + action.points);
                         user.points += action.points;
-                        user.save(err => {
-                            if(err)
-                                network.internalError(res, err);
-                        });
+                        console.log(user.points);
                         Badges.find({}, function(err, badges) {
-                            if(err)
+                            if(err) {
+                                console.log(err);
                                 network.internalError(res, err);
-                            else {
+                            } else {
                                 if (badges) {
+                                    console.log("Entrato Badge");
                                     //removing already acquired badges
                                     let badgesDiff = badges.filter(elem => user.badges.indexOf(elem._id) < 0);
 
@@ -544,10 +547,12 @@ exports.addUserAction = (req, res) => {
                                         }
                                     });
                                 }
-                                user.save(err => {
+                                user.save((err,result) => {
                                     if(err){
+                                        console.log("Errore "+err);
                                         network.internalError(res, err);
                                     } else {
+                                        console.log("Finito");
                                         network.result(res);
                                     }
                                 });

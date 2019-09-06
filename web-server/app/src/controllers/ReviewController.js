@@ -1,6 +1,7 @@
 const network = require('./network');
 const axios = require('axios');
 const event = require('../API/EventServiceAPI.js')
+const UserService = require('../API/UserServiceAPI')
 
 const EventService = new event.EventService(EventServiceHost, EventServicePort)
 
