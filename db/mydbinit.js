@@ -109,3 +109,75 @@ db.events.insert({
         "address": "Via Santerno, 3"
     }
 });
+
+db.actions.insert({
+    'typology': 1,
+    'points': 5,
+    'desc_it': 'Scrittura di una recensione'
+})
+
+db.actions.insert({
+    'typology': 2,
+    'points': 5,
+    'desc_it': 'Partecipazione ad un evento'
+})
+
+db.actions.insert({
+    'typology': 3,
+    'points': 5,
+    'desc_it': 'Creazione di un evento'
+})
+
+db.actions.insert({
+    'typology': 4,
+    'points': 5,
+    'desc_it': 'Recensioni al proprio evento positive'
+})
+
+db.actions.insert({
+    'typology': 5,
+    'points': -5,
+    'desc_it': 'Recensioni al proprio evento negative'
+})
+
+db.actions.insert({
+    'typology': 6,
+    'points': 5,
+    'desc_it': 'Invitare un amico ad un evento'
+})
+
+db.actions.insert({
+    'typology': 7,
+    'points': 5,
+    'desc_it': 'Invitare un gruppo ad un evento'
+})
+
+db.actions.insert({
+    'typology': 8,
+    'points': 5,
+    'desc_it': 'Condivisione della posizione'
+})
+
+db.actions.insert({
+    'typology': 9,
+    'points': 5,
+    'desc_it': 'Nuova amicizia o follow'
+})
+
+db.actions.insert({
+    'typology': 10,
+    'points': 5,
+    'desc_it': 'Rimozione di un amico o follow'
+})
+
+db.actions.insert({
+    'typology': 11,
+    'points': 5,
+    'desc_it': 'Entrata in un gruppo'
+})
+
+db.actions.insert({
+    'typology': 12,
+    'points': 5,
+    'desc_it': "Punti all'organizzatore di un evento in base al numero di partecipanti"
+})
