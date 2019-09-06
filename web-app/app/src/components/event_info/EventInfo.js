@@ -12,6 +12,7 @@ import {Link} from "react-router-dom"
 import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
 import {Review, REVIEW_FOR_EVENT} from "../reviews/Review"
+import LoadingSpinner from '../loading_spinner/LoadingSpinner'
 
 let routes = require("../../services/routes/Routes")
 
@@ -106,13 +107,7 @@ class EventInfo extends React.Component {
 
     render() {
         if (!this.state.showDefaultMessage && !this.state.eventInfo) {
-            return ( 
-                <div className={"main-container text-center loading-container"}>
-                    <div className="spinner-border text-primary" id="spinner-loading" role="status">
-                        <span className="sr-only">Caricamento...</span>
-                    </div>
-                </div>
-            )
+            return <LoadingSpinner />
         } else if(!this.state.showDefaultMessage && this.state.eventInfo) {
             return (
                 <main className="main-container">
