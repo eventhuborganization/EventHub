@@ -403,7 +403,7 @@ class EventEditor extends React.Component {
     }
 
     renderVisibility = () => {
-        return  this.state.onUpdate ? <div/> :
+        return  this.state.onUpdate || this.props.loggedUser.organization ? <div/> :
             <div className="row d-flex align-items-center">
                 <div className="col-12">
                     <label className="m-0">Visibilità</label>

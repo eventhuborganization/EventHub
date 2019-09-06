@@ -5,33 +5,32 @@ import {CreateNewEventButton} from "../floating_button/FloatingButton"
 import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
+import LoadingSpinner from "../loading_spinner/LoadingSpinner"
 
 class Home extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            eventsLoaded: props.events
+            eventsLoaded: props.events,
+            displayEvents: true
         }
         ApiService.getEvents({fromIndex: 0},
             error => this.onSearchError(null, error),
             response => {
-                this.onSearchResults({events: response})
-                this.props.updateEvents(response)
+                let events = response.filter(e => e.organizator._id !== this.props.user._id)
+                this.onSearchResults({events: events})
+                this.props.updateEvents(events)
             })
     }
 
     onSearchResults = response => {
         if (response && response.events)
-            this.setState((prevState) => {
-                let state = prevState
-                state.eventsLoaded = response.events
-                return state
-            })
+            this.setState({eventsLoaded: response.events})
     }
 
     onSearchError = (location, error) => {
-        this.setState({eventsLoaded: []},
+        this.setState({eventsLoaded: [], displayEvents: false},
             () => {
                 if ((error.status && error.status !== 404) || (error.response && error.response.status !== 404))
                     this.props.onError("La ricerca non ha prodotto risultati, modificare i parametri impostati e riprovare.")
@@ -39,12 +38,14 @@ class Home extends React.Component {
     }
 
     renderEvents = () => {
-        if (this.state.eventsLoaded.length > 0) {
+        if (this.state.displayEvents && this.state.eventsLoaded.length > 0) {
             return this.state.eventsLoaded.map(event =>
                 <EventCard {...this.props}
                            key={event._id}
                            eventInfo={event}
                 />)
+        } else if (this.state.displayEvents) {
+            return <LoadingSpinner/>
         } else {
             return <NoItemsPlaceholder placeholder={"Non ci sono eventi disponibili"} />
         }

@@ -85,7 +85,7 @@ class Invite extends React.Component {
 
     getAllFriends = () => {
         return this.getFriends(
-            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()),
+            elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()) && !elem.organization,
             elem => !this.cannotInvite(elem),
             elem => this.inviteFriend(elem)
         )
@@ -150,11 +150,14 @@ class Invite extends React.Component {
 
     render() {
         let tabs = []
-        if(this.props.isLogged){
-            tabs.push(
-                this.createSingleTab("Amici", this.getAllFriends()),
-                this.createSingleTab("Gruppi", this.getAllGroups())
-            )
+        if(this.props.isLogged) {
+            if (this.props.user.organization)
+                tabs.push(this.createSingleTab("Follower", this.getAllFriends()))
+            else
+                tabs.push(
+                    this.createSingleTab("Amici", this.getAllFriends()),
+                    this.createSingleTab("Gruppi", this.getAllGroups())
+                )
         }
         return (
             <div className="main-container">

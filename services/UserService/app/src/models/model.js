@@ -51,6 +51,7 @@ var UserSchema = new Schema({
     profilePicture: String,
     eventsSubscribed: [Schema.Types.ObjectId],
     eventsFollowed: [Schema.Types.ObjectId],
+    eventsOrganized: [Schema.Types.ObjectId],
     badges: {
         type: [Schema.Types.ObjectId],
         required: true,

@@ -145,7 +145,7 @@ class RegistrationForm extends React.Component {
                     componentId={this.getIdBasedOnType(this.state.componentIds.name)}
                     componentName={this.getIdBasedOnType(this.state.componentIds.name)}
                     componentType="text"
-                    placeholder="Mario"
+                    placeholder={this.props.privateUser ? "Mario" : "Organizzazione SPA"}
                     onChangeHandler={this.handleChangeEvent}
                     mandatory={true}
                     show={true}
@@ -187,7 +187,7 @@ class RegistrationForm extends React.Component {
                     componentId={this.getIdBasedOnType(this.state.componentIds.city)}
                     componentName={this.getIdBasedOnType(this.state.componentIds.city)}
                     componentType="text"
-                    placeholder="Imola"
+                    placeholder="Città"
                     onChangeHandler={this.handleChangeEvent}
                     mandatory={true}
                     show={true}
@@ -197,7 +197,7 @@ class RegistrationForm extends React.Component {
                     componentId={this.getIdBasedOnType(this.state.componentIds.province)}
                     componentName={this.getIdBasedOnType(this.state.componentIds.province)}
                     componentType="text"
-                    placeholder="Bologna"
+                    placeholder="Provincia"
                     onChangeHandler={this.handleChangeEvent}
                     mandatory={true}
                     show={!this.props.privateUser}

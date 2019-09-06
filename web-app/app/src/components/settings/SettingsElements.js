@@ -196,6 +196,7 @@ class ChangeInfo extends React.Component {
 
     onUpdate = (event) => {
         event.preventDefault();
+        console.log(this.state)
         if(this.somethingHasChanged()){
             let message = {}
             let user = this.props.user
@@ -228,7 +229,7 @@ class ChangeInfo extends React.Component {
                 user.avatar = this.state.avatar[1]
             }
             if (this.state.name[1] 
-                && this.state.surname[1] 
+                && (this.state.surname[1] || this.props.user.organization)
                 && this.state.city[1] 
                 && (this.state.province[1] || !this.props.user.organization)
                 && (this.state.address[1] || !this.props.user.organization)) {

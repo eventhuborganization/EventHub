@@ -21,11 +21,10 @@ export default class EventsByOrganizator extends React.Component {
                 props.organizator._id,
                 error => this.onSearchError(error),
                 response => {
-                    this.setState((prevState) => {
-                        let state = prevState
-                        state.eventsLoaded = response
-                        return state
-                    })
+                    if (response.length <= 0)
+                        this.setState({displayEvents: false})
+                    else
+                        this.setState({eventsLoaded: response})
                 })
         }
     }

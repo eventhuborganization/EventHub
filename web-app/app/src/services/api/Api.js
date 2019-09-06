@@ -86,13 +86,15 @@ let mapEvent = (event) => {
  */
 let mapUser = (user) => {
     let address = user.address ? {
-        city: user.address.city
+        city: user.address.city,
+        address: user.address.address,
+        province: user.address.province
     } : {}
     let eventsSubscribed = []
-    if(user.nextEventSubscribed){
+    if(user.nextEventSubscribed) {
         eventsSubscribed = eventsSubscribed.concat(user.nextEventSubscribed.map(elem => mapEvent(elem)))
     }
-    if(user.lastEventSubscribed){
+    if(user.lastEventSubscribed) {
         eventsSubscribed = eventsSubscribed.concat(user.lastEventSubscribed.map(elem => mapEvent(elem)))
     }
     return {
@@ -115,6 +117,7 @@ let mapUser = (user) => {
         reviewsReceived: user.reviewsReceived ? user.reviewsReceived : [],
         eventsSubscribed: eventsSubscribed,
         eventsFollowed: user.eventsFollowed || [],
+        eventsOrganized: user.eventsOrganized || [],
         address: address
     }
 }

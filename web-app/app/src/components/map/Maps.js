@@ -174,7 +174,7 @@ let LocationMap = props => {
             q = "q=place_id:" + props.place.place_id
         else if (props.place.location)
             q = "q=" + props.place.location.lat + "," + props.place.location.lng
-        mapSrc = q ? "https://www.google.com/maps/embed/v1/place?" + q + "&zoom=18&key=" + GoogleMapsProperties.key : ""
+        mapSrc = q ? "https://www.google.com/maps/embed/v1/place?" + q + "&zoom=16&key=" + GoogleMapsProperties.key : ""
     }
     return (
         <div className={"embed-responsive embed-responsive-16by9 " + (props.place ? "" : " d-none ")}>

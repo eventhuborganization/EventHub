@@ -230,20 +230,21 @@ let EventInteractionPanel = (props) => {
 
     let isEventPast = date - new Date() < 0
     let isOrganizator = props.user._id === props.event.organizator._id
+    let isOrganization = props.user.organization
 
     let renderInviteButton = () => {
-        return props.isLogged && (isOrganizator || props.event.public) && !isEventPast ?
+        return props.isLogged && (isOrganizator || props.event.public) && !isEventPast && (isOrganization && isOrganizator) ?
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
     let renderInteractionButtons = () => {
         if(props.hideInteractionButtons) {
             return <div/>
-        } else if(!isOrganizator && !isEventPast){
+        } else if(!isOrganizator && !isEventPast && !isOrganization){
             return <div>{followButton} {subscribeButton}</div>
         } else if(props.isLogged && isOrganizator && !isEventPast) {
             return <UpdateButton {...props} event={props.event}/>
-        } else if (props.isLogged && isEventPast && !isOrganizator && props.showReviewModal instanceof Function) {
+        } else if (props.isLogged && isEventPast && !isOrganizator && !isOrganization && props.showReviewModal instanceof Function) {
             return <WriteReviewButton 
                         onSent={props.onReviewSent} 
                         event={props.event} 

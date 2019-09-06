@@ -234,6 +234,7 @@ class App extends React.Component {
                 <Menu {...props}
                   isLogged={this.state.isLogged}
                   onLogout={this.logout}
+                  user={this.state.user}
                 />
             } />
             <Route path={routes.newEvent} exact render={(props) =>
@@ -259,9 +260,7 @@ class App extends React.Component {
                    onError={this.onError}
                    showMessage={this.showModal}
                    showReviewModal={this.showReviewModal}
-                   user={{
-                       _id: this.state.user._id
-                   }}
+                   user={this.state.user}
                 />} 
             />
             <Route path={routes.login} exact render={(props) => 
@@ -385,7 +384,7 @@ class App extends React.Component {
                   />}
               />
           </Switch>
-          <NavigationBar isLogged={this.state.isLogged} />
+          <NavigationBar user={this.state.user} isLogged={this.state.isLogged} />
         </Router>
     )
   }

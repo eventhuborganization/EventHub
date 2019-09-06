@@ -58,7 +58,11 @@ export default class NavigationBar extends React.Component {
                     <Link to={routes.home}><em className="fas fa-home fa-2x bg-primary text-white rounded-circle p-2" /></Link>
                 </div>
                 <div className="col text-center my-auto">
-                    <Link to={routes.myFriends}><em className="fas fa-users fa-lg" /></Link>
+                    {
+                        this.props.isLogged && this.props.user && this.props.user.organization ?
+                            <Link to={routes.myEvents}><em className="far fa-calendar-alt fa-lg" /></Link> :
+                            <Link to={routes.myFriends}><em className="fas fa-users fa-lg" /></Link>
+                    }
                 </div>
                 <div className="col text-center my-auto">
                     <Link to={

@@ -37,6 +37,15 @@ class Profile extends CallableComponent {
                     <EventsBanner
                         {...this.props}
                         user={user}
+                        events={this.state.user.futureEvents}
+                        title={"Eventi futuri"}
+                        emptyLabel={ initialString + " organizzato eventi futuri"}
+                    />
+                </section>
+                <section className="mt-3">
+                    <EventsBanner
+                        {...this.props}
+                        user={user}
                         events={this.state.user.pastEvents}
                         title={"Eventi organizzati"}
                         emptyLabel={ initialString + " ancora organizzato un evento"}

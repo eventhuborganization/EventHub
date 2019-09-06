@@ -47,6 +47,25 @@ export default function Menu(props){
         icon={{name: "sign-in-alt", size: "lg"}}
         name="Login"/>
     let showBadge = props.isLogged && props.location && props.location.notifications && props.location.notifications.length > 0
+    let isOrganization = props.isLogged && props.user && props.user.organization
+    let optionalTabs = isOrganization ? <div/> :
+        <div>
+            <LinkToPage
+                page={routes.myGroups}
+                icon={{style: "far", name: "address-book", size: "lg"}}
+                name="I miei gruppi"/>
+            <LinkToPage
+                page={routes.myEvents}
+                icon={{style: "far", name: "calendar-alt", size: "lg"}}
+                name="I miei eventi"/>
+            <LinkToPage
+                page={{
+                    pathname: routes.reviews,
+                    myReview: true
+                }}
+                icon={{name: "pen", size: "lg"}}
+                name="Le mie recensioni"/>
+        </div>
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>
@@ -56,21 +75,7 @@ export default function Menu(props){
                     name="Le mie notifiche" 
                     showBadge={showBadge}
                     badgeInfo={showBadge ? props.location.notifications.length : 0}/>
-                <LinkToPage 
-                    page={routes.myGroups}
-                    icon={{style: "far", name: "address-book", size: "lg"}}
-                    name="I miei gruppi"/>
-                <LinkToPage 
-                    page={routes.myEvents}
-                    icon={{style: "far", name: "calendar-alt", size: "lg"}}
-                    name="I miei eventi"/>
-                <LinkToPage 
-                    page={{
-                        pathname: routes.reviews,
-                        myReview: true
-                    }}
-                    icon={{name: "pen", size: "lg"}}
-                    name="Le mie recensioni"/>
+                {optionalTabs}
                 <LinkToPage
                     page={{
                         pathname: routes.reviews,

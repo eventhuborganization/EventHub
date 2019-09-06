@@ -27,21 +27,23 @@ exports.updateUserEvents = (req, res, updates) => {
 }
 
 exports.isEventUpdateWellFormed = (body) => {
-    return body.participant || body.follower
+    return body.participant || body.follower || body.organizator
 }
 
 exports.retrieveEventsToUpdate = (body) => {
-    let eventsSubscribed = [];
-    let eventsFollowed = [];
-    if (body.participant) {
-        eventsSubscribed.push(body.participant);
-    }
-    if (body.follower) {
-        eventsFollowed.push(body.follower);
-    }
+    let eventsSubscribed = []
+    let eventsFollowed = []
+    let eventsOrganized = []
+    if (body.participant)
+        eventsSubscribed.push(body.participant)
+    if (body.follower)
+        eventsFollowed.push(body.follower)
+    if (body.organizator)
+        eventsOrganized.push(body.organizator)
     return {
         eventsSubscribed: eventsSubscribed,
-        eventsFollowed: eventsFollowed
+        eventsFollowed: eventsFollowed,
+        eventsOrganized: eventsOrganized
     };
 };
 
