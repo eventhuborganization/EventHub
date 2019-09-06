@@ -65,6 +65,8 @@ let inviteUser = (req, res, option) => {
 exports.addFollower = (req, res) => {
     UserService.addLinkedUser({uuid1: req.body.uuid, uuid2: req.user._id})
         .then(() => {
+            UserService.addAction(req.user._id, 9)
+            UserService.addAction(req.body.uuid, 9)
             return  UserService.sendNotification(req.body.uuid, {typology: 2, sender: req.user._id})
         })
         .then(response => network.replayResponse(response, res))

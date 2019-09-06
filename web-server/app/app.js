@@ -4,9 +4,12 @@ const path = require('path')
 const fs = require('fs')
 const bodyParser = require('body-parser')
 const passport = require("./src/API/passport");
+const task = require("./src/controllers/PeriodicTaskController");
 const app = express()
 
 const _cfg = JSON.parse(fs.readFileSync('app.config'))
+
+const _Day = 1000 * 60 * 60 * 24
 
 function pausecomp(millis)
 {
@@ -75,6 +78,12 @@ function runApp() {
     app.use(function(req, res) {
         res.status(404).send({url: req.originalUrl + ' not found'})
     })
+
+    //eseguito segli eveti svoltisi ieri
+    setInterval(task.partecipateActions, _Day)
+    
+    //eseguito segli eveti svoltisi l'altro ieri
+    setInterval(task.reviewActions, _Day)
 
     app.listen(port, () => console.log(`Web Server now listening on port ${port}!`))
 }

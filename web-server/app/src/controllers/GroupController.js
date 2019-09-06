@@ -42,7 +42,7 @@ exports.createGroup = (req, res) => {
         }
         UserService.createGroup(data)
             .then(response => {
-                UserService.addAction(req.user._id, 11)
+                data.users.forEach( () => UserService.addAction(req.user._id, 11))
                 response.data.members = response.data.members.map(id => {return {_id: id}})
                 network.replayResponse(response, res)
             })
@@ -61,6 +61,7 @@ exports.addOrRemoveUserToGroup = (req, res) => {
         operateWithUserToGroup(
             req.body.isToRemove,
             params,
+            req,
             res
         )
     } else {
@@ -94,7 +95,7 @@ exports.getGroupInfo = (req, res) => {
         .catch(err2 => network.internalError(res, err2))
 }
 
-let operateWithUserToGroup = (removing, options, res) => {
+let operateWithUserToGroup = (removing, options, req, res) => {
     let address = `${UserServiceServer}/users/${options.user}/groups`
     let firstOperation
     if(removing){
@@ -107,7 +108,12 @@ let operateWithUserToGroup = (removing, options, res) => {
         firstOperation = axios.post(address, {group: options.group})
     }
     firstOperation
-        .then(response => network.replayResponse(response, res))
+        .then(response => {
+            if (!removing) {
+                UserService.addAction(req.user._id, 11)
+            }
+            network.replayResponse(response, res)
+        })
         .catch(err => network.replayError(err, res))
 }
 
