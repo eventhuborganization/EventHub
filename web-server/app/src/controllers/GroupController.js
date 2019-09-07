@@ -42,7 +42,7 @@ exports.createGroup = (req, res) => {
         }
         UserService.createGroup(data)
             .then(response => {
-                data.users.forEach( () => UserService.addAction(req.user._id, 11))
+                addActionsToUser(req, data.users)
                 response.data.members = response.data.members.map(id => {return {_id: id}})
                 network.replayResponse(response, res)
             })
@@ -123,5 +123,16 @@ let isDataWellFormed = (option) => {
         return true
     }else{
         return false
+    }
+}
+
+let addActionsToUser = (req, array) => {
+    if(array.length > 0){
+        UserService.addAction(
+            req.user._id, 
+            11, 
+            () => addActionsToUser(req, array.pop()),
+            () => addActionsToUser(req, array.pop())
+        )
     }
 }

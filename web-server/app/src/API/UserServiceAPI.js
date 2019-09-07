@@ -50,15 +50,20 @@ exports.readNotification = (user, notification) =>{
     return  axios.put(`${UserServiceServer}/users/${user}/notifications/${notification}`, {})
 }
 
-exports.addAction = (user, type, counter = 3) => {
+exports.addAction = (
+    user, type, 
+    doThen = () => console.log("yeee"), 
+    doOnError = () => {}, 
+    counter = 3
+) => {
     axios.post(`${UserServiceServer}/users/${user}/actions`, {typology: type})
-    .then(()=>{
-        console.log("yeee");
-    })
+    .then(doThen)
     .catch(err => {
         console.log(err)
         if(counter>0){
             this.addAction(user, type, --counter)
+        } else {
+            doOnError(err)
         }
     })
 }

@@ -9,6 +9,7 @@ import { LinkMakerBanner } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
 import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
 import AvatarHeader from '../avatar_header/AvatarHeader'
+import LoadingSpinner from '../loading_spinner/LoadingSpinner'
 
 let routes = require("../../services/routes/Routes")
 
@@ -18,6 +19,7 @@ export default class Groups extends React.Component {
         super(props)
         this.state = {
             filter: "",
+            displayGroups: true,
             groups: this.props.user.groups || []
         }
 
@@ -27,6 +29,7 @@ export default class Groups extends React.Component {
                     if(err.response.status !== 404) {
                         this.props.onError("Errore nel caricare i gruppi a cui sei iscritto, ricarica la pagina")
                     }
+                    this.setState({groups: [], displayGroups: false})
                 },
                 groups => {
                     groups.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
@@ -41,13 +44,15 @@ export default class Groups extends React.Component {
     }
 
     renderGroups = () => {
-        if(this.state.groups.length > 0){
+        if(this.state.displayGroups && this.state.groups.length > 0){
             return this.state.groups.filter(group => group.name.toLowerCase().includes(this.state.filter.toLowerCase()))
                     .map(group => <LinkMakerBanner key={group._id}
                                     border={true}
                                     elem={group}
                                     showButton={false}
                                     isGroup={true} /> )
+        } else if(this.state.displayGroups){
+            return <LoadingSpinner personalizedMargin="mt-3"/>
         } else {
             return <NoItemsPlaceholder placeholder="Al momento non fai parte di nessun gruppo" />
         }

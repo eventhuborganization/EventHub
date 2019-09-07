@@ -7,6 +7,7 @@ import {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW} from "./Review"
 import LocalStorage from "local-storage"
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import { LoginRedirect } from "../redirect/Redirect"
+import LoadingSpinner from "../loading_spinner/LoadingSpinner"
 
 let routes = require("../../services/routes/Routes")
 
@@ -37,12 +38,28 @@ class Reviews extends React.Component {
         this.state = {
             eventId: eventId,
             event: undefined,
+            displayReviews: true,
             reviews: [],
             type: type
         }
     }
 
     componentDidMount() {
+        let errorFun = (err) => {
+            if(err.response.status !== 404) {
+                this.props.onError("Errore nel caricare le recensioni, ricarica la pagina")
+            }
+            this.setState({displayReviews: false})
+        }
+
+        let reviewsFun = (reviews) => {
+            if(reviews.length > 0){
+                this.setState({reviews: reviews})
+            } else {
+                this.setState({displayReviews: false})
+            }
+        }
+
         switch(this.state.type) {
             case REVIEW_FOR_EVENT:
                 ApiService.getEventInformation(this.state.eventId,
@@ -50,20 +67,20 @@ class Reviews extends React.Component {
                     event => this.setState({event: event})
                 )
                 ApiService.getReviewsForEvent(this.state.eventId,
-                    () => {},
-                    reviews => this.setState({reviews: reviews})
+                    errorFun,
+                    reviewsFun
                 )
                 break
             case MY_REVIEW:
                 ApiService.getWrittenReviews(this.props.user._id,
-                    () => {},
-                    reviews => this.setState({reviews: reviews})
+                    errorFun,
+                    reviewsFun
                 )
                 break
             case RECEIVED_REVIEW:
                 ApiService.getReceivedReviews(this.props.user._id,
-                    () => {},
-                    reviews => this.setState({reviews: reviews})
+                    errorFun,
+                    reviewsFun
                 )
                 break
             default: break
@@ -74,7 +91,7 @@ class Reviews extends React.Component {
         if (this.state.event && this.state.type === REVIEW_FOR_EVENT)
             return <EventHeaderBanner event={this.state.event} hidePlace={true} />
         else if (this.props.user && this.state.type === MY_REVIEW)
-            return <div/>//<AvatarHeader isGroup={false} elem={this.props.user} smallImage={true} />
+            return <div/>
         else
             return <div/>
     }
@@ -101,6 +118,18 @@ class Reviews extends React.Component {
         return this.state.type === MY_REVIEW && this.props.user.organization ? <Redirect to={routes.home} /> : <div/>
     }
 
+    renderReviews = () => {
+        if(this.state.displayReviews && this.state.reviews.length > 0) {
+            return this.state.reviews.map(review => 
+                <Review type={this.state.type} key={"review " + review._id} review={review} />
+            )
+        } else if(this.state.displayReviews) {
+            return <LoadingSpinner />
+        } else {
+            return <NoItemsPlaceholder placeholder={this.renderPlaceholder()} />
+        }
+    }
+
     render() {
         return (
             <main className={"main-container"}>
@@ -112,13 +141,7 @@ class Reviews extends React.Component {
                     <div className={"col-12 text-center bg-white px-0"}>{this.renderTitle()}</div>
                 </section>
                 <div>
-                    {
-                        this.state.reviews.length > 0 ?
-                            this.state.reviews.map(review => 
-                                <Review type={this.state.type} key={"review " + review._id} review={review} />
-                            )
-                            : <NoItemsPlaceholder placeholder={this.renderPlaceholder()} />
-                    }
+                    {this.renderReviews()}
                 </div>
             </main>
         )
