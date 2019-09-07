@@ -67,9 +67,6 @@ module.exports = (app) => {
     app.route('/user/event')
         .post(loginChecker, eventController.addUserToEvent)
         .delete(loginChecker, eventController.removeUserToEvent)
-    
-    app.route('/friend/participant/:eventId')
-        .post(loginChecker, eventController.findFriendParticipant)
 
     /* ----------------------------------------------- */
 
