@@ -173,7 +173,7 @@ class Friends extends React.Component {
                             <label htmlFor="tf-search" className="d-none">Cerca persona</label>
                             <label htmlFor="btn-search" className="d-none">Bottone di ricerca</label>
                             <input
-                                className="col-10 form-control" 
+                                className="col-9 form-control"
                                 id="tf-search" 
                                 name="tf-search" 
                                 type="search" 
