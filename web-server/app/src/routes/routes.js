@@ -83,6 +83,9 @@ module.exports = (app) => {
 
     /* ----------------------------------------------- */
 
+    app.route('/user/event/subscribed')
+        .get(loginChecker, userController.getUserSubscribedEvents)
+    
     app.route("/users/search/:name")
         .get(userController.searchUser)
     

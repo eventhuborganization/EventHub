@@ -12,7 +12,7 @@ class Home extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            eventsLoaded: props.events,
+            eventsLoaded: [],
             displayEvents: true
         }
         ApiService.getEvents({fromIndex: 0},
@@ -20,7 +20,6 @@ class Home extends React.Component {
             response => {
                 let events = response.filter(e => e.organizator._id !== this.props.user._id)
                 this.onSearchResults({events: events})
-                this.props.updateEvents(events)
             })
     }
 

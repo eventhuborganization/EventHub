@@ -25,7 +25,8 @@ import Reviews from "../reviews/Reviews"
 import { GroupInfo, GroupAdder } from '../group_info/GroupInfo'
 import { ReviewModal, Modal } from '../modals/Modals'
 import EventsByOrganizator from '../event/EventsByOrganizator'
-import NavigationBar from '../navigation_bar/NavigationBar';
+import NavigationBar from '../navigation_bar/NavigationBar'
+import EventsPartecipated from '../event/EventsParticipated'
 
 let routes = require("../../services/routes/Routes")
 
@@ -63,8 +64,7 @@ class App extends React.Component {
     saveUserDataToLocalStorage = () => {
         LocalStorage(this.#applicationStateLocalStorageName,{
             isLogged: this.state.isLogged,
-            user: this.state.user,
-            events: this.state.events
+            user: this.state.user
         })
     }
 
@@ -194,17 +194,6 @@ class App extends React.Component {
         })
     }
 
-    updateEvents = (events) => {
-        let moddedEvents = events.slice(0, 5).map(event => {
-            delete event.creationDate
-            event.followers = []
-            event.participants = []
-            delete event.reviews
-            return event
-        })
-        this.saveToStateAndLocalStorage({events: moddedEvents})
-    }
-
   render() {
     return (
         <Router>
@@ -221,13 +210,11 @@ class App extends React.Component {
             <Route path={routes.home} exact render={(props) => 
                 <Home {...props}
                   user={this.state.user}
-                  events={this.state.events}
                   isLogged={this.state.isLogged} 
                   onError={this.onError}
                   onSuccess={this.onSuccess}
                   showMessage={this.showModal}
                   showReviewModal={this.showReviewModal}
-                  updateEvents={this.updateEvents}
                 />} 
             />
             <Route path={routes.menu} exact render={(props) => 
@@ -377,6 +364,16 @@ class App extends React.Component {
                                 isLogged={this.state.isLogged}
                                 isLocalUser={true}
                                 organizator={this.state.user}
+                                onError={this.onError}
+                                onSuccess={this.onSuccess}
+                                showMessage={this.showModal}
+                                showReviewModal={this.showReviewModal}
+                  />}
+              />
+            <Route path={routes.subscribedEvents} exact render={(props) =>
+                  <EventsPartecipated {...props}
+                                isLogged={this.state.isLogged}
+                                user={this.state.user}
                                 onError={this.onError}
                                 onSuccess={this.onSuccess}
                                 showMessage={this.showModal}

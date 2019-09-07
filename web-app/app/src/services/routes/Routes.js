@@ -22,6 +22,7 @@ exports.myFriends = "/friends"
 exports.myGroups = "/groups"
 exports.myEvents = "/myEvents"
 exports.reviews = "/reviews"
+exports.subscribedEvents = "/eventsOfInterest"
 
 exports.updateEventFromId = id => "/events/" + id + "/update"
 exports.eventFromId = id => "/events/" + id

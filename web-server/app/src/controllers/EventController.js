@@ -244,34 +244,34 @@ exports.deleteEvent = (req, res) => {
 }
 
 exports.getEventsByOrganizator = (req, res) => {
-        axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
-            .then(resultUser => {
-                let user = resultUser.data
-                let organizator = {
-                    name: user.name,
-                    surname: user.surname,
-                    avatar: user.profilePicture,
-                    _id: user._id,
-                    organization: user.organization,
-                    city: user.address.city
-                }
-                let events = user.eventsOrganized || []
-                events = events.map(ev => axios.get(`${EventServiceServer}/events/${ev}`))
-                Promise.all(events)
-                    .then(result => {
-                        let response = result.map(data => {
-                            let event = data.data
-                            event.organizator = organizator
-                            return event
-                        })
-                        response.sort((a,b) => a.eventDate < b.eventDate)
-                        network.resultWithJSON(res, response)
+    axios.get(`${UserServiceServer}/users/${req.params.uuid}`)
+        .then(resultUser => {
+            let user = resultUser.data
+            let organizator = {
+                name: user.name,
+                surname: user.surname,
+                avatar: user.profilePicture,
+                _id: user._id,
+                organization: user.organization,
+                city: user.address.city
+            }
+            let events = user.eventsOrganized || []
+            events = events.map(ev => axios.get(`${EventServiceServer}/events/${ev}`))
+            Promise.all(events)
+                .then(result => {
+                    let response = result.map(data => {
+                        let event = data.data
+                        event.organizator = organizator
+                        return event
                     })
-                    .catch(error => network.replayError(error, res))
-            })
-            .catch(err => {
-                network.replayError(err, res)
-            })
+                    response.sort((a,b) => a.eventDate < b.eventDate)
+                    network.resultWithJSON(res, response)
+                })
+                .catch(error => network.replayError(error, res))
+        })
+        .catch(err => {
+            network.replayError(err, res)
+        })
 }
 
 var sendNotification = (userId, notification, counter) => { //{typology: 7, sender: sender, data: event}

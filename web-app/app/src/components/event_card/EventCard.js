@@ -20,7 +20,7 @@ class EventCard extends React.Component {
         this.props.onSuccess("Da adesso segui l'evento, se ci saranno modifiche verrai informato!")
     }
 
-    onEventParticipated = event =>  {   
+    onEventParticipated = event =>  {
         this.onEventParticipateInteraction(event)
         this.props.onSuccess("Partecipi all'evento!")
     }
@@ -33,7 +33,7 @@ class EventCard extends React.Component {
         })
     }
 
-    onEventParticipateInteraction = event =>  {   
+    onEventParticipateInteraction = event =>  { 
         this.setState(prevState => {
             let state = prevState
             state.eventInfo.participants = event.participants
