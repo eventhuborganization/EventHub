@@ -1,9 +1,14 @@
 import React from "react"
+import { Redirect } from 'react-router-dom'
+
 import ApiService from "../../services/api/Api"
-import {EventHeaderBanner} from "../event/Event"
+import { EventHeaderBanner } from "../event/Event"
 import {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW} from "./Review"
 import LocalStorage from "local-storage"
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
+import { LoginRedirect } from "../redirect/Redirect"
+
+let routes = require("../../services/routes/Routes")
 
 class Reviews extends React.Component {
 
@@ -92,9 +97,16 @@ class Reviews extends React.Component {
         }
     }
 
+    redirectHome = () => {
+        return this.state.type === MY_REVIEW && this.props.user.organization ? <Redirect to={routes.home} /> : <div/>
+    }
+
     render() {
         return (
             <main className={"main-container"}>
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
+                {this.redirectHome()}
+
                 <section className="row sticky-top shadow bg-white text-center">
                     <div className={"col-12"}>{this.renderHeader()}</div>
                     <div className={"col-12 text-center bg-white px-0"}>{this.renderTitle()}</div>

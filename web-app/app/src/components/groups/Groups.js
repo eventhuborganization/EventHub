@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 
 import Api from '../../services/api/Api'
 
@@ -8,6 +9,8 @@ import { LinkMakerBanner } from '../link_maker_banner/LinkMakerBanner'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
 import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
 import AvatarHeader from '../avatar_header/AvatarHeader'
+
+let routes = require("../../services/routes/Routes")
 
 export default class Groups extends React.Component {
 
@@ -50,9 +53,15 @@ export default class Groups extends React.Component {
         }
     }
 
+    redirectHome = () => {
+        return this.props.user.organization ? <Redirect to={routes.home} /> : <div/>
+    }
+
     render = () => {
         return (
             <div className="main-container">
+
+                {this.redirectHome()}
 
                 <AvatarHeader
                     elem={this.props.user}
