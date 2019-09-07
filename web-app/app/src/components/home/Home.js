@@ -24,8 +24,10 @@ class Home extends React.Component {
     }
 
     onSearchResults = response => {
-        if (response && response.events)
+        if (response && response.events && response.events.length > 0)
             this.setState({eventsLoaded: response.events})
+        else 
+           this.onSearchError(null, {status: 500})
     }
 
     onSearchError = (location, error) => {

@@ -84,7 +84,7 @@ exports.searchEventByName = (req, res) => {
         req.params.name,
         req.query,
         response => {
-            let result = response.data.filter(event => event.public === true)
+            let result = response.data.filter(event => event.public)
             let promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
             axios.all(promises)
             .then(usersResponse => {
@@ -103,10 +103,10 @@ exports.searchEventByName = (req, res) => {
 
 exports.getEventsFromIndex = (req, res) => {
     EventService.getEvent(req.query, response => {
-        let promises = response.data.filter(event => event.public === true)
+        let result = response.data.filter(event => event.public)
             .sort((a, b) => a.eventDate - b.eventDate)
             .slice(req.params.fromIndex, req.params.fromIndex + 10)
-            .map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
+        let promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
 
         axios.all(promises)
             .then(usersResponse => {
@@ -130,7 +130,7 @@ exports.getEventsFromIndex = (req, res) => {
 exports.getEventsNear = (req, res) => {
     EventService.getEvent(req.query,
             response => {
-                let events = response.data.filter(event => event.public === true)
+                let events = response.data.filter(event => event.public)
                 network.resultWithJSON(res, events)
             },
             error => network.replayError(error, res))
