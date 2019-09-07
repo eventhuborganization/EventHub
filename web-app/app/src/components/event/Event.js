@@ -233,9 +233,7 @@ let EventInteractionPanel = (props) => {
     let isOrganization = props.user.organization
 
     let renderInviteButton = () => {
-        return props.isLogged && !isEventPast && (
-                (isOrganization && isOrganizator) || isOrganizator || (props.event.public && !isOrganization)
-            ) ?
+        return props.isLogged && !isEventPast && (isOrganizator || (props.event.public && !isOrganization)) ?
                 <InviteButton {...props} event={props.event} /> : <div/>
     }
 
