@@ -111,7 +111,7 @@ class Profile extends CallableComponent {
             Api.sendFriendPositionRequest(
                 this.state.user._id,
                 () => this.props.onError("Si è verificato un errore durante la richiesta di posizione, riprova"),
-                () => {}
+                () => this.props.onSuccess("Posizione richiesta con successo!")
             )
         }
     }
@@ -166,7 +166,7 @@ class Profile extends CallableComponent {
                                         <div className="col d-flex justify-content-between px-2 align-items-center font-weight-bold">
                                             <ProfileBadge
                                                 iconName={"trophy"}
-                                                number={this.state.user.points} 
+                                                number={this.state.user.points >= 0 ? this.state.user.points : 0} 
                                             />
                                             <ProfileAction
                                                 id="addButton"
@@ -181,7 +181,7 @@ class Profile extends CallableComponent {
                                                 actionSelected={this.requestPosition}
                                             />
                                             <ProfileBadge
-                                                iconName={"address-card"}
+                                                iconName={"users"}
                                                 number={this.state.user.linkedUsers.length} 
                                             />
                                         </div>

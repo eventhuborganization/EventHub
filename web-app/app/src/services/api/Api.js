@@ -1002,6 +1002,15 @@ let getReceivedReviews = (userId, onError, onSuccess) => {
     )
 }
 
+let getSubscribedEvents = (onError, onSuccess) => {
+    managePromise(
+        Axios.get("/user/event/subscribed"),
+        [200],
+        onError,
+        response => onSuccess(response.data.map(mapEvent))
+    )
+}
+
 /**
  * @param imageName {string}
  * @returns {string}
@@ -1061,5 +1070,6 @@ export default {
     writeReview,
     getReviewsForEvent,
     getWrittenReviews,
-    getReceivedReviews
+    getReceivedReviews,
+    getSubscribedEvents
 }

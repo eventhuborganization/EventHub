@@ -114,4 +114,8 @@ function FriendsTab(props) {
     return <MenuTab {...props} styleOptions="nav-pills justify-content-center mb-1" />
 }
 
-export {RegistrationTab, ScrollableMenuTab, FriendsTab, MenuTab}
+function EventsTab(props) {
+    return <MenuTab {...props} styleOptions="nav-pills justify-content-center mt-3" />
+}
+
+export {RegistrationTab, ScrollableMenuTab, FriendsTab, EventsTab, MenuTab}

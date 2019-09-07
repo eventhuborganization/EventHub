@@ -8,7 +8,8 @@ exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
     UserService.removeLinkedUser(data)
         .then((response) => {
-            UserService.addAction(req.body.friend, 10)
+            UserService.addAction(req.user._id, 10)
+            UserService.addAction(req.body.linkedUser, 10)
             network.replayResponse(response, res)
         })
         .catch(err => network.replayError(err, res))
@@ -325,4 +326,27 @@ exports.searchUser = (req, res) => {
     axios.get(`${UserServiceServer}/users/search/${req.params.name}`, req.body)
         .then((response) => network.resultWithJSON(res, {users: response.data}))
         .catch((err) => network.internalError(res, err))
+}
+
+exports.getUserSubscribedEvents = (req, res) => {
+    axios.get(`${UserServiceServer}/users/${req.user._id}`)
+        .then(resultUser => {
+            let user = resultUser.data
+            let events = user.eventsSubscribed || []
+            events = events.map(ev => axios.get(`${EventServiceServer}/events/${ev}`))
+            Promise.all(events)
+                .then(result => {
+                    let response = result.map(data => {
+                        let event = data.data
+                        event.organizator = {_id: event.organizator}
+                        return event
+                    })
+                    response.sort((a,b) => a.eventDate < b.eventDate)
+                    network.resultWithJSON(res, response)
+                })
+                .catch(error => network.replayError(error, res))
+        })
+        .catch(err => {
+            network.replayError(err, res)
+        })
 }

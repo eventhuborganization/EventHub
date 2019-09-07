@@ -12,7 +12,7 @@ class Home extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            eventsLoaded: props.events,
+            eventsLoaded: [],
             displayEvents: true
         }
         ApiService.getEvents({fromIndex: 0},
@@ -20,13 +20,14 @@ class Home extends React.Component {
             response => {
                 let events = response.filter(e => e.organizator._id !== this.props.user._id)
                 this.onSearchResults({events: events})
-                this.props.updateEvents(events)
             })
     }
 
     onSearchResults = response => {
-        if (response && response.events)
+        if (response && response.events && response.events.length > 0)
             this.setState({eventsLoaded: response.events})
+        else 
+           this.onSearchError(null, {status: 500})
     }
 
     onSearchError = (location, error) => {
