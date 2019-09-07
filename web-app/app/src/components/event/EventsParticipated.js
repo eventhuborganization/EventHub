@@ -105,7 +105,7 @@ export default class EventsPartecipated extends React.Component {
         return (
             <div className="main-container">
 
-                <LoginRedirect {...this.props} redirectIfNotLogged={this.props.isLocalUser} />
+                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.redirectHome()}
 
                 <section className="row sticky-top shadow bg-white border-bottom border-primary">
