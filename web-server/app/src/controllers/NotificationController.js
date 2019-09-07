@@ -31,13 +31,13 @@ exports.getNotification = (req,res) => {
                         newNotification.sender = result[0].filter(res => res.data._id === not.sender)[0].data
                         //if the event info are incomplete, save complete informations about the event
                         if(newNotification.data.eventId){
-                            newNotification.data.event = result[1].filter(ev => ev.data._id === newNotification.data.eventId)[0].data
+                            newNotification.data.event = result[1].filter(ev => ev && ev.data._id === newNotification.data.eventId)[0].data
                         }
                         return newNotification
                     })
                     network.resultWithJSON(res, {notifications: notifications})
                 })
-                .catch(err => network.internalError(res, err))
+                .catch(err =>{ console.log(err); network.internalError(res, err)})
         })
-        .catch(err => network.internalError(res, err))
+        .catch(err => {console.log(err); network.internalError(res, err)})
 }
