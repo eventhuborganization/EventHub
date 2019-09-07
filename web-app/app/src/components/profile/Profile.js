@@ -111,7 +111,7 @@ class Profile extends CallableComponent {
             Api.sendFriendPositionRequest(
                 this.state.user._id,
                 () => this.props.onError("Si è verificato un errore durante la richiesta di posizione, riprova"),
-                () => {}
+                () => this.props.onSuccess("Posizione richiesta con successo!")
             )
         }
     }

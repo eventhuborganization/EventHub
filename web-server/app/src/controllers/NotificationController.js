@@ -17,7 +17,7 @@ exports.getNotification = (req,res) => {
             let notifications = response.data.notifications
             let userInfo = notifications.map(not => getUserInfo(not.sender))
             let eventInfo = notifications.map(not => {
-                if(not.data.eventId){
+                if(not.data && not.data.eventId){
                     return axios.get(`${EventServiceServer}/events/${not.data.eventId}`)
                 } else {
                     return Promise.resolve()
@@ -30,7 +30,7 @@ exports.getNotification = (req,res) => {
                         //save complete informations about the sender
                         newNotification.sender = result[0].filter(res => res.data._id === not.sender)[0].data
                         //if the event info are incomplete, save complete informations about the event
-                        if(newNotification.data.eventId){
+                        if(newNotification.data && newNotification.data.eventId){
                             newNotification.data.event = result[1].filter(ev => ev && ev.data._id === newNotification.data.eventId)[0].data
                         }
                         return newNotification

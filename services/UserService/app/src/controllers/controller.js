@@ -213,7 +213,7 @@ exports.addUserNotification = (req, res) => {
                     } else {
                         if (user.notifications.filter(e => e.typology === 1 &&
                             e.sender.toString() === data.sender &&
-                            e.read === false).length === 0 ) {
+                            e.read === false).length <= 0 ) {
                             user.notifications.push(data)
                             user.save(() => network.result(res))
                         } else {
@@ -228,16 +228,14 @@ exports.addUserNotification = (req, res) => {
                     network.userNotFound(res);
                 } else {
                     let notification = user.notifications.findIndex(e => { 
-                        return  e.typology === 4 && e.sender.toString() === data.sender && e.read === false
+                        return  e.typology === 4 && e.sender === data.sender && e.read === false
                     })
-    
+
                     if (notification >= 0 ) {
                         user.notifications[notification].read = true
-                        user.notifications.push(data)
-                        user.save(() => network.result(res))
-                    } else {
-                        network.result(res)
                     }
+                    user.notifications.push(data)
+                    user.save(() => network.result(res))
                 }
             });
                 break
