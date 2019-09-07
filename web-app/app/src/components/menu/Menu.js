@@ -55,6 +55,10 @@ export default function Menu(props){
                 icon={{style: "far", name: "address-book", size: "lg"}}
                 name="I miei gruppi"/>
             <LinkToPage
+                page={routes.subscribedEvents}
+                icon={{style: "far", name: "calendar-check", size: "lg"}}
+                name="Eventi di interesse"/>
+            <LinkToPage
                 page={routes.myEvents}
                 icon={{style: "far", name: "calendar-alt", size: "lg"}}
                 name="I miei eventi"/>

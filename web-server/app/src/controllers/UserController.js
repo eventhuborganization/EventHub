@@ -326,3 +326,26 @@ exports.searchUser = (req, res) => {
         .then((response) => network.resultWithJSON(res, {users: response.data}))
         .catch((err) => network.internalError(res, err))
 }
+
+exports.getUserSubscribedEvents = (req, res) => {
+    axios.get(`${UserServiceServer}/users/${req.user._id}`)
+        .then(resultUser => {
+            let user = resultUser.data
+            let events = user.eventsSubscribed || []
+            events = events.map(ev => axios.get(`${EventServiceServer}/events/${ev}`))
+            Promise.all(events)
+                .then(result => {
+                    let response = result.map(data => {
+                        let event = data.data
+                        event.organizator = {_id: event.organizator}
+                        return event
+                    })
+                    response.sort((a,b) => a.eventDate < b.eventDate)
+                    network.resultWithJSON(res, response)
+                })
+                .catch(error => network.replayError(error, res))
+        })
+        .catch(err => {
+            network.replayError(err, res)
+        })
+}
