@@ -211,7 +211,18 @@ exports.getInfoUser = (req, res) => {
         response.eventsFollowed.forEach(event => {
             eventsFollowedPromise.push(UserService.getEventInfo(event))
         })
-        Promise.all([Promise.all(linkedUsersPromise), Promise.all(groupsPromise), UserService.getBadgePoints(req.params.uuid), Promise.all(eventsSubscribedPromise), Promise.all(eventsFollowedPromise)])
+        eventsOrganizedPromise = []
+        response.eventsOrganized.forEach(event => {
+            eventsOrganizedPromise.push(UserService.getEventInfo(event))
+        })
+        Promise.all([
+            Promise.all(linkedUsersPromise), 
+            Promise.all(groupsPromise), 
+            UserService.getBadgePoints(req.params.uuid), 
+            Promise.all(eventsSubscribedPromise), 
+            Promise.all(eventsFollowedPromise),
+            Promise.all(eventsOrganizedPromise)
+        ])
         .then( result => {
             response.linkedUsers = []
             result[0].map(obj => obj.data).forEach(user => {
@@ -244,6 +255,7 @@ exports.getInfoUser = (req, res) => {
             }
             result[3] = result[3].map(obj => obj.data).sort(sortFunction)
             result[4] = result[4].map(obj => obj.data).sort(sortFunction)
+            result[5] = result[5].map(obj => obj.data).sort(sortFunction)
             let k = 3 //numero di eventi da mostrare
             response.lastEventSubscribed = []
             response.nextEventSubscribed = []
@@ -276,7 +288,13 @@ exports.getInfoUser = (req, res) => {
                     event.organizator = {_id: event.organizator}
                     response.nextEventFollowed.push(event)
                 }
-            }         
+            }
+            if(result[5].length > 0){
+                response.eventsOrganized = result[5].map(ev => {
+                    ev.organizator = {_id: ev.organizator}
+                    return ev
+                })
+            }
             network.resultWithJSON(res, response)
         })
         .catch(err => network.replayError(err, res))
