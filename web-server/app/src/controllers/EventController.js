@@ -17,10 +17,6 @@ function formatUserForEvent (req) {
     return data
 }
 
-exports.findFriendParticipant = (req,res) => { 
-    network.internalError(res, {description: "Ancora da implementare !!"})
-}
-
 exports.addUserToEvent = (req, res) => {
     EventService.addUserToEvent(req.body.event, formatUserForEvent(req),
             response => {
@@ -48,6 +44,7 @@ exports.eventInfo = (req, res) => {
         })
     }, err => network.internalError(res, err))
 }
+
 exports.eventCompleteInfo = (req, res) => {
     EventService.getEventById(req.params.uuid, response => {
         let event = response.data;
@@ -87,7 +84,7 @@ exports.searchEventByName = (req, res) => {
         req.params.name,
         req.query,
         response => {
-            let result = response.data
+            let result = response.data.filter(event => event.public === true)
             let promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
             axios.all(promises)
             .then(usersResponse => {
@@ -106,12 +103,11 @@ exports.searchEventByName = (req, res) => {
 
 exports.getEventsFromIndex = (req, res) => {
     EventService.getEvent(req.query, response => {
-        response.data.sort((a, b)=>{
-            return a.eventDate - b.eventDate
-        })
-        // slice(from: escluso, to: incluso)
-        var result = response.data.slice(req.params.fromIndex, req.params.fromIndex + 10)
-        var promises = result.map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
+        let promises = response.data.filter(event => event.public === true)
+            .sort((a, b) => a.eventDate - b.eventDate)
+            .slice(req.params.fromIndex, req.params.fromIndex + 10)
+            .map(event => axios.get(`${UserServiceServer}/users/${event.organizator}`))
+
         axios.all(promises)
             .then(usersResponse => {
                 usersResponse.map(user => user.data).forEach(user => {
@@ -133,12 +129,15 @@ exports.getEventsFromIndex = (req, res) => {
 
 exports.getEventsNear = (req, res) => {
     EventService.getEvent(req.query,
-            response => network.replayResponse(response, res),
+            response => {
+                let events = response.data.filter(event => event.public === true)
+                network.resultWithJSON(res, events)
+            },
             error => network.replayError(error, res))
 }
 exports.createEvent = (req, res) => {
-    var tempPath = req.file.path
-    var event = req.body
+    let tempPath = req.file.path
+    let event = req.body
     event.location = {
         lat: event.locationLat,
         lng: event.locationLng,
