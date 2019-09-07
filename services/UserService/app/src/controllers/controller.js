@@ -262,7 +262,7 @@ exports.notificationRead = (req, res) => {
             let index = user.notifications.findIndex(not => not._id.toString() === req.params.notUuid);
             if(index >= 0){
                 user.notifications[index].read = true;
-                user.save((err) => {
+                user.updateOne(user, (err) => {
                     if(err){
                         network.internalError(res, err);
                     } else {

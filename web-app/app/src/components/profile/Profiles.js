@@ -51,7 +51,7 @@ export function BadgeBanner(props) {
             level={"h6"}
             elements={badge}
             title={"Ultimo badge ottenuto"}
-            iconName={"trophy"}
+            iconName={"award"}
             emptyLabel={props.emptyLabel}
         />
     ) 

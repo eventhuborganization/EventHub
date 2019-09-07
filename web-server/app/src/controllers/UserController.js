@@ -8,7 +8,8 @@ exports.removeLinkedUser = (req, res) => {
     let data = {uuid1: req.body.linkedUser, uuid2: req.user._id}
     UserService.removeLinkedUser(data)
         .then((response) => {
-            UserService.addAction(req.body.friend, 10)
+            UserService.addAction(req.user._id, 10)
+            UserService.addAction(req.body.linkedUser, 10)
             network.replayResponse(response, res)
         })
         .catch(err => network.replayError(err, res))
