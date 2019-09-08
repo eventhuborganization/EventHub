@@ -115,8 +115,12 @@ exports.requestFriendPosition = (req, res) => {
         typology: 4, 
         sender: req.user._id, 
     })
+        .then((response) => {
+            UserService.addAction(req.user._id, 13)
+            return Promise.resolve(response)
+        })
         .then(response => network.replayResponse(response, res))
-        .catch(error => network.internalError(res, error))
+        .catch(error => network.replayError(error, res))
 }
 
 exports.responseFriendPosition = (req, res) => {
@@ -244,7 +248,7 @@ exports.getInfoUser = (req, res) => {
             result[1].map(obj => obj.data).forEach(group => {
                 response.groups.push({ _id: group._id, name: group.name })
             })
-            response.badges = result[2].data.badge
+            response.badges = result[2].data.badges
             response.reviewsDone = response.reviewsDone.length
             response.reviewsReceived = response.reviewsReceived.length
             let sortFunction = (a,b) => {  

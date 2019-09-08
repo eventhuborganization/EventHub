@@ -149,6 +149,6 @@ exports.arrayDiff = (array1, array2) => {
 }
 
 exports.isBadgeEarned = (badge, map) => {
-    let successfullRequirements = badge.requirements.filter(req => map.get(req.action) >= req.quantity);
+    let successfullRequirements = badge.requirements.filter(req => map.get(req.action.toString()) >= req.quantity)
     return successfullRequirements.length === badge.requirements.length;
 }

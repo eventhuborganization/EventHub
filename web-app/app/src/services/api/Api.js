@@ -89,7 +89,11 @@ let mapUser = (user) => {
         city: user.address.city,
         address: user.address.address,
         province: user.address.province
-    } : {}
+    } : {
+        city: "",
+        address: "",
+        province: ""
+    }
     let eventsSubscribed = []
     if(user.nextEventSubscribed) {
         eventsSubscribed = eventsSubscribed.concat(user.nextEventSubscribed.map(elem => mapEvent(elem)))
@@ -109,7 +113,7 @@ let mapUser = (user) => {
         email: user.email,
         avatar: user.avatar || user.profilePicture,
         groups: user.groups || [],
-        badges: user.badges || [],
+        badges: user.badges ? user.badges.map(mapBadge) : [],
         points: user.points,
         nReviewsDone: user.reviewsDone ? user.reviewsDone.length : 0,
         reviewsDone: user.reviewsDone || [],
@@ -119,6 +123,14 @@ let mapUser = (user) => {
         eventsFollowed: user.eventsFollowed || [],
         eventsOrganized: user.eventsOrganized || [],
         address: address
+    }
+}
+
+let mapBadge = (badge) => {
+    return {
+        name: badge.name,
+        description: badge.desc_it,
+        icon: badge.icon
     }
 }
 
@@ -1027,6 +1039,14 @@ let getAvatarUrl = (imageName) => {
     return "/avatars/" + imageName
 }
 
+/**
+ * @param imageName {string}
+ * @returns {string}
+ */
+let getBadgeUrl = (imageName) => {
+    return "/badges/" + imageName
+}
+
 export default {
     createNewEvent,
     deleteEvent,
@@ -1059,6 +1079,7 @@ export default {
     removeFriend,
     getImageUrl,
     getAvatarUrl,
+    getBadgeUrl,
     setNotAuthenticatedBehaviour,
     getGroups,
     getGroupInfo,

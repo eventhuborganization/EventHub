@@ -143,7 +143,8 @@ class Profile extends CallableComponent {
             this.state.user.linkedUsers.findIndex(elem => elem._id === this.props.localUser._id) >= 0
 
         let events = this.getEventsByUserTypology()
-        let lastBadge = this.state.user.badges && this.state.user.badges.length !== 0 ? this.state.user.badges[this.state.badges.length - 1] : ""
+        let lastBadge = this.state.user.badges && this.state.user.badges.length > 0 ? 
+            this.state.user.badges[this.state.user.badges.length - 1] : undefined
         return (
             <main className="main-container">
                 <section className="row">

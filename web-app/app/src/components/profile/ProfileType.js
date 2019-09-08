@@ -17,6 +17,12 @@ class AbstractProfile extends React.Component {
             redirectHome: false,
             user: {
                 name: "",
+                surname: "",
+                address: {
+                    city: "",
+                    address: "",
+                    province: ""
+                },
                 avatar: undefined,
                 organization: false,
                 points: 0,

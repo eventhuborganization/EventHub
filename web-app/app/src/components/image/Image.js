@@ -95,7 +95,7 @@ let RoundedImage = props => {
     let placeholderClass = props.size + " rounded-circle d-flex justify-content-center align-items-center border " + borderClass
     return (
         props.imageName ?
-        <img src={ApiService.getAvatarUrl(props.imageName)}
+        <img src={props.badge ? ApiService.getBadgeUrl(props.imageName) : ApiService.getAvatarUrl(props.imageName)}
              className={imgClass}
              alt={props.alt}
         /> :

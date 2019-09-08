@@ -343,20 +343,25 @@ exports.getLinkedUser = (req,res) => {
 exports.getBadgePoints = (req, res) => {
     Users.findById(req.params.uuid, (err, user) => {
         if(err){
-            network.userNotFound(res);
-        }
-        let badges = [];
-        user.badges.forEach(function(badgeId) {
-            Badges.findById(badgeId, (err, badge) => {
-                if (err) {
+            network.userNotFound(res)
+        }        
+        if(user.badges.length > 0) {
+            Badges.find({}, (err2, badges) => {
+                if (err2) {
                     network.notFound(res, {description: "badge not found"})
+                } else {
+                    let badgesInfo = user.badges.map(
+                        badge => {
+                            let badgeInfo = badges.find(b => b._id.toString() === badge._id.toString())
+                            delete badgeInfo.requirements
+                            return badgeInfo
+                    })
+                    network.resultWithJSON(res, {badges: badgesInfo, points: user.points})
                 }
-                badge.id = badgeId;
-                badges.push(badge);
             })
-        })
-        user.badges = badges;
-        network.resultWithJSON(res, {badge: user.badges, points: user.points});
+        } else {
+            network.resultWithJSON(res, {badge: user.badges, points: user.points});
+        }
     })
 };
 
@@ -531,16 +536,17 @@ exports.addUserAction = (req, res) => {
                                     // count all user's actions
                                     let map = new Map();
                                     user.actions.forEach(element => {
-                                        var value = map.get(element.action);
+                                        var value = map.get(element.action.toString());
                                         if(!value)
                                             value = 0;
                                         value++;
-                                        map.set(element.action, value);
+                                        map.set(element.action.toString(), value);
                                     });
 
                                     // check if there is a new badge earned
                                     badgesDiff.forEach(badge => {
                                         if(commons.isBadgeEarned(badge, map)){
+                                            console.log("Aggiungo badge " + badge._id)
                                             user.badges.push(badge._id);
                                         }
                                     });
