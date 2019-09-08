@@ -21,7 +21,7 @@ try {
 }
 
 /* Stefano -> password: stefano */
-db.users.insert({
+db.users.insertOne({
     "name": "Stefano",
     "surname": "Righini",
     "sex": "Male",
@@ -45,7 +45,7 @@ db.users.insert({
 });
 
 /* Francesco -> password: ciao */
-db.users.insert({
+db.users.insertOne({
     "name": "Francesco",
     "surname": "Grandinetti",
     "sex": "Male",
@@ -69,7 +69,7 @@ db.users.insert({
 });
 
 /* La volgia matta -> password: GSBSU88*/
-db.users.insert({
+let organizatorId = db.users.insertOne({
     "name": "La voglia matta",
     "address": {"city": "Imola", "province": "Bologna", "address": "Via Santerno, 3"},
     "organization": true,
@@ -87,18 +87,16 @@ db.users.insert({
     "reviewsReceived" : [ ],
     "notifications" : [ ],
     "actions" : [ ]
-});
+}).insertedId;
 
-var uuid = db.users.find({"name": "La voglia matta"}).limit(1)[0]._id
-
-db.events.insert({
+db.events.insertOne({
     "creationDate": new Date("Sat Jul 27 2019 18:47:41 GMT+0200 (Ora legale dell’Europa centrale)"),
     "eventDate": new Date("Sat Aug 24 2019 18:47:41 GMT+0200 (Ora legale dell’Europa centrale)"),
     "description": "Una madonna rogoronnesca",
     "followers": [],
     "maximumParticipants": 200,
     "name": "Evento della madonna",
-    "organizator": uuid,
+    "organizator": organizatorId,
     "participants": [],
     "public": true,
     "reviews": [],
@@ -110,74 +108,142 @@ db.events.insert({
     }
 });
 
-db.actions.insert({
+let actionsId = []
+
+actionsId.push(db.actions.insertOne({
     'typology': 1,
     'points': 5,
     'desc_it': 'Scrittura di una recensione'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 2,
     'points': 5,
     'desc_it': 'Partecipazione ad un evento'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 3,
     'points': 5,
     'desc_it': 'Creazione di un evento'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 4,
     'points': 5,
     'desc_it': 'Recensioni al proprio evento positive'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 5,
     'points': -5,
     'desc_it': 'Recensioni al proprio evento negative'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 6,
     'points': 5,
     'desc_it': 'Invitare un amico ad un evento'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 7,
     'points': 5,
     'desc_it': 'Invitare un gruppo ad un evento'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 8,
     'points': 5,
     'desc_it': 'Condivisione della posizione'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 9,
     'points': 5,
     'desc_it': 'Nuova amicizia o follow'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 10,
     'points': -5,
     'desc_it': 'Rimozione di un amico o follow'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 11,
     'points': 5,
     'desc_it': 'Aggiunto utente ad un gruppo'
-})
+}).insertedId)
 
-db.actions.insert({
+actionsId.push(db.actions.insertOne({
     'typology': 12,
     'points': 5,
     'desc_it': "Punti all'organizzatore di un evento in base al numero di partecipanti"
+}).insertedId)
+
+actionsId.push(db.actions.insertOne({
+    'typology': 13,
+    'points': 0,
+    'desc_it': "Richiedi la posizione"
+}).insertedId)
+
+db.badges.insertOne({
+    'name': "Ti troverò",
+    'icon': 'findYou.svg',
+    'desc_it': "Condividi la tua posizione 3 volte",
+    'requirements': [
+        {
+            'action': actionsId[7],
+            'quantity': 3
+        }
+    ]
+})
+
+db.badges.insertOne({
+    'name': "L'attivo",
+    'icon': 'inviter.svg',
+    'desc_it': "Invita per la prima volta un amico ad un evento",
+    'requirements': [
+        {
+            'action': actionsId[5],
+            'quantity': 1
+        }
+    ]
+})
+
+db.badges.insertOne({
+    'name': "L'organizzatore",
+    'icon': 'parties.svg',
+    'desc_it': "Crea 5 eventi",
+    'requirements': [
+        {
+            'action': actionsId[2],
+            'quantity': 5
+        }
+    ]
+})
+
+db.badges.insertOne({
+    'name': "Il sociale",
+    'icon': 'friends.svg',
+    'desc_it': "Fai amici o segui un totale di 4 profili",
+    'requirements': [
+        {
+            'action': actionsId[8],
+            'quantity': 4
+        }
+    ]
+})
+
+db.badges.insertOne({
+    'name': "Lo stalker",
+    'icon': 'stalker.svg',
+    'desc_it': "Richiedi la posizione a una o più persone 3 volte",
+    'requirements': [
+        {
+            'action': actionsId[12],
+            'quantity': 3
+        }
+    ]
 })
