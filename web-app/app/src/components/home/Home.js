@@ -44,9 +44,9 @@ class Home extends React.Component {
                 <div className={"row"}>
                     {
                         this.state.eventsLoaded.map(event =>
-                            <div className={"col-12 col-md-6 col-xl-3"}>
+                            <div className={"col-12 col-md-6 col-xl-3"} key={"event-card-container" + event._id}>
                                 <EventCard {...this.props}
-                                           key={event._id}
+                                           key={"event-card" + event._id}
                                            eventInfo={event}
                                 />
                             </div>)
