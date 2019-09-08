@@ -29,6 +29,11 @@ module.exports = (app) => {
             res.sendFile(`${appRoot}/public/images/users/${req.params.name}`)
         })
 
+    app.route('/badges/:name')
+        .get((req, res) => {
+            res.sendFile(`${appRoot}/public/images/badges/${req.params.name}`)
+        })
+
     /* ----------------------------------------------- */
 
     app.route("/events")

@@ -117,6 +117,10 @@ var BadgeSchema = new Schema({
         type: String,
         required: true
     },
+    desc_it: {
+        type: String,
+        required: true
+    },
     requirements: {
         type: [{
             action: Schema.Types.ObjectId,
