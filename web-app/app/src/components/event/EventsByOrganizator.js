@@ -41,15 +41,23 @@ export default class EventsByOrganizator extends React.Component {
 
     renderEvents = () => {
         if (this.state.displayEvents && this.state.eventsLoaded.length > 0) {
-            return this.state.eventsLoaded
-                .filter(event => event.name.toLowerCase().includes(this.state.filter.toLowerCase()))
-                .map(event => 
-                    <EventCard {...this.props}
-                        user={this.props.organizator}
-                        key={event._id}
-                        eventInfo={event}
-                    />
-                )
+            return (
+                <div className={"row"}>
+                    {
+                        this.state.eventsLoaded
+                            .filter(event => event.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+                            .map(event =>
+                                <div className={"col-12 col-md-6 col-xl-3"} key={"event-card-container" + event._id}>
+                                    <EventCard {...this.props}
+                                               user={this.props.organizator}
+                                               key={event._id}
+                                               eventInfo={event}
+                                    />
+                                </div>
+                            )
+                    }
+                </div>
+            )
         } else if(this.state.displayEvents) {
             return <LoadingSpinner />  
         } else {

@@ -15,7 +15,8 @@ class Registration extends React.Component {
         super(props);
         this.state = {
             loginRedirect : undefined,
-            homeRedirect: undefined
+            homeRedirect: undefined,
+            registrationContainerMarginBottom: 0
         };
     }
 
@@ -23,6 +24,8 @@ class Registration extends React.Component {
   
     componentDidMount = () => {
         document.getElementById("root").classList.add("p-0", styles.bgImage)
+        this.updateRegistrationContainerMargin()
+        window.onorientationchange = this.updateRegistrationContainerMargin
     }
 
     componentWillUnmount = () => {
@@ -39,6 +42,12 @@ class Registration extends React.Component {
         this.setState({
             homeRedirect: redirectComponent
         })
+    }
+
+    updateRegistrationContainerMargin = () => {
+        let footer = document.getElementById('footer')
+        if (footer)
+            this.setState({registrationContainerMarginBottom: footer.offsetHeight})
     }
 
     onRegistration = (data, privateUser) => {
@@ -83,9 +92,9 @@ class Registration extends React.Component {
 
     render() {
         return (
-            <div className={styles.loginContainer}>
-                <main className="main-container d-flex align-items-center">
-                    <div className={"container-fluid col-11 col-md-6 my-3 " + styles.bgText}>
+            <div className={styles.loginContainer} style={{marginBottom: this.state.registrationContainerMarginBottom}}>
+                <main className="d-flex align-items-center">
+                    <div className={"container-fluid col-11 col-sm-8 col-md-6 my-3 " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">
                                 <h3>EventHub</h3>

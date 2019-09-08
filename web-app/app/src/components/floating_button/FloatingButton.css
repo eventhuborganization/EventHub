@@ -21,29 +21,101 @@
     border-color: #007bff !important;
 }
 
+
+/**
+  Smartphone(SM) Landscape
+ */
 @media screen and (orientation:landscape) {
     .floating-button {
         margin-left: 87%;
         margin-bottom: 12%;
     }
-}
-
-/*
- Tablet Portrait
-*/
-@media (min-width: 768px) and (max-width: 1024px) {
-    .floating-button {
-        margin-left: 87%;
+    .floating-button-bottom-left {
+        margin-left: 3%;
         margin-bottom: 12%;
     }
 }
 
 /*
- Tablet Landscape
+ Tablet(MD) Portrait
 */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+@media (min-width: 768px) and (max-width: 992px) {
+    .floating-button {
+        margin-left: 87%;
+        margin-bottom: 12%;
+    }
+    .floating-button-bottom-left {
+        margin-left: 3%;
+        margin-bottom: 12%;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
     .floating-button {
         margin-left: 88%;
+        margin-bottom: 8%;
+    }
+    .floating-button-bottom-left {
+        margin-left: 3%;
+        margin-bottom: 12%;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .floating-button {
+        margin-left: 87%;
+        margin-bottom: 12%;
+    }
+    .floating-button-bottom-left {
+        margin-left: 3%;
+        margin-bottom: 12%;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .floating-button {
+        margin-left: 88%;
+        margin-bottom: 8%;
+    }
+    .floating-button-bottom-left {
+        margin-left: 3%;
+        margin-bottom: 8%;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+    .floating-button {
+        margin-left: 87%;
+        margin-bottom: 8%;
+    }
+    .floating-button-bottom-left {
+        margin-left: 3%;
+        margin-bottom: 8%;
+    }
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+    .floating-button {
+        margin-left: 88%;
+        margin-bottom: 8%;
+    }
+    .floating-button-bottom-left {
+        margin-left: 3%;
         margin-bottom: 8%;
     }
 }

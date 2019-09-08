@@ -43,30 +43,10 @@ export default class EventsPartecipated extends React.Component {
     }
 
     renderEvents = () => {
-        let filterEvents = (event, hasToBePublic) => {
-            return event.name.toLowerCase().includes(this.state.name.toLowerCase()) 
-            && event.public === hasToBePublic
-            && (!this.state.date || new Date(event.date) > this.state.date)
-        }
-
         if (this.state.displayEvents && this.state.eventsLoaded.length > 0) {
             let tabs = [
-                this.createSingleTab("Pubblici", this.state.eventsLoaded
-                    .filter(event => filterEvents(event, true))
-                    .map(event => 
-                        <EventCard {...this.props}
-                            key={event._id}
-                            eventInfo={event}
-                        />
-                    )),
-                this.createSingleTab("Privati", this.state.eventsLoaded
-                    .filter(event => filterEvents(event, false))
-                    .map(event => 
-                        <EventCard {...this.props}
-                            key={event._id}
-                            eventInfo={event}
-                        />
-                    ))
+                this.createSingleTab("Pubblici",this.displayEvents(this.state.eventsLoaded, true)),
+                this.createSingleTab("Privati", this.displayEvents(this.state.eventsLoaded, false))
             ]
             return <EventsTab tabs={tabs} />
         } else if(this.state.displayEvents) {
@@ -74,6 +54,31 @@ export default class EventsPartecipated extends React.Component {
         } else {
             return <NoItemsPlaceholder placeholder={"Non hai partecipato a nessun evento al momento"} />
         }
+    }
+
+    filterEvents = (event, hasToBePublic) => {
+        return event.name.toLowerCase().includes(this.state.name.toLowerCase())
+            && event.public === hasToBePublic
+            && (!this.state.date || new Date(event.date) > this.state.date)
+    }
+
+    displayEvents = (events, hasToBePublic) => {
+        return (
+            <div className={"row"}>
+                {
+                    events
+                        .filter(event => this.filterEvents(event, hasToBePublic))
+                        .map(event =>
+                            <div className={"col-12 col-md-6 col-xl-3"} key={"event-card-container" + event._id}>
+                                <EventCard {...this.props}
+                                           key={event._id}
+                                           eventInfo={event}
+                                />
+                            </div>
+                        )
+                }
+            </div>
+        )
     }
 
     updateDate = (event) => {

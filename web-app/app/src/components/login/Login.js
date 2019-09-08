@@ -71,7 +71,7 @@ class Login extends React.Component {
             <div className={styles.loginContainer}>
                 
                 <main className={"d-flex align-items-center " + styles.bgImage}>
-                    <form onSubmit={this.submitLogin} className={"col-10 col-md-4 mx-auto " + styles.bgText}>
+                    <form onSubmit={this.submitLogin} className={"col-11 col-sm-8 col-md-8 col-xl-5 mx-auto " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">
                                 <h3>EventHub</h3>

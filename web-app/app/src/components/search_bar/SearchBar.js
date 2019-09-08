@@ -243,8 +243,8 @@ class SearchBar extends CallableComponent {
 
     getSearchInputColsByType() {
         switch(this.props.searchBy) {
-            case SEARCH_BY_PLACE: return " col-9 "
-            case SEARCH_BY_EVENT: return " col-7 "
+            case SEARCH_BY_PLACE: return " col-9 col-md-10 "
+            case SEARCH_BY_EVENT: return " col-7 col-md-9 "
             default: return ""
         }
     }
@@ -391,7 +391,7 @@ class SearchBar extends CallableComponent {
         switch(this.props.searchBy) {
             case SEARCH_BY_EVENT:
                 return (
-                    <button id={this.btn_search_id} name="btn-search" className="col ml-1 btn btn-success" type="submit">
+                    <button id={this.btn_search_id} name="btn-search" className="col col-md-1 ml-1 btn btn-success" type="submit">
                         <em className="fas fa-search" aria-hidden="true"></em>
                     </button>
                 )
@@ -416,12 +416,10 @@ class SearchBar extends CallableComponent {
     render() {
         let navBarClassName = (this.props.fixedTop ? "" : " row ") +
             " navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
-        let containerClass = ""
+        let containerClass = this.getContainerPositionClass()
         let filtersClass = "collapse w-100 "
         if (this.props.filtersOnlyFixedTop)
             filtersClass += " fixed-top px-3 "
-        else
-            containerClass = this.getContainerPositionClass()
         return (
             <form id={this.containerId} className={containerClass} onSubmit={this.submit}>
                 <nav id="search-bar" className={navBarClassName}>
@@ -438,7 +436,7 @@ class SearchBar extends CallableComponent {
                                    onFocus={this.hideFilters}
                             />
                             {this.renderSearchButton()}
-                            <button id="btn-filter" name="btn-filter" className="col btn btn-link" type="button" data-toggle="collapse"
+                            <button id="btn-filter" name="btn-filter" className="col col-md-1 btn btn-link" type="button" data-toggle="collapse"
                                     data-target={"#" + this.filtersContainerId} aria-expanded="false" aria-controls="filters">
                                 <em className="fas fa-sliders-h" aria-hidden="true"></em>
                             </button>
