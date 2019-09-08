@@ -3,6 +3,7 @@ import styles from './UserProfile.module.css'
 import {Link} from "react-router-dom"
 import EventCard from '../event_card/EventCard'
 import {MultipleElementsBanner, MultipleUsersBanner } from '../multiple_elements_banner/MultipleElementsBanner'
+import { RoundedBigImage } from '../image/Image'
 
 export function LinkedUsersBanner(props){
     return <MultipleUsersBanner
@@ -37,12 +38,22 @@ export function ProfileAction(props){
 }
 
 export function BadgeBanner(props) {
-    let badge = props.badge !== "" ? [
-        <div className="col d-flex justify-content-center">
-            <div className="border border-primary rounded-circle p-5 d-flex flex-column text-center personal-badge">
-                <em className="fas fa-rocket fa-5x"></em>
-                <h6 className="mt-2 font-weight-bold">{props.badge.name}</h6>
-                <p>{props.badge.description}</p>
+    let badge = props.badge ? [
+        <div className="col-12 d-flex align-items-center" key="lastBadge">
+            <div className="row">
+                <div className="col-4">
+                    <RoundedBigImage
+                        imageName={props.badge.icon}
+                        alt={props.badge.description}
+                        badge={true}
+                    />
+                </div>
+                <div className="col-8 d-flex align-items-center">
+                    <div>
+                        <h4 className="mb-0">{props.badge.name}</h4>
+                        <div>{props.badge.description}</div>
+                    </div>
+                </div>
             </div>
         </div>]: 
         []
