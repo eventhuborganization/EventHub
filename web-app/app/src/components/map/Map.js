@@ -38,7 +38,7 @@ class Map extends React.Component {
 
     componentDidMount() {
         this.updateMapHeight()
-        window.onorientationchange = this.updateMapHeight
+        window.onresize = () => this.updateMapHeight()
         this.setCurrentPositionAsCenter()
     }
 
