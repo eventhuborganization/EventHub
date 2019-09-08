@@ -416,12 +416,10 @@ class SearchBar extends CallableComponent {
     render() {
         let navBarClassName = (this.props.fixedTop ? "" : " row ") +
             " navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
-        let containerClass = ""
+        let containerClass = this.getContainerPositionClass()
         let filtersClass = "collapse w-100 "
         if (this.props.filtersOnlyFixedTop)
             filtersClass += " fixed-top px-3 "
-        else
-            containerClass = this.getContainerPositionClass()
         return (
             <form id={this.containerId} className={containerClass} onSubmit={this.submit}>
                 <nav id="search-bar" className={navBarClassName}>

@@ -68,7 +68,7 @@ class Map extends React.Component {
     updateMapHeight = () => {
         let searchBarHeight = document.getElementById('search-bar').offsetHeight
         let footerHeight = document.getElementById('footer').offsetHeight
-        let mapContainerHeight = window.screen.height - searchBarHeight - footerHeight
+        let mapContainerHeight = window.innerHeight - searchBarHeight - footerHeight
         this.setState({mapContainerHeight: mapContainerHeight})
     }
 
@@ -114,6 +114,7 @@ class Map extends React.Component {
                                 date: true,
                                 distance: true
                             }}
+                            stickyTop={true}
                             filtersOnlyFixedTop={true}
                             onError={this.onSearchError}
                             onLocationChange={this.updateCenterPositionWithSearchResults}
