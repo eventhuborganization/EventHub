@@ -89,7 +89,11 @@ let mapUser = (user) => {
         city: user.address.city,
         address: user.address.address,
         province: user.address.province
-    } : {}
+    } : {
+        city: "",
+        address: "",
+        province: ""
+    }
     let eventsSubscribed = []
     if(user.nextEventSubscribed) {
         eventsSubscribed = eventsSubscribed.concat(user.nextEventSubscribed.map(elem => mapEvent(elem)))
