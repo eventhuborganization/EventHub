@@ -61,7 +61,7 @@ exports.addAction = (
     .catch(err => {
         console.log(err)
         if(counter>0){
-            this.addAction(user, type, --counter)
+            this.addAction(user, type, doThen, doOnError, --counter)
         } else {
             doOnError(err)
         }
