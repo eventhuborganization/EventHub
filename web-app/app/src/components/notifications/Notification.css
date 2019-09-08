@@ -1,21 +1,7 @@
-.notification-main-container {
-    margin-bottom: 35%;
-}
-
 .time-passed {
     font-size: 70%;
 }
 
 .text-invited {
     font-size: 90%;
-}
-
-.notification-btn {
-    width: 30%;
-}
-
-@media screen and (min-width: 800px) {
-    .notification-btn {
-        width: 10%;
-    }
 }

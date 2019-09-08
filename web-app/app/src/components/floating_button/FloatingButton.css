@@ -1,3 +1,11 @@
+.floating-button-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.floating-button-text {
+}
+
 .floating-button {
     margin-left: 80%;
     margin-right: 3%;
@@ -21,6 +29,12 @@
     border-color: #007bff !important;
 }
 
+.large-floating-btn {
+    margin-left: 3%;
+    margin-right: 3%;
+    width: 94%;
+    margin-bottom: 22%;
+}
 
 /**
   Smartphone(SM) Landscape
@@ -32,6 +46,15 @@
     }
     .floating-button-bottom-left {
         margin-left: 3%;
+        margin-bottom: 12%;
+    }
+    .floating-button-text {
+        font-size: smaller;
+    }
+    .large-floating-btn {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 94%;
         margin-bottom: 12%;
     }
 }
@@ -48,6 +71,19 @@
         margin-left: 3%;
         margin-bottom: 12%;
     }
+    .floating-button-icon {
+        width: 60px;
+        height: 60px;
+    }
+    .floating-button-text {
+        font-size: xx-large;
+    }
+    .large-floating-btn {
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
+        margin-bottom: 12%;
+    }
 }
 
 /*
@@ -56,11 +92,24 @@
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
     .floating-button {
         margin-left: 88%;
-        margin-bottom: 8%;
+        margin-bottom: 9%;
     }
     .floating-button-bottom-left {
         margin-left: 3%;
-        margin-bottom: 12%;
+        margin-bottom: 9%;
+    }
+    .floating-button-icon {
+        width: 50px;
+        height: 50px;
+    }
+    .floating-button-text {
+        font-size: xx-large;
+    }
+    .large-floating-btn {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 94%;
+        margin-bottom: 9%;
     }
 }
 
@@ -76,18 +125,44 @@
         margin-left: 3%;
         margin-bottom: 12%;
     }
+    .floating-button-icon {
+        width: 60px;
+        height: 60px;
+    }
+    .floating-button-text {
+        font-size: xx-large;
+    }
+    .large-floating-btn {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 94%;
+        margin-bottom: 12%;
+    }
 }
 
 /*
- Tablet(MD) Landscape
+ Desktop/Tablet(LG) Landscape
 */
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
     .floating-button {
-        margin-left: 88%;
+        margin-left: 90%;
         margin-bottom: 8%;
     }
     .floating-button-bottom-left {
         margin-left: 3%;
+        margin-bottom: 8%;
+    }
+    .floating-button-icon {
+        width: 50px;
+        height: 50px;
+    }
+    .floating-button-text {
+        font-size: xx-large;
+    }
+    .large-floating-btn {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 94%;
         margin-bottom: 8%;
     }
 }

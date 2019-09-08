@@ -4,6 +4,7 @@ import ApiService from '../../services/api/Api'
 import {MEETING, PARTY, SPORT} from "../event/Event";
 import {CallableComponent} from "../redirect/Redirect";
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
+import "./SearchBar.css"
 
 let SEARCH_BY_EVENT = 0
 let SEARCH_BY_PLACE = 1
@@ -52,7 +53,8 @@ class SearchBar extends CallableComponent {
         this.state = {
             search_value: undefined,
             filters: filters,
-            filtersMarginTop: 0
+            filtersMarginTop: 0,
+            showDistanceMessage: false
         }
     }
 
@@ -243,8 +245,8 @@ class SearchBar extends CallableComponent {
 
     getSearchInputColsByType() {
         switch(this.props.searchBy) {
-            case SEARCH_BY_PLACE: return " col-9 col-md-10 "
-            case SEARCH_BY_EVENT: return " col-7 col-md-9 "
+            case SEARCH_BY_PLACE: return " col "
+            case SEARCH_BY_EVENT: return " col "
             default: return ""
         }
     }
@@ -267,7 +269,13 @@ class SearchBar extends CallableComponent {
     }
 
     updateDistance = event => {
-        this.updateFilterValue(event, "distance")
+        event.persist()
+        this.setState((prevState) => {
+            let state = prevState
+            state.filters.distance = event.target.value
+            state.showDistanceMessage = true
+            return state
+        })
     }
 
     updateFilterValue = (event, filterName) => {
@@ -283,7 +291,7 @@ class SearchBar extends CallableComponent {
         let filters = []
         if (this.props.filters.location && this.props.searchBy !== SEARCH_BY_PLACE)
             filters.push(
-                <div key="location">
+                <div key="location" className={"form-group"}>
                     <label htmlFor={this.location_filter_id} className="m-0">Località</label>
                     <input
                         id={this.location_filter_id}
@@ -296,7 +304,7 @@ class SearchBar extends CallableComponent {
             )
         if (this.props.filters.typology)
             filters.push(
-                <div key="typology">
+                <div key="typology" className={"form-group"}>
                     <label className="m-0" htmlFor="typology">Typology</label>
                     <select onChange={this.updateTypology}
                             className="form-control"
@@ -313,7 +321,7 @@ class SearchBar extends CallableComponent {
             )
         if (this.props.filters.date)
             filters.push(
-                <div key="date">
+                <div key="date" className={"form-group"}>
                     <label htmlFor="date" className="m-0">Data</label>
                     <input
                         id={this.date_filter_id}
@@ -326,7 +334,7 @@ class SearchBar extends CallableComponent {
             )
         if (this.props.filters.distance)
             filters.push(
-                <div key="distance">
+                <div key="distance" className={"form-group"}>
                     <label htmlFor="distance" className="m-0">Distanza: {this.state.filters.distance}km</label>
                     <div className="d-flex justify-content-between align-items-center">
                         <span>{this.minDistance}km</span>
@@ -342,6 +350,12 @@ class SearchBar extends CallableComponent {
                         />
                         <span>{this.maxDistance}km</span>
                     </div>
+                    {
+                        this.state.showDistanceMessage ?
+                            <p className={"m-0 text-danger text-left"}>
+                                Per visualizzare le modifiche clicca su applica
+                            </p> : <div/>
+                    }
                 </div>
             )
         return (
@@ -350,12 +364,13 @@ class SearchBar extends CallableComponent {
                 {filters}
                 {
                     filters.length > 0 ?
-                        <div className={"d-flex justify-content-end align-items-center mt-1"}>
+                        <div className={"d-flex justify-content-end align-items-center"}>
                             <button className={"btn btn-danger"}
                                     type={"reset"}
                                     onClick={this.clearFilters}>
-                                Reset
+                                Cancella
                             </button>
+                            {this.renderApplyButton()}
                         </div> : <div/>
                 }
             </div>
@@ -369,6 +384,7 @@ class SearchBar extends CallableComponent {
             state.filters.date = ""
             state.filters.typology = ""
             state.filters.distance = this.defaultDistance
+            state.showDistanceMessage = false
             return state
         }, () => {
             this.searchEvents()
@@ -391,7 +407,7 @@ class SearchBar extends CallableComponent {
         switch(this.props.searchBy) {
             case SEARCH_BY_EVENT:
                 return (
-                    <button id={this.btn_search_id} name="btn-search" className="col col-md-1 ml-1 btn btn-success" type="submit">
+                    <button id={this.btn_search_id} name="btn-search" className="col-2 col-md-1 ml-1 btn btn-success" type="submit">
                         <em className="fas fa-search" aria-hidden="true"></em>
                     </button>
                 )
@@ -413,11 +429,24 @@ class SearchBar extends CallableComponent {
         this.searchEvents()
     }
 
+    renderApplyButton = () => {
+            return this.props.filters.distance ?
+                    <button name="btn-apply-filters" className="btn btn-success ml-2" type="submit"
+                            onClick={this.applyFilters}>
+                        Applica
+                    </button> : <div/>
+    }
+
+    applyFilters = () => {
+        this.hideFilters()
+        this.setState({showDistanceMessage: false})
+    }
+
     render() {
         let navBarClassName = (this.props.fixedTop ? "" : " row ") +
             " navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
         let containerClass = this.getContainerPositionClass()
-        let filtersClass = "collapse w-100 "
+        let filtersClass = "filters-container collapse w-100 "
         if (this.props.filtersOnlyFixedTop)
             filtersClass += " fixed-top px-3 "
         return (
@@ -432,11 +461,11 @@ class SearchBar extends CallableComponent {
                                    name="tf-search"
                                    type="search"
                                    placeholder={this.getInputSearchPlaceHolder()}
-                                   className={this.getSearchInputColsByType() + " form-control"}
+                                   className={this.getSearchInputColsByType() + " form-control input-search"}
                                    onFocus={this.hideFilters}
                             />
                             {this.renderSearchButton()}
-                            <button id="btn-filter" name="btn-filter" className="col col-md-1 btn btn-link" type="button" data-toggle="collapse"
+                            <button id="btn-filter" name="btn-filter" className=" col-2 col-md-1 btn btn-link btn-filter" type="button" data-toggle="collapse"
                                     data-target={"#" + this.filtersContainerId} aria-expanded="false" aria-controls="filters">
                                 <em className="fas fa-sliders-h" aria-hidden="true"></em>
                             </button>

@@ -5,6 +5,7 @@ import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import ApiService from "../../services/api/Api"
 import TrackVisibility from 'react-on-screen'
 import NotificationService from "../../services/notification/Notification"
+import {LargeFloatingButton} from "../floating_button/FloatingButton";
 
 class Notifications extends React.Component {
 
@@ -84,7 +85,7 @@ class Notifications extends React.Component {
                     <h2 className="col ml-1">Notifiche</h2>
                 </section>
 
-                <main className="main-container notification-main-container">
+                <main className="main-container">
                     {
                         <div>
                             {
@@ -115,11 +116,10 @@ class Notifications extends React.Component {
 
                             {
                                 notificationsToShow.length > 0 ?
-                                    <button className="fixed-bottom btn btn-primary" onClick={this.setAllNotificationsAsRead}
-                                        style={{marginBottom: "22%", width: "94%", marginLeft: "3%", marginRight: "3%"}}>
-                                        Segna tutte le notifiche come lette
-                                    </button> :
-                                    <div/>
+                                    <LargeFloatingButton
+                                        text={"Segna tutte le notifiche come lette"}
+                                        onClick={this.setAllNotificationsAsRead}
+                                    /> : <div/>
                             }
                         </div>
                     }

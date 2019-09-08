@@ -55,9 +55,9 @@ let FloatingButton = (props) => {
     let renderContent = () => {
         if (props.icon && props.icon.name) {
             let iconClass = "fas fa-" + props.icon.name + (props.icon.size ? " fa-" + props.icon.size : "")
-            return <em className={iconClass + " d-flex justify-content-center align-items-center"} aria-hidden="true" style={{height: 40, width: 40}}></em>
+            return <em className={iconClass + " d-flex justify-content-center align-items-center floating-button-icon"} aria-hidden="true"></em>
         } else if (props.text) {
-            return <span className={" d-flex justify-content-center align-items-center"}>{props.text}</span>
+            return <span className={" d-flex justify-content-center align-items-center floating-button-text"}>{props.text}</span>
         }
     }
     return props.show ? (
@@ -95,11 +95,23 @@ let ConfirmButton = (props) => {
     return (<FloatingButton icon={{name: "check", size:"2x"}} onClick={props.onClick} show={true} position={BOTTOM_RIGHT} shape={ROUNDED_CIRCLE} />)
 }
 
+let LargeFloatingButton = props => {
+    return (
+        <button className="fixed-bottom btn btn-primary large-floating-btn floating-button-text"
+                onClick={props.onClick}
+                type={props.isSubmit ? "submit" : "button"}
+        >
+            {props.text}
+        </button>
+    )
+}
+
 export {
     CreateNewEventButton,
     CreateNewGroupButton,
     ConfirmButton,
     FloatingButton,
+    LargeFloatingButton,
     TOP_CENTER,
     BOTTOM_RIGHT,
     ROUNDED,

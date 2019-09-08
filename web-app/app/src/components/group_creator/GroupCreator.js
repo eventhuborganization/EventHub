@@ -6,6 +6,7 @@ import { RoundedSmallImage, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
 
 import Api from '../../services/api/Api'
 import AvatarHeader from '../avatar_header/AvatarHeader'
+import {LargeFloatingButton} from "../floating_button/FloatingButton";
 
 let routes = require('../../services/routes/Routes')
 
@@ -114,11 +115,10 @@ export default class GroupCreator extends React.Component {
                         }
                         </ToggableMenu>
                     </div>
-                    <input 
-                        type="submit" 
-                        className="fixed-bottom btn btn-primary" 
-                        value="Crea gruppo" 
-                        style={{marginBottom: "22%", width: "94%", marginLeft: "3%", marginRight: "3%"}}
+                    <LargeFloatingButton
+                        isSubmit={true}
+                        text={"Crea gruppo"}
+                        onClick={() => {}}
                     />
                 </form>
             </div>

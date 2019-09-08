@@ -41,6 +41,9 @@ class Map extends React.Component {
         window.onresize = () => this.updateMapHeight()
         this.setCurrentPositionAsCenter()
     }
+    componentWillUnmount() {
+        window.onresize = () => {}
+    }
 
     setCurrentPositionAsCenter = () => {
         GeoLocation.getCurrentLocation(
@@ -114,7 +117,6 @@ class Map extends React.Component {
                                 date: true,
                                 distance: true
                             }}
-                            stickyTop={true}
                             filtersOnlyFixedTop={true}
                             onError={this.onSearchError}
                             onLocationChange={this.updateCenterPositionWithSearchResults}
