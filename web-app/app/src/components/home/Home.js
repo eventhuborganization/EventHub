@@ -40,11 +40,19 @@ class Home extends React.Component {
 
     renderEvents = () => {
         if (this.state.displayEvents && this.state.eventsLoaded.length > 0) {
-            return this.state.eventsLoaded.map(event =>
-                <EventCard {...this.props}
-                           key={event._id}
-                           eventInfo={event}
-                />)
+            return (
+                <div className={"row"}>
+                    {
+                        this.state.eventsLoaded.map(event =>
+                            <div className={"col-12 col-md-6 col-xl-3"}>
+                                <EventCard {...this.props}
+                                           key={event._id}
+                                           eventInfo={event}
+                                />
+                            </div>)
+                    }
+                </div>
+            )
         } else if (this.state.displayEvents) {
             return <LoadingSpinner/>
         } else {
