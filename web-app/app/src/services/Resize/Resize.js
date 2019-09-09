@@ -1,6 +1,3 @@
-import {interval} from "rxjs";
-import ApiService from "../api/Api";
-
 class ResizeService {
 
     #removedSubscriptionCode = -1

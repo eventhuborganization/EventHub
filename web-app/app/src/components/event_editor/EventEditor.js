@@ -8,15 +8,14 @@ import {
     MEETING,
     EventHeaderBanner,
     EventLocation,
-    EventOrganizatorInfo,
-    EventInteractionPanel
+    EventOrganizatorInfo
 } from "../event/Event"
 import Contacts from "../contacts/Contacts"
 import {ConfirmButton} from "../floating_button/FloatingButton"
 import ApiService from "../../services/api/Api"
 import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
-import {IMAGE, ImageForCard, LOCAL} from "../image/Image"
+import {ImageForCard, LOCAL} from "../image/Image"
 import AvatarHeader from "../avatar_header/AvatarHeader"
 import ResizeService from "../../services/Resize/Resize"
 

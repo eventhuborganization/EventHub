@@ -2,18 +2,14 @@ import React from 'react'
 import Api from '../../services/api/Api'
 
 import {
-    ProfileAction,
-    ProfileBadge,
     LinkedUsersBanner,
     BadgeBanner,
     EventsBanner,
-    ProfileControls,
     ProfileHeader
 } from './Profiles'
 import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
 import { FriendsTab } from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
-import {AVATAR, ImageForCard} from "../image/Image"
 import { SimpleSearchBar } from '../search_bar/SearchBar'
 
 let routes = require("../../services/routes/Routes")
