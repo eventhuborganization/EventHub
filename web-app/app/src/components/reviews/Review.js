@@ -42,7 +42,7 @@ class Review extends React.Component {
                     }
                     return (
                         <div className={"row mt-2"}>
-                            <div className="col-11 col-sm-10 col-md-10 card shadow mx-auto">
+                            <div className="col-11 card shadow mx-auto">
                                 <div className="card-body container-fluid">
                                     {
                                         this.props.type === RECEIVED_REVIEW ?

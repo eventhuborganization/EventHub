@@ -140,8 +140,10 @@ class Reviews extends React.Component {
                     <div className={"col-12"}>{this.renderHeader()}</div>
                     <div className={"col-12 text-center bg-white px-0"}>{this.renderTitle()}</div>
                 </section>
-                <div>
-                    {this.renderReviews()}
+                <div className={"row"}>
+                    <div className={"col-12 col-sm-11 col-md-11 mx-auto"}>
+                        {this.renderReviews()}
+                    </div>
                 </div>
             </main>
         )
