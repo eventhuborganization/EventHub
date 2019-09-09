@@ -94,7 +94,7 @@ class Registration extends React.Component {
         return (
             <div className={styles.loginContainer} style={{marginBottom: this.state.registrationContainerMarginBottom}}>
                 <main className="d-flex align-items-center">
-                    <div className={"container-fluid col-11 col-sm-8 col-md-6 my-3 " + styles.bgText}>
+                    <div className={"container-fluid col-11 col-sm-8 col-md-8 col-xl-5 mx-auto my-3 " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">
                                 <h3>EventHub</h3>

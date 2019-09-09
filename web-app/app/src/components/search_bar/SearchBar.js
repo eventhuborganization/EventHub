@@ -462,7 +462,7 @@ function SimpleSearchBar(props){
         <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
             <label htmlFor="tf-search" className="d-none">{props.placeholder}</label>
             <input 
-                className="col-11 mx-auto form-control"
+                className="col-11 mx-auto form-control input-search"
                 id="tf-search" 
                 name="tf-search" 
                 type="search" 

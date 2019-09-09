@@ -24,6 +24,13 @@
     color: white;
 }
 
+.badgeDescription{
+
+}
+.badgeName{
+    font-size: 1.45rem;
+}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -45,6 +52,13 @@
         background-color: white;
         text-shadow: unset;
     }
+
+    .badgeDescription{
+        font-size: 1.35rem;
+    }
+    .badgeName{
+        font-size: 1.7rem;
+    }
 }
 
 /*
@@ -56,6 +70,13 @@
         border-width: 2px !important;
         background-color: white;
         text-shadow: unset;
+    }
+
+    .badgeDescription{
+        font-size: 1.35rem;
+    }
+    .badgeName{
+        font-size: 1.7rem;
     }
 }
 
@@ -69,6 +90,13 @@
         background-color: white;
         text-shadow: unset;
     }
+
+    .badgeDescription{
+        font-size: 1.35rem;
+    }
+    .badgeName{
+        font-size: 1.7rem;
+    }
 }
 
 /*
@@ -80,6 +108,13 @@
         border-width: 2px !important;
         background-color: white;
         text-shadow: unset;
+    }
+
+    .badgeDescription{
+        font-size: 1.35rem;
+    }
+    .badgeName{
+        font-size: 1.7rem;
     }
 }
 

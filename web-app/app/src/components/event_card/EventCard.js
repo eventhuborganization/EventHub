@@ -58,7 +58,7 @@ class EventCard extends React.Component {
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-8 pl-0">
-                                            <h5 className="card-title event-name">{this.state.eventInfo.name}</h5>
+                                            <h5 className="card-title event-name long-event-name">{this.state.eventInfo.name}</h5>
                                             <h6 className="card-subtitle event-text">{this.state.eventInfo.organizator.name} {this.state.eventInfo.organizator.surname}</h6>
                                         </div>
                                         <div className="col-4 px-0 d-flex justify-content-end">
@@ -80,7 +80,7 @@ class EventCard extends React.Component {
                                                 this.state.eventInfo.location && this.state.eventInfo.location.address ? 
                                                     <div className="event-place row">
                                                         <div className="col-1 pr-0"><em className="fas fa-map-marker-alt"></em></div>  
-                                                        <div className="col-11">{this.state.eventInfo.location.address}</div>
+                                                        <div className="col-11 long-event-address">{this.state.eventInfo.location.address}</div>
                                                     </div> : <div/>
                                             }
                                         </div>

@@ -5,7 +5,7 @@ function MenuTab(props) {
     let navigationBar = props.tabs.map(element => {
         count++
         return (
-            <li className="nav-item" key={"li" + count + "_id"}>
+            <li className="nav-item button-size" key={"li" + count + "_id"}>
                 <a  className={"nav-link" + (count === 0 ? " active" : "")} 
                     id={"tab-" + count} 
                     data-toggle="pill" 

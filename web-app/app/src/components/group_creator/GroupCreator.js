@@ -1,5 +1,6 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
+import './GroupCreator.css'
 
 import { LoginRedirect } from '../redirect/Redirect'
 import { RoundedSmallImage, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
@@ -86,10 +87,10 @@ export default class GroupCreator extends React.Component {
                     />
 
                     <div className="form-group">
-                        <label htmlFor="groupName">Nome del gruppo:</label>
+                        <label htmlFor="groupName group-creator-title">Nome del gruppo:</label>
                         <input 
                             type="text" 
-                            className="form-control" 
+                            className="form-control group-creator-text" 
                             id="groupName" 
                             placeholder="Nome del gruppo"
                             value={this.state.name}
@@ -152,7 +153,7 @@ class ToggableMenu extends React.Component {
                         className="col-12"
                         onClick={this.toggleArrow}>
                         <em id="menuArrow" className="fas fa-angle-down"/>
-                        <span className="ml-2 h5">{this.props.title}</span>
+                        <span className="ml-2 h5 group-creator-title">{this.props.title}</span>
                     </div>
                 </div>
                 <div className="collapse" id="friendsContent">
@@ -184,22 +185,22 @@ function SelectableFriendBanner(props){
     return (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <div 
-                className={"col-4 col-md-2 col-lg-1" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
+                className={"col-4 col-md-2 col-lg-2" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
                 onClick={toggleCheck}>
                 <RoundedSmallImage 
                     imageName={props.elem.avatar} 
                     placeholderType={PLACEHOLDER_USER_CIRCLE}/>
             </div>
-            <div className="col-6 px-0" onClick={toggleCheck}>
-                <div className="font-weight-bold text-dark">{props.elem.name + " " + props.elem.surname}</div>
-                <div className="text-muted small">
+            <div className="col" onClick={toggleCheck}>
+                <div className="font-weight-bold text-dark group-name">{props.elem.name + " " + props.elem.surname}</div>
+                <div className="text-muted small group-info">
                     {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.address.city}
                 </div>
             </div>
-            <div className="col-2 d-flex align-items-center justify-content-end">
+            <div className="col-2 col-md-2 d-flex align-items-center justify-content-end">
                 <input
                     id={props.id} 
-                    className="" 
+                    className="checkbox-size" 
                     type="checkbox" 
                     name={props.name} value={props.elem._id} 
                     aria-label={props.elem.name + " " + props.elem.surname}

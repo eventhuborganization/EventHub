@@ -1,4 +1,6 @@
 import React from 'react'
+import './AvatarHeader.css'
+
 import {
     RoundedBigImage,
     BORDER_PRIMARY,
@@ -44,7 +46,7 @@ export default function AvatarHeader(props){
                                 />
                         }
                     </div>
-                    <h5 className="mt-1 font-weight-bold">
+                    <h5 className="mt-1 font-weight-bold name">
                         {
                             props.isGroup ? 
                                 props.elem.name : 

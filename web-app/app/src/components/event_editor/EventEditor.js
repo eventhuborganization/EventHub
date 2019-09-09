@@ -530,7 +530,7 @@ class EventEditor extends React.Component {
                                 <input
                                     type="text"
                                     id="name"
-                                    className="form-control"
+                                    className="form-control event-info-text"
                                     name="name"
                                     placeholder="Nome dell'evento"
                                     onChange={this.updateName}
@@ -543,7 +543,7 @@ class EventEditor extends React.Component {
                                         <label className="m-0 event-info-section-title" htmlFor="typology">Typology</label>
                                         <select defaultValue={"placeholder"}
                                                 onChange={this.updateType}
-                                                className="form-control"
+                                                className="form-control event-info-text"
                                                 id="typology">
                                             <option value="placeholder" disabled hidden>Type</option>
                                             <option value={PARTY}>Festa</option>
@@ -560,7 +560,7 @@ class EventEditor extends React.Component {
                                     id="date"
                                     name="date"
                                     type="date"
-                                    className="form-control"
+                                    className="form-control event-info-text"
                                     onChange={this.updateDate}
                                     required
                                 />
@@ -571,7 +571,7 @@ class EventEditor extends React.Component {
                                     id="time"
                                     name="time"
                                     type="time"
-                                    className="form-control"
+                                    className="form-control event-info-text"
                                     onChange={this.updateTime}
                                     required
                                 />
@@ -584,7 +584,7 @@ class EventEditor extends React.Component {
                                     id="address"
                                     name="address"
                                     type="text"
-                                    className="form-control"
+                                    className="form-control event-info-text"
                                     placeholder="Indirizzo"
                                 />
                             </div>
@@ -597,7 +597,7 @@ class EventEditor extends React.Component {
                                 <input
                                     type="number"
                                     id="max-participants"
-                                    className="form-control"
+                                    className="form-control event-info-text"
                                     name="max-participants"
                                     onChange={this.updateMaxParticipants}
                                     required
@@ -623,7 +623,7 @@ class EventEditor extends React.Component {
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
                                     <h6 className={"event-info-section-title"}>Descrizione</h6>
-                                    <textarea id="description" className="w-100 form-control" onChange={this.updateDescription} />
+                                    <textarea id="description" className="w-100 form-control event-info-text" onChange={this.updateDescription} />
                                 </div>
                             </div>
                         </div>

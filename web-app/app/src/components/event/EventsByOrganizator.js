@@ -94,8 +94,8 @@ export default class EventsByOrganizator extends React.Component {
                             aria-expanded="false"
                             className="d-flex justify-content-start align-items-center" 
                             aria-label="Abilita ricerca eventi per nome">
-                            <h2 className="py-2 m-0">{this.renderTitle()}</h2>
-                            <div className={"ml-auto btn btn-primary"}>
+                            <h2 className="py-2 m-0 page-title">{this.renderTitle()}</h2>
+                            <div className={"ml-auto btn btn-primary button-size"}>
                                 <em className="fas fa-search" aria-hidden="true"></em>
                             </div>
                         </div>

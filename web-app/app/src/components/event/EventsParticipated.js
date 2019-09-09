@@ -123,8 +123,8 @@ export default class EventsPartecipated extends React.Component {
                             aria-expanded="false"
                             className="d-flex justify-content-start align-items-center" 
                             aria-label="Abilita ricerca eventi per nome">
-                            <h2 className="py-2 m-0">Eventi di interesse</h2>
-                            <div className={"ml-auto btn btn-primary"}>
+                            <h2 className="py-2 m-0 page-title">Eventi di interesse</h2>
+                            <div className={"ml-auto btn btn-primary button-size"}>
                                 <em className="fas fa-search" aria-hidden="true"></em>
                             </div>
                         </div>
@@ -132,28 +132,28 @@ export default class EventsPartecipated extends React.Component {
                     <div className="col-12 collapse" id="searchContent">
                         <form>
                             <div className="form-group">
-                                <label htmlFor="name" className="m-0">Nome</label>
+                                <label htmlFor="name" className="m-0 form-title">Nome</label>
                                 <input
                                     id="name"
                                     name={"name"}
                                     type="text"
-                                    className="form-control"
+                                    className="form-control form-size"
                                     value={this.state.name}
                                     onChange={this.onFilterChange}
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="date" className="m-0">A partire dal</label>
+                                <label htmlFor="date" className="m-0 form-title">A partire dal</label>
                                 <input
                                     id={"date"}
                                     name={"date"}
                                     type="date"
-                                    className="form-control"
+                                    className="form-control form-size"
                                     onChange={this.updateDate}
                                 />
                             </div>
                             <div className={"d-flex justify-content-end align-items-end form-group"}>
-                                <input type="reset" value="Cancella" className={"btn btn-danger"} onClick={this.resetValues}/>
+                                <input type="reset" value="Cancella" className={"btn btn-danger button-size"} onClick={this.resetValues}/>
                             </div>
                         </form>
                     </div>

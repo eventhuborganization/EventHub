@@ -4,6 +4,9 @@
 .elem-info {
 }
 
+.elem-group-name {
+}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -21,6 +24,10 @@
     .elem-info {
         font-size: large;
     }
+
+    .elem-group-name {
+        font-size: 1.35rem;
+    }
 }
 
 /*
@@ -33,6 +40,10 @@
 
     .elem-info {
         font-size: large;
+    }
+
+    .elem-group-name {
+        font-size: 1.35rem;
     }
 }
 
@@ -47,6 +58,10 @@
     .elem-info {
         font-size: large;
     }
+
+    .elem-group-name {
+        font-size: 1.35rem;
+    }
 }
 
 /*
@@ -59,6 +74,10 @@
 
     .elem-info {
         font-size: large;
+    }
+
+    .elem-group-name {
+        font-size: 1.35rem;
     }
 }
 

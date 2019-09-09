@@ -70,13 +70,15 @@
     color: white;
 }
 
-.badge-text {
-}
+.badge-text {}
 
 .event-banner-event-name {}
 .event-banner-event-info {}
 .event-banner-event-info-icon {}
 .event-banner-event-participants {}
+
+.form-title {}
+.form-size {}
 
 /**
   Smartphone(SM) Landscape
@@ -103,6 +105,12 @@
     .event-banner-event-participants {
         font-size: x-large;
     }
+    .form-title {
+        font-size: 1.40rem;
+    }
+    .form-size {
+        font-size: 1.20rem;
+    }
 }
 
 /*
@@ -123,6 +131,12 @@
     }
     .event-banner-event-participants {
         font-size: x-large;
+    }
+    .form-title {
+        font-size: 1.40rem;
+    }
+    .form-size {
+        font-size: 1.20rem;
     }
 }
 
@@ -145,6 +159,12 @@
     .event-banner-event-participants {
         font-size: x-large;
     }
+    .form-title {
+        font-size: 1.40rem;
+    }
+    .form-size {
+        font-size: 1.20rem;
+    }
 }
 
 /*
@@ -165,6 +185,12 @@
     }
     .event-banner-event-participants {
         font-size: x-large;
+    }
+    .form-title {
+        font-size: 1.40rem;
+    }
+    .form-size {
+        font-size: 1.20rem;
     }
 }
 

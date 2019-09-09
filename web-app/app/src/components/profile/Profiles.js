@@ -43,22 +43,22 @@ export function ProfileAction(props){
 export function BadgeBanner(props) {
     let badge = props.badge ? [
         <div className="col-12 d-flex align-items-center" key="lastBadge">
-            <div className="row">
-                <div className="col-4">
+            <div className="row w-100">
+                <div className="col-4 col-md-3 pr-0">
                     <RoundedBigImage
                         imageName={props.badge.icon}
                         alt={props.badge.description}
                         badge={true}
                     />
                 </div>
-                <div className="col-8 d-flex align-items-center">
+                <div className="col-8 col-md-9 d-flex align-items-center">
                     <div>
-                        <h4 className="mb-0">{props.badge.name}</h4>
-                        <div>{props.badge.description}</div>
+                        <h4 className={"mb-0 " + styles.badgeName}>{props.badge.name}</h4>
+                        <div className={styles.badgeDescription}>{props.badge.description}</div>
                     </div>
                 </div>
             </div>
-        </div>]: 
+        </div>]:
         []
     return (
         <MultipleElementsBanner

@@ -1,0 +1,114 @@
+.group-creator-title {
+    font-size: 1.25rem;
+}
+
+.checkbox-size {
+    width: 1rem;
+    height: 1rem;
+}
+
+.group-creator-text {}
+.input-search{}
+
+.group-name {}
+
+.group-info {}
+
+/**
+  Smartphone(SM) Landscape
+ */
+@media screen and (orientation:landscape) {
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .group-creator-title {
+        font-size: 1.40rem;
+    }
+    .group-creator-text {
+        font-size: 1.20rem;
+    }
+    .input-search {
+        font-size: larger;
+    }
+    .group-name {
+        font-size: larger;
+    }
+
+    .group-info {
+        font-size: large;
+    }
+
+    .checkbox-size {
+        width: 1.35rem;
+        height: 1.35rem;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .input-search {
+        font-size: x-large;
+    }
+    .group-name {
+        font-size: larger;
+    }
+
+    .group-info {
+        font-size: large;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .group-creator-title {
+        font-size: 1.40rem;
+    }
+    .group-creator-text {
+        font-size: 1.20rem;
+    }
+    .input-search {
+        font-size: larger;
+    }
+    .group-name {
+        font-size: larger;
+    }
+
+    .group-info {
+        font-size: large;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .input-search {
+        font-size: x-large;
+    }
+    .group-name {
+        font-size: larger;
+    }
+
+    .group-info {
+        font-size: large;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+}

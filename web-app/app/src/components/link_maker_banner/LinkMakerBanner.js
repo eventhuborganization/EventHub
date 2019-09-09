@@ -72,7 +72,7 @@ export function LinkMakerBanner(props) {
                     placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}/>
             </Link>
             <Link to={link} className="col px-0" style={{textDecoration: "none"}}>
-                <div className="font-weight-bold text-dark elem-name">{name}</div>
+                <div className={"font-weight-bold text-dark " + (props.isGroup ? "elem-group-name" : "elem-name")}>{name}</div>
                 {
                     props.isGroup || props.isLite
                         ? <div/>

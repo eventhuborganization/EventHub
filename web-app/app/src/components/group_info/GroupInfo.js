@@ -126,13 +126,13 @@ class GroupInfo extends React.Component {
 
                 <div className="row my-2">
                     <div className="col-12 d-flex justify-content-around">
-                        <button className="btn btn-danger" onClick={this.exitFromGroup}>Esci dal gruppo</button>
+                        <button className="btn btn-danger button-size" onClick={this.exitFromGroup}>Esci dal gruppo</button>
                         <Link 
                             to={{
                                 pathname: routes.inviteGroup,
                                 group: this.state.group
                             }} 
-                            className="btn btn-primary">
+                            className="btn btn-primary button-size">
                             Aggiungi membri
                         </Link>
                     </div>
