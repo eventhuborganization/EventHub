@@ -293,7 +293,7 @@ class ProfileInfo extends React.Component {
                 </div>
                 <div className={(canRequestPosition ? "mt-2 " : "") + "row " + (canRemoveUser ? "" : " d-none")}>
                     <div className={"col-12"}>
-                        <button className={"btn btn-block btn-danger button-size"} onClick={this.props.removeUsers}>
+                        <button className={"btn btn-block btn-danger button-size"} onClick={this.props.removeUser}>
                             {this.props.user.organization ? "Smetti di seguire" : "Rimuovi amico"}
                         </button>
                     </div>

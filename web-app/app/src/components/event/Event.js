@@ -323,18 +323,18 @@ let EventHeaderBanner = props => {
             return (
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 pl-1 pr-0">
-                        <h6 className={"m-0 text-left " + (props.event.date || props.event.time ? "" : " d-none ")}>
-                            <em className="far fa-calendar-alt"></em> {date}
+                        <h6 className={"m-0 text-left event-banner-event-info " + (props.event.date || props.event.time ? "" : " d-none ")}>
+                            <em className="far fa-calendar-alt event-banner-event-info-icon"></em> {date}
                         </h6>
                         {
                             props.hidePlace ? <div/> :
-                                <h6 className={"m-0 text-left " + (props.event.location.address ? "" : " d-none ")}>
-                                    <em className="fas fa-map-marker-alt"></em> {props.event.location.address}
+                                <h6 className={"m-0 text-left event-banner-event-info " + (props.event.location.address ? "" : " d-none ")}>
+                                    <em className="fas fa-map-marker-alt event-banner-event-info-icon"></em> {props.event.location.address}
                                 </h6>
                         }
                     </div>
                     <div className="col-4 d-flex justify-content-end px-1">
-                        <p className={"m-0 " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
+                        <p className={"m-0 event-banner-event-participants " + (props.event.maxParticipants ? "" : " d-none ")}>{props.event.numParticipants ? props.event.numParticipants : 0}/{props.event.maxParticipants}</p>
                     </div>
                 </div>
             )
@@ -346,7 +346,7 @@ let EventHeaderBanner = props => {
             <div className="col container-fluid">
                 <div className="row d-flex align-items-center">
                     <div className="col-8 mb-1 px-1">
-                        <h5 className={"m-0 text-left " + (props.event.name ? "" : " d-none ")}>
+                        <h5 className={"m-0 text-left event-banner-event-name " + (props.event.name ? "" : " d-none ")}>
                             {props.event.name}
                         </h5>
                     </div>
@@ -376,7 +376,7 @@ let EventLocation = props => {
     return (
         <section className="row">
             <div className="col-12">
-                <h5>Luogo dell'evento</h5>
+                <h5 className={"event-info-section-title"}>Luogo dell'evento</h5>
                 <LocationMap place={props.event.location}/>
             </div>
         </section>

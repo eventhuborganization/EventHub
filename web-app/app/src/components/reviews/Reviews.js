@@ -98,8 +98,8 @@ class Reviews extends React.Component {
 
     renderTitle = () => {
         switch(this.state.type) {
-            case MY_REVIEW: return <h2 className={"m-0 py-1 border-bottom border-primary"}>Le mie recensioni</h2>
-            case RECEIVED_REVIEW: return <h2 className={"m-0 py-1 border-bottom border-primary"}>Recensioni ricevute</h2>
+            case MY_REVIEW: return <h2 className={"m-0 py-1 border-bottom border-primary page-title"}>Le mie recensioni</h2>
+            case RECEIVED_REVIEW: return <h2 className={"m-0 py-1 border-bottom border-primary page-title"}>Recensioni ricevute</h2>
             case REVIEW_FOR_EVENT:
             default: return <div/>
         }

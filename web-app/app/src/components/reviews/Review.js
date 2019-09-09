@@ -5,6 +5,7 @@ import ApiService from "../../services/api/Api"
 import {Link} from "react-router-dom";
 import TrackVisibility from "react-on-screen"
 import {EventHeaderBanner} from "../event/Event"
+import "./Review.css"
 
 let routes = require("../../services/routes/Routes")
 
@@ -40,8 +41,8 @@ class Review extends React.Component {
                         }
                     }
                     return (
-                        <div className={"row mt-2 px-3"}>
-                            <div className="col-12 card shadow">
+                        <div className={"row mt-2"}>
+                            <div className="col-11 col-sm-10 col-md-10 card shadow mx-auto">
                                 <div className="card-body container-fluid">
                                     {
                                         this.props.type === RECEIVED_REVIEW ?
@@ -67,7 +68,7 @@ class Review extends React.Component {
                                     {
                                         this.props.review.text ?
                                             <div className={"row mt-2"}>
-                                                <div className={"col-12 px-2"}>
+                                                <div className={"col-12 px-2 review-text"}>
                                                     <ShowMore
                                                         lines={5}
                                                         more='Altro'

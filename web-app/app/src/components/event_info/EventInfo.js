@@ -13,11 +13,14 @@ import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
 import {Review, REVIEW_FOR_EVENT} from "../reviews/Review"
 import LoadingSpinner from '../loading_spinner/LoadingSpinner'
+import ResizeService from "../../services/Resize/Resize";
+import AvatarHeader from "../avatar_header/AvatarHeader";
 
 let routes = require("../../services/routes/Routes")
 
 class EventInfo extends React.Component {
 
+    code = undefined
     constructor(props) {
         super(props)
         this.state = {
@@ -25,7 +28,8 @@ class EventInfo extends React.Component {
             eventReviews: [],
             showDefaultMessage: false,
             reviewers: [],
-            redirectHome: false
+            redirectHome: false,
+            mode: this.displayWindowSize()
         }
         ApiService.getEventInformation(
             props.match.params.id,
@@ -51,6 +55,33 @@ class EventInfo extends React.Component {
         )
     }
 
+    displayWindowSize = () => {
+        let width = window.innerWidth;
+        let data = 0
+        if(width < 768){
+            data = 0
+        } else if (width >= 768 && width < 992) {
+            data = 1
+        } else if (width >= 992 && width < 1200) {
+            data = 2
+        } else {
+            data = 3
+        }
+        return data
+    }
+
+    componentDidMount() {
+        this.code = ResizeService.addSubscription(() => {
+            let mode = this.displayWindowSize()
+            this.setState({mode: mode})
+        })
+    }
+
+    componentWillUnmount() {
+        if (this.code >= 0)
+            ResizeService.removeSubscription(this.code)
+    }
+
     renderEventLocationMap = () => {
         if (this.state.eventInfo.location.place_id)
             return (
@@ -68,7 +99,7 @@ class EventInfo extends React.Component {
         let isEventPast = date - new Date() < 0
         if(isEventPast){
             return <section className={"row mt-2"}>
-                <h5 className={"col-12"}>Recensioni</h5>
+                <h5 className={"col-12 event-info-section-title"}>Recensioni</h5>
                 <div className={"col-12"}>
                     {
                         this.state.eventReviews.length > 0 ? 
@@ -113,8 +144,12 @@ class EventInfo extends React.Component {
                 <main className="main-container">
                     {this.redirectToHome()}
                     <section className="row">
-                        <div className="col px-0 text-center">
+                        <div className="col-12 col-md-6 px-0 text-center">
                             <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
+                        </div>
+                        <div className={"col-md-6" + ((this.state.mode > 0 ? "" : " d-none "))}>
+                            <AvatarHeader elem={this.state.eventInfo.organizator} />
+                            <Contacts event={this.state.eventInfo} hideTitle={true} />
                         </div>
                     </section>
 
@@ -144,7 +179,7 @@ class EventInfo extends React.Component {
                         />
                     </section>
 
-                    <section className="row mt-2">
+                    <section className={"row mt-2"  + (this.state.mode === 0 ? "" : " d-none ")}>
                         <div className="col-12">
                             <div className="container-fluid">
                                 <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
@@ -165,20 +200,24 @@ class EventInfo extends React.Component {
 
                     <section className="row mt-2">
                         <div className="col-12">
-                            <h5>Descrizione</h5>
-                            <ShowMore
-                                lines={5}
-                                more='Altro'
-                                less='Mostra meno'
-                            >
-                                {this.state.eventInfo.description}
-                            </ShowMore>
+                            <h5 className={"event-info-section-title"}>Descrizione</h5>
+                            <div className={"event-info-text"}>
+                                <ShowMore
+                                    lines={5}
+                                    more='Altro'
+                                    less='Mostra meno'
+                                >
+                                    {this.state.eventInfo.description}
+                                </ShowMore>
+                            </div>
                         </div>
                     </section>
 
                     {this.renderEventLocationMap()}
 
-                    <Contacts event={this.state.eventInfo}/>
+                    <div className={(this.state.mode === 0 ? "" : " d-none ")}>
+                        <Contacts event={this.state.eventInfo}/>
+                    </div>
                     
                     { this.renderReviews() }
                 </main>

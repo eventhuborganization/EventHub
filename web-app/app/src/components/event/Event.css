@@ -73,6 +73,11 @@
 .badge-text {
 }
 
+.event-banner-event-name {}
+.event-banner-event-info {}
+.event-banner-event-info-icon {}
+.event-banner-event-participants {}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -86,6 +91,18 @@
     .badge-text {
         font-size: larger;
     }
+    .event-banner-event-name {
+        font-size: xx-large;
+    }
+    .event-banner-event-info {
+        font-size: larger;
+    }
+    .event-banner-event-info-icon {
+        font-size: larger;
+    }
+    .event-banner-event-participants {
+        font-size: x-large;
+    }
 }
 
 /*
@@ -93,6 +110,18 @@
 */
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
     .badge-text {
+        font-size: x-large;
+    }
+    .event-banner-event-name {
+        font-size: xx-large;
+    }
+    .event-banner-event-info {
+        font-size: larger;
+    }
+    .event-banner-event-info-icon {
+        font-size: larger;
+    }
+    .event-banner-event-participants {
         font-size: x-large;
     }
 }
@@ -104,6 +133,18 @@
     .badge-text {
         font-size: larger;
     }
+    .event-banner-event-name {
+        font-size: xx-large;
+    }
+    .event-banner-event-info {
+        font-size: larger;
+    }
+    .event-banner-event-info-icon {
+        font-size: larger;
+    }
+    .event-banner-event-participants {
+        font-size: x-large;
+    }
 }
 
 /*
@@ -111,6 +152,18 @@
 */
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
     .badge-text {
+        font-size: x-large;
+    }
+    .event-banner-event-name {
+        font-size: xx-large;
+    }
+    .event-banner-event-info {
+        font-size: larger;
+    }
+    .event-banner-event-info-icon {
+        font-size: larger;
+    }
+    .event-banner-event-participants {
         font-size: x-large;
     }
 }

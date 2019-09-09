@@ -1,8 +1,4 @@
-.event-info-section-title {
-    font-size: 1.25rem;
-}
-
-.event-info-text {
+.review-text {
 }
 
 /**
@@ -15,11 +11,8 @@
  Tablet(MD) Portrait
 */
 @media (min-width: 768px) and (max-width: 992px) {
-    .event-info-section-title {
-        font-size: 1.40rem;
-    }
-    .event-info-text {
-        font-size: 1.20rem;
+    .review-text {
+        font-size: larger;
     }
 }
 
@@ -27,17 +20,17 @@
  Tablet(MD) Landscape
 */
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .review-text {
+        font-size: larger;
+    }
 }
 
 /*
  Desktop/Tablet(LG) Portrait
 */
 @media (min-width: 992px) and (max-width: 1200px) {
-    .event-info-section-title {
-        font-size: 1.40rem;
-    }
-    .event-info-text {
-        font-size: 1.20rem;
+    .review-text {
+        font-size: larger;
     }
 }
 
@@ -45,6 +38,9 @@
  Desktop/Tablet(LG) Landscape
 */
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .review-text {
+        font-size: larger;
+    }
 }
 
 /*
