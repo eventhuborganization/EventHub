@@ -1,6 +1,7 @@
 .btn-filter {}
 .filters-container {}
 .input-search{}
+.logo {}
 
 /**
   Smartphone(SM) Landscape
@@ -18,6 +19,15 @@
  Tablet(MD) Portrait
 */
 @media (min-width: 768px) and (max-width: 992px) {
+    .btn-filter {
+        font-size: larger;
+    }
+    .logo {
+        font-size: x-large;
+    }
+    .input-search {
+        font-size: larger;
+    }
 }
 
 /*
@@ -25,7 +35,14 @@
 */
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
     .btn-filter {
+        font-size: x-large;
         display: inline !important;
+    }
+    .logo {
+        font-size: xx-large;
+    }
+    .input-search {
+        font-size: x-large;
     }
 }
 
@@ -34,7 +51,14 @@
 */
 @media (min-width: 992px) and (max-width: 1200px) {
     .btn-filter {
+        font-size: larger;
         display: inline !important;
+    }
+    .logo {
+        font-size: x-large;
+    }
+    .input-search {
+        font-size: larger;
     }
 }
 
@@ -43,7 +67,14 @@
 */
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
     .btn-filter {
+        font-size: x-large;
         display: inline !important;
+    }
+    .logo {
+        font-size: xx-large;
+    }
+    .input-search {
+        font-size: x-large;
     }
 }
 

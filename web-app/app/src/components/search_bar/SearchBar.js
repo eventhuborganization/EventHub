@@ -452,7 +452,7 @@ class SearchBar extends CallableComponent {
         return (
             <form id={this.containerId} className={containerClass} onSubmit={this.submit}>
                 <nav id="search-bar" className={navBarClassName}>
-                    <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1">EH</h1>
+                    <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1 logo">EH</h1>
                     <div className="col form-inline container-fluid px-1 pb-1">
                         <div className="row w-100 mx-0 d-flex justify-content-between">
                             <label htmlFor={this.search_input_id} className="d-none">Search field</label>
