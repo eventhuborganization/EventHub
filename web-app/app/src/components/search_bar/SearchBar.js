@@ -473,4 +473,30 @@ function SimpleSearchBar(props){
     )
 }
 
-export {SearchBar, SimpleSearchBar, SEARCH_BY_EVENT, SEARCH_BY_PLACE}
+function FriendsSearchBar(props) {
+    return (
+        <nav className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
+            <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1 logo">EH</h1>
+            <form className="col form-inline container-fluid px-1" onSubmit={props.searchPeople}>
+                <div className="row w-100 mx-0 d-flex justify-content-between">
+                    <label htmlFor="tf-search" className="d-none">Cerca persona</label>
+                    <label htmlFor="btn-search" className="d-none">Bottone di ricerca</label>
+                    <input
+                        className="col form-control input-search"
+                        id="tf-search"
+                        name="tf-search"
+                        type="search"
+                        placeholder="Cerca una persona"
+                        value={props.filterValue}
+                        onChange={props.onFilter}
+                    />
+                    <button id="btn-search" name="btn-search" className="col-2 col-md-1 ml-1 btn btn-success" type="submit">
+                        <em className="fas fa-search" aria-hidden="true"></em>
+                    </button>
+                </div>
+            </form>
+        </nav>
+    )
+}
+
+export {SearchBar, SimpleSearchBar, FriendsSearchBar, SEARCH_BY_EVENT, SEARCH_BY_PLACE}

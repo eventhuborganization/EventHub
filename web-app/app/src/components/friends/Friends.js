@@ -4,6 +4,7 @@ import Api from '../../services/api/Api'
 import './Friends.css'
 import {UserBanner} from '../link_maker_banner/LinkMakerBanner'
 import MultipleElementsCard from '../multiple_elements_card/MultipleElementsCard'
+import {FriendsSearchBar} from "../search_bar/SearchBar";
 
 class Friends extends React.Component {
 
@@ -166,27 +167,11 @@ class Friends extends React.Component {
     render = () => {
         return (
             <div className="main-container">
-                <nav className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
-                    <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold">EH</h1>
-                    <form className="col form-inline container-fluid px-1" onSubmit={this.searchPeople}>
-                        <div className="row w-100 mx-0 d-flex justify-content-between">
-                            <label htmlFor="tf-search" className="d-none">Cerca persona</label>
-                            <label htmlFor="btn-search" className="d-none">Bottone di ricerca</label>
-                            <input
-                                className="col-9 form-control"
-                                id="tf-search" 
-                                name="tf-search" 
-                                type="search" 
-                                placeholder="Cerca una persona"
-                                value={this.state.filter}
-                                onChange={this.onFilter}
-                            />
-                            <button id="btn-search" name="btn-search" className="col ml-1 btn btn-success" type="submit">
-                                <em className="fas fa-search" aria-hidden="true"></em>
-                            </button>
-                        </div>
-                    </form>
-                </nav>
+                <FriendsSearchBar
+                    filterValue={this.state.filter}
+                    onFilter={this.onFilter}
+                    searchPeople={this.searchPeople}
+                />
                 {
                     this.props.isLogged || this.state.searchComplete ? 
                         <div className="mt-1">
