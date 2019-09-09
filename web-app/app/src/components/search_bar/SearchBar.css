@@ -3,6 +3,10 @@
 .input-search{}
 .logo {}
 
+.pac-container {
+    z-index: 9999999999;
+}
+
 /**
   Smartphone(SM) Landscape
  */

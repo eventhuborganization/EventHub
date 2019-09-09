@@ -2,8 +2,7 @@ import React from 'react'
 import GoogleApi from "../../services/google_cloud/GoogleMaps";
 import ApiService from '../../services/api/Api'
 import {MEETING, PARTY, SPORT} from "../event/Event";
-import {CallableComponent} from "../redirect/Redirect";
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
+import {CallableComponent} from "../redirect/Redirect"
 import "./SearchBar.css"
 
 let SEARCH_BY_EVENT = 0
@@ -74,11 +73,6 @@ class SearchBar extends CallableComponent {
             }
             this.configured = true
         }
-    }
-
-    componentWillUnmount() {
-        super.componentWillUnmount()
-        clearAllBodyScrollLocks()
     }
 
     updateFiltersMarginTop = () => {
@@ -154,26 +148,6 @@ class SearchBar extends CallableComponent {
                 }
             })
         })
-        let filters = document.getElementById(this.filtersContainerId)
-        let config = { attributes: true}
-        let bodyElement = document.getElementsByTagName("body")[0]
-        let containerElement = document.getElementById(this.containerId)
-        let containerClassToToggle = this.getContainerPositionClass()
-        let callback = function(mutationsList, observer) {
-            for(let mutation of mutationsList) {
-                if (mutation.attributeName === "class" && mutation.target.classList && mutation.target.classList.contains("show")) {
-                    if (containerElement && containerClassToToggle)
-                        containerElement.classList.remove(containerClassToToggle)
-                    disableBodyScroll(bodyElement)
-                } else if (mutation.attributeName === "class" && mutation.target.classList && !mutation.target.classList.contains("show")) {
-                    if (containerElement && containerClassToToggle)
-                        containerElement.classList.add(containerClassToToggle)
-                    enableBodyScroll(bodyElement)
-                }
-            }
-        }
-        const observer = new MutationObserver(callback)
-        observer.observe(filters, config)
     }
 
     placeToLocation = place => {
