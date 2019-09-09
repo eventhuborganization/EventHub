@@ -11,6 +11,7 @@ import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
 import { FriendsTab } from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
 import { SimpleSearchBar } from '../search_bar/SearchBar'
+import LoadingSpinner from '../loading_spinner/LoadingSpinner'
 
 let routes = require("../../services/routes/Routes")
 
@@ -143,34 +144,40 @@ class Profile extends CallableComponent {
         let isMyFriend = !this.props.isLocalUser && this.props.isLogged &&
             this.state.user.linkedUsers.findIndex(elem => elem._id === this.props.localUser._id) >= 0
 
-        let events = this.getEventsByUserTypology()
         let lastBadge = this.state.user.badges && this.state.user.badges.length > 0 ? 
             this.state.user.badges[this.state.user.badges.length - 1] : undefined
         return (
             <main className="main-container">
-                <ProfileHeader {...this.props}
-                               user={this.state.user}
-                               localUser={this.props.localUser}
-                               isMyFriend={isMyFriend}
-                               addUser={this.addFriend}
-                               removeUser={this.removeFriend}
-                               requestPosition={this.requestPosition}
-                />
 
-                <section className="mt-2">
-                    <BadgeBanner badge={lastBadge} emptyLabel="Nessun badge guadagnato al momento"/>
-                </section>
+                {
+                    this.props.userFound ? 
+                        <div>
+                            <ProfileHeader {...this.props}
+                                user={this.state.user}
+                                localUser={this.props.localUser}
+                                isMyFriend={isMyFriend}
+                                addUser={this.addFriend}
+                                removeUser={this.removeFriend}
+                                requestPosition={this.requestPosition}
+                            />
 
-                <section className="mt-3">
-                    <LinkedUsersBanner 
-                        linkedUsers={this.state.user.linkedUsers}
-                        emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.user.organization ? "follower" : "amico")}
-                        typology={this.state.user.organization ? "Followers" : "Amici"}
-                        moreLinkedUsersLink={this.props.isLocalUser ? routes.myFriends : routes.usersFriendsFromPath(this.props.match.url)}
-                    />
-                </section>
+                            <section className="mt-2">
+                                <BadgeBanner badge={lastBadge} emptyLabel="Nessun badge guadagnato al momento"/>
+                            </section>
 
-                {events}
+                            <section className="mt-3">
+                                <LinkedUsersBanner 
+                                    linkedUsers={this.state.user.linkedUsers}
+                                    emptyLabel={"Non " + (this.props.isLocalUser ? "hai" : "ha") + " alcun " + (this.state.user.organization ? "follower" : "amico")}
+                                    typology={this.state.user.organization ? "Followers" : "Amici"}
+                                    moreLinkedUsersLink={this.props.isLocalUser ? routes.myFriends : routes.usersFriendsFromPath(this.props.match.url)}
+                                />
+                            </section>
+                            {this.getEventsByUserTypology()}
+                        </div> :
+                        <LoadingSpinner />
+                    
+                }
             </main>
         )
     }

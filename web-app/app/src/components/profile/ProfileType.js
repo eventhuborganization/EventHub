@@ -29,7 +29,8 @@ class AbstractProfile extends React.Component {
                 linkedUsers: [],
                 pastEvents: [],
                 futureEvents: []
-            }
+            },
+            userFound: false,
         }
     }
 
@@ -49,13 +50,13 @@ class AbstractProfile extends React.Component {
                 data.futureEvents = futureEvents
                 data.pastEvents = pastEvents
                 data.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-                this.setState({user: data})
                 if(this.state.profileComp){
                     this.state.profileComp.newData(data)
                 }
                 if(callback instanceof Function){
                     callback(user)
                 }
+                this.setState({user: data, userFound: true})
             }
         )
     }
@@ -83,6 +84,7 @@ class PersonalProfile extends AbstractProfile {
 
     constructor(props){
         super(props)
+        this.state.userFound = true
         if(!!props.isLogged) {
             this.state.user = {...props.user}
             if(!this.state.user.pastEvents)
@@ -103,7 +105,8 @@ class PersonalProfile extends AbstractProfile {
                     isLocalUser={true} 
                     updateState={this.changeState} 
                     user={this.state.user}
-                    onRef={this.setProfileComponent}/>
+                    onRef={this.setProfileComponent}
+                    userFound={this.state.userFound}/>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>
         )
@@ -120,6 +123,7 @@ class UserProfile extends AbstractProfile {
 
     updateInformation = () => {
         this.state.user._id = this.props.match.params.id
+        this.state.userFound = false
         if(this.props.match.params.id !== this.props.user._id){
             this.getUserInformation()
         }
@@ -155,6 +159,7 @@ class UserProfile extends AbstractProfile {
                             updateState={this.changeState} 
                             user={this.state.user}
                             localUser={this.props.user}
+                            userFound={this.state.userFound}
                             onRef={this.setProfileComponent}
                         />
                     }}
