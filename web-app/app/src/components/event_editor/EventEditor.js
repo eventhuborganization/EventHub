@@ -1,12 +1,24 @@
 import React from 'react'
 import {Redirect} from 'react-router-dom'
-import {PARTY, SPORT, MEETING, EventHeaderBanner, EventLocation, EventOrganizatorInfo} from "../event/Event"
+import '../event_info/EventInfo.css'
+
+import {
+    PARTY,
+    SPORT,
+    MEETING,
+    EventHeaderBanner,
+    EventLocation,
+    EventOrganizatorInfo,
+    EventInteractionPanel
+} from "../event/Event"
 import Contacts from "../contacts/Contacts"
 import {ConfirmButton} from "../floating_button/FloatingButton"
 import ApiService from "../../services/api/Api"
 import {LoginRedirect, RedirectComponent} from "../redirect/Redirect"
 import GoogleApi from "../../services/google_cloud/GoogleMaps"
-import {ImageForCard, LOCAL} from "../image/Image"
+import {IMAGE, ImageForCard, LOCAL} from "../image/Image"
+import AvatarHeader from "../avatar_header/AvatarHeader"
+import ResizeService from "../../services/Resize/Resize"
 
 let routes = require("../../services/routes/Routes")
 
@@ -64,7 +76,8 @@ class EventEditor extends React.Component {
             dateSet: props.onUpdate,
             timeSet: props.onUpdate,
             eventCreated: false,
-            eventUpdated: false
+            eventUpdated: false,
+            mode: this.displayWindowSize()
         }
         if(props.onUpdate && props.location && props.location.event 
             && props.location.event.organizator._id === props.loggedUser._id 
@@ -99,7 +112,26 @@ class EventEditor extends React.Component {
         }
     }
 
+    displayWindowSize = () => {
+        let width = window.innerWidth;
+        let data = 0
+        if(width < 768){
+            data = 0
+        } else if (width >= 768 && width < 992) {
+            data = 1
+        } else if (width >= 992 && width < 1200) {
+            data = 2
+        } else {
+            data = 3
+        }
+        return data
+    }
+
     componentDidMount() {
+        this.code = ResizeService.addSubscription(() => {
+            let mode = this.displayWindowSize()
+            this.setState({mode: mode})
+        })
         if (this.props.isLogged)
             GoogleApi.loadGoogleMapsScript(() => {
                 let inputAddress = document.getElementById('address')
@@ -157,6 +189,11 @@ class EventEditor extends React.Component {
             document.getElementById("description").value = this.state.event.description
             this.renderDate()
         }
+    }
+
+    componentWillUnmount() {
+        if (this.code >= 0)
+            ResizeService.removeSubscription(this.code)
     }
 
     updateName = (event) => {
@@ -406,7 +443,7 @@ class EventEditor extends React.Component {
         return  this.state.onUpdate || this.props.loggedUser.organization ? <div/> :
             <div className="row d-flex align-items-center">
                 <div className="col-12">
-                    <label className="m-0">Visibilità</label>
+                    <label className="m-0 event-info-section-title">Visibilità</label>
                     <div className="custom-control custom-radio">
                         <input
                             type="radio"
@@ -417,7 +454,7 @@ class EventEditor extends React.Component {
                             onChange={this.updateVisibility}
                             defaultChecked={this.state.event.public}
                         />
-                        <label className="m-0 custom-control-label" htmlFor="public">Evento pubblico</label>
+                        <label className="m-0 custom-control-label event-info-text" htmlFor="public">Evento pubblico</label>
                     </div>
                     <div className="custom-control custom-radio">
                         <input
@@ -429,7 +466,7 @@ class EventEditor extends React.Component {
                             onChange={this.updateVisibility}
                             defaultChecked={!this.state.event.public}
                         />
-                        <label className="m-0 custom-control-label" htmlFor="private">Evento privato</label>
+                        <label className="m-0 custom-control-label event-info-text" htmlFor="private">Evento privato</label>
                     </div>
                 </div>
         </div>
@@ -459,9 +496,10 @@ class EventEditor extends React.Component {
                 {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.renderRedirect()}
+
                 <section className="row">
-                    <div id="thumbnail-preview" className="col px-0 text-center bg-light" onClick={this.selectThumbnail}>
-                        <ImageForCard imageName={image} type={LOCAL} text={"Clicca per aggiungere un'immagine"}/>
+                    <div id="thumbnail-preview" className="col-12 col-md-6 px-0 text-center" onClick={this.selectThumbnail}>
+                        <ImageForCard imageName={image} type={LOCAL} text={"Clicca per aggiungere un'immagine"} />
                     </div>
                     <div className="d-none">
                         <label htmlFor="thumbnail" >Copertina dell'evento.</label>
@@ -474,6 +512,10 @@ class EventEditor extends React.Component {
                             onChange={this.updateThumbnailPreview}
                         />
                     </div>
+                    <div className={"col-md-6" + ((this.state.mode > 0 ? "" : " d-none "))}>
+                        <AvatarHeader elem={this.state.event.organizator} />
+                        <Contacts event={this.state.event} hideTitle={true} />
+                    </div>
                 </section>
 
                 <section className={"sticky-top"}>
@@ -485,7 +527,7 @@ class EventEditor extends React.Component {
                         {this.renderVisibility()}
                         <div className="row d-flex align-items-center">
                             <div className={this.state.onUpdate ? "col-12" : "col-7 pr-2"}>
-                                <label htmlFor="name" className="m-0">Nome dell'evento</label>
+                                <label htmlFor="name" className="m-0 event-info-section-title">Nome dell'evento</label>
                                 <input
                                     type="text"
                                     id="name"
@@ -499,7 +541,7 @@ class EventEditor extends React.Component {
                             {
                                 this.state.onUpdate ? <div/> : 
                                     <div className="col-5 pl-2">
-                                        <label className="m-0" htmlFor="typology">Typology</label>
+                                        <label className="m-0 event-info-section-title" htmlFor="typology">Typology</label>
                                         <select defaultValue={"placeholder"}
                                                 onChange={this.updateType}
                                                 className="form-control"
@@ -514,7 +556,7 @@ class EventEditor extends React.Component {
                         </div>
                         <div className="row mt-2">
                             <div className="col-7 pr-2">
-                                <label htmlFor="date" className="m-0">Data</label>
+                                <label htmlFor="date" className="m-0 event-info-section-title">Data</label>
                                 <input
                                     id="date"
                                     name="date"
@@ -525,7 +567,7 @@ class EventEditor extends React.Component {
                                 />
                             </div>
                             <div className="col-5 pl-2">
-                                <label htmlFor="time" className="m-0">Orario</label>
+                                <label htmlFor="time" className="m-0 event-info-section-title">Orario</label>
                                 <input
                                     id="time"
                                     name="time"
@@ -538,7 +580,7 @@ class EventEditor extends React.Component {
                         </div>
                         <div className="row d-flex align-item-center mt-2">
                             <div className="col-12">
-                                <label htmlFor="address" className="m-0">Luogo</label>
+                                <label htmlFor="address" className="m-0 event-info-section-title">Luogo</label>
                                 <input
                                     id="address"
                                     name="address"
@@ -550,7 +592,7 @@ class EventEditor extends React.Component {
                         </div>
                         <div className="row d-flex align-item-center mt-2">
                             <div className="col-5">
-                                <label htmlFor="max-participants" className="m-0">
+                                <label htmlFor="max-participants" className="m-0 event-info-section-title">
                                     Partecipanti(max)
                                 </label>
                                 <input
@@ -568,12 +610,20 @@ class EventEditor extends React.Component {
 
                 <section className="row mt-2">
                     <div className="col-12">
-                        <h5>Dettagli</h5>
+                        <h5 className={"event-info-section-title font-weight-bold"}>Dettagli</h5>
                         <div className="container-fluid">
-                            <EventOrganizatorInfo organizator={this.state.event.organizator} level="h6"/>
+
+                            <section className={"row mt-2"  + (this.state.mode === 0 ? "" : " d-none ")}>
+                                <div className="col-12">
+                                    <div className="container-fluid">
+                                        <EventOrganizatorInfo organizator={this.state.event.organizator} level="h6"/>
+                                    </div>
+                                </div>
+                            </section>
+
                             <div className="row mt-2">
                                 <div className="col-12 px-0">
-                                    <h6>Descrizione</h6>
+                                    <h6 className={"event-info-section-title"}>Descrizione</h6>
                                     <textarea id="description" className="w-100 form-control" onChange={this.updateDescription} />
                                 </div>
                             </div>
@@ -583,7 +633,9 @@ class EventEditor extends React.Component {
 
                 {this.renderEventLocationMap()}
 
-                <Contacts event={this.state.event}/>
+                <div className={(this.state.mode === 0 ? "" : " d-none ")}>
+                    <Contacts event={this.state.event}/>
+                </div>
 
                 {
                     this.state.onUpdate ? 
