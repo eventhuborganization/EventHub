@@ -66,34 +66,35 @@ class Friends extends React.Component {
 
     searchPeople = (event) => {
         event.preventDefault()
-        Api.searchUsers(
-            this.state.filter,
-            () => {
-                let friends = this.getAllFriends(elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()))
-                this.setState({friends: friends})
-                this.props.onError("Si è verificato un errore durante la ricerca, riprovare.")
-            },
-            result => {
-                let users = []
-                let organizations = []
-                let friends = this.getAllFriends(elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()))
-                result.users.forEach(user => {
-                    if(user.organization){
-                        organizations.push(user)
-                    } else {
-                        users.push(user)
-                    }
-                })
-                users = this.fromUsersToUserBanner(users)
-                organizations = this.fromUsersToUserBanner(organizations)
+        if (this.state.filter)
+            Api.searchUsers(
+                this.state.filter,
+                () => {
+                    let friends = this.getAllFriends(elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+                    this.setState({friends: friends})
+                    this.props.onError("Si è verificato un errore durante la ricerca, riprovare.")
+                },
+                result => {
+                    let users = []
+                    let organizations = []
+                    let friends = this.getAllFriends(elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+                    result.users.forEach(user => {
+                        if(user.organization){
+                            organizations.push(user)
+                        } else {
+                            users.push(user)
+                        }
+                    })
+                    users = this.fromUsersToUserBanner(users)
+                    organizations = this.fromUsersToUserBanner(organizations)
 
-                this.setState({
-                    friends: friends,
-                    users: users,
-                    organizations: organizations,
-                    searchComplete: true
+                    this.setState({
+                        friends: friends,
+                        users: users,
+                        organizations: organizations,
+                        searchComplete: true
+                    })
                 })
-            })
     }
 
     addFriend = (friend) => {

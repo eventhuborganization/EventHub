@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import {PLACEHOLDER_USER_CIRCLE, PLACEHOLDER_GROUP_CIRCLE, RoundedSmallImage} from "../image/Image"
+import "./LinkMakerBanner.css"
 
 export const INVITE_BUTTON = 0
 export const ADD_FRIEND_BUTTON = 1
@@ -63,7 +64,7 @@ export function LinkMakerBanner(props) {
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link
                 to={link}
-                className={"col-4 col-md-2 col-lg-1" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
+                className={"col-4 col-md-2 " + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
                 style={{textDecoration: "none"}}
             >
                 <RoundedSmallImage 
@@ -71,11 +72,11 @@ export function LinkMakerBanner(props) {
                     placeholderType={props.isGroup ? PLACEHOLDER_GROUP_CIRCLE : PLACEHOLDER_USER_CIRCLE}/>
             </Link>
             <Link to={link} className="col px-0" style={{textDecoration: "none"}}>
-                <div className="font-weight-bold text-dark">{name}</div>
+                <div className="font-weight-bold text-dark elem-name">{name}</div>
                 {
                     props.isGroup || props.isLite
                         ? <div/>
-                        : <div className="text-muted small">
+                        : <div className="text-muted small elem-info">
                             {props.elem.organization ? "Organizzazione" : "Utente"} - {props.elem.address.city}
                         </div>
                 }
@@ -83,7 +84,7 @@ export function LinkMakerBanner(props) {
             {
                 props.showButton ? 
                 <div className="col-3 text-center px-0">
-                    <button id={props.buttonId} className={"btn btn-sm btn-primary " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
+                    <button id={props.buttonId} className={"btn btn-sm btn-primary button-size " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
                         {buttonText}
                     </button>
                 </div> :

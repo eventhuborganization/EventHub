@@ -1,4 +1,5 @@
 import React from 'react'
+import "./MultipleElementsCard.css"
 
 export default class MultipleElementsCard extends React.Component {
     
