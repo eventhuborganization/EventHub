@@ -78,10 +78,11 @@ class Friends extends React.Component {
                     let users = []
                     let organizations = []
                     let friends = this.getAllFriends(elem => elem.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+
                     result.users.forEach(user => {
-                        if(user.organization){
+                        if(user.organization && this.state.friendsArray.findIndex(friend => friend._id === user._id) < 0){
                             organizations.push(user)
-                        } else {
+                        } else if(this.state.friendsArray.findIndex(friend => friend._id === user._id) < 0){
                             users.push(user)
                         }
                     })
