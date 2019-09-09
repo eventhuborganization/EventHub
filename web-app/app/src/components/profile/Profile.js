@@ -1,7 +1,15 @@
 import React from 'react'
 import Api from '../../services/api/Api'
 
-import {ProfileAction, ProfileBadge, LinkedUsersBanner, BadgeBanner, EventsBanner, ProfileControls} from './Profiles'
+import {
+    ProfileAction,
+    ProfileBadge,
+    LinkedUsersBanner,
+    BadgeBanner,
+    EventsBanner,
+    ProfileControls,
+    ProfileHeader
+} from './Profiles'
 import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
 import { FriendsTab } from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
@@ -147,72 +155,14 @@ class Profile extends CallableComponent {
             this.state.user.badges[this.state.user.badges.length - 1] : undefined
         return (
             <main className="main-container">
-                <section className="row">
-                    <div className="col card bg-dark px-0">
-                        <div className="card-img px-0 text-center bg-dark" style={{minHeight: 150}}>
-                            <ImageForCard imageName={this.state.user.avatar} type={AVATAR}/>
-                        </div>
-                        <div className="card-img-overlay text-white">
-                            <div className="d-flex align-items-start flex-column h-100">
-                                <ProfileControls 
-                                    {...this.props}
-                                    isLocalUser={this.props.isLocalUser}
-                                    isMyFriend={isMyFriend} 
-                                    _id={this.state.user._id}
-                                    settingsLink={routes.settings}
-                                    removeClicked={this.removeFriend}
-                                />
-                                <div className="container-fluid mt-auto">
-                                    <div className="row">
-                                        <div className="col d-flex justify-content-between px-2 align-items-center font-weight-bold">
-                                            <ProfileBadge
-                                                iconName={"trophy"}
-                                                number={this.state.user.points >= 0 ? this.state.user.points : 0} 
-                                            />
-                                            <ProfileAction
-                                                id="addButton"
-                                                iconName={"plus"}
-                                                show={!this.props.isLocalUser && !isMyFriend 
-                                                    && this.props.isLogged && !this.props.localUser.organization}
-                                                actionSelected={this.addFriend}
-                                            />
-                                            <ProfileAction
-                                                iconName={"street-view"}
-                                                show={!this.props.isLocalUser && isMyFriend && !this.state.user.organization && !this.props.localUser.organization && this.props.isLogged}
-                                                actionSelected={this.requestPosition}
-                                            />
-                                            <ProfileBadge
-                                                iconName={"users"}
-                                                number={this.state.user.linkedUsers.length} 
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="row mt-2">
-                    <div className="col-12 text-center">
-                        <h2 className={"text-center mb-0"}>
-                            {
-                                this.state.user.organization ?
-                                    <div><em className="text-secondary fas fa-user-tie"></em> {this.state.user.name}</div> :
-                                    <div>{this.state.user.name + " " + this.state.user.surname}</div>
-                            }
-                        </h2>
-                        <p className={"text-muted" + (this.state.user.organization ? " h6 " : " h5 ")}>
-                            {
-                                this.state.user.organization ?
-                                    this.state.user.address.address + ", " +
-                                    this.state.user.address.city + ", " +
-                                    this.state.user.address.province :
-                                    this.state.user.address.city
-                            }
-                        </p>
-                    </div>
-                </section>
+                <ProfileHeader {...this.props}
+                               user={this.state.user}
+                               localUser={this.props.localUser}
+                               isMyFriend={isMyFriend}
+                               addUser={this.addFriend}
+                               removeUser={this.removeFriend}
+                               requestPosition={this.requestPosition}
+                />
 
                 <section className="mt-2">
                     <BadgeBanner badge={lastBadge} emptyLabel="Nessun badge guadagnato al momento"/>

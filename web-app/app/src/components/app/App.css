@@ -10,6 +10,12 @@ footer em {
     width: 30%
 }
 
+.page-title {
+}
+
+.button-size {
+}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -26,6 +32,12 @@ footer em {
     .main-container {
         margin-bottom: 20%;
     }
+    .page-title {
+        font-size: 3rem;
+    }
+    .button-size {
+        font-size: larger;
+    }
 }
 
 /*
@@ -34,6 +46,12 @@ footer em {
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
     .main-container {
         margin-bottom: 17%;
+    }
+    .page-title {
+        font-size: 3rem;
+    }
+    .button-size {
+        font-size: x-large;
     }
 }
 
@@ -44,6 +62,12 @@ footer em {
     .main-container {
         margin-bottom: 18%;
     }
+    .page-title {
+        font-size: 3rem;
+    }
+    .button-size {
+        font-size: larger;
+    }
 }
 
 /*
@@ -52,6 +76,12 @@ footer em {
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
     .main-container {
         margin-bottom: 14%;
+    }
+    .page-title {
+        font-size: 3rem;
+    }
+    .button-size {
+        font-size: x-large;
     }
 }
 

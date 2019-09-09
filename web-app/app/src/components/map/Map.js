@@ -10,10 +10,12 @@ import {
     SQUARE
 } from "../floating_button/FloatingButton"
 import LocalStorage from "local-storage"
+import ResizeService from "../../services/Resize/Resize"
 
 class Map extends React.Component {
 
     #mapDataLocalStorageName = "map-data"
+    code = undefined
 
     constructor(props) {
         super(props)
@@ -38,11 +40,12 @@ class Map extends React.Component {
 
     componentDidMount() {
         this.updateMapHeight()
-        window.onresize = () => this.updateMapHeight()
+        this.code = ResizeService.addSubscription(() => this.updateMapHeight())
         this.setCurrentPositionAsCenter()
     }
     componentWillUnmount() {
-        window.onresize = () => {}
+        if (this.code >= 0)
+            ResizeService.removeSubscription(this.code)
     }
 
     setCurrentPositionAsCenter = () => {

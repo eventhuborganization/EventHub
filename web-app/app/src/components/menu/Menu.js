@@ -1,5 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import "./Menu.css"
 
 function LinkToPage(props){
     let iconClass = "text-secondary " + 
@@ -13,8 +14,8 @@ function LinkToPage(props){
                 className={"col-11 py-2 border border-secondary rounded mx-auto mb-2"} 
                 style={{textDecoration: "none"}}>
                     <div className="row d-flex align-items-center">
-                        <em className={"col-1 " + iconClass}></em>
-                        <span className={(props.showBadge ? "col-10" : "col") + " text-dark my-0 h5"}>{props.name}</span>
+                        <em className={"col-1 menu-item-icon " + iconClass}></em>
+                        <span className={(props.showBadge ? "col-10" : "col") + " text-dark my-0 menu-item-text"}>{props.name}</span>
                         {
                             props.showBadge ? 
                                 <div className="d-flex align-items-center px-0"> <span className="badge badge-danger">{props.badgeInfo}</span> </div>

@@ -3,6 +3,8 @@ import {Link} from 'react-router-dom'
 import styles from './MultipleElementsBanner.module.css'
 import {BORDER_PRIMARY, EmptyAvatar, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage, MoreAvatar} from "../image/Image"
 import Api from '../../services/api/Api'
+import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder";
+import ResizeService from "../../services/Resize/Resize"
 
 let routes = require("../../services/routes/Routes")
 
@@ -39,22 +41,21 @@ function MultipleElementsBanner(props){
         <div>
             <div className={"row " + padding + (props.margin ? props.margin : "" )}>
                 <div className={"col" + padding}>
-                    <div className={props.level}><em className={iconClass}></em> {props.title}</div>
+                    <div className={props.level}><em className={iconClass + " " + styles.bannerTitleIcon}></em> <span className={styles.bannerTitle}> {props.title} </span></div>
                 </div>
             </div>
-            <div className={"row "}>
-                {
-                    props.elements.length > 0 ? props.elements : 
-                    <div className={"col-11 col-md-6 mx-auto border border-primary p-2 " + styles.emptyList}> 
-                        {props.emptyLabel} 
-                    </div>
-                }
-            </div>
+            {
+                props.elements.length > 0 ?
+                    <div className={"row "}>{props.elements}</div> :
+                    <NoItemsPlaceholder placeholder={props.emptyLabel} />
+            }
         </div>
     )
 }
 
 class MultipleUsersBanner extends React.Component {
+
+    code = undefined
 
     constructor(props){
         super(props)
@@ -79,14 +80,14 @@ class MultipleUsersBanner extends React.Component {
     displayWindowSize = () => {
         let width = window.innerWidth;
         let data;
-        if(width < 767.98){
+        if(width < 768){
             data = [3,4]
-        } else if (width > 767.98 && width < 991.98){
-            data = [7,5]
-        } else if (width > 991.98 && width < 1199.98){
-            data = [10,6]
+        } else if (width >= 768 && width < 992){
+            data = [5,5]
+        } else if (width >= 992 && width < 1200){
+            data = [7,6]
         } else {
-            data = [12,7]
+            data = [10,7]
         }
         this.loadUsersInfo(this.props.users, data[0] + 1)
         return data
@@ -110,17 +111,18 @@ class MultipleUsersBanner extends React.Component {
     } 
 
     componentDidMount = () => {
-       window.onresize = () => {
+        this.code = ResizeService.addSubscription(() => {
             let toShow = this.displayWindowSize()
             this.setState({
                 avatarsToShow: toShow[0],
                 emptyAvatarSize: toShow[1]
             })
-        }
+        })
     }
 
     componentWillUnmount = () => {
-        window.onresize = undefined
+        if (this.code >= 0)
+            ResizeService.removeSubscription(this.code)
     }
 
     render = () => {

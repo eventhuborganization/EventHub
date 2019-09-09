@@ -1,17 +1,8 @@
-.small-avatar-size {
-    height: 60px;
-    width: 60px;
+.menu-item-text {
+    font-size: 1.25rem;
 }
 
-.big-avatar-size {
-    height: 90px;
-    width: 90px;
-}
-
-.friendsIcon {
-    border-width: 2px !important;
-    color: rgba(0,0,180, 0.8);
-}
+.menu-item-icon {}
 
 /**
   Smartphone(SM) Landscape
@@ -23,9 +14,11 @@
  Tablet(MD) Portrait
 */
 @media (min-width: 768px) and (max-width: 992px) {
-    .small-avatar-size {
-        height: 90px;
-        width: 90px;
+    .menu-item-text {
+        font-size: 1.40rem;
+    }
+    .menu-item-icon {
+        font-size: 1.55rem;
     }
 }
 
@@ -33,19 +26,17 @@
  Tablet(MD) Landscape
 */
 @media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
-    .small-avatar-size {
-        height: 90px;
-        width: 90px;
-    }
 }
 
 /*
  Desktop/Tablet(LG) Portrait
 */
 @media (min-width: 992px) and (max-width: 1200px) {
-    .small-avatar-size {
-        height: 90px;
-        width: 90px;
+    .menu-item-text {
+        font-size: 1.40rem;
+    }
+    .menu-item-icon {
+        font-size: 1.55rem;
     }
 }
 
@@ -53,10 +44,6 @@
  Desktop/Tablet(LG) Landscape
 */
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
-    .small-avatar-size {
-        height: 90px;
-        width: 90px;
-    }
 }
 
 /*

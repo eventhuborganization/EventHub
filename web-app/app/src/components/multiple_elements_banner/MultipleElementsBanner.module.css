@@ -10,3 +10,63 @@
     border-width: 2px !important;
     color: rgba(0,0,180, 0.8);
 }
+
+.bannerTitle {
+    font-size: 1.25rem;
+}
+
+.bannerTitleIcon {}
+
+/**
+  Smartphone(SM) Landscape
+ */
+@media screen and (orientation:landscape) {
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .bannerTitle {
+        font-size: 1.40rem;
+    }
+    .bannerTitleIcon {
+        font-size: 1.55rem;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .bannerTitle {
+        font-size: 1.40rem;
+    }
+    .bannerTitleIcon {
+        font-size: 1.55rem;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+}

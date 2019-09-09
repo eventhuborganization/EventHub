@@ -23,3 +23,74 @@
     text-shadow: -1px 0 darkblue, 0 1px darkblue, 1px 0 darkblue, 0 -1px darkblue;
     color: white;
 }
+
+/**
+  Smartphone(SM) Landscape
+ */
+@media screen and (orientation:landscape) {
+    .profileBadge {
+        border-width: 2px !important;
+        background-color: rgba(0,0,0, 0.4);
+        text-shadow: -1px 0 darkblue, 0 1px darkblue, 1px 0 darkblue, 0 -1px darkblue;
+    }
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .profileBadge {
+        font-size: larger;
+        border-width: 2px !important;
+        background-color: white;
+        text-shadow: unset;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .profileBadge {
+        font-size: larger;
+        border-width: 2px !important;
+        background-color: white;
+        text-shadow: unset;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .profileBadge {
+        font-size: larger;
+        border-width: 2px !important;
+        background-color: white;
+        text-shadow: unset;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .profileBadge {
+        font-size: larger;
+        border-width: 2px !important;
+        background-color: white;
+        text-shadow: unset;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+}

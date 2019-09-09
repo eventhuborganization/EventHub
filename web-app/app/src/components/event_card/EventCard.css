@@ -26,3 +26,89 @@
     color: white !important;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
+
+/**
+  Smartphone(SM) Landscape
+ */
+@media screen and (orientation:landscape) {
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .event-name {
+        font-size:1.65rem;
+    }
+
+    .event-text {
+        font-size:1.25rem;
+    }
+
+    .event-place {
+        font-size: 1rem;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .event-name {
+        font-size:1.65rem;
+    }
+
+    .event-text {
+        font-size:1.25rem;
+    }
+
+    .event-place {
+        font-size: 1rem;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .event-name {
+        font-size:1.65rem;
+    }
+
+    .event-text {
+        font-size:1.25rem;
+    }
+
+    .event-place {
+        font-size: 1rem;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .event-name {
+        font-size:1.65rem;
+    }
+
+    .event-text {
+        font-size:1.25rem;
+    }
+
+    .event-place {
+        font-size: 1rem;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+}

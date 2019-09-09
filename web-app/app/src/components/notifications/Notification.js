@@ -139,7 +139,7 @@ class Notification extends React.Component {
 
     getDescriptionComponentByType(type) {
         return this.isEventType(type) ? 
-            <Eventdescription description={this.state.notificationTypes[type]} event={this.props.notification.event} />
+            <EventDescription description={this.state.notificationTypes[type]} event={this.props.notification.event} />
             : <UserDescription description={this.state.notificationTypes[type]} />
     }
 
@@ -161,7 +161,7 @@ class Notification extends React.Component {
         let type = this.props.notification.typology
         return (
             <div className="row">
-                <div className="col card shadow my-2 mx-2 px-0">
+                <div className="col-11 col-sm-10 col-md-10 card shadow my-2 mx-auto px-0">
                     <div className="card-body container-fluid py-2">
                         {this.getParentComponentByType(type, 
                             <div className="row">
@@ -216,10 +216,10 @@ class NotificationSenderInformation extends React.Component {
     render = () => {
         return (
             <div className="row">
-                <div className="col-3 px-0 my-auto">
+                <div className="col px-0 my-auto">
                     <RoundedSmallImage imageName={this.props.notification.sender.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
                 </div>
-                <div className="col-9 d-flex flex-column justify-content-center px-1">
+                <div className="col-8 d-flex flex-column justify-content-center px-1">
                     <span className="text-secondary time-passed">{this.getTime()}</span>
                     <span className="text-invited"><span className="font-weight-bold">{this.props.notification.sender.name} {this.props.notification.sender.surname}</span> {this.props.description}</span>
                 </div>
@@ -244,12 +244,18 @@ let EventImage = (props) => {
     )
 }
 
-let Eventdescription = (props) => {
-    return (<p>{props.description} <b>{props.event.name}</b></p>)
+let EventDescription = (props) => {
+    return (<Description>{props.description} <b>{props.event.name}</b></Description>)
 }
 
 let UserDescription = (props) => {
-    return (<p>{props.description}</p>)
+    return (<Description>{props.description}</Description>)
+}
+
+let Description = props => {
+    return (
+        <p className={"notification-text"}>{props.children}</p>
+    )
 }
 
 let AcceptFriendshipButton = (props) => {

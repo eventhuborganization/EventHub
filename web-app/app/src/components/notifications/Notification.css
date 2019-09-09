@@ -5,3 +5,84 @@
 .text-invited {
     font-size: 90%;
 }
+
+.notification-text {
+}
+
+/**
+  Smartphone(SM) Landscape
+ */
+@media screen and (orientation:landscape) {
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .notification-text {
+        font-size: x-large;
+    }
+    .time-passed {
+        font-size: large;
+    }
+    .text-invited {
+        font-size: larger;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .notification-text {
+        font-size: x-large;
+    }
+    .time-passed {
+        font-size: large;
+    }
+    .text-invited {
+        font-size: larger;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .notification-text {
+        font-size: x-large;
+    }
+    .time-passed {
+        font-size: large;
+    }
+    .text-invited {
+        font-size: larger;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .notification-text {
+        font-size: x-large;
+    }
+    .time-passed {
+        font-size: large;
+    }
+    .text-invited {
+        font-size: larger;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+}

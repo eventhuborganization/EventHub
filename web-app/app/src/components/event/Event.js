@@ -26,12 +26,13 @@ let getButtonClassName = (eventType, buttonType, noMargin) => {
         default: break
     }
     let margin = noMargin ? "" : " ml-2"
+    let common = "btn button-size "
     if (eventType === PARTY)
-        return "btn partyButton partyButton" + buttonClass + margin
+        return common + " partyButton partyButton" + buttonClass + margin
     else if (eventType === MEETING)
-        return "btn meetingButton meetingButton" + buttonClass + margin
+        return common + " meetingButton meetingButton" + buttonClass + margin
     else if (eventType === SPORT)
-        return "btn sportButton sportButton" + buttonClass + margin
+        return common + " sportButton sportButton" + buttonClass + margin
 }
 
 class FollowButton extends React.Component {
@@ -196,7 +197,7 @@ let EventBadge = (props) => {
         typeClass = "sport sportBadge"
         label = "Sport"
     }
-    return (<div className={"badge badge-pill " + typeClass}>#{label}</div>)
+    return (<div className={"badge badge-pill badge-text " + typeClass}>#{label}</div>)
 }
 
 let EventInteractionPanel = (props) => {
