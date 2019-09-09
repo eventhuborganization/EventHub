@@ -14,9 +14,6 @@ import { SimpleSearchBar } from '../search_bar/SearchBar'
 
 let routes = require("../../services/routes/Routes")
 
-/**
- * I badge sono ancora da gestire!!!
- */
 class Profile extends CallableComponent {
 
     constructor(props){
@@ -188,6 +185,11 @@ class UserFriends extends React.Component {
             filter: "",
             linkedUsers: props.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
         }
+        Api.getUserInformation(
+            this.props.match.params.id,
+            () => this.props.onError("Non è stato possibile ottenere le informazioni, riprova"),
+            user => this.setState({linkedUsers: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))})
+        )
     }
 
     onFilter = (event) => {
@@ -227,7 +229,9 @@ class UserFriends extends React.Component {
     }
 
     cantAddFriend = (friend) => {
-        return !this.props.isLogged || this.props.localUser.linkedUsers.includes(friend) || friend._id === this.props.localUser._id
+        return !this.props.isLogged || !this.props.localUser
+                || this.props.localUser.linkedUsers.findIndex(user => user._id === friend._id) >= 0 
+                || friend._id === this.props.localUser._id
     }
 
     getAllFriends = () => {

@@ -141,6 +141,7 @@ class UserProfile extends AbstractProfile {
                     render={() => {
                         return <UserFriends {...this.props}
                             linkedUsers={this.state.user.linkedUsers}
+                            localUser={this.props.user}
                         />
                     }} 
                 />
