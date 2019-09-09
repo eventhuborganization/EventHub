@@ -1,0 +1,77 @@
+.icon {
+    font-size: 1.33333em;
+}
+
+.homepage-icon {
+    font-size: 2em;
+}
+
+/**
+  Smartphone(SM) Landscape
+ */
+@media screen and (orientation:landscape) {
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .icon {
+        font-size: 1.8em;
+    }
+
+    .homepage-icon {
+        font-size: 2.5em;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .icon {
+        font-size: 1.8em;
+    }
+
+    .homepage-icon {
+        font-size: 2.5em;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .icon {
+        font-size: 1.8em;
+    }
+
+    .homepage-icon {
+        font-size: 2.5em;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .icon {
+        font-size: 1.8em;
+    }
+
+    .homepage-icon {
+        font-size: 2.5em;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) {
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (orientation: landscape) {
+}

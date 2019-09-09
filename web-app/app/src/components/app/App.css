@@ -16,6 +16,9 @@ footer em {
 .button-size {
 }
 
+.notification-badge{
+}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -38,6 +41,9 @@ footer em {
     .button-size {
         font-size: larger;
     }
+    .notification-badge{
+        font-size: 0.9rem;
+    }
 }
 
 /*
@@ -52,6 +58,9 @@ footer em {
     }
     .button-size {
         font-size: x-large;
+    }
+    .notification-badge{
+        font-size: 0.9rem;
     }
 }
 
@@ -68,6 +77,9 @@ footer em {
     .button-size {
         font-size: larger;
     }
+    .notification-badge{
+        font-size: 0.9rem;
+    }
 }
 
 /*
@@ -82,6 +94,9 @@ footer em {
     }
     .button-size {
         font-size: x-large;
+    }
+    .notification-badge{
+        font-size: 0.9rem;
     }
 }
 

@@ -18,7 +18,7 @@ function LinkToPage(props){
                         <span className={(props.showBadge ? "col-10" : "col") + " text-dark my-0 menu-item-text"}>{props.name}</span>
                         {
                             props.showBadge ? 
-                                <div className="d-flex align-items-center px-0"> <span className="badge badge-danger">{props.badgeInfo}</span> </div>
+                                <div className="d-flex align-items-center px-0"> <span className="badge badge-danger notification-badge">{props.badgeInfo}</span> </div>
                                 : <div/> 
                         }
                     </div>
