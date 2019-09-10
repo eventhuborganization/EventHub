@@ -56,7 +56,7 @@ let mapEvent = (event) => {
     let location = event.location ? {
         address: event.location.city
     } : {}
-    if(event.location.geo && event.location.geo.coordinates){
+    if(event.location && event.location.geo && event.location.geo.coordinates){
         location.lat = event.location.geo.coordinates[1]
         location.lng = event.location.geo.coordinates[0]
     }
@@ -67,7 +67,7 @@ let mapEvent = (event) => {
         followers: event.followers || [],
         maxParticipants: event.maxParticipants || event.maximumParticipants,
         name: event.name,
-        organizator: mapUser(event.organizator),
+        organizator: event.organizator ? mapUser(event.organizator) : {_id: event.organizator},
         participants: event.participants || [],
         numParticipants: event.participants ? event.participants.length : 0,
         public: event.public,
@@ -275,13 +275,14 @@ let createEventQueryConfigs = (data) => {
  * @param onSuccess {function(response)}
  */
 let getEvents = (data, onError, onSuccess) => {
+    console.log(data)
     let config = createEventQueryConfigs(data)
     let index = data && data.fromIndex ? data.fromIndex : 0
     managePromise(
         Axios.get('/events/' + index, config),
         [201, 200],
         onError,
-        response => onSuccess(response.data.map(mapEvent))
+        response => {console.log(response); onSuccess(response.data.map(mapEvent))}
     )
 }
 
@@ -317,13 +318,14 @@ let getEventsByOrganizator = (organizatorId, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let searchEvents = (data, onError, onSuccess) => {
+    console.log(data)
     let config = createEventQueryConfigs(data)
     let name = data && data.event ? data.event.name : ""
     managePromise(
         Axios.get('/events/search/' + name, config),
         [200],
         onError,
-        response => onSuccess(response.data.map(mapEvent))
+        response => {console.log(response); onSuccess(response.data.map(mapEvent))}
     )
 }
 
