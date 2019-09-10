@@ -152,3 +152,15 @@ exports.isBadgeEarned = (badge, map) => {
     let successfullRequirements = badge.requirements.filter(req => map.get(req.action.toString()) >= req.quantity)
     return successfullRequirements.length === badge.requirements.length;
 }
+
+exports.getCountedUserActions = (user) => {
+    let map = new Map()
+    user.actions.forEach(element => {
+        var value = map.get(element.action.toString())
+        if(!value)
+            value = 0
+        value++
+        map.set(element.action.toString(), value)
+    })
+    return map
+}

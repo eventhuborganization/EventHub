@@ -27,6 +27,7 @@ import { ReviewModal, Modal } from '../modals/Modals'
 import EventsByOrganizator from '../event/EventsByOrganizator'
 import NavigationBar from '../navigation_bar/NavigationBar'
 import EventsPartecipated from '../event/EventsParticipated'
+import Badges from '../badges/Badges'
 
 let routes = require("../../services/routes/Routes")
 
@@ -378,6 +379,13 @@ class App extends React.Component {
                                 onSuccess={this.onSuccess}
                                 showMessage={this.showModal}
                                 showReviewModal={this.showReviewModal}
+                  />}
+              />
+              <Route path={routes.myProgresses} exact render={(props) =>
+                  <Badges {...props}
+                                isLogged={this.state.isLogged}
+                                user={this.state.user}
+                                onError={this.onError}
                   />}
               />
           </Switch>

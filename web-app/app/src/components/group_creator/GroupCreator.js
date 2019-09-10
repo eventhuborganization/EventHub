@@ -7,7 +7,8 @@ import { RoundedSmallImage, PLACEHOLDER_USER_CIRCLE } from '../image/Image'
 
 import Api from '../../services/api/Api'
 import AvatarHeader from '../avatar_header/AvatarHeader'
-import {LargeFloatingButton} from "../floating_button/FloatingButton";
+import {LargeFloatingButton} from "../floating_button/FloatingButton"
+import ScrollableMenu from '../menu/ScrollableMenu'
 
 let routes = require('../../services/routes/Routes')
 
@@ -98,7 +99,7 @@ export default class GroupCreator extends React.Component {
                         />
                     </div>
                     <div className="form-group">
-                        <ToggableMenu title={"Amici"}>    
+                        <ScrollableMenu title={"Amici"}>    
                         {
                             this.props.user.linkedUsers
                                     .filter(user => !user.organization)
@@ -114,7 +115,7 @@ export default class GroupCreator extends React.Component {
                                         />
                                     )
                         }
-                        </ToggableMenu>
+                        </ScrollableMenu>
                     </div>
                     <LargeFloatingButton
                         isSubmit={true}
@@ -125,45 +126,6 @@ export default class GroupCreator extends React.Component {
             </div>
         )
     }
-}
-
-class ToggableMenu extends React.Component {
-
-    toggleArrow = () => {
-        let arrowClass = document.getElementById("menuArrow").classList
-        if(arrowClass.contains("fa-angle-down")){
-            arrowClass.remove("fa-angle-down")
-            arrowClass.add("fa-angle-up")
-        } else {
-            arrowClass.remove("fa-angle-up")
-            arrowClass.add("fa-angle-down")
-        }  
-    }
-
-    render = () => {
-        return (
-            <div>
-                <div className="row">
-                    <div 
-                        data-toggle="collapse" 
-                        data-target="#friendsContent" 
-                        aria-controls="friendsContent" 
-                        aria-expanded="false" 
-                        aria-label="Abilita ricerca amici per nome"
-                        className="col-12"
-                        onClick={this.toggleArrow}>
-                        <em id="menuArrow" className="fas fa-angle-down"/>
-                        <span className="ml-2 h5 group-creator-title">{this.props.title}</span>
-                    </div>
-                </div>
-                <div className="collapse" id="friendsContent">
-                    {this.props.children}
-                </div>
-            </div>
-        )
-    }
-
-
 }
 
 function SelectableFriendBanner(props){

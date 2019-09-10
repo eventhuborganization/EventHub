@@ -55,6 +55,9 @@ module.exports = function(app) {
         .get(controller.getUserActions)
         .post(controller.addUserAction);
 
+    app.route("/users/:uuid/progress")
+        .get(controller.getUserProgress)
+
     app.route("/users/:uuid/groups")
         .get(controller.getUserGroups)
         .post(controller.addUserInGroup)

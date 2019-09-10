@@ -21,6 +21,8 @@ exports.myNotifications = "/notifications"
 exports.myFriends = "/friends"
 exports.myGroups = "/groups"
 exports.myEvents = "/myEvents"
+exports.myProgresses = '/myProgresses'
+
 exports.reviews = "/reviews"
 exports.subscribedEvents = "/eventsOfInterest"
 

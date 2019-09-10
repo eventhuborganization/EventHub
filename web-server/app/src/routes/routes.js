@@ -103,6 +103,9 @@ module.exports = (app) => {
 
     app.route("/users/:uuid/info")
         .get(userController.getLightweightInfoUser)
+
+    app.route("/users/:uuid/badges/progress")
+        .get(userController.getUserProgress)
     
     app.route("/users/:uuid")
         .get(userController.getInfoUser)

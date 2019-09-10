@@ -56,6 +56,10 @@ export default function Menu(props){
                 icon={{style: "far", name: "address-book", size: "lg"}}
                 name="I miei gruppi"/>
             <LinkToPage
+                page={routes.myProgresses}
+                icon={{name: "trophy", size: "lg"}}
+                name="I miei badge"/>
+            <LinkToPage
                 page={routes.subscribedEvents}
                 icon={{style: "far", name: "calendar-check", size: "lg"}}
                 name="Eventi di interesse"/>

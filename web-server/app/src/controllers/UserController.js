@@ -354,3 +354,12 @@ exports.getUserSubscribedEvents = (req, res) => {
             network.replayError(err, res)
         })
 }
+
+exports.getUserProgress = (req, res) => {
+    axios.get(`${UserServiceServer}/users/${req.user._id}/progress`)
+        .then(result => network.replayResponse(result, res))
+        .catch(err => {
+            console.log(err)
+            network.replayError(err, res)
+        })
+}

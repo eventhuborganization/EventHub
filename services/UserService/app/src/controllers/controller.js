@@ -534,14 +534,7 @@ exports.addUserAction = (req, res) => {
                                     let badgesDiff = badges.filter(elem => user.badges.indexOf(elem._id) < 0);
 
                                     // count all user's actions
-                                    let map = new Map();
-                                    user.actions.forEach(element => {
-                                        var value = map.get(element.action.toString());
-                                        if(!value)
-                                            value = 0;
-                                        value++;
-                                        map.set(element.action.toString(), value);
-                                    });
+                                    let map = commons.getCountedUserActions(user)
 
                                     // check if there is a new badge earned
                                     badgesDiff.forEach(badge => {
@@ -714,4 +707,52 @@ exports.getEventReviews = (req, res) => {
             network.resultWithJSON(res,reviews)
         }
     }) 
+}
+
+exports.getUserProgress = (req, res) => {
+    Users.findById(req.params.uuid, (err, user) => {
+        if (err)
+            network.internalError(res, err)
+        else if (!user)
+            network.userNotFound(res)
+        else {
+            Actions.find({}, (err, actions) => {
+                if(err)
+                    network.internalError(res, err)
+                else if(!actions)
+                    network.notFound(res, {description: "Actions not found"})
+                else {
+                    Badges.find({}, function(err, badges) {
+                        if(err) {
+                            console.log(err)
+                            network.internalError(res, err)
+                        } else if (!badges)
+                            network.notFound(res, {description: "Badges not found"})
+                        else {
+                            // count all user's actions
+                            let map = commons.getCountedUserActions(user)
+
+                            let response = badges.map(bbb => {
+                                let badge = {...bbb._doc}
+                                //if the badge is already acquired
+                                if(user.badges.findIndex(b => b.toString() === badge._id.toString()) >= 0) { 
+                                    badge.acquired = true
+                                }
+                                else {
+                                    badge.requirements = badge.requirements.map(rrr => {
+                                        let req = {...rrr._doc}
+                                        req.action = actions.find(act => act._id.toString() === req.action.toString())
+                                        req.achieved = map.get(req.action._id.toString())
+                                        return req
+                                    })
+                                }
+                                return badge
+                            })
+                            network.resultWithJSON(res, {badges: response})
+                        }
+                    })
+                }
+            })
+        }
+    })
 }

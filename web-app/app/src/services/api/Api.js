@@ -128,9 +128,12 @@ let mapUser = (user) => {
 
 let mapBadge = (badge) => {
     return {
+        _id: badge._id,
         name: badge.name,
         description: badge.desc_it,
-        icon: badge.icon
+        icon: badge.icon,
+        acquired: badge.acquired,
+        requirements: badge.requirements
     }
 }
 
@@ -740,6 +743,15 @@ let getUserInformation = (userId, onError, onSuccess) => {
     )
 }
 
+let getUserProgress = (userId, onError, onSuccess) => {
+    managePromise(
+        Axios.get('/users/' + userId + '/badges/progress'),
+        [200],
+        onError,
+        result => onSuccess(result.data.badges.map(mapBadge))
+    )
+}
+
 /**
  * @param users {Array}
  * @param onError {function(error)}
@@ -1072,6 +1084,7 @@ export default {
     updateUserSettings,
     updateEventInfo,
     getUserInformation,
+    getUserProgress,
     getUsersInformation,
     searchUsers,
     sendFriendshipRequest,
