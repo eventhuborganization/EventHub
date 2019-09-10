@@ -44,8 +44,8 @@ class AbstractProfile extends React.Component {
                 ),
             user => {
                 let events = user.organization ? user.eventsOrganized : user.eventsSubscribed
-                let futureEvents =  events.filter(x => x.date > Date.now())
-                let pastEvents =  events.filter(x => x.date < Date.now())
+                let futureEvents =  events.filter(x => new Date(x.date) > Date.now())
+                let pastEvents =  events.filter(x => new Date(x.date) <= Date.now())
                 let data = {...user}
                 data.futureEvents = futureEvents
                 data.pastEvents = pastEvents

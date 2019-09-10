@@ -141,7 +141,7 @@ class EventEditor extends React.Component {
                         let place = places[0]
                         if (place.address_components && place.address_components instanceof Array) {
                             let name = place.name
-                            let isPoi = place.types.includes("point_of_interest")
+                            let isPoi = place.types && place.types.includes("point_of_interest")
                             let streetNumber = undefined
                             let streetAddress = undefined
                             let city = undefined

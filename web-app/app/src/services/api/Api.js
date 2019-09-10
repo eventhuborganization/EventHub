@@ -121,7 +121,7 @@ let mapUser = (user) => {
         reviewsReceived: user.reviewsReceived ? user.reviewsReceived : [],
         eventsSubscribed: eventsSubscribed,
         eventsFollowed: user.eventsFollowed || [],
-        eventsOrganized: user.eventsOrganized || [],
+        eventsOrganized: user.eventsOrganized ? user.eventsOrganized.map(mapEvent) : [],
         address: address
     }
 }
