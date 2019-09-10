@@ -29,6 +29,7 @@ import NavigationBar from '../navigation_bar/NavigationBar'
 import EventsPartecipated from '../event/EventsParticipated'
 import Badges from '../badges/Badges'
 import NoMatch from '../no_match/NoMatch'
+import {DesktopSearchBar, SEARCH_BY_EVENT} from "../search_bar/SearchBar";
 
 let routes = require("../../services/routes/Routes")
 
@@ -196,7 +197,24 @@ class App extends React.Component {
         })
     }
 
+    setSearchBar = (type, data) => {
+        console.log(this.state)
+        if (data && data.onRef && this.state.headerRef) {
+            data.onRef(this.state.headerRef)
+            delete data.onRef
+        }
+        this.setState({searchBarType: type, searchBarData: data})
+    }
+
   render() {
+    let commonProps = {
+        onError: this.onError,
+        isLogged: this.state.isLogged,
+        onSuccess: this.onSuccess,
+        showMessage: this.showModal,
+        setSearchBar: this.setSearchBar,
+        unsetSearchBar: () => this.setSearchBar(undefined, undefined)
+    }
     return (
         <Router>
           <ScrollToTop />
@@ -208,14 +226,18 @@ class App extends React.Component {
               onRef={this.onReviewModalRef}
               user={this.state.user}
           />
+            <DesktopSearchBar
+                {...commonProps}
+                user={this.state.user}
+                data={this.state.searchBarData}
+                searchBarType={this.state.searchBarType}
+                onRef={ref => this.setState({headerRef: ref})}
+            />
           <Switch>
             <Route path={routes.home} exact render={(props) => 
                 <Home {...props}
+                  {...commonProps}
                   user={this.state.user}
-                  isLogged={this.state.isLogged} 
-                  onError={this.onError}
-                  onSuccess={this.onSuccess}
-                  showMessage={this.showModal}
                   showReviewModal={this.showReviewModal}
                 />} 
             />
@@ -296,15 +318,14 @@ class App extends React.Component {
             />
             <Route path={routes.myFriends} exact render={(props) =>
                 <Friends {...props}
-                    isLogged={this.state.isLogged}
-                    loggedUser={this.state.user}  
-                    onError={this.onError}
-                    updateUser={this.updateUserChanges}
+                         {...commonProps}
+                         loggedUser={this.state.user}
+                         updateUser={this.updateUserChanges}
                 />}
               />
             <Route path={routes.map} exact render={(props) =>
                 <Map {...props}
-                    onError={this.onError}
+                     {...commonProps}
                 />}
               />
             <Route path={routes.settings} exact render={(props) =>

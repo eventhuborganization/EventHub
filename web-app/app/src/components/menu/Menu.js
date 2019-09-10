@@ -78,12 +78,16 @@ export default function Menu(props){
     return (
         <div className="main-containers">
             <ul className="px-0 my-2" style={{listStyle: "none"}}>
-                <LinkToPage 
-                    page={routes.myNotifications}
-                    icon={{style: "far", name: "bell", size: "lg"}}
-                    name="Le mie notifiche" 
-                    showBadge={showBadge}
-                    badgeInfo={showBadge ? props.location.notifications.length : 0}/>
+                {
+                    props.hideNotifications ? <div/> :
+                        <LinkToPage
+                            page={routes.myNotifications}
+                            icon={{style: "far", name: "bell", size: "lg"}}
+                            name="Le mie notifiche"
+                            showBadge={showBadge}
+                            badgeInfo={showBadge ? props.location.notifications.length : 0}
+                        />
+                }
                 {optionalTabs}
                 <LinkToPage
                     page={{

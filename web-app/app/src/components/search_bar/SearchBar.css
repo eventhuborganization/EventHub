@@ -1,10 +1,17 @@
 .btn-filter {}
-.filters-container {}
+.filters-container {
+}
 .input-search{}
 .logo {}
+.navbar-avatar {
+    font-size: 0.7rem;
+}
 
 .pac-container {
-    z-index: 9999999999;
+    z-index: 1000000003;
+}
+
+.menu-container {
 }
 
 /**
@@ -89,6 +96,12 @@
     .btn-filter {
         display: inline !important;
     }
+    .logo {
+        font-size: larger;
+    }
+    .input-search {
+        margin-right: 0;
+    }
 }
 
 /*
@@ -97,5 +110,11 @@
 @media (min-width: 1200px) and (orientation: landscape) {
     .btn-filter {
         display: inline !important;
+    }
+    .logo {
+        font-size: larger;
+    }
+    .input-search {
+        margin-right: 0;
     }
 }

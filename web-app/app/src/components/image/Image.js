@@ -110,13 +110,14 @@ let RoundedImage = props => {
  *     imageName: string,
  *     borderType: number,
  *     placeholderType: number,
- *     alt: string
+ *     alt: string,
+ *     size: boolean
  * }}
  * @return {*}
  * @constructor
  */
 let RoundedSmallImage = props => {
-     return <RoundedImage {...props} size={"small-avatar-size"} />
+     return <RoundedImage {...props} size={props.size ? props.size : "small-avatar-size"} />
 }
 
 /**

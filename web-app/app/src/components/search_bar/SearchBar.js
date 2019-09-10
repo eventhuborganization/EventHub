@@ -4,6 +4,12 @@ import ApiService from '../../services/api/Api'
 import {MEETING, PARTY, SPORT} from "../event/Event";
 import {CallableComponent} from "../redirect/Redirect"
 import "./SearchBar.css"
+import {Link} from "react-router-dom"
+import {PLACEHOLDER_GROUP_CIRCLE, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import Menu from "../menu/Menu"
+import ResizeService from "../../services/Resize/Resize"
+import NotificationService from "../../services/notification/Notification";
+let routes = require("../../services/routes/Routes")
 
 let SEARCH_BY_EVENT = 0
 let SEARCH_BY_PLACE = 1
@@ -17,7 +23,9 @@ let SEARCH_BY_PLACE = 1
  *         date: boolean,
  *         location: boolean
  *     },
- *     stickyTop: boolean
+ *     stickyTop: boolean,
+ *     showAnyway: boolean,
+ *     hideLogo: boolean
  * }}
  * @returns {*}
  * @constructor
@@ -37,6 +45,7 @@ class SearchBar extends CallableComponent {
     configured = false
     containerId = "search-bar-container"
     filtersContainerId = "filter-container"
+    code = undefined
 
     constructor(props) {
         super(props)
@@ -46,7 +55,7 @@ class SearchBar extends CallableComponent {
         if (props.filters.location)
             filters.location = ""
         if (props.filters.date)
-            filters.date = ""
+            filters.date = undefined
         if (props.filters.distance)
             filters.distance = this.defaultDistance
         this.state = {
@@ -59,7 +68,7 @@ class SearchBar extends CallableComponent {
 
     componentDidMount() {
         this.updateFiltersMarginTop()
-        window.onorientationchange = this.updateFiltersMarginTop
+        this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
         super.componentDidMount()
         if (!this.configured) {
             switch(this.props.searchBy) {
@@ -75,9 +84,14 @@ class SearchBar extends CallableComponent {
         }
     }
 
+    componentWillUnmount() {
+        super.componentWillUnmount()
+        ResizeService.removeSubscription(this.code)
+    }
+
     updateFiltersMarginTop = () => {
         if (this.props.filtersOnlyFixedTop)
-            this.setState({filtersMarginTop: document.getElementById('search-bar').offsetHeight})
+            this.setState({filtersMarginTop: document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : 'search-bar').offsetHeight})
     }
 
     searchInNewLocation = location => {
@@ -233,10 +247,10 @@ class SearchBar extends CallableComponent {
         event.persist()
         if(new Date(event.target.value).getFullYear() / 1000 > 1) {
             this.updateFilterValue(event, "date")
-        } else if (event.target.value === "") {
+        } else if (!event.target.value) {
             this.setState(prevState => {
                 let state = prevState
-                state.filters.date = ""
+                state.filters.date = undefined
                 return state
             }, () => this.searchEvents())
         }
@@ -266,7 +280,7 @@ class SearchBar extends CallableComponent {
         if (this.props.filters.location && this.props.searchBy !== SEARCH_BY_PLACE)
             filters.push(
                 <div key="location" className={"form-group"}>
-                    <label htmlFor={this.location_filter_id} className="m-0">Località</label>
+                    <label htmlFor={this.location_filter_id} className="m-0">Luogo</label>
                     <input
                         id={this.location_filter_id}
                         name={this.location_filter_id}
@@ -279,7 +293,7 @@ class SearchBar extends CallableComponent {
         if (this.props.filters.typology)
             filters.push(
                 <div key="typology" className={"form-group"}>
-                    <label className="m-0" htmlFor="typology">Typology</label>
+                    <label className="m-0" htmlFor="typology">Tipologia</label>
                     <select onChange={this.updateTypology}
                             className="form-control"
                             id={this.typology_filter_id}
@@ -296,7 +310,7 @@ class SearchBar extends CallableComponent {
         if (this.props.filters.date)
             filters.push(
                 <div key="date" className={"form-group"}>
-                    <label htmlFor="date" className="m-0">Data</label>
+                    <label htmlFor="date" className="m-0">A partire dal</label>
                     <input
                         id={this.date_filter_id}
                         name={this.date_filter_id}
@@ -416,17 +430,24 @@ class SearchBar extends CallableComponent {
         this.setState({showDistanceMessage: false})
     }
 
+    renderLogo = () => {
+        return this.props.hideLogo ? <div/> :
+            <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1 logo">EH</h1>
+
+    }
+
     render() {
         let navBarClassName = (this.props.fixedTop ? "" : " row ") +
-            " navbar navbar-light bg-light px-0 border-bottom border-primary pb-1 "
-        let containerClass = this.getContainerPositionClass()
-        let filtersClass = "filters-container collapse w-100 "
+            (this.props.noBorder ? "" : " border-bottom border-primary ") +
+            " navbar navbar-light bg-light px-0 pb-1 "
+        let containerClass = (this.props.showAnyway ? "" : " d-xl-none ") + this.getContainerPositionClass() + " bar-container "
+        let filtersClass = "collapse row "
         if (this.props.filtersOnlyFixedTop)
-            filtersClass += " fixed-top px-3 "
+            filtersClass += " fixed-top px-3 px-xl-0"
         return (
             <form id={this.containerId} className={containerClass} onSubmit={this.submit}>
                 <nav id="search-bar" className={navBarClassName}>
-                    <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1 logo">EH</h1>
+                    {this.renderLogo()}
                     <div className="col form-inline container-fluid px-1 pb-1">
                         <div className="row w-100 mx-0 d-flex justify-content-between">
                             <label htmlFor={this.search_input_id} className="d-none">Search field</label>
@@ -450,7 +471,9 @@ class SearchBar extends CallableComponent {
                      style={{marginTop: this.state.filtersMarginTop}}
                      id={this.filtersContainerId}
                 >
-                    {this.renderFilters()}
+                    <div className={"col-12 col-xl-6 filters-container"}>
+                        {this.renderFilters()}
+                    </div>
                 </div>
             </form>
         )
@@ -474,9 +497,19 @@ function SimpleSearchBar(props){
 }
 
 function FriendsSearchBar(props) {
-    return (
-        <nav className="sticky-top row navbar navbar-light bg-light border-bottom border-primary px-0">
+    let containerClass = (props.showAnyway ? "" : " d-xl-none ") +
+        (props.noBorder ? "" : " border-bottom border-primary ") +
+        (props.noStickyTop ? "" : " stickyTop ") +
+        "row navbar navbar-light bg-light px-0"
+
+    let renderLogo = () => {
+        return props.hideLogo ? <div/> :
             <h1 className="col-2 navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1 logo">EH</h1>
+
+    }
+    return (
+        <nav className={containerClass}>
+            {renderLogo()}
             <form className="col form-inline container-fluid px-1" onSubmit={props.searchPeople}>
                 <div className="row w-100 mx-0 d-flex justify-content-between">
                     <label htmlFor="tf-search" className="d-none">Cerca persona</label>
@@ -487,7 +520,6 @@ function FriendsSearchBar(props) {
                         name="tf-search"
                         type="search"
                         placeholder="Cerca una persona"
-                        value={props.filterValue}
                         onChange={props.onFilter}
                     />
                     <button id="btn-search" name="btn-search" className="col-2 col-md-1 ml-1 btn btn-success" type="submit">
@@ -499,4 +531,170 @@ function FriendsSearchBar(props) {
     )
 }
 
-export {SearchBar, SimpleSearchBar, FriendsSearchBar, SEARCH_BY_EVENT, SEARCH_BY_PLACE}
+const SEARCH_BAR = 0
+const SIMPLE_SEARCH_BAR = 1
+const FRIEND_SEARCH_BAR = 2
+
+/**
+ * @param props {{
+ *     data: object
+ *     searchBarType: number
+ *     user: object
+ * }}
+ * @returns {*}
+ * @constructor
+ */
+class DesktopSearchBar extends React.Component {
+
+    menuContainerId = "menu-container"
+    containerId = "desktop-header-bar"
+    code = -1
+    notificationServiceSubscriptionCode = -1
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            notifications: [],
+            menuMarginTop: 0
+        }
+        if(this.props.isLogged){
+            this.notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
+        }
+    }
+
+    componentDidMount() {
+        this.updateMenuMarginTop()
+        this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
+    }
+
+    componentDidUpdate() {
+        if(this.props.isLogged && this.notificationServiceSubscriptionCode < 0){
+            this.notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
+        } else if(!this.props.isLogged && this.notificationServiceSubscriptionCode >= 0){
+            this.removeSubscriptions()
+        }
+    }
+
+    componentWillUnmount() {
+        ResizeService.removeSubscription(this.code)
+        this.removeSubscriptions()
+    }
+
+    removeSubscriptions = () => {
+        NotificationService.removeSubscription(this.notificationServiceSubscriptionCode)
+        this.setState({notifications: []})
+        this.notificationServiceSubscriptionCode = -1
+    }
+
+    onNotificationLoaded = (notifications) => {
+        this.setState({notifications: notifications})
+    }
+
+    navBarLink = (route, elem) => {
+        return (
+            <Link to={route}>
+                <div className="navbar-brand mx-0 mb-0 pb-1 mr-4 logo">{elem}</div>
+            </Link>
+        )
+    }
+
+    updateMenuMarginTop = () => {
+        this.setState({menuMarginTop: document.getElementById(this.containerId).offsetHeight})
+    }
+
+    renderNotificationBadge = () => {
+        return this.props.isLogged && this.state.notifications.length > 0 ?
+            <span className={"badge badge-danger align-top ml-1 notification-badge"}>{this.state.notifications.length}</span> : <div/>
+    }
+
+    renderSearchBar = () => {
+        if (this.props.searchBarType < 0 || !this.props.data)
+            return <div/>
+        let data = this.props.data
+        console.log(this.props)
+        switch(this.props.searchBarType) {
+            case SEARCH_BAR:
+                return <SearchBar
+                           showAnyway={true}
+                           hideLogo={true}
+                           noBorder={true}
+                           stickyTop={false}
+                           fixedTop={false}
+                           filtersOnlyFixedTop={true}
+                           containerId={this.containerId}
+                           filters={data.filters || {}}
+                           searchBy={data.searchBy}
+                           onChange={data.onSearchResults}
+                           onError={data.onSearchError}
+                           onRef={this.props.onRef}
+                        />
+            case FRIEND_SEARCH_BAR:
+                return <FriendsSearchBar
+                            showAnyway={true}
+                            hideLogo={true}
+                            noBorder={true}
+                            noStickyTop={true}
+                            onFilter={data.onFilter}
+                            searchPeople={data.searchPeople}
+                        />
+            default: return <div/>
+        }
+    }
+
+    render() {
+        let avatar =
+            <RoundedSmallImage
+                imageName={this.props.user.avatar}
+                placeholderType={PLACEHOLDER_USER_CIRCLE}
+                size={"navbar-avatar"}
+            />
+        let filtersClass = "collapse row fixed-top px-3"
+        return (
+            <div id={this.containerId} className={"d-none d-xl-block sticky-top bar-container"}>
+                <nav className=" row navbar navbar-light bg-light border-bottom border-primary px-0">
+                    <div className={"col-1"}>
+                        <Link to={routes.home}>
+                            <h1 className="navbar-brand text-primary mx-0 mb-0 font-weight-bold pb-1 logo">EventHub</h1>
+                        </Link>
+                    </div>
+                    <div className={"col-5"}>
+                        {this.renderSearchBar()}
+                    </div>
+                    <div className={"col-6 d-flex justify-content-end align-items-center"}>
+                        {this.navBarLink(routes.map, <div><em className={"fas fa-map-marked-alt fa-x2 navbar-icon"}></em> Mappa</div>)}
+                        {
+                            this.props.isLogged && this.props.user && this.props.user.organization ?
+                                this.navBarLink(routes.myEvents, <div><em className={"fas fa-calendar-alt fa-x2 navbar-icon"}></em> Eventi Organizzati</div>) :
+                                this.navBarLink(routes.myFriends, <div><em className={"fas fa-users fa-x2 navbar-icon"}></em> Amici</div>)
+                        }
+                        {this.navBarLink(routes.myNotifications, <div><em className={"fas fa-bell fa-x2 navbar-icon"}></em>{this.renderNotificationBadge()}</div>)}
+                        {avatar}
+                        <button id="btn-filter" name="btn-filter" className="btn btn-link dropdown-toggle dropdown-toggle-split" type="button" data-toggle="collapse"
+                                data-target={"#" + this.menuContainerId} aria-expanded="false" aria-controls={this.menuContainerId}>
+                        </button>
+                    </div>
+                </nav>
+                <div className={filtersClass}
+                     style={{marginTop: this.state.menuMarginTop, marginLeft: "74%"}}
+                     id={this.menuContainerId}
+                >
+                    <div className={"menu-container col-12 px-0 bg-white"}>
+                        <Menu {...this.props} hideNotifications={true} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export {
+    SearchBar,
+    SimpleSearchBar,
+    FriendsSearchBar,
+    DesktopSearchBar,
+    SEARCH_BY_EVENT,
+    SEARCH_BY_PLACE,
+    SEARCH_BAR,
+    SIMPLE_SEARCH_BAR,
+    FRIEND_SEARCH_BAR
+}

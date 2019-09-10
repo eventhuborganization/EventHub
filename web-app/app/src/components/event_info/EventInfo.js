@@ -13,8 +13,8 @@ import {IMAGE, ImageForCard} from "../image/Image"
 import {MultipleUsersBanner} from "../multiple_elements_banner/MultipleElementsBanner"
 import {Review, REVIEW_FOR_EVENT} from "../reviews/Review"
 import LoadingSpinner from '../loading_spinner/LoadingSpinner'
-import ResizeService from "../../services/Resize/Resize";
-import AvatarHeader from "../avatar_header/AvatarHeader";
+import ResizeService from "../../services/Resize/Resize"
+import AvatarHeader from "../avatar_header/AvatarHeader"
 
 let routes = require("../../services/routes/Routes")
 
@@ -33,7 +33,8 @@ class EventInfo extends React.Component {
         }
         ApiService.getEventInformation(
             props.match.params.id,
-            () => {
+            error => {
+                console.log(error)
                 this.setState({showDefaultMessage: true})
                 props.onError("Errore nel caricare le informazioni dell'evento. Ricaricare la pagina.")
             },

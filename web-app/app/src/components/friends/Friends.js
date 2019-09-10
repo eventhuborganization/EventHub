@@ -4,7 +4,7 @@ import Api from '../../services/api/Api'
 import './Friends.css'
 import {UserBanner} from '../link_maker_banner/LinkMakerBanner'
 import MultipleElementsCard from '../multiple_elements_card/MultipleElementsCard'
-import {FriendsSearchBar} from "../search_bar/SearchBar";
+import {FRIEND_SEARCH_BAR, FriendsSearchBar} from "../search_bar/SearchBar";
 
 class Friends extends React.Component {
 
@@ -23,8 +23,14 @@ class Friends extends React.Component {
             friendsArray: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
             friends: [],
             organizations: [],
-            users: []
+            users: [],
+            searchBarData: {
+                filterValue: "",
+                onFilter: this.onFilter,
+                searchPeople: this.searchPeople
+            }
         }
+        this.state.searchBarData.filterValue = this.state.filter
         this.state.friends = this.getAllFriends(() => true)
         if(this.state.friends.length <= 0){
             this.state.friends = <EmptyList description={user.organization ? 
@@ -49,13 +55,22 @@ class Friends extends React.Component {
                     this.props.updateUser([[result, "linkedUsers"]])
                 })
         }
+        props.setSearchBar(FRIEND_SEARCH_BAR, this.state.searchBarData)
+    }
+
+    componentDidMount() {
+        this.props.setSearchBar(FRIEND_SEARCH_BAR, this.state.searchBarData)
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
     }
 
     onFilter = (event) => {
         let value = event.target.value
         if(value === ""){
             this.setState({
-                filter: value, 
+                filter: value,
                 searchComplete: false, 
                 friends: this.getAllFriends(() => true)
             })

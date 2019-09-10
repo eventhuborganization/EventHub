@@ -2,7 +2,7 @@ import React from 'react'
 import './Home.css'
 import EventCard from "../event_card/EventCard"
 import {CreateNewEventButton} from "../floating_button/FloatingButton"
-import {SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar"
+import {DesktopSearchBar, SEARCH_BAR, SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import LoadingSpinner from "../loading_spinner/LoadingSpinner"
@@ -13,7 +13,18 @@ class Home extends React.Component {
         super(props)
         this.state = {
             eventsLoaded: [],
-            displayEvents: true
+            displayEvents: true,
+            searchBarConfigs: {
+                searchBy: SEARCH_BY_EVENT,
+                onSearchResults: this.onSearchResults,
+                filters: {
+                    typology: true,
+                    date: true,
+                    location: true
+                },
+                stickyTop: true,
+                onSearchError: this.onSearchError
+            }
         }
         ApiService.getEvents({fromIndex: 0},
             error => this.onSearchError(null, error),
@@ -23,9 +34,17 @@ class Home extends React.Component {
             })
     }
 
+    componentDidMount() {
+        this.props.setSearchBar(SEARCH_BAR, this.state.searchBarConfigs)
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
+    }
+
     onSearchResults = response => {
         if (response && response.events && response.events.length > 0)
-            this.setState({eventsLoaded: response.events})
+            this.setState({eventsLoaded: response.events, displayEvents: true})
         else 
            this.onSearchError(null, {status: 500})
     }
@@ -63,16 +82,7 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <SearchBar searchBy={SEARCH_BY_EVENT}
-                           onChange={this.onSearchResults}
-                           filters={{
-                               typology: true,
-                               date: true,
-                               location: true
-                           }}
-                           stickyTop={true}
-                           onError={this.onSearchError}
-                />
+                <SearchBar {...this.state.searchBarConfigs} />
 
                 <CreateNewEventButton location={this.props.location} isLogged={this.props.isLogged} />
 

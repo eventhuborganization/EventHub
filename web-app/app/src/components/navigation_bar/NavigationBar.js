@@ -49,7 +49,7 @@ export default class NavigationBar extends React.Component {
 
     render = () => {
         return (
-            <footer id="footer" className="row fixed-bottom bg-light border-top border-primary mx-0 py-2">
+            <footer id="footer" className=" d-xl-none row fixed-bottom bg-light border-top border-primary mx-0 py-2">
                 <div className="col text-center my-auto">
                   <Link to={routes.map}><em className="fas fa-map-marked-alt icon" /></Link>
                 </div>
