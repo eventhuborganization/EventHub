@@ -28,6 +28,7 @@ import EventsByOrganizator from '../event/EventsByOrganizator'
 import NavigationBar from '../navigation_bar/NavigationBar'
 import EventsPartecipated from '../event/EventsParticipated'
 import Badges from '../badges/Badges'
+import NoMatch from '../no_match/NoMatch'
 
 let routes = require("../../services/routes/Routes")
 
@@ -388,6 +389,7 @@ class App extends React.Component {
                                 onError={this.onError}
                   />}
               />
+              <Route component={NoMatch} />
           </Switch>
           <NavigationBar user={this.state.user} isLogged={this.state.isLogged} />
         </Router>
