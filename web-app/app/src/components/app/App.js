@@ -29,7 +29,7 @@ import NavigationBar from '../navigation_bar/NavigationBar'
 import EventsPartecipated from '../event/EventsParticipated'
 import Badges from '../badges/Badges'
 import NoMatch from '../no_match/NoMatch'
-import {DesktopSearchBar, SEARCH_BY_EVENT} from "../search_bar/SearchBar";
+import {DesktopSearchBar} from "../search_bar/SearchBar";
 
 let routes = require("../../services/routes/Routes")
 

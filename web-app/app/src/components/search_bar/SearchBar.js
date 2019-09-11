@@ -5,7 +5,7 @@ import {MEETING, PARTY, SPORT} from "../event/Event";
 import {CallableComponent} from "../redirect/Redirect"
 import "./SearchBar.css"
 import {Link} from "react-router-dom"
-import {PLACEHOLDER_GROUP_CIRCLE, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 import Menu from "../menu/Menu"
 import ResizeService from "../../services/Resize/Resize"
 import NotificationService from "../../services/notification/Notification";
@@ -32,19 +32,20 @@ let SEARCH_BY_PLACE = 1
  */
 class SearchBar extends CallableComponent {
 
-    search_input_id = 'tf-search'
-    btn_search_id = 'btn-search'
-    location_filter_id = 'location'
-    date_filter_id = 'date'
-    typology_filter_id = 'typology'
-    distance_filter_id = 'distance'
+    rand = Math.floor(Math.random() * 100) + 1
+    search_input_id = 'tf-search' + this.rand
+    btn_search_id = 'btn-search' + this.rand
+    location_filter_id = 'location' + this.rand
+    date_filter_id = 'date' + this.rand
+    typology_filter_id = 'typology' + this.rand
+    distance_filter_id = 'distance' + this.rand
     location_input_placeholder = "Indirizzo, Città, ..."
     defaultDistance = 20 //km
     minDistance = 1 //km
     maxDistance = 50 //km
     configured = false
-    containerId = "search-bar-container"
-    filtersContainerId = "filter-container"
+    searchBarId = "search-bar" + this.rand
+    filtersContainerId = "filter-container" + this.rand
     code = -1
 
     constructor(props) {
@@ -93,7 +94,7 @@ class SearchBar extends CallableComponent {
 
     updateFiltersMarginTop = () => {
         if (this.props.filtersOnlyFixedTop) {
-            let elem = document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : 'search-bar')
+            let elem = document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : this.searchBarId)
             this.setState({filtersMarginTop: elem ? elem.offsetHeight : 0})
         }
     }
@@ -183,7 +184,13 @@ class SearchBar extends CallableComponent {
     search = (searchApi, data, location) => {
         if (this.props.onLocationChange)
             this.props.onLocationChange(location)
-        searchApi(data, error => this.props.onError(location, error), events => this.onResults(events, location))
+        searchApi(data,
+                error => {
+                    if (this.props.onError instanceof Function)
+                        this.props.onError(location, error)
+                }, events => {
+                        this.onResults(events, location)
+                })
     }
 
     onResults = (events, location) => {
@@ -449,8 +456,8 @@ class SearchBar extends CallableComponent {
         if (this.props.filtersOnlyFixedTop)
             filtersClass += " fixed-top px-3 px-xl-0"
         return (
-            <form id={this.containerId} className={containerClass} onSubmit={this.submit}>
-                <nav id="search-bar" className={navBarClassName}>
+            <form className={containerClass} onSubmit={this.submit}>
+                <nav id={this.props.containerId ? "" : this.searchBarId} className={navBarClassName}>
                     {this.renderLogo()}
                     <div className="col form-inline container-fluid px-1 pb-1">
                         <div className="row w-100 mx-0 d-flex justify-content-between">
