@@ -1,12 +1,12 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 
 import Api from '../../services/api/Api'
 
 import { LoginRedirect } from '../redirect/Redirect'
 import {CreateNewGroupButton} from "../floating_button/FloatingButton"
 import { LinkMakerBanner } from '../link_maker_banner/LinkMakerBanner'
-import { SimpleSearchBar } from '../search_bar/SearchBar'
+import {SIMPLE_SEARCH_BAR, SimpleSearchBar} from '../search_bar/SearchBar'
 import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
 import AvatarHeader from '../avatar_header/AvatarHeader'
 import LoadingSpinner from '../loading_spinner/LoadingSpinner'
@@ -20,9 +20,13 @@ export default class Groups extends React.Component {
         this.state = {
             filter: "",
             displayGroups: true,
-            groups: this.props.user.groups || []
+            groups: this.props.user.groups || [],
+            searchBarData: {
+                placeholder: "Cerca gruppo",
+                onChange: this.onFilterChange
+            }
         }
-
+        props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
         if(props.isLogged){
             Api.getGroups(
                 err => {
@@ -37,6 +41,14 @@ export default class Groups extends React.Component {
                 }
             )
         }
+    }
+
+    componentDidMount() {
+        this.props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
     }
 
     onFilterChange = (event) => {
@@ -68,20 +80,37 @@ export default class Groups extends React.Component {
 
                 {this.redirectHome()}
 
-                <AvatarHeader
-                    elem={this.props.user}
-                    isGroup={false}
-                />
+                <div className={"row d-flex justify-content-center align-items-center"}>
+                    <div className={"col-12 col-xl-8"}>
+                        <div className={"d-xl-none"}>
+                            <AvatarHeader
+                                elem={this.props.user}
+                                isGroup={false}
+                            />
+                        </div>
 
-                <CreateNewGroupButton location={this.props.location} isLogged={this.props.isLogged} />
+                        <div className={"d-none d-xl-inline"}>
+                            <div className={" row mt-2 "}>
+                                <div className={"col-8 page-title"}>
+                                    I tuoi gruppi
+                                </div>
+                                <div className={"col-4 d-flex justify-content-end align-items-center"}>
+                                    <Link to={routes.newGroup} className={"btn btn-primary button-size"}>Crea gruppo</Link>
+                                </div>
+                            </div>
+                        </div>
 
-                <SimpleSearchBar
-                    placeholder="Cerca gruppo"
-                    value={this.state.filter}
-                    onChange={this.onFilterChange}
-                />
+                        <CreateNewGroupButton location={this.props.location} isLogged={this.props.isLogged} />
 
-                {this.renderGroups()}
+                        <SimpleSearchBar
+                            placeholder={this.state.searchBarData.placeholder}
+                            value={this.state.filter}
+                            onChange={this.onFilterChange}
+                        />
+
+                        {this.renderGroups()}
+                    </div>
+                </div>
 
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
             </div>

@@ -26,7 +26,7 @@ class Home extends React.Component {
                 onSearchError: this.onSearchError
             }
         }
-        this.props.setSearchBar(SEARCH_BAR, this.state.searchBarConfigs)
+        props.setSearchBar(SEARCH_BAR, this.state.searchBarConfigs)
         ApiService.getEvents({fromIndex: 0},
             error => this.onSearchError(null, error),
             response => {

@@ -77,51 +77,65 @@ export default class GroupCreator extends React.Component {
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.redirectToGroups()}
 
-                <form onSubmit={this.submitForm} className="mt-3">
+                <form onSubmit={this.submitForm} className="row mt-3">
 
-                    <AvatarHeader
-                        elem={{
-                            name: this.state.name ? 
-                            this.state.name : "Scegli nome gruppo"
-                        }}
-                        isGroup={true}
-                    />
+                    <div className={"col-12 col-xl-6"}>
+                        <AvatarHeader
+                            elem={{
+                                name: this.state.name ?
+                                    this.state.name : "Scegli nome gruppo"
+                            }}
+                            isGroup={true}
+                        />
+                        <button className={"d-none d-xl-block btn btn-primary btn-block button-size mx-auto w-50 mt-4"} type={"submit"}>
+                            Crea gruppo
+                        </button>
+                    </div>
 
-                    <div className="form-group">
-                        <label htmlFor="groupName group-creator-title">Nome del gruppo:</label>
-                        <input 
-                            type="text" 
-                            className="form-control group-creator-text" 
-                            id="groupName" 
-                            placeholder="Nome del gruppo"
-                            value={this.state.name}
-                            onChange={this.changeName}
+                    <div className={"col-12 col-xl-6"}>
+                        <div className={"row"}>
+                            <div className={"col-12 col-xl-9"}>
+                                <div className="form-group">
+                                    <label htmlFor="groupName group-creator-title">Nome del gruppo:</label>
+                                    <input
+                                        type="text"
+                                        className="form-control group-creator-text"
+                                        id="groupName"
+                                        placeholder="Nome del gruppo"
+                                        value={this.state.name}
+                                        onChange={this.changeName}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <ScrollableMenu title={"Amici"}>
+                                        {
+                                            this.props.user.linkedUsers
+                                                .filter(user => !user.organization)
+                                                .map(user =>
+                                                    <SelectableFriendBanner
+                                                        key={"pippo_" + user._id}
+                                                        id={"pippo_" + user._id}
+                                                        elem={user}
+                                                        border={true}
+                                                        name={"friend" + user._id}
+                                                        addFriend={id => this.onFriendChange(id, true)}
+                                                        removeFriend={id => this.onFriendChange(id, false)}
+                                                    />
+                                                )
+                                        }
+                                    </ScrollableMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={"d-xl-none"}>
+                        <LargeFloatingButton
+                            isSubmit={true}
+                            text={"Crea gruppo"}
+                            onClick={() => {}}
                         />
                     </div>
-                    <div className="form-group">
-                        <ScrollableMenu title={"Amici"}>    
-                        {
-                            this.props.user.linkedUsers
-                                    .filter(user => !user.organization)
-                                    .map(user => 
-                                        <SelectableFriendBanner 
-                                            key={"pippo_" + user._id}
-                                            id={"pippo_" + user._id}
-                                            elem={user}
-                                            border={true}
-                                            name={"friend" + user._id}
-                                            addFriend={id => this.onFriendChange(id, true)}
-                                            removeFriend={id => this.onFriendChange(id, false)}
-                                        />
-                                    )
-                        }
-                        </ScrollableMenu>
-                    </div>
-                    <LargeFloatingButton
-                        isSubmit={true}
-                        text={"Crea gruppo"}
-                        onClick={() => {}}
-                    />
                 </form>
             </div>
         )
@@ -147,7 +161,7 @@ function SelectableFriendBanner(props){
     return (
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <div 
-                className={"col-4 col-md-2 col-lg-2" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
+                className={"col-4 col-md-2 col-xl-3" + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
                 onClick={toggleCheck}>
                 <RoundedSmallImage 
                     imageName={props.elem.avatar} 

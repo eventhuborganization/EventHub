@@ -344,9 +344,8 @@ class App extends React.Component {
               />
               <Route path={routes.myGroups} exact render={(props) =>
                   <Groups {...props}
-                          isLogged={this.state.isLogged}
+                          {...commonProps}
                           user={this.state.user}
-                          onError={this.onError}
                   />}
               />
               <Route path={routes.newGroup} exact render={(props) =>
@@ -359,9 +358,8 @@ class App extends React.Component {
               />
               <Route path={routes.group} exact render={(props) =>
                   <GroupInfo {...props}
-                          isLogged={this.state.isLogged}
+                          {...commonProps}
                           user={this.state.user}
-                          onError={this.onError}
                           updateUserInfo={this.updateUserChanges}
                   />}
               />

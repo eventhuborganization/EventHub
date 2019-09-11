@@ -492,8 +492,12 @@ class SearchBar extends CallableComponent {
 }
 
 function SimpleSearchBar(props){
+    let containerClass = (props.showAnyway ? "" : " d-xl-none ") +
+        (props.noStickyTop ? "" : " stickyTop bg-white ") +
+        (props.noMargin ? "" : " mb-2 ") +
+        " row py-2 "
     return (
-        <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
+        <form className={containerClass} onSubmit={ev => ev.preventDefault()}>
             <label htmlFor="tf-search" className="d-none">{props.placeholder}</label>
             <input 
                 className="col-11 mx-auto form-control input-search"
@@ -658,6 +662,14 @@ class DesktopSearchBar extends React.Component {
                             noStickyTop={true}
                             onFilter={data.onFilter}
                             searchPeople={data.searchPeople}
+                        />
+            case SIMPLE_SEARCH_BAR:
+                return <SimpleSearchBar
+                            showAnyway={true}
+                            noStickyTop={true}
+                            noMargin={true}
+                            placeholder={data.placeholder}
+                            onChange={data.onChange}
                         />
             default: return <div/>
         }

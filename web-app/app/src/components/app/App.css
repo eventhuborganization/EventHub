@@ -103,23 +103,59 @@ footer em, .navbar-icon {
 /*
  Desktop(XL) Portrait
 */
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1500px) {
     .main-container {
         margin-bottom: 3%;
     }
     .button-size {
         font-size: large;
+    }
+    .page-title {
+        font-size: 2.5rem;
     }
 }
 
 /*
  Desktop(XL) Landscape
 */
-@media (min-width: 1200px) and (orientation: landscape) {
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
     .main-container {
         margin-bottom: 3%;
     }
     .button-size {
         font-size: large;
+    }
+    .page-title {
+        font-size: 2.5rem;
+    }
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .main-container {
+        margin-bottom: 3%;
+    }
+    .button-size {
+        font-size: large;
+    }
+    .page-title {
+        font-size: 2.8rem;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .main-container {
+        margin-bottom: 3%;
+    }
+    .button-size {
+        font-size: large;
+    }
+    .page-title {
+        font-size: 2.8rem;
     }
 }

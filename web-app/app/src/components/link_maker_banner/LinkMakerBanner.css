@@ -85,12 +85,18 @@
  Desktop(XL) Portrait
 */
 @media (min-width: 1200px) and (max-width: 1500px) {
+    .elem-group-name {
+        font-size: 1.20rem;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
 @media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+    .elem-group-name {
+        font-size: 1.20rem;
+    }
 }
 
 /*
@@ -106,7 +112,7 @@
     }
 
     .elem-group-name {
-        font-size: 1.35rem;
+        font-size: 1.25rem;
     }
 }
 
@@ -123,6 +129,6 @@
     }
 
     .elem-group-name {
-        font-size: 1.35rem;
+        font-size: 1.25rem;
     }
 }

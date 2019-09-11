@@ -104,11 +104,47 @@
 /*
  Desktop(XL) Portrait
 */
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1500px) {
 }
 
 /*
  Desktop(XL) Landscape
 */
-@media (min-width: 1200px) and (orientation: landscape) {
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .group-name {
+        font-size: larger;
+    }
+
+    .group-info {
+        font-size: large;
+    }
+
+    .checkbox-size {
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .group-name {
+        font-size: larger;
+    }
+
+    .group-info {
+        font-size: large;
+    }
+
+    .checkbox-size {
+        width: 1.2rem;
+        height: 1.2rem;
+    }
 }

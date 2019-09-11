@@ -1,0 +1,41 @@
+.members-title {}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .members-title {
+        font-weight: bold;
+        font-size: 2rem;
+    }
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+    .members-title {
+        font-weight: bold;
+        font-size: 2rem;
+    }
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .members-title {
+        font-weight: bold;
+        font-size: 2.2rem;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .members-title {
+        font-weight: bold;
+        font-size: 2.2rem;
+    }
+}

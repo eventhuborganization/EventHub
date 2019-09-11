@@ -4,9 +4,10 @@ import Api from '../../services/api/Api'
 import { Link, Redirect } from "react-router-dom"
 import LocalStorage from "local-storage"
 import { UserBanner, LinkMakerBanner, ADDED_FRIEND_BUTTON, ADD_FRIEND_BUTTON } from '../link_maker_banner/LinkMakerBanner'
-import { SimpleSearchBar } from '../search_bar/SearchBar'
+import {SIMPLE_SEARCH_BAR, SimpleSearchBar} from '../search_bar/SearchBar'
 import AvatarHeader from '../avatar_header/AvatarHeader'
 import NoItemsPlaceholder from '../no_items_placeholder/NoItemsPlaceholder'
+import "./GroupInfo.css"
 
 let routes = require("../../services/routes/Routes")
 
@@ -29,8 +30,14 @@ class GroupInfo extends React.Component {
             group: group !== undefined ? group : {members: []},
             isMember: props.isLogged && group && group.members.findIndex(user => user._id === this.props.user._id) >= 0,
             redirectGroups: false,
-            redirectHome: false
+            redirectHome: false,
+            searchBarData: {
+                placeholder: "Cerca membri",
+                onChange: this.onFilterChange
+            }
         }
+
+        props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
 
         if(this.state.isMember){
             LocalStorage(this.groupInfoStateLocalStorageName, this.state.group)
@@ -46,12 +53,17 @@ class GroupInfo extends React.Component {
     }
 
     componentDidMount() {
+        this.props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
         if (!(this.props.isLogged && this.state.group && this.state.isMember)) {
             this.props.onError(
                 "Non sei autorizzato, verrai ridirezionato alla homepage", () => {},
                 () => this.setState({redirectHome: true})
             )
         }
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
     }
 
     onFilterChange = (event) => {
@@ -119,32 +131,53 @@ class GroupInfo extends React.Component {
                 {this.redirectToHome()}
                 {this.redirectToGroups()}
 
-                <AvatarHeader
-                    elem={this.state.group}
-                    isGroup={true}
-                />
+                <div className={"row"}>
+                    <div className={"col-12 col-xl-6"}>
+                        <AvatarHeader
+                            elem={this.state.group}
+                            isGroup={true}
+                        />
+                        <div className="row my-2 d-xl-none">
+                            <div className="col-12 d-flex justify-content-around">
+                                <button className="btn btn-danger button-size" onClick={this.exitFromGroup}>Esci dal gruppo</button>
+                                <Link
+                                    to={{
+                                        pathname: routes.inviteGroup,
+                                        group: this.state.group
+                                    }}
+                                    className="btn btn-primary button-size">
+                                    Aggiungi membri
+                                </Link>
+                            </div>
+                        </div>
+                        <div className={"d-none d-xl-inline"}>
+                            <Link
+                                to={{
+                                    pathname: routes.inviteGroup,
+                                    group: this.state.group
+                                }}
+                                className="btn btn-primary btn-block button-size mx-auto w-50 mt-4">
+                                Aggiungi membri
+                            </Link>
+                            <button className="btn btn-danger btn-block button-size mx-auto w-50 mt-4" onClick={this.exitFromGroup}>Esci dal gruppo</button>
+                        </div>
+                    </div>
 
-                <div className="row my-2">
-                    <div className="col-12 d-flex justify-content-around">
-                        <button className="btn btn-danger button-size" onClick={this.exitFromGroup}>Esci dal gruppo</button>
-                        <Link 
-                            to={{
-                                pathname: routes.inviteGroup,
-                                group: this.state.group
-                            }} 
-                            className="btn btn-primary button-size">
-                            Aggiungi membri
-                        </Link>
+                    <div className={"col-12 col-xl-6 mt-xl-4"}>
+                        <div className={"row"}>
+                            <div className={"col-12 col-xl-11"}>
+                                <div className={"d-none d-xl-inline members-title"}>Membri</div>
+                                {this.renderMembers()}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <SimpleSearchBar
-                    placeholder="Cerca partecipante"
+                    placeholder={this.state.searchBarData.placeholder}
                     value={this.state.filter}
                     onChange={this.onFilterChange}
                 />
-
-                {this.renderMembers()}
 
             </div>
         )

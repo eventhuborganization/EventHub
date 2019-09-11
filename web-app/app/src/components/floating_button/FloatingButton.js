@@ -79,7 +79,7 @@ let CreateNewEventButton = (props) => {
 
 let CreateNewGroupButton = () => {
     return (
-        <Link to={routes.newGroup}>
+        <Link className={"d-xl-none"} to={routes.newGroup}>
             <FloatingButton icon={{name: "plus", size:"2x"}} show={true} position={BOTTOM_RIGHT} shape={ROUNDED_CIRCLE} />
         </Link>
         )
