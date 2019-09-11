@@ -80,6 +80,8 @@
 .form-title {}
 .form-size {}
 
+.event-organizator-name {}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -198,10 +200,40 @@
  Desktop(XL) Portrait
 */
 @media (min-width: 1200px) {
+    .event-banner-event-name {
+        font-size: x-large;
+    }
+    .event-banner-event-info {
+        font-size: large;
+    }
+    .event-banner-event-info-icon {
+        font-size: large;
+    }
+    .event-banner-event-participants {
+        font-size: larger;
+    }
+    .event-organizator-name {
+        font-size: 1.1rem;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
 @media (min-width: 1200px) and (orientation: landscape) {
+    .event-banner-event-name {
+        font-size: x-large;
+    }
+    .event-banner-event-info {
+        font-size: large;
+    }
+    .event-banner-event-info-icon {
+        font-size: large;
+    }
+    .event-banner-event-participants {
+        font-size: larger;
+    }
+    .event-organizator-name {
+        font-size: 1.1rem;
+    }
 }

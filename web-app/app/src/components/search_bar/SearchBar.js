@@ -698,7 +698,7 @@ class DesktopSearchBar extends React.Component {
                     </div>
                     <div className={"col-6 d-flex justify-content-end align-items-center"}>
                         {
-                            this.props.isLogged ?
+                            this.props.isLogged && !this.props.hideCreateEvent ?
                                 this.navBarLink(routes.newEvent, <button className={"btn btn-outline-primary"}>Crea Evento</button>)
                                 : <div/>
                         }

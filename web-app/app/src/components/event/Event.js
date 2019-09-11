@@ -14,7 +14,7 @@ let PARTICIPATE = 1
 
 let routes = require("../../services/routes/Routes")
 
-let getButtonClassName = (eventType, buttonType, noMargin) => {
+let getButtonClassName = (eventType, buttonType, noMargin, isBlock) => {
     var buttonClass = ""
     switch(buttonType) {
         case FOLLOW:
@@ -26,7 +26,7 @@ let getButtonClassName = (eventType, buttonType, noMargin) => {
         default: break
     }
     let margin = noMargin ? "" : " ml-2"
-    let common = "btn button-size "
+    let common = "btn button-size " + (isBlock ? " btn-block " : " p-1 ")
     if (eventType === PARTY)
         return common + " partyButton partyButton" + buttonClass + margin
     else if (eventType === MEETING)
@@ -57,7 +57,7 @@ class FollowButton extends React.Component {
 
     render () {
         return (
-            <button className={getButtonClassName(this.props.event.typology, FOLLOW)}
+            <button className={getButtonClassName(this.props.event.typology, FOLLOW, false, this.props.showButtonsBlock)}
                     onClick={this.onClick}>
                 <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
                 Segui
@@ -78,7 +78,7 @@ class UnfollowButton extends React.Component {
 
     render () {
         return (
-            <button className={getButtonClassName(this.props.event.typology, FOLLOW) + " p-1"}
+            <button className={getButtonClassName(this.props.event.typology, FOLLOW, false, this.props.showButtonsBlock)}
                     onClick={this.onClick}>
                 Non seguire
             </button>
@@ -108,7 +108,7 @@ class ParticipateButton extends React.Component {
 
     render () {
         return (
-            <button className={getButtonClassName(this.props.event.typology, PARTICIPATE)}
+            <button className={getButtonClassName(this.props.event.typology, PARTICIPATE, false, this.props.showButtonsBlock)}
                     onClick={this.onClick}>
                 <LoginRedirect {...this.props} onRef={ref => this.setState({ loginRedirect: ref })}/>
                 Partecipa
@@ -129,7 +129,7 @@ class UnsubscribeButton extends React.Component {
 
     render () {
         return (
-            <button className={getButtonClassName(this.props.event.typology, PARTICIPATE)}
+            <button className={getButtonClassName(this.props.event.typology, PARTICIPATE, false, this.props.showButtonsBlock)}
                     onClick={this.onClick}>
                 Ritirati
             </button>
@@ -144,7 +144,7 @@ function UpdateButton(props) {
                 pathname: routes.updateEventFromId(props.event._id),
                 event: props.event
             }}
-            className={getButtonClassName(props.event.typology, PARTICIPATE)}>
+            className={getButtonClassName(props.event.typology, PARTICIPATE, false, props.showButtonsBlock)}>
             Modifica evento
         </Link>
     )
@@ -157,7 +157,7 @@ function InviteButton(props) {
                 pathname: routes.inviteEvent,
                 event: props.event
             }}
-            className={getButtonClassName(props.event.typology, PARTICIPATE, true)}>
+            className={getButtonClassName(props.event.typology, PARTICIPATE, true, props.showButtonsBlock)}>
             Invita
         </Link>
     )
@@ -176,7 +176,7 @@ function InviteButton(props) {
  */
 let WriteReviewButton = props => {
     return (
-        <button className={getButtonClassName(props.event.typology, PARTICIPATE) + (props.disabled ? " disabled" : "")}
+        <button className={getButtonClassName(props.event.typology, PARTICIPATE, false, props.showButtonsBlock) + (props.disabled ? " disabled" : "")}
                 onClick={() => props.showReviewModal(props.event, props.onSent)}>
             Scrivi una recensione
         </button>
@@ -242,16 +242,27 @@ let EventInteractionPanel = (props) => {
         if(props.hideInteractionButtons) {
             return <div/>
         } else if(!isOrganizator && !isEventPast && !isOrganization){
-            return <div>{followButton} {subscribeButton}</div>
+            return <div className={"d-flex " + (props.showButtonsBlock ? " w-50 " : "")}>
+                        <div className={(props.showButtonsBlock ? " w-100 " : "")}>{followButton}</div>
+                        <div className={(props.showButtonsBlock ? " ml-2 w-100 " : "")}>{subscribeButton}</div>
+                    </div>
         } else if(props.isLogged && isOrganizator && !isEventPast) {
-            return <UpdateButton {...props} event={props.event}/>
+            return (
+                    <div className={"d-flex " + (props.showButtonsBlock ? " w-50 " : "")}>
+                        <UpdateButton {...props} event={props.event}/>
+                    </div>
+                )
         } else if (props.isLogged && isEventPast && !isOrganizator && !isOrganization && props.showReviewModal instanceof Function) {
-            return <WriteReviewButton 
-                        onSent={props.onReviewSent} 
-                        event={props.event} 
-                        showReviewModal={props.showReviewModal}
+            return (
+                <div className={"d-flex " + (props.showButtonsBlock ? " w-50 " : "")}>
+                    <WriteReviewButton
+                        {...props}
+                        onSent={props.onReviewSent}
+                        event={props.event}
                         disabled={props.isAlreadyBeenReviewed}
                     />
+                </div>
+            )
         } else {
             return <div/>
         }
@@ -386,24 +397,24 @@ let EventLocation = props => {
 let EventOrganizatorInfo = props => {
         return props.organizator ? (
             <div className="row">
-                <div className="col-12 px-0">
+                <div className="col-12 px-0 event-info-section-title">
                     <span className={props.level}>Organizzatore</span>
                 </div>
                 <Link
                     to={routes.userFromId(props.organizator._id)} 
-                    className="col-3 px-0"
+                    className="col-3 col-xl-2 px-0 d-flex justify-content-center"
                     style={{textDecoration: "none"}}>
                     <RoundedSmallImage imageName={props.organizator.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} />
                 </Link>
                 <Link 
                     to={routes.userFromId(props.organizator._id)}
-                    className="col-9 d-flex justify-content-start align-items-center"
+                    className="col d-flex justify-content-start align-items-center"
                     style={{textDecoration: "none"}}>
                     <span className="text-invited font-weight-bold text-dark">
                         {
                             props.organizator.organization ? 
-                            <div> {props.organizator.name} <em className="text-secondary fas fa-user-tie" style={{fontSize: "larger"}}></em></div> : 
-                            <div>{props.organizator.name} {props.organizator.surname}</div>
+                            <div className={"event-organizator-name"}> {props.organizator.name} <em className="text-secondary fas fa-user-tie" style={{fontSize: "larger"}}></em></div> :
+                            <div className={"event-organizator-name"}>{props.organizator.name} {props.organizator.surname}</div>
                         }
                     </span>
                 </Link>

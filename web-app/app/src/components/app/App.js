@@ -198,8 +198,12 @@ class App extends React.Component {
         })
     }
 
-    setSearchBar = (type, data) => {
-        this.setState({searchBarType: type, searchBarData: data})
+    setSearchBar = (type, data, hideCreateEvent) => {
+        this.setState({
+            searchBarType: type,
+            searchBarData: data,
+            hideCreateEvent: hideCreateEvent
+        })
     }
 
   render() {
@@ -229,6 +233,7 @@ class App extends React.Component {
                 data={this.state.searchBarData}
                 searchBarType={this.state.searchBarType}
                 onLogout={this.logout}
+                hideCreateEvent={this.state.hideCreateEvent}
                 onRef={ref => this.setState({headerRef: ref})}
             />
           <Switch>
@@ -248,17 +253,14 @@ class App extends React.Component {
             } />
             <Route path={routes.newEvent} exact render={(props) =>
                 <EventEditor {...props}
-                             isLogged={this.state.isLogged}
-                             onError={this.onError}
+                             {...commonProps}
                              loggedUser={this.state.user}
                              onUpdate={false}
                 />}
             />
             <Route path={routes.updateEvent} exact render={(props) => 
                 <EventEditor {...props}
-                             isLogged={this.state.isLogged}
-                             onError={this.onError}
-                             showMessage={this.showModal} 
+                             {...commonProps}
                              loggedUser={this.state.user}
                              onUpdate={true}
                 />} 

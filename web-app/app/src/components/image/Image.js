@@ -42,12 +42,13 @@ let ImageForCard = props => {
         if (props.text)
             return <h4>{props.text}</h4>
     }
+    let size = props.size ? props.size : " myCard "
     return (props.imageName && url ?
         <img src={url}
-             className={"card-img img-fluid myCard"}
+             className={"card-img img-fluid " + size}
              alt="Immagine profilo utente"
         /> :
-        <div className={"bg-secondary text-white myCard" + altDisplayClass}>
+        <div className={"bg-secondary text-white " + size + " " + altDisplayClass}>
             <em className="far fa-image fa-9x"></em>
             {renderText()}
         </div>)
