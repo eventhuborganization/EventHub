@@ -20,8 +20,8 @@ class Settings extends React.Component {
     render() {
         let style = {
             navbarBackground: "bg-dark",
-            link: "text-white",
-            title: "text-white",
+            link: "text-white settings-tab-selections",
+            title: "text-white settings-title",
             button: "border border-white"
         }
        return (
