@@ -1,4 +1,5 @@
 import React from 'react'
+import './Settings.css'
 import Api from '../../services/api/Api'
 import Resizer from 'react-image-file-resizer'
 
@@ -389,7 +390,7 @@ function SettingsFileComponent(props) {
                 </div>
             </div>
             <div className={props.image[1] ? "form-group row" : "d-none"}>
-                <img src={image} className={"img-fluid mx-auto d-block"} alt="immagine profilo"/>
+                <img src={image} className={"img-fluid mx-auto d-block settings-image"} alt="immagine profilo"/>
             </div>
         </div>
     ) : <div/>;
@@ -398,7 +399,7 @@ function SettingsFileComponent(props) {
 function SettingsCard(props){
     return (
         <form className="mt-3 row" onSubmit={props.onSubmit}>
-            <div className="card border-primary shadow mx-auto col-11">
+            <div className="card border-primary shadow mx-auto col-11 col-xl-8">
                 <div className="card-body">
                     <h5 className="card-title">{props.title}</h5>
                     {props.components}

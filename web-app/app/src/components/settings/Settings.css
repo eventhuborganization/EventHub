@@ -1,0 +1,111 @@
+.settings-image {
+    max-height: 150px;
+    min-height: 150px;
+}
+.settings-tab-selections{}
+.settings-title{}
+
+/**
+  Smartphone(SM) Landscape
+ */
+ @media screen and (orientation:landscape) {
+    .settings-image {
+        max-height: 200px;
+        min-height: 200px;
+    }
+}
+
+/*
+ Tablet(MD) Portrait
+*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .settings-image {
+        max-height: 250px;
+        min-height: 250px;
+    }
+    .settings-tab-selections{
+        font-size: large;
+    }
+}
+
+/*
+ Tablet(MD) Landscape
+*/
+@media (min-width: 768px) and (max-width: 992px) and (orientation: landscape) {
+    .settings-image {
+        max-height: 250px;
+        min-height: 250px;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Portrait
+*/
+@media (min-width: 992px) and (max-width: 1200px) {
+    .settings-image {
+        max-height: 350px;
+        min-height: 350px;
+    }
+    .settings-title{
+        font-size: x-large;
+    }
+    .settings-tab-selections{
+        font-size: larger;
+    }
+}
+
+/*
+ Desktop/Tablet(LG) Landscape
+*/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    .settings-image {
+        max-height: 300px;
+        min-height: 300px;
+    }
+}
+
+/*
+ Desktop(XL) Portrait
+*/
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .settings-image {
+        max-height: 250px;
+        min-height: 250px;
+    }
+    .settings-title{
+        font-size: x-large;
+    }
+    .settings-tab-selections{
+        font-size: larger;
+    }
+}
+
+/*
+ Desktop(XL) Landscape
+*/
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+    .settings-image {
+        max-height: 250px;
+        min-height: 250px;
+    }
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .settings-image {
+        max-height: 250px;
+        min-height: 250px;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .settings-image {
+        max-height: 250px;
+        min-height: 250px;
+    }
+}
