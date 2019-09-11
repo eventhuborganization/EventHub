@@ -120,7 +120,7 @@
 /*
  Desktop(XL) Portrait
 */
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1500px) {
     .myCard {
         max-height: 300px;
         min-height: 300px;
@@ -130,7 +130,7 @@
 /*
  Desktop(XL) Landscape
 */
-@media (min-width: 1200px) and (orientation: landscape) {
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
     .myCard {
         max-height: 300px;
         min-height: 300px;

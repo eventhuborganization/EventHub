@@ -107,6 +107,9 @@ footer em, .navbar-icon {
     .main-container {
         margin-bottom: 3%;
     }
+    .button-size {
+        font-size: large;
+    }
 }
 
 /*
@@ -115,5 +118,8 @@ footer em, .navbar-icon {
 @media (min-width: 1200px) and (orientation: landscape) {
     .main-container {
         margin-bottom: 3%;
+    }
+    .button-size {
+        font-size: large;
     }
 }

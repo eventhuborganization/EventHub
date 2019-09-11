@@ -18,12 +18,12 @@ export default class MultipleElementsCard extends React.Component {
         })
     }
 
-    numberOfElementsToShow = 6
+    numberOfElementsToShow = 4
 
     render() { 
         return !!this.props.show ? (
             <div className={"row " + (!!this.props.margin ? this.props.margin : "")}>
-                <div className="card border-primary shadow mx-auto col-11">
+                <div className="card border-primary shadow mx-auto col-11 col-xl-8">
                     <div className="card-body px-1 py-3">
                         <h5 className="card-title">{this.props.title}</h5>
                         {this.props.showAll ? this.props.elements : this.props.elements.slice(0,this.state.lastElement)}

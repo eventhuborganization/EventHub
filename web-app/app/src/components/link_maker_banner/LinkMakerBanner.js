@@ -87,8 +87,7 @@ export function LinkMakerBanner(props) {
                     <button id={props.buttonId} className={"btn btn-sm btn-primary button-size " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
                         {buttonText}
                     </button>
-                </div> :
-                <Link to={link} className="col-1"></Link>
+                </div> :<div/>
             }
             
         </div>
