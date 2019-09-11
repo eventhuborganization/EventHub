@@ -71,7 +71,7 @@ let FloatingButton = (props) => {
 
 let CreateNewEventButton = (props) => {
     return (
-        <Link to={routes.newEvent}>
+        <Link className={"d-xl-none"} to={routes.newEvent}>
             <FloatingButton icon={{name: "plus", size:"2x"}} show={props.isLogged} position={BOTTOM_RIGHT} shape={ROUNDED_CIRCLE} />
         </Link>
         )

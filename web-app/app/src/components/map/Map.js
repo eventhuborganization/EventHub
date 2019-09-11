@@ -1,6 +1,6 @@
 import React from 'react'
 import {EventsMap} from "./Maps"
-import {SearchBar, SEARCH_BY_PLACE} from "../search_bar/SearchBar"
+import {SearchBar, SEARCH_BY_PLACE, SEARCH_BAR} from "../search_bar/SearchBar"
 import GeoLocation from "../../services/location/GeoLocation";
 import {
     BOTTOM_LEFT,
@@ -16,6 +16,8 @@ class Map extends React.Component {
 
     #mapDataLocalStorageName = "map-data"
     code = undefined
+    mobileBar = "mobileBar"
+    desktopBar = "desktopBar"
 
     constructor(props) {
         super(props)
@@ -26,11 +28,23 @@ class Map extends React.Component {
         this.state = {
             mapContainerHeight: 0,
             events: events,
-            searchBarRef: undefined,
+            searchBarRefs: {},
             mapRef: undefined,
             center: {
                 lat: 0,
                 lng: 0
+            },
+            searchBarData: {
+                searchBy: SEARCH_BY_PLACE,
+                onSearchResults: this.onSearchResults,
+                filters: {
+                    typology: true,
+                    date: true,
+                    distance: true
+                },
+                filtersOnlyFixedTop: true,
+                onSearchError: this.onSearchError,
+                onLocationChange: this.updateCenterPositionWithSearchResults
             }
         }
         LocalStorage(this.#mapDataLocalStorageName, {
@@ -39,11 +53,20 @@ class Map extends React.Component {
     }
 
     componentDidMount() {
-        this.updateMapHeight()
-        this.code = ResizeService.addSubscription(() => this.updateMapHeight())
+        let searchBarData = {...this.state.searchBarData}
+        searchBarData.onSearchError = this.onSearchError
+        searchBarData.onRef = ref => {
+            console.log(ref)
+            this.updateSearchBarRef(this.desktopBar, ref)
+        }
+        this.props.setSearchBar(SEARCH_BAR, searchBarData)
+        this.onResize()
+        this.code = ResizeService.addSubscription(() => this.onResize())
         this.setCurrentPositionAsCenter()
     }
+
     componentWillUnmount() {
+        this.props.unsetSearchBar()
         if (this.code >= 0)
             ResizeService.removeSubscription(this.code)
     }
@@ -52,6 +75,7 @@ class Map extends React.Component {
         GeoLocation.getCurrentLocation(
             () => this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione"),
             position => {
+                console.log(position)
                 let location = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -62,8 +86,10 @@ class Map extends React.Component {
     }
 
     searchInNewLocation = location => {
-        if(this.state.searchBarRef)
-            this.state.searchBarRef.searchInNewLocation(location)
+        if(window.innerWidth < 1200 && this.state.searchBarRefs[this.mobileBar])
+            this.state.searchBarRefs[this.mobileBar].searchInNewLocation(location)
+        else if (this.state.searchBarRefs[this.desktopBar])
+            this.state.searchBarRefs[this.desktopBar].searchInNewLocation(location)
     }
 
     searchInMapLocation = () => {
@@ -71,8 +97,10 @@ class Map extends React.Component {
             this.searchInNewLocation(this.state.mapRef.getCurrentPosition())
     }
 
-    updateMapHeight = () => {
-        let searchBarHeight = document.getElementById('search-bar').offsetHeight
+    onResize = () => {
+        let elements = Array.from(document.querySelectorAll(".bar-container"))
+            .filter(elem => window.getComputedStyle(elem).display !== "none")
+        let searchBarHeight = elements.length > 0 ? elements[0].offsetHeight : 0
         let footerHeight = document.getElementById('footer').offsetHeight
         let mapContainerHeight = window.innerHeight - searchBarHeight - footerHeight
         this.setState({mapContainerHeight: mapContainerHeight})
@@ -106,31 +134,38 @@ class Map extends React.Component {
     }
 
     onCenterChanged = location => {
-        if(this.state.searchBarRef)
-            this.state.searchBarRef.locationChanged(location)
+        if(window.innerWidth < 1200 && this.state.searchBarRefs[this.mobileBar])
+            this.state.searchBarRefs[this.mobileBar].locationChanged(location)
+        else if (this.state.searchBarRefs[this.desktopBar])
+            this.state.searchBarRefs[this.desktopBar].locationChanged(location)
+    }
+
+    updateSearchBarRef = (id, ref) => {
+        this.setState(prevState => {
+            prevState.searchBarRefs[id] = ref
+            return prevState
+        }, () => this.setCurrentPositionAsCenter())
     }
 
     render() {
         return (
              <div>
-                 <SearchBar searchBy={SEARCH_BY_PLACE}
-                            onChange={this.onSearchResults}
-                            filters={{
-                                typology: true,
-                                date: true,
-                                distance: true
-                            }}
-                            filtersOnlyFixedTop={true}
-                            onError={this.onSearchError}
-                            onLocationChange={this.updateCenterPositionWithSearchResults}
-                            onRef={ref => this.setState({searchBarRef: ref})}
+                 <SearchBar  searchBy={SEARCH_BY_PLACE}
+                             onChange={this.onSearchResults}
+                             filters={{
+                                 typology: true,
+                                 date: true,
+                                 distance: true
+                             }}
+                             filtersOnlyFixedTop={true}
+                             onError={this.onSearchError}
+                             onLocationChange={this.updateCenterPositionWithSearchResults}
+                             onRef={ref => this.updateSearchBarRef(this.mobileBar, ref)}
                  />
                  <div className="row">
                      <div id="map-container"
                           className="col-12 px-0"
-                          style={{
-                              height: this.state.mapContainerHeight
-                          }}
+                          style={{height: this.state.mapContainerHeight}}
                      >
                          <EventsMap center={this.state.center}
                                     events={this.state.events}
