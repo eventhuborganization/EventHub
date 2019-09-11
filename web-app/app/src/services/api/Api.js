@@ -317,7 +317,6 @@ let getEventsByOrganizator = (organizatorId, onError, onSuccess) => {
  * @param onSuccess {function(response)}
  */
 let searchEvents = (data, onError, onSuccess) => {
-    console.log(data)
     let config = createEventQueryConfigs(data)
     let name = data && data.event ? data.event.name : ""
     managePromise(
