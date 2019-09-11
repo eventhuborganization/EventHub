@@ -64,7 +64,7 @@ export function LinkMakerBanner(props) {
         <div className={"row py-2 d-flex align-items-center" + (!!props.border ? " border-bottom" : "")}>
             <Link
                 to={link}
-                className={"col-4 col-md-2 " + (props.elem.avatar ? "" : " d-flex align-self-stretch")}
+                className={"col-4 col-md-2 col-xl-3 d-flex justify-content-center"}
                 style={{textDecoration: "none"}}
             >
                 <RoundedSmallImage 
@@ -87,8 +87,7 @@ export function LinkMakerBanner(props) {
                     <button id={props.buttonId} className={"btn btn-sm btn-primary button-size " + (props.buttonDisabled ? " disabled " : "")} onClick={props.onClick}>
                         {buttonText}
                     </button>
-                </div> :
-                <Link to={link} className="col-1"></Link>
+                </div> :<div/>
             }
             
         </div>

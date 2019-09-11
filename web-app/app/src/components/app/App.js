@@ -29,7 +29,7 @@ import NavigationBar from '../navigation_bar/NavigationBar'
 import EventsPartecipated from '../event/EventsParticipated'
 import Badges from '../badges/Badges'
 import NoMatch from '../no_match/NoMatch'
-import {DesktopSearchBar, SEARCH_BY_EVENT} from "../search_bar/SearchBar";
+import {DesktopSearchBar} from "../search_bar/SearchBar";
 
 let routes = require("../../services/routes/Routes")
 
@@ -46,7 +46,8 @@ class App extends React.Component {
             events: applicationState && applicationState.events ? applicationState.events : [],
             showMessageElement: undefined,
             nextErrorToShow: undefined,
-            reviewModalRef: undefined
+            reviewModalRef: undefined,
+            headerRef: undefined
         }
         ApiService.setNotAuthenticatedBehaviour(() => this.saveToStateAndLocalStorage({isLogged: false, user: {}}))
     }
@@ -197,13 +198,12 @@ class App extends React.Component {
         })
     }
 
-    setSearchBar = (type, data) => {
-        console.log(this.state)
-        if (data && data.onRef && this.state.headerRef) {
-            data.onRef(this.state.headerRef)
-            delete data.onRef
-        }
-        this.setState({searchBarType: type, searchBarData: data})
+    setSearchBar = (type, data, hideCreateEvent) => {
+        this.setState({
+            searchBarType: type,
+            searchBarData: data,
+            hideCreateEvent: hideCreateEvent
+        })
     }
 
   render() {
@@ -213,7 +213,8 @@ class App extends React.Component {
         onSuccess: this.onSuccess,
         showMessage: this.showModal,
         setSearchBar: this.setSearchBar,
-        unsetSearchBar: () => this.setSearchBar(undefined, undefined)
+        unsetSearchBar: () => this.setSearchBar(undefined, undefined),
+        headerRef: this.state.headerRef
     }
     return (
         <Router>
@@ -231,6 +232,8 @@ class App extends React.Component {
                 user={this.state.user}
                 data={this.state.searchBarData}
                 searchBarType={this.state.searchBarType}
+                onLogout={this.logout}
+                hideCreateEvent={this.state.hideCreateEvent}
                 onRef={ref => this.setState({headerRef: ref})}
             />
           <Switch>
@@ -250,17 +253,14 @@ class App extends React.Component {
             } />
             <Route path={routes.newEvent} exact render={(props) =>
                 <EventEditor {...props}
-                             isLogged={this.state.isLogged}
-                             onError={this.onError}
+                             {...commonProps}
                              loggedUser={this.state.user}
                              onUpdate={false}
                 />}
             />
             <Route path={routes.updateEvent} exact render={(props) => 
                 <EventEditor {...props}
-                             isLogged={this.state.isLogged}
-                             onError={this.onError}
-                             showMessage={this.showModal} 
+                             {...commonProps}
                              loggedUser={this.state.user}
                              onUpdate={true}
                 />} 
@@ -346,9 +346,8 @@ class App extends React.Component {
               />
               <Route path={routes.myGroups} exact render={(props) =>
                   <Groups {...props}
-                          isLogged={this.state.isLogged}
+                          {...commonProps}
                           user={this.state.user}
-                          onError={this.onError}
                   />}
               />
               <Route path={routes.newGroup} exact render={(props) =>
@@ -361,9 +360,8 @@ class App extends React.Component {
               />
               <Route path={routes.group} exact render={(props) =>
                   <GroupInfo {...props}
-                          isLogged={this.state.isLogged}
+                          {...commonProps}
                           user={this.state.user}
-                          onError={this.onError}
                           updateUserInfo={this.updateUserChanges}
                   />}
               />

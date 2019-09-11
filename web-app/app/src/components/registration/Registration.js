@@ -4,6 +4,7 @@ import Api from '../../services/api/Api'
 import RegistrationForm from './RegistrationForm'
 import { RegistrationTab } from '../menu_tab/MenuTab'
 import {LoginRedirect, LoginSuccessfullRedirect} from '../redirect/Redirect'
+import ResizeService from "../../services/Resize/Resize"
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -11,6 +12,7 @@ function capitalizeFirstLetter(string) {
 
 class Registration extends React.Component {
 
+    resizeCode = -1
     constructor(props) {
         super(props);
         this.state = {
@@ -23,13 +25,18 @@ class Registration extends React.Component {
     security = require('js-sha512');
   
     componentDidMount = () => {
-        document.getElementById("root").classList.add("p-0", styles.bgImage)
+        document.getElementById("root").classList.add(styles.bgImage)
         this.updateRegistrationContainerMargin()
-        window.onorientationchange = this.updateRegistrationContainerMargin
+        if (this.resizeCode < 0)
+            this.resizeCode = ResizeService.addSubscription(this.updateRegistrationContainerMargin)
     }
 
     componentWillUnmount = () => {
-        document.getElementById("root").classList.remove("p-0", styles.bgImage)
+        document.getElementById("root").classList.remove(styles.bgImage)
+        if (this.resizeCode >= 0) {
+            ResizeService.removeSubscription(this.resizeCode)
+            this.resizeCode = -1
+        }
     }
 
     setRedirectToLoginRef = (redirectComponent) => {
@@ -92,8 +99,8 @@ class Registration extends React.Component {
 
     render() {
         return (
-            <div className={styles.loginContainer} style={{marginBottom: this.state.registrationContainerMarginBottom}}>
-                <main className="d-flex align-items-center">
+            <div className={"row h-100"} style={{marginBottom: this.state.registrationContainerMarginBottom}}>
+                <main className="col-12 px-0 d-flex align-items-center">
                     <div className={"container-fluid col-11 col-sm-8 col-md-8 col-xl-5 mx-auto my-3 " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">

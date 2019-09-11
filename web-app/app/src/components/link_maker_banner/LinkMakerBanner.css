@@ -84,11 +84,51 @@
 /*
  Desktop(XL) Portrait
 */
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .elem-group-name {
+        font-size: 1.20rem;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
-@media (min-width: 1200px) and (orientation: landscape) {
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+    .elem-group-name {
+        font-size: 1.20rem;
+    }
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .elem-name {
+        font-size: larger;
+    }
+
+    .elem-info {
+        font-size: large;
+    }
+
+    .elem-group-name {
+        font-size: 1.25rem;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .elem-name {
+        font-size: larger;
+    }
+
+    .elem-info {
+        font-size: large;
+    }
+
+    .elem-group-name {
+        font-size: 1.25rem;
+    }
 }

@@ -11,7 +11,8 @@ let routes = require("../../services/routes/Routes")
 function UserAvatar(props){
     return (
         <Link 
-            className={"col " + (!!props.margin ? "" : "pr-0")} 
+            className={"col " + (!!props.margin ? "" : "pr-0")}
+            style={{textDecoration: "none"}}
             to={routes.userFromId(props.user._id)}>
             <RoundedSmallImage imageName={props.user.avatar} borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </Link>
@@ -28,7 +29,7 @@ function EmptyUserAvatar(props){
 
 function MoreUsers(props){
     return (
-        <Link to={props.moreUsersLink} className="col">
+        <Link to={props.moreUsersLink} className="col" style={{textDecoration: "none"}}>
                 <MoreAvatar borderType={BORDER_PRIMARY} placeholderType={PLACEHOLDER_USER_CIRCLE}/>
         </Link>
     )
@@ -87,7 +88,7 @@ class MultipleUsersBanner extends React.Component {
         } else if (width >= 992 && width < 1200){
             data = [7,6]
         } else {
-            data = [10,7]
+            data = [7,7]
         }
         this.loadUsersInfo(this.props.users, data[0] + 1)
         return data

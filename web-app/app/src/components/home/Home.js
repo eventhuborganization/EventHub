@@ -2,7 +2,7 @@ import React from 'react'
 import './Home.css'
 import EventCard from "../event_card/EventCard"
 import {CreateNewEventButton} from "../floating_button/FloatingButton"
-import {DesktopSearchBar, SEARCH_BAR, SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar"
+import {SEARCH_BAR, SEARCH_BY_EVENT, SearchBar} from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import LoadingSpinner from "../loading_spinner/LoadingSpinner"
@@ -26,6 +26,7 @@ class Home extends React.Component {
                 onSearchError: this.onSearchError
             }
         }
+        props.setSearchBar(SEARCH_BAR, this.state.searchBarConfigs)
         ApiService.getEvents({fromIndex: 0},
             error => this.onSearchError(null, error),
             response => {
@@ -82,7 +83,17 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <SearchBar {...this.state.searchBarConfigs} />
+                <SearchBar
+                    searchBy={SEARCH_BY_EVENT}
+                    onChange={this.onSearchResults}
+                    filters={{
+                        typology: true,
+                        date: true,
+                        location: true
+                    }}
+                    stickyTop={true}
+                    onError={this.onSearchError}
+                />
 
                 <CreateNewEventButton location={this.props.location} isLogged={this.props.isLogged} />
 

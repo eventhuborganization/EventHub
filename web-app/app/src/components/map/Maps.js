@@ -40,8 +40,8 @@ class EventsMap extends CallableComponent {
     updateMap = () => {
         this.infoWindows = []
         this.map = this.createGoogleMap()
-        this.createCurrentLocationMarkerMarker(this.map)
         this.props.events.forEach(event => this.createEventMarker(event, this.map))
+        this.createCurrentLocationMarkerMarker(this.map)
     }
 
     componentDidMount() {
@@ -134,11 +134,12 @@ class EventsMap extends CallableComponent {
                 position: location,
                 icon: {
                     url: images(`./${"circle-solid.png"}`),
-                    scaledSize: new window.google.maps.Size(12, 12),
+                    scaledSize: new window.google.maps.Size(14, 14),
                     origin: new window.google.maps.Point(0, 0),
-                    anchor: new window.google.maps.Point(0, 12)
+                    anchor: new window.google.maps.Point(0, 14)
                 },
-                map: map
+                map: map,
+                zIndex: 1000
             })
         })
     }

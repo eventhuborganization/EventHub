@@ -5,7 +5,7 @@ import {MEETING, PARTY, SPORT} from "../event/Event";
 import {CallableComponent} from "../redirect/Redirect"
 import "./SearchBar.css"
 import {Link} from "react-router-dom"
-import {PLACEHOLDER_GROUP_CIRCLE, PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
+import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 import Menu from "../menu/Menu"
 import ResizeService from "../../services/Resize/Resize"
 import NotificationService from "../../services/notification/Notification";
@@ -32,20 +32,21 @@ let SEARCH_BY_PLACE = 1
  */
 class SearchBar extends CallableComponent {
 
-    search_input_id = 'tf-search'
-    btn_search_id = 'btn-search'
-    location_filter_id = 'location'
-    date_filter_id = 'date'
-    typology_filter_id = 'typology'
-    distance_filter_id = 'distance'
+    rand = Math.floor(Math.random() * 100) + 1
+    search_input_id = 'tf-search' + this.rand
+    btn_search_id = 'btn-search' + this.rand
+    location_filter_id = 'location' + this.rand
+    date_filter_id = 'date' + this.rand
+    typology_filter_id = 'typology' + this.rand
+    distance_filter_id = 'distance' + this.rand
     location_input_placeholder = "Indirizzo, Città, ..."
     defaultDistance = 20 //km
     minDistance = 1 //km
     maxDistance = 50 //km
     configured = false
-    containerId = "search-bar-container"
-    filtersContainerId = "filter-container"
-    code = undefined
+    searchBarId = "search-bar" + this.rand
+    filtersContainerId = "filter-container" + this.rand
+    code = -1
 
     constructor(props) {
         super(props)
@@ -68,7 +69,8 @@ class SearchBar extends CallableComponent {
 
     componentDidMount() {
         this.updateFiltersMarginTop()
-        this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
         super.componentDidMount()
         if (!this.configured) {
             switch(this.props.searchBy) {
@@ -86,12 +88,15 @@ class SearchBar extends CallableComponent {
 
     componentWillUnmount() {
         super.componentWillUnmount()
-        ResizeService.removeSubscription(this.code)
+        if (this.code >= 0)
+            ResizeService.removeSubscription(this.code)
     }
 
     updateFiltersMarginTop = () => {
-        if (this.props.filtersOnlyFixedTop)
-            this.setState({filtersMarginTop: document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : 'search-bar').offsetHeight})
+        if (this.props.filtersOnlyFixedTop) {
+            let elem = document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : this.searchBarId)
+            this.setState({filtersMarginTop: elem ? elem.offsetHeight : 0})
+        }
     }
 
     searchInNewLocation = location => {
@@ -179,7 +184,13 @@ class SearchBar extends CallableComponent {
     search = (searchApi, data, location) => {
         if (this.props.onLocationChange)
             this.props.onLocationChange(location)
-        searchApi(data, error => this.props.onError(location, error), events => this.onResults(events, location))
+        searchApi(data,
+                error => {
+                    if (this.props.onError instanceof Function)
+                        this.props.onError(location, error)
+                }, events => {
+                        this.onResults(events, location)
+                })
     }
 
     onResults = (events, location) => {
@@ -445,8 +456,8 @@ class SearchBar extends CallableComponent {
         if (this.props.filtersOnlyFixedTop)
             filtersClass += " fixed-top px-3 px-xl-0"
         return (
-            <form id={this.containerId} className={containerClass} onSubmit={this.submit}>
-                <nav id="search-bar" className={navBarClassName}>
+            <form className={containerClass} onSubmit={this.submit}>
+                <nav id={this.props.containerId ? "" : this.searchBarId} className={navBarClassName}>
                     {this.renderLogo()}
                     <div className="col form-inline container-fluid px-1 pb-1">
                         <div className="row w-100 mx-0 d-flex justify-content-between">
@@ -481,8 +492,12 @@ class SearchBar extends CallableComponent {
 }
 
 function SimpleSearchBar(props){
+    let containerClass = (props.showAnyway ? "" : " d-xl-none ") +
+        (props.noStickyTop ? "" : " stickyTop bg-white ") +
+        (props.noMargin ? "" : " mb-2 ") +
+        " row py-2 "
     return (
-        <form className="row mb-2 sticky-top bg-white py-2" onSubmit={ev => ev.preventDefault()}>
+        <form className={containerClass} onSubmit={ev => ev.preventDefault()}>
             <label htmlFor="tf-search" className="d-none">{props.placeholder}</label>
             <input 
                 className="col-11 mx-auto form-control input-search"
@@ -564,10 +579,14 @@ class DesktopSearchBar extends React.Component {
 
     componentDidMount() {
         this.updateMenuMarginTop()
-        this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
     }
 
     componentDidUpdate() {
+        this.updateMenuMarginTop()
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
         if(this.props.isLogged && this.notificationServiceSubscriptionCode < 0){
             this.notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         } else if(!this.props.isLogged && this.notificationServiceSubscriptionCode >= 0){
@@ -576,14 +595,19 @@ class DesktopSearchBar extends React.Component {
     }
 
     componentWillUnmount() {
-        ResizeService.removeSubscription(this.code)
         this.removeSubscriptions()
     }
 
     removeSubscriptions = () => {
-        NotificationService.removeSubscription(this.notificationServiceSubscriptionCode)
-        this.setState({notifications: []})
-        this.notificationServiceSubscriptionCode = -1
+        if (this.code >= 0) {
+            ResizeService.removeSubscription(this.code)
+            this.code = -1
+        }
+        if (this.notificationServiceSubscriptionCode >= 0) {
+            NotificationService.removeSubscription(this.notificationServiceSubscriptionCode)
+            this.setState({notifications: []})
+            this.notificationServiceSubscriptionCode = -1
+        }
     }
 
     onNotificationLoaded = (notifications) => {
@@ -599,7 +623,10 @@ class DesktopSearchBar extends React.Component {
     }
 
     updateMenuMarginTop = () => {
-        this.setState({menuMarginTop: document.getElementById(this.containerId).offsetHeight})
+        let elem = document.getElementById(this.containerId)
+        let height = elem ? elem.offsetHeight : 0
+        if (this.state.menuMarginTop !== height)
+            this.setState({menuMarginTop: height})
     }
 
     renderNotificationBadge = () => {
@@ -611,7 +638,6 @@ class DesktopSearchBar extends React.Component {
         if (this.props.searchBarType < 0 || !this.props.data)
             return <div/>
         let data = this.props.data
-        console.log(this.props)
         switch(this.props.searchBarType) {
             case SEARCH_BAR:
                 return <SearchBar
@@ -637,17 +663,27 @@ class DesktopSearchBar extends React.Component {
                             onFilter={data.onFilter}
                             searchPeople={data.searchPeople}
                         />
+            case SIMPLE_SEARCH_BAR:
+                return <SimpleSearchBar
+                            showAnyway={true}
+                            noStickyTop={true}
+                            noMargin={true}
+                            placeholder={data.placeholder}
+                            onChange={data.onChange}
+                        />
             default: return <div/>
         }
     }
 
     render() {
         let avatar =
-            <RoundedSmallImage
-                imageName={this.props.user.avatar}
-                placeholderType={PLACEHOLDER_USER_CIRCLE}
-                size={"navbar-avatar"}
-            />
+            <Link to={routes.myProfile} style={{textDecoration: "none"}} >
+                <RoundedSmallImage
+                    imageName={this.props.user.avatar}
+                    placeholderType={PLACEHOLDER_USER_CIRCLE}
+                    size={"navbar-avatar"}
+                />
+            </Link>
         let filtersClass = "collapse row fixed-top px-3"
         return (
             <div id={this.containerId} className={"d-none d-xl-block sticky-top bar-container"}>
@@ -661,6 +697,11 @@ class DesktopSearchBar extends React.Component {
                         {this.renderSearchBar()}
                     </div>
                     <div className={"col-6 d-flex justify-content-end align-items-center"}>
+                        {
+                            this.props.isLogged && !this.props.hideCreateEvent ?
+                                this.navBarLink(routes.newEvent, <button className={"btn btn-outline-primary"}>Crea Evento</button>)
+                                : <div/>
+                        }
                         {this.navBarLink(routes.map, <div><em className={"fas fa-map-marked-alt fa-x2 navbar-icon"}></em> Mappa</div>)}
                         {
                             this.props.isLogged && this.props.user && this.props.user.organization ?
@@ -669,7 +710,7 @@ class DesktopSearchBar extends React.Component {
                         }
                         {this.navBarLink(routes.myNotifications, <div><em className={"fas fa-bell fa-x2 navbar-icon"}></em>{this.renderNotificationBadge()}</div>)}
                         {avatar}
-                        <button id="btn-filter" name="btn-filter" className="btn btn-link dropdown-toggle dropdown-toggle-split" type="button" data-toggle="collapse"
+                        <button id="btn-menu-desktop" name="btn-menu-desktop" className="btn btn-link dropdown-toggle dropdown-toggle-split text-dark" type="button" data-toggle="collapse"
                                 data-target={"#" + this.menuContainerId} aria-expanded="false" aria-controls={this.menuContainerId}>
                         </button>
                     </div>
@@ -678,7 +719,7 @@ class DesktopSearchBar extends React.Component {
                      style={{marginTop: this.state.menuMarginTop, marginLeft: "74%"}}
                      id={this.menuContainerId}
                 >
-                    <div className={"menu-container col-12 px-0 bg-white"}>
+                    <div className={"menu-container col-12 bg-white"}>
                         <Menu {...this.props} hideNotifications={true} />
                     </div>
                 </div>

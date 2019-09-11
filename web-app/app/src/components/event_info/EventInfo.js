@@ -1,5 +1,6 @@
 import React from 'react'
 import "./EventInfo.css"
+import "../link_maker_banner/LinkMakerBanner.css"
 
 import {Redirect} from 'react-router-dom'
 import ShowMore from 'react-show-more'
@@ -20,7 +21,7 @@ let routes = require("../../services/routes/Routes")
 
 class EventInfo extends React.Component {
 
-    code = undefined
+    code = -1
     constructor(props) {
         super(props)
         this.state = {
@@ -72,10 +73,11 @@ class EventInfo extends React.Component {
     }
 
     componentDidMount() {
-        this.code = ResizeService.addSubscription(() => {
-            let mode = this.displayWindowSize()
-            this.setState({mode: mode})
-        })
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => {
+                let mode = this.displayWindowSize()
+                this.setState({mode: mode})
+            })
     }
 
     componentWillUnmount() {
@@ -86,7 +88,7 @@ class EventInfo extends React.Component {
     renderEventLocationMap = () => {
         if (this.state.eventInfo.location.place_id)
             return (
-                <div className={"mt-2"}>
+                <div className={(this.state.mode === 3 ? "" : " mt-2 ")}>
                     <EventLocation event={this.state.eventInfo} />
                 </div>
             )
@@ -142,85 +144,92 @@ class EventInfo extends React.Component {
             return <LoadingSpinner />
         } else if(!this.state.showDefaultMessage && this.state.eventInfo) {
             return (
-                <main className="main-container">
-                    {this.redirectToHome()}
-                    <section className="row">
-                        <div className="col-12 col-md-6 px-0 text-center">
-                            <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} />
-                        </div>
-                        <div className={"col-md-6" + ((this.state.mode > 0 ? "" : " d-none "))}>
-                            <AvatarHeader elem={this.state.eventInfo.organizator} />
-                            <Contacts event={this.state.eventInfo} hideTitle={true} />
-                        </div>
-                    </section>
+                <main className="row main-container">
+                    <div className={"col-12 col-xl-8 mx-auto"}>
+                        {this.redirectToHome()}
+                        <section className="row">
+                            <div className="col-12 col-md-6 col-xl-12 px-0 text-center">
+                                <ImageForCard imageName={this.state.eventInfo.thumbnail} type={IMAGE} size={(this.state.mode === 3 ? "event-info-image" : "")} />
+                            </div>
+                            <div className={"col-md-6" + ((this.state.mode > 0 && this.state.mode < 3 ? "" : " d-none "))}>
+                                <AvatarHeader elem={this.state.eventInfo.organizator} />
+                                <Contacts event={this.state.eventInfo} hideTitle={true} />
+                            </div>
+                        </section>
 
-                    <section className={"sticky-top"}>
-                        <EventHeaderBanner event={this.state.eventInfo} />
-                    </section>
+                        <section className={(this.state.mode === 3 ? "" : " sticky-top ")}>
+                            <EventHeaderBanner event={this.state.eventInfo} />
+                        </section>
 
-                    <section className={"mt-2"}>
-                        <EventInteractionPanel {...this.props}
-                                               key={this.state.eventInfo._id}
-                                               event={this.state.eventInfo}
-                                               isAlreadyBeenReviewed={this.state.reviewers.includes(this.props.user._id)}
-                                               hideBadge={true}
-                                               onEventParticipated={event =>  this.setState(prevState => {
-                                                   let state = prevState
-                                                   state.eventInfo.participants = event.participants
-                                                   state.eventInfo.numParticipants = event.participants.length
-                                                   return state
-                                               })}
-                                               onEventFollowed={event =>  this.setState(prevState => {
-                                                   let state = prevState
-                                                   state.eventInfo.followers = event.followers
-                                                   return state
-                                               })}
-                                               onEventDeleted = {() => this.setState({redirectHome: true})}
-                                               showReviewModal={this.props.showReviewModal}
+                        <section className={"mt-2"}>
+                            <EventInteractionPanel {...this.props}
+                                                   key={this.state.eventInfo._id}
+                                                   event={this.state.eventInfo}
+                                                   isAlreadyBeenReviewed={this.state.reviewers.includes(this.props.user._id)}
+                                                   hideBadge={true}
+                                                   onEventParticipated={event =>  this.setState(prevState => {
+                                                       let state = prevState
+                                                       state.eventInfo.participants = event.participants
+                                                       state.eventInfo.numParticipants = event.participants.length
+                                                       return state
+                                                   })}
+                                                   onEventFollowed={event =>  this.setState(prevState => {
+                                                       let state = prevState
+                                                       state.eventInfo.followers = event.followers
+                                                       return state
+                                                   })}
+                                                   onEventDeleted = {() => this.setState({redirectHome: true})}
+                                                   showReviewModal={this.props.showReviewModal}
+                                                   showButtonsBlock={(this.state.mode === 3)}
+                            />
+                        </section>
+
+                        <section className={"row mt-2"  + (this.state.mode === 0 || this.state.mode === 3 ? "" : " d-none ")}>
+                            <div className="col-12 col-xl-6">
+                                <div className="container-fluid">
+                                    <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
+                                </div>
+                            </div>
+                            <div className={"col-xl-6 mt-n2" + (this.state.mode === 3 ? "" : " d-none ")}>
+                                <Contacts event={this.state.eventInfo}/>
+                            </div>
+                        </section>
+
+                        <MultipleUsersBanner
+                            users={this.state.eventInfo.participantsFilled}
+                            emptyLabel={"Nessun partecipante al momento"}
+                            typology={"Partecipanti"}
+                            moreUsersLink={"ciao"}
+                            noPadding={false}
+                            margin={"mt-2"}
+                            level={"h5"}
+                            usersInfoIncomplete={true}
                         />
-                    </section>
 
-                    <section className={"row mt-2"  + (this.state.mode === 0 ? "" : " d-none ")}>
-                        <div className="col-12">
-                            <div className="container-fluid">
-                                <EventOrganizatorInfo organizator={this.state.eventInfo.organizator} level="h5"/>
+                        <section className="row mt-2">
+                            <div className="col-12 col-xl-6">
+                                <h5 className={"event-info-section-title"}>Descrizione</h5>
+                                <div className={"event-info-text"}>
+                                    <ShowMore
+                                        lines={(this.state.mode === 3 ? 10 : 5)}
+                                        more='Altro'
+                                        less='Mostra meno'
+                                    >
+                                        {this.state.eventInfo.description}
+                                    </ShowMore>
+                                </div>
                             </div>
-                        </div>
-                    </section>
-
-                    <MultipleUsersBanner
-                        users={this.state.eventInfo.participantsFilled}
-                        emptyLabel={"Nessun partecipante al momento"}
-                        typology={"Partecipanti"}
-                        moreUsersLink={"ciao"}
-                        noPadding={false}
-                        margin={"mt-2"}
-                        level={"h5"}
-                        usersInfoIncomplete={true}
-                    />
-
-                    <section className="row mt-2">
-                        <div className="col-12">
-                            <h5 className={"event-info-section-title"}>Descrizione</h5>
-                            <div className={"event-info-text"}>
-                                <ShowMore
-                                    lines={5}
-                                    more='Altro'
-                                    less='Mostra meno'
-                                >
-                                    {this.state.eventInfo.description}
-                                </ShowMore>
+                            <div className={"col-12 col-xl-6"}>
+                                {this.renderEventLocationMap()}
                             </div>
+                        </section>
+
+                        <div className={(this.state.mode === 0 ? "" : " d-none ")}>
+                            <Contacts event={this.state.eventInfo}/>
                         </div>
-                    </section>
 
-                    {this.renderEventLocationMap()}
-
-                    <div className={(this.state.mode === 0 ? "" : " d-none ")}>
-                        <Contacts event={this.state.eventInfo}/>
+                        { this.renderReviews() }
                     </div>
-                    
-                    { this.renderReviews() }
                 </main>
             )
         } else {

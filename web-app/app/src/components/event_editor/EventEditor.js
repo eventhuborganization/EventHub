@@ -55,7 +55,7 @@ class DeleteButton extends React.Component {
         return (
             <div>
                 {this.redirectToHome()}
-                <div role="button" className={"btn btn-danger btn-block"} onClick={this.onClick}>
+                <div role="button" className={"btn btn-danger btn-block button-size"} onClick={this.onClick}>
                     Elimina
                 </div>
             </div>
@@ -127,6 +127,7 @@ class EventEditor extends React.Component {
     }
 
     componentDidMount() {
+        this.props.setSearchBar(undefined, undefined, true)
         this.code = ResizeService.addSubscription(() => {
             let mode = this.displayWindowSize()
             this.setState({mode: mode})
@@ -191,6 +192,7 @@ class EventEditor extends React.Component {
     }
 
     componentWillUnmount() {
+        this.props.setSearchBar(undefined, undefined, false)
         if (this.code >= 0)
             ResizeService.removeSubscription(this.code)
     }
@@ -491,167 +493,177 @@ class EventEditor extends React.Component {
         let image = this.state.onUpdate && !this.state.event.thumbnailPreview ? 
             ApiService.getImageUrl(this.state.event.thumbnail) : this.state.event.thumbnailPreview
         return (
-            <form className="main-container">
-                {this.redirectToHome()}
-                <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                {this.renderRedirect()}
+            <form className="row main-container">
+                <div className={"col-12 col-xl-8 mx-auto"}>
+                    {this.redirectToHome()}
+                    <LoginRedirect {...this.props} redirectIfNotLogged={true} />
+                    {this.renderRedirect()}
 
-                <section className="row">
-                    <div id="thumbnail-preview" className="col-12 col-md-6 px-0 text-center" onClick={this.selectThumbnail}>
-                        <ImageForCard imageName={image} type={LOCAL} text={"Clicca per aggiungere un'immagine"} />
-                    </div>
-                    <div className="d-none">
-                        <label htmlFor="thumbnail" >Copertina dell'evento.</label>
-                        <input
-                            id="thumbnail"
-                            name="thumbnail"
-                            type="file"
-                            accept="image/*"
-                            className=""
-                            onChange={this.updateThumbnailPreview}
-                        />
-                    </div>
-                    <div className={"col-md-6" + ((this.state.mode > 0 ? "" : " d-none "))}>
-                        <AvatarHeader elem={this.state.event.organizator} />
-                        <Contacts event={this.state.event} hideTitle={true} />
-                    </div>
-                </section>
-
-                <section className={"sticky-top"}>
-                    <EventHeaderBanner event={this.state.event} />
-                </section>
-
-                <section className={"row mt-2"}>
-                    <div className="col container-fluid">
-                        {this.renderVisibility()}
-                        <div className="row d-flex align-items-center">
-                            <div className={this.state.onUpdate ? "col-12" : "col-7 pr-2"}>
-                                <label htmlFor="name" className="m-0 event-info-section-title">Nome dell'evento</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    className="form-control event-info-text"
-                                    name="name"
-                                    placeholder="Nome dell'evento"
-                                    onChange={this.updateName}
-                                    required
-                                />
-                            </div>
-                            {
-                                this.state.onUpdate ? <div/> : 
-                                    <div className="col-5 pl-2">
-                                        <label className="m-0 event-info-section-title" htmlFor="typology">Typology</label>
-                                        <select defaultValue={"placeholder"}
-                                                onChange={this.updateType}
-                                                className="form-control event-info-text"
-                                                id="typology">
-                                            <option value="placeholder" disabled hidden>Type</option>
-                                            <option value={PARTY}>Festa</option>
-                                            <option value={MEETING}>Incontro</option>
-                                            <option value={SPORT}>Sport</option>
-                                        </select>
-                                    </div>
-                            }
+                    <section className="row">
+                        <div id="thumbnail-preview" className="col-12 col-md-6 col-xl-12 px-0 text-center" onClick={this.selectThumbnail}>
+                            <ImageForCard imageName={image} type={LOCAL} text={"Clicca per aggiungere un'immagine"} size={(this.state.mode === 3 ? "event-info-image" : "")}  />
                         </div>
-                        <div className="row mt-2">
-                            <div className="col-7 pr-2">
-                                <label htmlFor="date" className="m-0 event-info-section-title">Data</label>
-                                <input
-                                    id="date"
-                                    name="date"
-                                    type="date"
-                                    className="form-control event-info-text"
-                                    onChange={this.updateDate}
-                                    required
-                                />
-                            </div>
-                            <div className="col-5 pl-2">
-                                <label htmlFor="time" className="m-0 event-info-section-title">Orario</label>
-                                <input
-                                    id="time"
-                                    name="time"
-                                    type="time"
-                                    className="form-control event-info-text"
-                                    onChange={this.updateTime}
-                                    required
-                                />
-                            </div>
+                        <div className="d-none">
+                            <label htmlFor="thumbnail" >Copertina dell'evento.</label>
+                            <input
+                                id="thumbnail"
+                                name="thumbnail"
+                                type="file"
+                                accept="image/*"
+                                className=""
+                                onChange={this.updateThumbnailPreview}
+                            />
                         </div>
-                        <div className="row d-flex align-item-center mt-2">
-                            <div className="col-12">
-                                <label htmlFor="address" className="m-0 event-info-section-title">Luogo</label>
-                                <input
-                                    id="address"
-                                    name="address"
-                                    type="text"
-                                    className="form-control event-info-text"
-                                    placeholder="Indirizzo"
-                                />
-                            </div>
+                        <div className={"col-md-6" + ((this.state.mode > 0 && this.state.mode < 3 ? "" : " d-none "))}>
+                            <AvatarHeader elem={this.state.event.organizator} />
+                            <Contacts event={this.state.event} hideTitle={true} />
                         </div>
-                        <div className="row d-flex align-item-center mt-2">
-                            <div className="col-5">
-                                <label htmlFor="max-participants" className="m-0 event-info-section-title">
-                                    Partecipanti(max)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="max-participants"
-                                    className="form-control event-info-text"
-                                    name="max-participants"
-                                    onChange={this.updateMaxParticipants}
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                    </section>
 
-                <section className="row mt-2">
-                    <div className="col-12">
-                        <h5 className={"event-info-section-title font-weight-bold"}>Dettagli</h5>
-                        <div className="container-fluid">
+                    <section className={(this.state.mode === 3 ? "" : " sticky-top ")}>
+                        <EventHeaderBanner event={this.state.event} />
+                    </section>
 
-                            <section className={"row mt-2"  + (this.state.mode === 0 ? "" : " d-none ")}>
-                                <div className="col-12">
-                                    <div className="container-fluid">
-                                        <EventOrganizatorInfo organizator={this.state.event.organizator} level="h6"/>
-                                    </div>
+                    <section className={"row mt-2"}>
+                        <div className="col container-fluid">
+                            {this.renderVisibility()}
+                            <div className="row d-flex align-items-center">
+                                <div className={this.state.onUpdate ? "col-12" : "col-7 pr-2"}>
+                                    <label htmlFor="name" className="m-0 event-info-section-title">Nome dell'evento</label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        className="form-control event-info-text"
+                                        name="name"
+                                        placeholder="Nome dell'evento"
+                                        onChange={this.updateName}
+                                        required
+                                    />
                                 </div>
-                            </section>
-
+                                {
+                                    this.state.onUpdate ? <div/> :
+                                        <div className="col-5 pl-2">
+                                            <label className="m-0 event-info-section-title" htmlFor="typology">Typology</label>
+                                            <select defaultValue={"placeholder"}
+                                                    onChange={this.updateType}
+                                                    className="form-control event-info-text"
+                                                    id="typology">
+                                                <option value="placeholder" disabled hidden>Type</option>
+                                                <option value={PARTY}>Festa</option>
+                                                <option value={MEETING}>Incontro</option>
+                                                <option value={SPORT}>Sport</option>
+                                            </select>
+                                        </div>
+                                }
+                            </div>
                             <div className="row mt-2">
-                                <div className="col-12 px-0">
-                                    <h6 className={"event-info-section-title"}>Descrizione</h6>
-                                    <textarea id="description" className="w-100 form-control event-info-text" onChange={this.updateDescription} />
+                                <div className="col-7 pr-2">
+                                    <label htmlFor="date" className="m-0 event-info-section-title">Data</label>
+                                    <input
+                                        id="date"
+                                        name="date"
+                                        type="date"
+                                        className="form-control event-info-text"
+                                        onChange={this.updateDate}
+                                        required
+                                    />
+                                </div>
+                                <div className="col-5 pl-2">
+                                    <label htmlFor="time" className="m-0 event-info-section-title">Orario</label>
+                                    <input
+                                        id="time"
+                                        name="time"
+                                        type="time"
+                                        className="form-control event-info-text"
+                                        onChange={this.updateTime}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="row d-flex align-item-center mt-2">
+                                <div className="col-12 col-xl-7 pr-xl-2">
+                                    <label htmlFor="address" className="m-0 event-info-section-title">Luogo</label>
+                                    <input
+                                        id="address"
+                                        name="address"
+                                        type="text"
+                                        className="form-control event-info-text"
+                                        placeholder="Indirizzo"
+                                    />
+                                </div>
+                                <div className="col-5 pl-xl-2">
+                                    <label htmlFor="max-participants" className="m-0 event-info-section-title">
+                                        Partecipanti(max)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="max-participants"
+                                        className="form-control event-info-text"
+                                        name="max-participants"
+                                        onChange={this.updateMaxParticipants}
+                                        required
+                                    />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                {this.renderEventLocationMap()}
+                    <section className="row mt-2">
+                        <div className="col-12">
+                            <h5 className={"event-info-section-title font-weight-bold"}>Dettagli</h5>
+                            <div className="container-fluid">
 
-                <div className={(this.state.mode === 0 ? "" : " d-none ")}>
-                    <Contacts event={this.state.event}/>
-                </div>
+                                <section className={"row mt-2"  + (this.state.mode === 0 || this.state.mode === 3 ? "" : " d-none ")}>
+                                    <div className="col-12 col-xl-6">
+                                        <EventOrganizatorInfo organizator={this.state.event.organizator} level="h5"/>
+                                    </div>
+                                    <div className={"col-xl-6 mt-n2" + (this.state.mode === 3 ? "" : " d-none ")}>
+                                        <Contacts event={this.state.event}/>
+                                    </div>
+                                </section>
 
-                {
-                    this.state.onUpdate ? 
-                        <div className="row mt-4">
-                            <div className="col">
-                                <DeleteButton
-                                    onError={this.props.onError} 
-                                    showMessage={this.props.showMessage} 
-                                    event={this.state.oldEvent}
-                                />
+                                <div className="row mt-2">
+                                    <div className="col-12 px-0">
+                                        <h6 className={"event-info-section-title"}>Descrizione</h6>
+                                        <textarea id="description" className="w-100 form-control event-info-text" onChange={this.updateDescription} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        : <div/>
-                }
-                
-                <ConfirmButton onClick={this.state.onUpdate ? this.updateEvent : this.createEvent} />
+                    </section>
 
+                    {this.renderEventLocationMap()}
+
+                    <div className={(this.state.mode === 0 ? "" : " d-none ")}>
+                        <Contacts event={this.state.event}/>
+                    </div>
+
+                    <div className={"d-xl-none"}>
+                        <ConfirmButton onClick={this.state.onUpdate ? this.updateEvent : this.createEvent} />
+                    </div>
+                    <div className={"d-none d-xl-inline"}>
+                        <div className={"row mt-4"}>
+                            <div className={"col-6 mx-auto"}>
+                                <button className={"btn btn-primary btn-block button-size"} type={"button"} onClick={this.state.onUpdate ? this.updateEvent : this.createEvent}>
+                                    {this.state.onUpdate ? "Aggiorna Evento" : "Crea evento"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {
+                        this.state.onUpdate ?
+                            <div className="row mt-4">
+                                <div className="col-12 col-xl-6 mx-auto">
+                                    <DeleteButton
+                                        onError={this.props.onError}
+                                        showMessage={this.props.showMessage}
+                                        event={this.state.oldEvent}
+                                    />
+                                </div>
+                            </div>
+                            : <div/>
+                    }
+                </div>
             </form>
         )
     }

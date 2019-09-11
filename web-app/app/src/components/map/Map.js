@@ -54,15 +54,15 @@ class Map extends React.Component {
 
     componentDidMount() {
         let searchBarData = {...this.state.searchBarData}
-        searchBarData.onSearchError = this.onSearchError
-        searchBarData.onRef = ref => {
-            console.log(ref)
-            this.updateSearchBarRef(this.desktopBar, ref)
-        }
         this.props.setSearchBar(SEARCH_BAR, searchBarData)
         this.onResize()
         this.code = ResizeService.addSubscription(() => this.onResize())
         this.setCurrentPositionAsCenter()
+    }
+
+    componentDidUpdate() {
+        if (this.state.searchBarRefs[this.desktopBar] !== this.props.headerRef)
+            this.updateSearchBarRef(this.desktopBar, this.props.headerRef)
     }
 
     componentWillUnmount() {
@@ -75,7 +75,6 @@ class Map extends React.Component {
         GeoLocation.getCurrentLocation(
             () => this.props.onError("Per poter usufruire della mappa è necessario condividere la propria posizione"),
             position => {
-                console.log(position)
                 let location = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude

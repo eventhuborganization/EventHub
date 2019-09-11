@@ -78,11 +78,55 @@
 /*
  Desktop(XL) Portrait
 */
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .small-avatar-size {
+        height: 70px;
+        width: 70px;
+    }
+    .big-avatar-size {
+        height: 110px;
+        width: 110px;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
-@media (min-width: 1200px) and (orientation: landscape) {
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+    .small-avatar-size {
+        height: 70px;
+        width: 70px;
+    }
+    .big-avatar-size {
+        height: 110px;
+        width: 110px;
+    }
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .small-avatar-size {
+        height: 90px;
+        width: 90px;
+    }
+    .big-avatar-size {
+        height: 110px;
+        width: 110px;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .small-avatar-size {
+        height: 90px;
+        width: 90px;
+    }
+    .big-avatar-size {
+        height: 110px;
+        width: 110px;
+    }
 }

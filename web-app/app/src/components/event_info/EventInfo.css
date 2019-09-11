@@ -50,11 +50,55 @@
 /*
  Desktop(XL) Portrait
 */
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .event-info-section-title {
+        font-size: 1.25rem;
+    }
+
+    .event-info-text {
+        font-size: 1.1rem;
+    }
+
+    .event-info-image {
+        max-height: 400px;
+        min-height: 400px;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
-@media (min-width: 1200px) and (orientation: landscape) {
+@media (min-width: 1200px) and (max-width: 1500px) and (orientation: landscape) {
+    .event-info-section-title {
+        font-size: 1.25rem;
+    }
+
+    .event-info-text {
+        font-size: 1.1rem;
+    }
+
+    .event-info-image {
+        max-height: 400px;
+        min-height: 400px;
+    }
+}
+
+/*
+ Desktop(XXL) Portrait
+*/
+@media (min-width: 1500px) {
+    .event-info-image {
+        max-height: 450px;
+        min-height: 450px;
+    }
+}
+
+/*
+ Desktop(XXL) Landscape
+*/
+@media (min-width: 1500px) and (orientation: landscape) {
+    .event-info-image {
+        max-height: 450px;
+        min-height: 450px;
+    }
 }
