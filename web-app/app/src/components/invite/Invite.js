@@ -6,7 +6,7 @@ import {Redirect} from "react-router-dom"
 import {LinkMakerBanner, INVITE_BUTTON, INVITED_BUTTON} from "../link_maker_banner/LinkMakerBanner"
 import LocalStorage from "local-storage"
 import {EventHeaderBanner} from "../event/Event"
-import { SimpleSearchBar } from "../search_bar/SearchBar"
+import { SIMPLE_SEARCH_BAR, SimpleSearchBar } from "../search_bar/SearchBar"
 
 let routes = require("../../services/routes/Routes")
 
@@ -26,7 +26,11 @@ class Invite extends React.Component {
             linkedUsers: props.user.linkedUsers || [],
             groups: props.user.groups || [],
             event: event,
-            redirectHome: false
+            redirectHome: false,
+            searchBarData: {
+                placeholder: "Cerca amico",
+                onChange: this.onFilter
+            }
         }
         if (props.isLogged && event) {
             LocalStorage(this.#inviteEventStateLocalStorageName, this.state.event)
@@ -38,6 +42,7 @@ class Invite extends React.Component {
             })
             ApiService.getGroups(() => {}, groups => this.setState({groups: groups}))
         }
+        props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
     }
 
     componentDidMount() {
@@ -160,16 +165,19 @@ class Invite extends React.Component {
                 )
         }
         return (
-            <div className="main-container">
+            <div className="main-container row">
                 {this.redirectToHome()}
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                <EventHeaderBanner event={this.state.event} hidePlace={true} />
-                <SimpleSearchBar
-                    placeholder="Cerca"
-                    value={this.state.filter}
-                    onChange={this.onFilter}
-                />
-                <FriendsTab tabs={tabs} />
+                
+                <div className="col-12 col-xl-8 mx-auto">
+                    <EventHeaderBanner event={this.state.event} hidePlace={true}/>
+                    <SimpleSearchBar
+                        placeholder="Cerca"
+                        value={this.state.filter}
+                        onChange={this.onFilter}
+                    />
+                    <FriendsTab tabs={tabs} />
+                </div>
             </div>
         )
     }

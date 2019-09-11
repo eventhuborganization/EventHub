@@ -337,9 +337,8 @@ class App extends React.Component {
               />
               <Route path={routes.inviteEvent} exact render={(props) =>
                   <Invite {...props}
-                          isLogged={this.state.isLogged}
+                          {...commonProps}
                           user={this.state.user}
-                          onError={this.onError}
                   />}
               />
               <Route path={routes.myGroups} exact render={(props) =>

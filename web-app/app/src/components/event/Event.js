@@ -26,7 +26,7 @@ let getButtonClassName = (eventType, buttonType, noMargin, isBlock) => {
         default: break
     }
     let margin = noMargin ? "" : " ml-2"
-    let common = "btn button-size " + (isBlock ? " btn-block " : " p-1 ")
+    let common = "btn button-size " + (isBlock ? " btn-block " : " p-1 p-xl-2 ")
     if (eventType === PARTY)
         return common + " partyButton partyButton" + buttonClass + margin
     else if (eventType === MEETING)
@@ -332,7 +332,7 @@ let EventHeaderBanner = props => {
             let dateVal = props.event.date instanceof Date ? props.event.date : new Date(props.event.date)
             let date = require("../../utils/Utils").renderDate(dateVal)
             return (
-                <div className="row d-flex align-items-center">
+                <div className="row d-flex align-items-center py-xl-2">
                     <div className="col-8 mb-1 pl-1 pr-0">
                         <h6 className={"m-0 text-left event-banner-event-info " + (props.event.date || props.event.time ? "" : " d-none ")}>
                             <em className="far fa-calendar-alt event-banner-event-info-icon"></em> {date}
