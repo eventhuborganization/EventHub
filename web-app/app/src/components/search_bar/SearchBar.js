@@ -575,10 +575,14 @@ class DesktopSearchBar extends React.Component {
 
     componentDidMount() {
         this.updateMenuMarginTop()
-        this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
     }
 
     componentDidUpdate() {
+        this.updateMenuMarginTop()
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
         if(this.props.isLogged && this.notificationServiceSubscriptionCode < 0){
             this.notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         } else if(!this.props.isLogged && this.notificationServiceSubscriptionCode >= 0){
@@ -587,14 +591,19 @@ class DesktopSearchBar extends React.Component {
     }
 
     componentWillUnmount() {
-        ResizeService.removeSubscription(this.code)
         this.removeSubscriptions()
     }
 
     removeSubscriptions = () => {
-        NotificationService.removeSubscription(this.notificationServiceSubscriptionCode)
-        this.setState({notifications: []})
-        this.notificationServiceSubscriptionCode = -1
+        if (this.code >= 0) {
+            ResizeService.removeSubscription(this.code)
+            this.code = -1
+        }
+        if (this.notificationServiceSubscriptionCode >= 0) {
+            NotificationService.removeSubscription(this.notificationServiceSubscriptionCode)
+            this.setState({notifications: []})
+            this.notificationServiceSubscriptionCode = -1
+        }
     }
 
     onNotificationLoaded = (notifications) => {
@@ -610,7 +619,10 @@ class DesktopSearchBar extends React.Component {
     }
 
     updateMenuMarginTop = () => {
-        this.setState({menuMarginTop: document.getElementById(this.containerId).offsetHeight})
+        let elem = document.getElementById(this.containerId)
+        let height = elem ? elem.offsetHeight : 0
+        if (this.state.menuMarginTop !== height)
+            this.setState({menuMarginTop: height})
     }
 
     renderNotificationBadge = () => {
@@ -653,11 +665,13 @@ class DesktopSearchBar extends React.Component {
 
     render() {
         let avatar =
-            <RoundedSmallImage
-                imageName={this.props.user.avatar}
-                placeholderType={PLACEHOLDER_USER_CIRCLE}
-                size={"navbar-avatar"}
-            />
+            <Link to={routes.myProfile} style={{textDecoration: "none"}} >
+                <RoundedSmallImage
+                    imageName={this.props.user.avatar}
+                    placeholderType={PLACEHOLDER_USER_CIRCLE}
+                    size={"navbar-avatar"}
+                />
+            </Link>
         let filtersClass = "collapse row fixed-top px-3"
         return (
             <div id={this.containerId} className={"d-none d-xl-block sticky-top bar-container"}>
@@ -671,6 +685,11 @@ class DesktopSearchBar extends React.Component {
                         {this.renderSearchBar()}
                     </div>
                     <div className={"col-6 d-flex justify-content-end align-items-center"}>
+                        {
+                            this.props.isLogged ?
+                                this.navBarLink(routes.newEvent, <button className={"btn btn-outline-primary"}>Crea Evento</button>)
+                                : <div/>
+                        }
                         {this.navBarLink(routes.map, <div><em className={"fas fa-map-marked-alt fa-x2 navbar-icon"}></em> Mappa</div>)}
                         {
                             this.props.isLogged && this.props.user && this.props.user.organization ?
@@ -679,7 +698,7 @@ class DesktopSearchBar extends React.Component {
                         }
                         {this.navBarLink(routes.myNotifications, <div><em className={"fas fa-bell fa-x2 navbar-icon"}></em>{this.renderNotificationBadge()}</div>)}
                         {avatar}
-                        <button id="btn-filter" name="btn-filter" className="btn btn-link dropdown-toggle dropdown-toggle-split" type="button" data-toggle="collapse"
+                        <button id="btn-menu-desktop" name="btn-menu-desktop" className="btn btn-link dropdown-toggle dropdown-toggle-split text-dark" type="button" data-toggle="collapse"
                                 data-target={"#" + this.menuContainerId} aria-expanded="false" aria-controls={this.menuContainerId}>
                         </button>
                     </div>
@@ -688,7 +707,7 @@ class DesktopSearchBar extends React.Component {
                      style={{marginTop: this.state.menuMarginTop, marginLeft: "74%"}}
                      id={this.menuContainerId}
                 >
-                    <div className={"menu-container col-12 px-0 bg-white"}>
+                    <div className={"menu-container col-12 bg-white"}>
                         <Menu {...this.props} hideNotifications={true} />
                     </div>
                 </div>

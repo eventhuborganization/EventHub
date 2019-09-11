@@ -228,6 +228,7 @@ class App extends React.Component {
                 user={this.state.user}
                 data={this.state.searchBarData}
                 searchBarType={this.state.searchBarType}
+                onLogout={this.logout}
                 onRef={ref => this.setState({headerRef: ref})}
             />
           <Switch>

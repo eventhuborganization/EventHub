@@ -22,14 +22,14 @@ class Login extends React.Component {
     security = require('js-sha512');
       
     componentDidMount = () => {
-        document.getElementById("root").classList.add("p-0", "h-100")
+        document.getElementById("root").classList.add("h-100")
         document.body.classList.add("h-100")
         document.getElementsByTagName("html")[0].classList.add("h-100")
     }
     
     componentWillUnmount = () => {
         this.setState({email: "", password: "", redirect: false});
-        document.getElementById("root").classList.remove("p-0", "h-100")
+        document.getElementById("root").classList.remove("h-100")
         document.body.classList.remove("h-100")
         document.getElementsByTagName("html")[0].classList.remove("h-100")
     }
@@ -68,9 +68,9 @@ class Login extends React.Component {
 
     render() {
         return (
-            <div className={styles.loginContainer}>
+            <div className={"row h-100"}>
                 
-                <main className={"d-flex align-items-center " + styles.bgImage}>
+                <main className={"col-12 px-0 d-flex align-items-center " + styles.bgImage}>
                     <form onSubmit={this.submitLogin} className={"col-11 col-sm-8 col-md-8 col-xl-5 mx-auto " + styles.bgText}>
                         <div className="form-group row">
                             <div className="col text-center">

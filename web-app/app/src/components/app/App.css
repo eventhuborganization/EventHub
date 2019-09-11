@@ -104,10 +104,16 @@ footer em, .navbar-icon {
  Desktop(XL) Portrait
 */
 @media (min-width: 1200px) {
+    .main-container {
+        margin-bottom: 3%;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
 @media (min-width: 1200px) and (orientation: landscape) {
+    .main-container {
+        margin-bottom: 3%;
+    }
 }
