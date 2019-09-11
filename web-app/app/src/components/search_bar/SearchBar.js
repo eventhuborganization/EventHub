@@ -8,7 +8,9 @@ import {Link} from "react-router-dom"
 import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 import Menu from "../menu/Menu"
 import ResizeService from "../../services/Resize/Resize"
-import NotificationService from "../../services/notification/Notification";
+import NotificationService from "../../services/notification/Notification"
+import { createBrowserHistory } from "history"
+
 let routes = require("../../services/routes/Routes")
 
 let SEARCH_BY_EVENT = 0
@@ -47,6 +49,7 @@ class SearchBar extends CallableComponent {
     searchBarId = "search-bar" + this.rand
     filtersContainerId = "filter-container" + this.rand
     code = -1
+    lastLocation = ""
 
     constructor(props) {
         super(props)
@@ -83,6 +86,14 @@ class SearchBar extends CallableComponent {
                 default: break
             }
             this.configured = true
+        }
+    }
+
+    componentDidUpdate() {
+        let history = createBrowserHistory()
+        if (history.location.pathname !== this.lastLocation) {
+            this.lastLocation = history.location.pathname
+            this.hideFilters()
         }
     }
 
@@ -391,7 +402,9 @@ class SearchBar extends CallableComponent {
     }
 
     hideFilters = () => {
-        document.getElementById(this.filtersContainerId).classList.remove("show")
+        let filters = document.getElementById(this.filtersContainerId)
+        if (filters)
+            filters.classList.remove("show")
     }
 
     getInputSearchPlaceHolder = () => {
@@ -565,6 +578,7 @@ class DesktopSearchBar extends React.Component {
     containerId = "desktop-header-bar"
     code = -1
     notificationServiceSubscriptionCode = -1
+    lastLocation = ""
 
     constructor(props) {
         super(props)
@@ -585,6 +599,11 @@ class DesktopSearchBar extends React.Component {
 
     componentDidUpdate() {
         this.updateMenuMarginTop()
+        let history = createBrowserHistory()
+        if (history.location.pathname !== this.lastLocation) {
+            this.lastLocation = history.location.pathname
+            this.hideMenu()
+        }
         if (this.code < 0)
             this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
         if(this.props.isLogged && this.notificationServiceSubscriptionCode < 0){
@@ -673,6 +692,12 @@ class DesktopSearchBar extends React.Component {
                         />
             default: return <div/>
         }
+    }
+
+    hideMenu = () => {
+        let menu = document.getElementById(this.menuContainerId)
+        if (menu)
+            menu.classList.remove("show")
     }
 
     render() {
