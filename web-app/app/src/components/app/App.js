@@ -308,12 +308,10 @@ class App extends React.Component {
             />
             <Route path={routes.user} render={(props) => 
                 <UserProfile {...props}
-                    isLogged={this.state.isLogged}
-                    user={this.state.user}
-                    onError={this.onError}
-                    onSuccess={this.onSuccess}
-                    showReviewModal={this.showReviewModal}
-                    manageLinkedUser={this.manageLinkedUser}
+                             {...commonProps}
+                             user={this.state.user}
+                             showReviewModal={this.showReviewModal}
+                             manageLinkedUser={this.manageLinkedUser}
                 />} 
             />
             <Route path={routes.myFriends} exact render={(props) =>

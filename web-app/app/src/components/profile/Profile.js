@@ -10,7 +10,7 @@ import {
 import { UserBanner } from '../link_maker_banner/LinkMakerBanner'
 import { FriendsTab } from '../menu_tab/MenuTab'
 import { CallableComponent } from '../redirect/Redirect'
-import { SimpleSearchBar } from '../search_bar/SearchBar'
+import { SIMPLE_SEARCH_BAR, SimpleSearchBar } from '../search_bar/SearchBar'
 import LoadingSpinner from '../loading_spinner/LoadingSpinner'
 
 let routes = require("../../services/routes/Routes")
@@ -147,11 +147,11 @@ class Profile extends CallableComponent {
         let lastBadge = this.state.user.badges && this.state.user.badges.length > 0 ? 
             this.state.user.badges[this.state.user.badges.length - 1] : undefined
         return (
-            <main className="main-container">
+            <main className="main-container row">
 
                 {
                     this.props.userFound ? 
-                        <div>
+                        <div className="col-12 col-xl-8 mx-auto">
                             <ProfileHeader {...this.props}
                                 user={this.state.user}
                                 localUser={this.props.localUser}
@@ -175,7 +175,7 @@ class Profile extends CallableComponent {
                             </section>
                             {this.getEventsByUserTypology()}
                         </div> :
-                        <LoadingSpinner />
+                        <div className="col-6 mx-auto"><LoadingSpinner /></div>
                     
                 }
             </main>
@@ -190,13 +190,26 @@ class UserFriends extends React.Component {
         super(props)
         this.state = {
             filter: "",
-            linkedUsers: props.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+            linkedUsers: props.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+            searchBarData: {
+                placeholder: "Cerca amico",
+                onChange: this.onFilter
+            }
         }
+        props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
         Api.getUserInformation(
             this.props.match.params.id,
             () => this.props.onError("Non è stato possibile ottenere le informazioni, riprova"),
             user => this.setState({linkedUsers: user.linkedUsers.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))})
         )
+    }
+
+    componentDidMount() {
+        this.props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
     }
 
     onFilter = (event) => {
@@ -295,13 +308,15 @@ class UserFriends extends React.Component {
             )
         }
         return (
-            <div className="main-container">
-                <SimpleSearchBar
-                    placeholder="Cerca amico"
-                    value={this.state.filter}
-                    onChange={this.onFilter}
-                />
-                <FriendsTab tabs={tabs} />
+            <div className="row main-container">
+                <div className="col-12 col-xl-8 mx-auto">
+                    <SimpleSearchBar
+                        placeholder="Cerca amico"
+                        value={this.state.filter}
+                        onChange={this.onFilter}
+                    />
+                    <FriendsTab tabs={tabs} />
+                </div>
             </div>
         )
     }

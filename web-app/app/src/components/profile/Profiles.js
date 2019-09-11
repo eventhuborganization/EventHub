@@ -44,14 +44,14 @@ export function BadgeBanner(props) {
     let badge = props.badge ? [
         <div className="col-12 d-flex align-items-center" key="lastBadge">
             <div className="row w-100">
-                <div className="col-4 col-md-3 pr-0">
+                <div className="col-4 col-md-3 col-xl-2 pr-0 d-flex justify-content-center">
                     <RoundedBigImage
                         imageName={props.badge.icon}
                         alt={props.badge.description}
                         badge={true}
                     />
                 </div>
-                <div className="col-8 col-md-9 d-flex align-items-center">
+                <div className="col d-flex align-items-center">
                     <div>
                         <h4 className={"mb-0 " + styles.badgeName}>{props.badge.name}</h4>
                         <div className={styles.badgeDescription}>{props.badge.description}</div>
@@ -73,7 +73,7 @@ export function BadgeBanner(props) {
 
 export function EventsBanner(props) {
     let events = props.events.map(event =>
-        <div key={event._id} className={"col-12 col-md-6 col-xl-3"}>
+        <div key={event._id} className={"col-12 col-md-6"}>
             <EventCard  eventInfo={event}
                         user={props.user}
                         onError={props.onError}
@@ -172,9 +172,9 @@ export class ProfileHeader extends React.Component {
         return (
             <div>
                 <section className="row">
-                    <div className="col-12 col-md-6 card bg-dark px-0">
-                        <div className="card-img px-0 text-center bg-dark" style={{minHeight: 150}}>
-                            <ImageForCard imageName={this.props.user.avatar} type={AVATAR}/>
+                    <div className="col-12 col-md-6 col-xl-12 card bg-dark px-0">
+                        <div className="card-img px-0 text-center bg-dark">
+                            <ImageForCard imageName={this.props.user.avatar} type={AVATAR} size={(this.state.mode === 3 ? "event-info-image" : "")}/>
                         </div>
                         <div className={"card-img-overlay text-white" + (this.state.mode === 0 ? "" : " d-none ")}>
                             <div className="d-flex align-items-start flex-column h-100">
@@ -215,11 +215,11 @@ export class ProfileHeader extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className={"col-md-6" + ((this.state.mode > 0 ? "" : " d-none "))}>
+                    <div className={"col-md-6" + ((this.state.mode > 0 && this.state.mode < 3 ? "" : " d-none "))}>
                         <ProfileInfo {...this.props} mode={this.state.mode} />
                     </div>
                 </section>
-                <div className={this.state.mode === 0 ? "" : " d-none "}>
+                <div className={this.state.mode === 0 || this.state.mode === 3 ? "" : " d-none "}>
                     <ProfileInfo {...this.props} mode={this.state.mode} />
                 </div>
             </div>
@@ -255,6 +255,7 @@ class ProfileInfo extends React.Component {
         let canRequestPosition = !this.props.isLocalUser && this.props.isMyFriend
             && !this.props.user.organization && !this.props.localUser.organization && this.props.isLogged
         let canRemoveUser = !this.props.isLocalUser && this.props.isMyFriend
+        console.log(canRemoveUser)
 
         let otherInfos =
             <div>
@@ -273,29 +274,30 @@ class ProfileInfo extends React.Component {
                 <div className={"mt-3"}>
                 </div>
                 <div className={"row" + (this.props.isLocalUser ? "" : " d-none")}>
-                    <div className={"col-12"}>
+                    <div className={"col-12 col-xl-8 mx-auto"}>
                         <Link className={"btn btn-block btn-primary button-size"} to={routes.settings}>
                             Impostazioni
                         </Link>
                     </div>
                 </div>
                 <div className={"row" + (canAddUser ? "" : " d-none")}>
-                    <div className={"col-12"}>
+                    <div className={"col-12 col-xl-8 mx-auto"}>
                         <button className={"btn btn-block btn-primary button-size"} onClick={this.props.addUser}>
                             {this.props.user.organization ? "Segui" : "Aggiungi amico"}
                         </button>
                     </div>
                 </div>
-                <div className={"row" + (canRequestPosition ? "" : " d-none")}>
-                    <div className={"col-12"}>
+                <div className={"row"}>
+                    <div className={"col-12 col-xl-6 mx-auto" + (canRequestPosition ? "" : " d-none")}>
                         <button className={"btn btn-block btn-primary button-size"} onClick={this.props.requestPosition}> Richiedi posizione </button>
                     </div>
-                </div>
-                <div className={(canRequestPosition ? "mt-2 " : "") + "row " + (canRemoveUser ? "" : " d-none")}>
-                    <div className={"col-12"}>
-                        <button className={"btn btn-block btn-danger button-size"} onClick={this.props.removeUser}>
-                            {this.props.user.organization ? "Smetti di seguire" : "Rimuovi amico"}
-                        </button>
+                    <div className={(!canRemoveUser ? "d-none" : ("mx-auto " + 
+                                        (canRequestPosition ? " mt-2 mt-xl-0 col-xl-6" : "col-xl-8")))}>
+                        <div className={""}>
+                            <button className={"btn btn-block btn-danger button-size"} onClick={this.props.removeUser}>
+                                {this.props.user.organization ? "Smetti di seguire" : "Rimuovi amico"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -308,6 +310,12 @@ class ProfileInfo extends React.Component {
                         {basicInfo}
                         {otherInfos}
                     </div>
+                break
+            case 3: result =
+                <div className="col-8 mx-auto text-center mt-2">
+                    {basicInfo}
+                    {otherInfos}
+                </div>
                 break
             default: break
         }

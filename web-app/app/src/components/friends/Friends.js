@@ -4,7 +4,7 @@ import Api from '../../services/api/Api'
 import './Friends.css'
 import {UserBanner} from '../link_maker_banner/LinkMakerBanner'
 import MultipleElementsCard from '../multiple_elements_card/MultipleElementsCard'
-import {FRIEND_SEARCH_BAR, FriendsSearchBar} from "../search_bar/SearchBar";
+import {FRIEND_SEARCH_BAR, FriendsSearchBar} from "../search_bar/SearchBar"
 
 class Friends extends React.Component {
 

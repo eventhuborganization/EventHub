@@ -111,7 +111,7 @@ function RegistrationTab(props) {
 }
 
 function FriendsTab(props) {
-    return <MenuTab {...props} styleOptions="nav-pills justify-content-center mb-1" />
+    return <MenuTab {...props} styleOptions="nav-pills justify-content-center mb-1 mt-xl-3" />
 }
 
 function EventsTab(props) {
