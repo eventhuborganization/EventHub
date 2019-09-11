@@ -1,4 +1,5 @@
 const express = require('express')
+const https = require('https')
 const mongoose = require('mongoose')
 const path = require('path')
 const fs = require('fs')
@@ -7,6 +8,13 @@ const passport = require("./src/API/passport")
 const app = express()
 
 const _cfg = JSON.parse(fs.readFileSync('app.config'))
+const privateKey  = fs.readFileSync('certificate/key.pem', 'utf8')
+const certificate = fs.readFileSync('certificate/certificate.pem', 'utf8')
+
+const options = {
+    key: privateKey,
+    cert: certificate
+}
 
 const _Day = 1000 * 60 * 60 * 24
 
@@ -86,7 +94,8 @@ function runApp() {
     //eseguito segli eveti svoltisi l'altro ieri
     setInterval(task.reviewActions, _Day)
 
-    app.listen(port, () => console.log(`Web Server now listening on port ${port}!`))
+    const server = https.createServer(options, app)
+    server.listen(port,() => console.log(`Web Server now listening on port ${port}!`))
 }
 
 connect(reconnectTries, reconnectInterval)
