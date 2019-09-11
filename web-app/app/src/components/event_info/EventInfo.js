@@ -173,6 +173,17 @@ class EventInfo extends React.Component {
                                                        state.eventInfo.followers = event.followers
                                                        return state
                                                    })}
+                                                   onEventUnfollowed={event => this.setState(prevState => {
+                                                        let state = prevState
+                                                        state.eventInfo.followers = event.followers
+                                                        return state
+                                                    })}
+                                                   onEventUnsubscribed={event =>  this.setState(prevState => {
+                                                        let state = prevState
+                                                        state.eventInfo.participants = event.participants
+                                                        state.eventInfo.numParticipants = event.participants.length
+                                                        return state
+                                                    })}
                                                    onEventDeleted = {() => this.setState({redirectHome: true})}
                                                    showReviewModal={this.props.showReviewModal}
                                                    showButtonsBlock={(this.state.mode === 3)}
