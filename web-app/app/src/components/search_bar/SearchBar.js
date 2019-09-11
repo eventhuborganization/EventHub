@@ -9,7 +9,6 @@ import {PLACEHOLDER_USER_CIRCLE, RoundedSmallImage} from "../image/Image";
 import Menu from "../menu/Menu"
 import ResizeService from "../../services/Resize/Resize"
 import NotificationService from "../../services/notification/Notification"
-import { createBrowserHistory } from "history"
 
 let routes = require("../../services/routes/Routes")
 
@@ -71,6 +70,7 @@ class SearchBar extends CallableComponent {
     }
 
     componentDidMount() {
+        this.checkIfRouteChanged()
         this.updateFiltersMarginTop()
         if (this.code < 0)
             this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
@@ -90,9 +90,13 @@ class SearchBar extends CallableComponent {
     }
 
     componentDidUpdate() {
-        let history = createBrowserHistory()
-        if (history.location.pathname !== this.lastLocation) {
-            this.lastLocation = history.location.pathname
+        this.checkIfRouteChanged()
+    }
+
+    checkIfRouteChanged = () => {
+        let location = window.location.href
+        if (location !== this.lastLocation) {
+            this.lastLocation = location
             this.hideFilters()
         }
     }
@@ -592,24 +596,29 @@ class DesktopSearchBar extends React.Component {
     }
 
     componentDidMount() {
+        this.checkIfRouteChanged()
         this.updateMenuMarginTop()
         if (this.code < 0)
             this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
     }
 
     componentDidUpdate() {
+        this.checkIfRouteChanged()
         this.updateMenuMarginTop()
-        let history = createBrowserHistory()
-        if (history.location.pathname !== this.lastLocation) {
-            this.lastLocation = history.location.pathname
-            this.hideMenu()
-        }
         if (this.code < 0)
             this.code = ResizeService.addSubscription(() => this.updateMenuMarginTop())
         if(this.props.isLogged && this.notificationServiceSubscriptionCode < 0){
             this.notificationServiceSubscriptionCode = NotificationService.addSubscription(this.onNotificationLoaded)
         } else if(!this.props.isLogged && this.notificationServiceSubscriptionCode >= 0){
             this.removeSubscriptions()
+        }
+    }
+
+    checkIfRouteChanged = () => {
+        let location = window.location.href
+        if (location !== this.lastLocation) {
+            this.lastLocation = location
+            this.hideMenu()
         }
     }
 
