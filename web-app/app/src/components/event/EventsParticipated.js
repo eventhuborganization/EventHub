@@ -7,6 +7,7 @@ import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import { LoginRedirect } from '../redirect/Redirect'
 import LoadingSpinner from '../loading_spinner/LoadingSpinner'
 import { EventsTab } from '../menu_tab/MenuTab'
+import { EVENT_PARTICIPATED_SEARCH_BAR, EventParticipatedSearchBar } from '../search_bar/SearchBar'
 
 let routes = require("../../services/routes/Routes")
 
@@ -18,8 +19,14 @@ export default class EventsPartecipated extends React.Component {
             name: "",
             date: undefined,
             displayEvents: true,
-            eventsLoaded: []
+            eventsLoaded: [],
+            searchBarData: {
+                onNameChanged: this.onFilterChange,
+                onDateChanged: this.updateDate,
+                onResetValues: this.resetValues
+            }
         }
+        this.props.setSearchBar(EVENT_PARTICIPATED_SEARCH_BAR, this.state.searchBarData)
         if((props.isLocalUser && props.isLogged) || !props.isLocalUser) {
             ApiService.getSubscribedEvents(
                 error => this.onSearchError(error),
@@ -30,6 +37,14 @@ export default class EventsPartecipated extends React.Component {
                         this.setState({eventsLoaded: response})
                 })
         }
+    }
+
+    componentDidMount() {
+        this.props.setSearchBar(EVENT_PARTICIPATED_SEARCH_BAR, this.state.searchBarData)
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
     }
 
     onSearchError = error => {
@@ -113,51 +128,12 @@ export default class EventsPartecipated extends React.Component {
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.redirectHome()}
 
-                <section className="row sticky-top shadow bg-white border-bottom border-primary">
-
-                    <div className="col-12">
-                        <div 
-                            data-toggle="collapse" 
-                            data-target="#searchContent" 
-                            aria-controls="searchContent" 
-                            aria-expanded="false"
-                            className="d-flex justify-content-start align-items-center" 
-                            aria-label="Abilita ricerca eventi per nome">
-                            <h2 className="py-2 m-0 page-title">Eventi di interesse</h2>
-                            <div className={"ml-auto btn btn-primary button-size"}>
-                                <em className="fas fa-search" aria-hidden="true"></em>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-12 collapse" id="searchContent">
-                        <form>
-                            <div className="form-group">
-                                <label htmlFor="name" className="m-0 form-title">Nome</label>
-                                <input
-                                    id="name"
-                                    name={"name"}
-                                    type="text"
-                                    className="form-control form-size"
-                                    value={this.state.name}
-                                    onChange={this.onFilterChange}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="date" className="m-0 form-title">A partire dal</label>
-                                <input
-                                    id={"date"}
-                                    name={"date"}
-                                    type="date"
-                                    className="form-control form-size"
-                                    onChange={this.updateDate}
-                                />
-                            </div>
-                            <div className={"d-flex justify-content-end align-items-end form-group"}>
-                                <input type="reset" value="Cancella" className={"btn btn-danger button-size"} onClick={this.resetValues}/>
-                            </div>
-                        </form>
-                    </div>
-                </section>
+                <EventParticipatedSearchBar
+                    value={this.state.name}
+                    onNameChanged={this.onFilterChange}
+                    onDateChanged={this.updateDate}
+                    onResetValues={this.resetValues}
+                />
 
                 <main className="main-container">
                     { this.renderEvents() }

@@ -563,9 +563,94 @@ function FriendsSearchBar(props) {
     )
 }
 
+function EventParticipatedSearchBar(props) {
+    let containerClass = (props.showAnyway ? "" : " d-xl-none ") +
+        (props.noBorder ? "" : " border-bottom border-primary ") +
+        (props.noStickyTop ? "" : " stickyTop ") +
+        (props.hideShadow ? "" : " shadow ") +
+        "row"
+
+    return (
+        <div className={containerClass}>
+            <div className="col-12 d-xl-none">
+                <div 
+                    data-toggle="collapse" 
+                    data-target="#searchContent" 
+                    aria-controls="searchContent" 
+                    aria-expanded="false"
+                    className="d-flex justify-content-start align-items-center" 
+                    aria-label="Abilita ricerca eventi per nome">
+                    <h2 className="py-2 m-0 page-title">Eventi di interesse</h2>
+                    <div className={"ml-auto btn btn-primary button-size"}>
+                        <em className="fas fa-search" aria-hidden="true"></em>
+                    </div>
+                </div>
+            </div>
+            <div className="col-12 collapse" id="searchContent">
+                <form>
+                    <div className="form-group">
+                        <label htmlFor="name" className="m-0 form-title">Nome</label>
+                        <input
+                            id="name"
+                            name={"name"}
+                            type="text"
+                            className="form-control form-size"
+                            onChange={props.onNameChanged}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="date" className="m-0 form-title">A partire dal</label>
+                        <input
+                            id={"date"}
+                            name={"date"}
+                            type="date"
+                            className="form-control form-size"
+                            onChange={props.onDateChanged}
+                        />
+                    </div>
+                    <div className={"d-flex justify-content-end align-items-end form-group"}>
+                        <input type="reset" value="Cancella" className={"btn btn-danger button-size"} onClick={props.onResetValues}/>
+                    </div>
+                </form>
+            </div>
+            <div className="col-12 d-none d-xl-inline">
+                <form>
+                    <div className="form-row">
+                        <div className="col-5">
+                            <label htmlFor="name" className="m-0 d-none">Nome</label>
+                            <input
+                                id="name"
+                                name={"name"}
+                                type="text"
+                                placeholder="Nome"
+                                className="form-control button-size"
+                                onChange={props.onNameChanged}
+                            />
+                        </div>
+                        <div className="col-4">
+                            <label htmlFor="date" className="m-0 d-none">A partire dal</label>
+                            <input
+                                id={"date"}
+                                name={"date"}
+                                type="date"
+                                className="form-control button-size"
+                                onChange={props.onDateChanged}
+                            />
+                        </div>
+                        <div className="col-2">
+                            <input type="reset" value="Cancella" className={"btn btn-danger button-size"} onClick={props.onResetValues}/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    )
+}
+
 const SEARCH_BAR = 0
 const SIMPLE_SEARCH_BAR = 1
 const FRIEND_SEARCH_BAR = 2
+const EVENT_PARTICIPATED_SEARCH_BAR = 3
 
 /**
  * @param props {{
@@ -699,6 +784,16 @@ class DesktopSearchBar extends React.Component {
                             placeholder={data.placeholder}
                             onChange={data.onChange}
                         />
+            case EVENT_PARTICIPATED_SEARCH_BAR:
+                return <EventParticipatedSearchBar
+                            showAnyway={true}
+                            noStickyTop={true}
+                            noBorder={true}
+                            hideShadow={true}
+                            onNameChanged={data.onNameChanged}
+                            onDateChanged={data.onDateChanged}
+                            onResetValues={data.onResetValues}
+                        />
             default: return <div/>
         }
     }
@@ -766,10 +861,12 @@ export {
     SearchBar,
     SimpleSearchBar,
     FriendsSearchBar,
+    EventParticipatedSearchBar,
     DesktopSearchBar,
     SEARCH_BY_EVENT,
     SEARCH_BY_PLACE,
     SEARCH_BAR,
     SIMPLE_SEARCH_BAR,
-    FRIEND_SEARCH_BAR
+    FRIEND_SEARCH_BAR,
+    EVENT_PARTICIPATED_SEARCH_BAR
 }

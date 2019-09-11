@@ -387,11 +387,8 @@ class App extends React.Component {
               />
             <Route path={routes.subscribedEvents} exact render={(props) =>
                   <EventsPartecipated {...props}
-                                isLogged={this.state.isLogged}
+                                {...commonProps}
                                 user={this.state.user}
-                                onError={this.onError}
-                                onSuccess={this.onSuccess}
-                                showMessage={this.showModal}
                                 showReviewModal={this.showReviewModal}
                   />}
               />
