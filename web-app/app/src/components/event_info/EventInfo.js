@@ -20,7 +20,7 @@ let routes = require("../../services/routes/Routes")
 
 class EventInfo extends React.Component {
 
-    code = undefined
+    code = -1
     constructor(props) {
         super(props)
         this.state = {
@@ -72,10 +72,11 @@ class EventInfo extends React.Component {
     }
 
     componentDidMount() {
-        this.code = ResizeService.addSubscription(() => {
-            let mode = this.displayWindowSize()
-            this.setState({mode: mode})
-        })
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => {
+                let mode = this.displayWindowSize()
+                this.setState({mode: mode})
+            })
     }
 
     componentWillUnmount() {

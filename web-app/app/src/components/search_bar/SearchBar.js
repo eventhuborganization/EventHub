@@ -45,7 +45,7 @@ class SearchBar extends CallableComponent {
     configured = false
     containerId = "search-bar-container"
     filtersContainerId = "filter-container"
-    code = undefined
+    code = -1
 
     constructor(props) {
         super(props)
@@ -68,7 +68,8 @@ class SearchBar extends CallableComponent {
 
     componentDidMount() {
         this.updateFiltersMarginTop()
-        this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
+        if (this.code < 0)
+            this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
         super.componentDidMount()
         if (!this.configured) {
             switch(this.props.searchBy) {
@@ -86,12 +87,15 @@ class SearchBar extends CallableComponent {
 
     componentWillUnmount() {
         super.componentWillUnmount()
-        ResizeService.removeSubscription(this.code)
+        if (this.code >= 0)
+            ResizeService.removeSubscription(this.code)
     }
 
     updateFiltersMarginTop = () => {
-        if (this.props.filtersOnlyFixedTop)
-            this.setState({filtersMarginTop: document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : 'search-bar').offsetHeight})
+        if (this.props.filtersOnlyFixedTop) {
+            let elem = document.getElementById(this.props.containerId && this.props.containerId !== "" ? this.props.containerId : 'search-bar')
+            this.setState({filtersMarginTop: elem ? elem.offsetHeight : 0})
+        }
     }
 
     searchInNewLocation = location => {
