@@ -1,7 +1,7 @@
 import React from 'react'
 import EventCard from "../event_card/EventCard"
 import { CreateNewEventButton } from "../floating_button/FloatingButton"
-import { SimpleSearchBar } from "../search_bar/SearchBar"
+import { SimpleSearchBar, SIMPLE_SEARCH_BAR } from "../search_bar/SearchBar"
 import ApiService from '../../services/api/Api'
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import { LoginRedirect } from '../redirect/Redirect'
@@ -14,8 +14,13 @@ export default class EventsByOrganizator extends React.Component {
         this.state = {
             filter: "",
             displayEvents: true,
-            eventsLoaded: []
+            eventsLoaded: [],
+            searchBarData: {
+                placeholder: "Cerca per nome",
+                onChange: this.onFilterChange
+            }
         }
+        props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
         if((props.isLocalUser && props.isLogged) || !props.isLocalUser) {
             ApiService.getEventsByOrganizator(
                 props.organizator._id,
@@ -27,6 +32,14 @@ export default class EventsByOrganizator extends React.Component {
                         this.setState({eventsLoaded: response})
                 })
         }
+    }
+
+    componentDidMount() {
+        this.props.setSearchBar(SIMPLE_SEARCH_BAR, this.state.searchBarData)
+    }
+
+    componentWillUnmount() {
+        this.props.unsetSearchBar()
     }
 
     onSearchError = error => {
@@ -84,7 +97,7 @@ export default class EventsByOrganizator extends React.Component {
 
                 <LoginRedirect {...this.props} redirectIfNotLogged={this.props.isLocalUser} />
 
-                <section className="row sticky-top shadow bg-white border-bottom border-primary">
+                <section className="row sticky-top shadow bg-white border-bottom border-primary d-xl-none">
 
                     <div className="col-12">
                         <div 

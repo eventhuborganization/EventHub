@@ -382,12 +382,9 @@ class App extends React.Component {
               />
               <Route path={routes.myEvents} exact render={(props) =>
                   <EventsByOrganizator {...props}
-                                isLogged={this.state.isLogged}
+                                {...commonProps}
                                 isLocalUser={true}
                                 organizator={this.state.user}
-                                onError={this.onError}
-                                onSuccess={this.onSuccess}
-                                showMessage={this.showModal}
                                 showReviewModal={this.showReviewModal}
                   />}
               />
