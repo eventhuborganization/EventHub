@@ -265,6 +265,14 @@ class App extends React.Component {
                              onUpdate={true}
                 />} 
             />
+            <Route path={routes.eventReviews} exact render={(props) =>
+                  <Reviews {...props}
+                        isLogged={this.state.isLogged}
+                        eventReviews={true}
+                        user={this.state.user}
+                        onError={this.onError}
+                  />}
+              />
             <Route path={routes.event} exact render={(props) => 
                 <EventInfo {...props} 
                    isLogged={this.state.isLogged}
@@ -370,9 +378,18 @@ class App extends React.Component {
                           updateUserInfo={this.updateUserChanges}
                   />}
               />
-              <Route path={routes.reviews} exact render={(props) =>
+              <Route path={routes.myReviews} exact render={(props) =>
                   <Reviews {...props}
                                 isLogged={this.state.isLogged}
+                                myReview={true}
+                                user={this.state.user}
+                                onError={this.onError}
+                  />}
+              />
+              <Route path={routes.reviewsReceived} exact render={(props) =>
+                  <Reviews {...props}
+                                isLogged={this.state.isLogged}
+                                receivedReviews={true}
                                 user={this.state.user}
                                 onError={this.onError}
                   />}

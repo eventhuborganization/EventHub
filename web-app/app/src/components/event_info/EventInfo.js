@@ -115,12 +115,7 @@ class EventInfo extends React.Component {
                 {
                     this.state.eventReviews.length > 3 ?
                         <div className={"col-12 mt-2 d-flex justify-content-end"}>
-                            <Link
-                                to={{
-                                    pathname: routes.reviews,
-                                    event: this.state.eventInfo
-                                }}
-                            >
+                            <Link to={routes.eventReviewsById(this.state.eventInfo._id)}>
                                 <button className={"btn btn-primary"}>
                                     Vedi tutte le recensioni
                                 </button>

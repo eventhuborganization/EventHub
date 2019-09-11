@@ -68,10 +68,7 @@ export default function Menu(props){
                 icon={{style: "far", name: "calendar-alt", size: "lg"}}
                 name="I miei eventi"/>
             <LinkToPage
-                page={{
-                    pathname: routes.reviews,
-                    myReview: true
-                }}
+                page={routes.myReviews}
                 icon={{name: "pen", size: "lg"}}
                 name="Le mie recensioni"/>
         </div>
@@ -90,10 +87,7 @@ export default function Menu(props){
                 }
                 {optionalTabs}
                 <LinkToPage
-                    page={{
-                        pathname: routes.reviews,
-                        receivedReviews: true
-                    }}
+                    page={routes.reviewsReceived}
                     icon={{style: "far", name: "comment", size: "lg"}}
                     name="Recensioni ricevute"/>
                 {logout}

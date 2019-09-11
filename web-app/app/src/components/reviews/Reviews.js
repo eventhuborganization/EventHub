@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom'
 import ApiService from "../../services/api/Api"
 import { EventHeaderBanner } from "../event/Event"
 import {Review, REVIEW_FOR_EVENT, MY_REVIEW, RECEIVED_REVIEW} from "./Review"
-import LocalStorage from "local-storage"
 import NoItemsPlaceholder from "../no_items_placeholder/NoItemsPlaceholder"
 import { LoginRedirect } from "../redirect/Redirect"
 import LoadingSpinner from "../loading_spinner/LoadingSpinner"
@@ -13,28 +12,17 @@ let routes = require("../../services/routes/Routes")
 
 class Reviews extends React.Component {
 
-    #reviewsLocalStorageName = "reviews-data"
-
     constructor(props) {
         super(props)
-        let eventId = props.location.event ? props.location.event._id : undefined
-        let localData = LocalStorage(this.#reviewsLocalStorageName)
+        let eventId = props.eventReviews && props.match && props.match.params && props.match.params.id ? 
+            props.match.params.id : undefined
         let type = MY_REVIEW
         if (eventId)
             type = REVIEW_FOR_EVENT
-        else if (props.location.receivedReviews)
+        else if (props.receivedReviews)
             type = RECEIVED_REVIEW
-        else if (props.location.myReview)
+        else if (props.myReview)
             type = MY_REVIEW
-        else if (localData && localData.type >= 0) {
-            type = localData.type
-            eventId = localData.eventId
-        }
-        let dataToSave = {
-            type: type,
-            eventId: eventId
-        }
-        LocalStorage(this.#reviewsLocalStorageName, dataToSave)
         this.state = {
             eventId: eventId,
             event: undefined,
@@ -44,7 +32,31 @@ class Reviews extends React.Component {
         }
     }
 
+    componentDidUpdate = (prevProps) => {
+        if(prevProps !== this.props){
+            let eventId = this.props.eventReviews && this.props.match && this.props.match.params && this.props.match.params.id ? 
+            this.props.match.params.id : undefined
+            let type = MY_REVIEW
+            if (eventId)
+                type = REVIEW_FOR_EVENT
+            else if (this.props.receivedReviews)
+                type = RECEIVED_REVIEW
+            else if (this.props.myReview)
+                type = MY_REVIEW
+            this.setState({
+                type: type, 
+                eventId: eventId,
+                event: undefined,
+                displayReviews: true, 
+                reviews: []}, () => this.searchReviews())
+        }
+    }
+
     componentDidMount() {
+        this.searchReviews()
+    }
+
+    searchReviews = () => {
         let errorFun = (err) => {
             if(err.response.status !== 404) {
                 this.props.onError("Errore nel caricare le recensioni, ricarica la pagina")
@@ -136,12 +148,12 @@ class Reviews extends React.Component {
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
                 {this.redirectHome()}
 
-                <section className="row sticky-top shadow bg-white text-center">
+                <section className="row d-xl-none sticky-top shadow bg-white text-center">
                     <div className={"col-12"}>{this.renderHeader()}</div>
                     <div className={"col-12 text-center bg-white px-0"}>{this.renderTitle()}</div>
                 </section>
                 <div className={"row"}>
-                    <div className={"col-12 col-sm-11 col-md-11 mx-auto"}>
+                    <div className={"col-12 col-sm-11 col-md-11 col-xl-8 mx-auto"}>
                         {this.renderReviews()}
                     </div>
                 </div>
