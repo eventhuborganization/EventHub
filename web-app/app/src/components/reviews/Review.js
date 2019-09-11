@@ -104,7 +104,7 @@ let ReviewEvaluation = props => {
                 key={"star-" + i}>
             </em>)
     return (
-        <div className={"d-flex justify-content-start align-items-center"}>
+        <div className={"d-flex justify-content-start align-items-center review-text"}>
             {stars}
         </div>
     )
@@ -126,11 +126,11 @@ let ReviewUserInfo = props => {
     return (
         props.user ?
             <div className={"row"}>
-                <div className="col-3 px-0 my-auto">
+                <div className="col-3 col-xl-2 px-0 d-flex justify-content-center align-items-center">
                     <RoundedSmallImage imageName={props.user.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
                 </div>
-                <div className="col-9 d-flex flex-column justify-content-center px-1">
-                    <span className="text-invited font-weight-bold mb-1">{props.user.name} {props.user.surname}</span>
+                <div className="col d-flex flex-column justify-content-center px-1">
+                    <span className="reviewer-text font-weight-bold mb-1">{props.user.name} {props.user.surname}</span>
                     <ReviewEvaluation evaluation={props.evaluation}/>
                 </div>
             </div> :
