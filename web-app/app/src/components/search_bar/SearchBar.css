@@ -5,6 +5,8 @@
 .logo {}
 .navbar-avatar {
     font-size: 0.7rem;
+    height: 50px;
+    width: 50px;
 }
 
 .pac-container {
