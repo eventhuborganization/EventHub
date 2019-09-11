@@ -10,6 +10,10 @@
     font-size: 1.25rem;
 }
 
+.badge-element {}
+
+.badge-tab-title {}
+
 /**
   Smartphone(SM) Landscape
  */
@@ -84,10 +88,23 @@
  Desktop(XL) Portrait
 */
 @media (min-width: 1200px) {
+    .badge-element {
+        border-style: none !important;
+    }
+    .badge-tab-title {
+        font-size: 1.2rem;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
 @media (min-width: 1200px) and (orientation: landscape) {
+    .badge-element {
+        border-style: none !important;
+    }
+    .badge-tab-title {
+        font-size: 2.2rem;
+        font-weight: bold;
+    }
 }
