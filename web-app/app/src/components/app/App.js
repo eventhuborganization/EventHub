@@ -46,7 +46,8 @@ class App extends React.Component {
             events: applicationState && applicationState.events ? applicationState.events : [],
             showMessageElement: undefined,
             nextErrorToShow: undefined,
-            reviewModalRef: undefined
+            reviewModalRef: undefined,
+            headerRef: undefined
         }
         ApiService.setNotAuthenticatedBehaviour(() => this.saveToStateAndLocalStorage({isLogged: false, user: {}}))
     }
@@ -198,11 +199,6 @@ class App extends React.Component {
     }
 
     setSearchBar = (type, data) => {
-        console.log(this.state)
-        if (data && data.onRef && this.state.headerRef) {
-            data.onRef(this.state.headerRef)
-            delete data.onRef
-        }
         this.setState({searchBarType: type, searchBarData: data})
     }
 
@@ -213,7 +209,8 @@ class App extends React.Component {
         onSuccess: this.onSuccess,
         showMessage: this.showModal,
         setSearchBar: this.setSearchBar,
-        unsetSearchBar: () => this.setSearchBar(undefined, undefined)
+        unsetSearchBar: () => this.setSearchBar(undefined, undefined),
+        headerRef: this.state.headerRef
     }
     return (
         <Router>

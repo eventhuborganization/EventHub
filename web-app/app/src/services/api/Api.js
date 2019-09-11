@@ -275,14 +275,13 @@ let createEventQueryConfigs = (data) => {
  * @param onSuccess {function(response)}
  */
 let getEvents = (data, onError, onSuccess) => {
-    console.log(data)
     let config = createEventQueryConfigs(data)
     let index = data && data.fromIndex ? data.fromIndex : 0
     managePromise(
         Axios.get('/events/' + index, config),
         [201, 200],
         onError,
-        response => {console.log(response); onSuccess(response.data.map(mapEvent))}
+        response => onSuccess(response.data.map(mapEvent))
     )
 }
 

@@ -615,7 +615,6 @@ class DesktopSearchBar extends React.Component {
         if (this.props.searchBarType < 0 || !this.props.data)
             return <div/>
         let data = this.props.data
-        console.log(this.props)
         switch(this.props.searchBarType) {
             case SEARCH_BAR:
                 return <SearchBar
