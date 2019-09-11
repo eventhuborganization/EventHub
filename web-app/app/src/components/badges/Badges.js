@@ -48,36 +48,54 @@ export default class Badges extends React.Component {
 
     renderBadges = () => {
         if(this.state.showBadges && this.state.badges.length > 0){
+            let myBadges = this.state.badges
+                                .filter(badge => badge.acquired)
+                                .map(badge => 
+                                    <div key={badge._id} className="border-bottom badge-element">
+                                        <BadgeElement badge={badge} />
+                                    </div>
+                                )
+            let futureBadges = this.state.badges
+                                .filter(badge => !badge.acquired)
+                                .map(badge => 
+                                    <div key={badge._id} className="border-bottom badge-element">
+                                        <BadgeElement badge={badge} addRequirements={true}/>
+                                    </div>
+                                )
             return (
-                <div>
-                    <AvatarHeader elem={this.props.user} />
+                <div className="row">
+                    <div className="col-12 col-xl-8 mx-auto">
+                        <div className={"d-xl-none"}>
+                            <AvatarHeader elem={this.props.user} />
+                        </div>
 
-                    <div className="mt-3">
-                        <ScrollableMenu title={"I miei badge"} id="myBadges">    
-                        {
-                            this.state.badges
-                                    .filter(badge => badge.acquired)
-                                    .map(badge => 
-                                        <div key={badge._id} className="border-bottom">
-                                            <BadgeElement badge={badge} />
-                                        </div>
-                                    )
-                        }
-                        </ScrollableMenu>
-                    </div>
+                        <div className="d-xl-none">
+                            <div className="mt-3">
+                                <ScrollableMenu title={"I miei badge"} id="myBadges">    
+                                {myBadges}
+                                </ScrollableMenu>
+                            </div>
 
-                    <div className="mt-3">
-                        <ScrollableMenu title={"Prossimi badge"} id="badges">    
-                        {
-                            this.state.badges
-                                    .filter(badge => !badge.acquired)
-                                    .map(badge => 
-                                        <div key={badge._id} className="border-bottom">
-                                            <BadgeElement badge={badge} addRequirements={true}/>
-                                        </div>
-                                    )
-                        }
-                        </ScrollableMenu>
+                            <div className="mt-3">
+                                <ScrollableMenu title={"Prossimi badge"} id="badges">    
+                                {futureBadges}
+                                </ScrollableMenu>
+                            </div>
+                        </div>
+
+                        <div className="d-none d-xl-inline">
+                            <div className="row">
+                                <div className="col-6 d-flex flex-column">
+                                    <div className="badge-tab-title">I miei badge</div>
+                                    {myBadges}
+                                </div>
+
+                                <div className="col-6 d-flex flex-column">
+                                    <div className="badge-tab-title">Prossimi badge</div>
+                                    {futureBadges}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>)
         } else {
@@ -91,7 +109,7 @@ export default class Badges extends React.Component {
 
                 {this.redirectToHome()}
 
-                <section className="row sticky-top shadow bg-white border-bottom border-primary text-center">
+                <section className="row d-xl-none sticky-top shadow bg-white border-bottom border-primary text-center">
                     <h2 className="col ml-1 page-title">I miei badge</h2>
                 </section>
 
@@ -108,9 +126,9 @@ export default class Badges extends React.Component {
 function BadgeElement(props){
     let x = 0
     return (
-        <div className="border-bottom">
+        <div>
             <div className={"row py-2 d-flex align-items-center"}>
-                <div className="col-4 col-md-2 d-flex justify-content-center">
+                <div className="col-4 col-md-2 col-xl-3 d-flex justify-content-center">
                     <RoundedSmallImage 
                         imageName={props.badge.icon}
                         alt={props.badge.description}
