@@ -1,37 +1,39 @@
 exports.home = "/"
-exports.menu = "/menu"
-exports.settings = "/settings"
-exports.login = "/login"
-exports.registration = "/register"
+exports.defaultRoot = "/app"
 
-exports.newEvent = "/events/new"
-exports.newGroup = "/groups/new"
-exports.map = "/map"
-exports.inviteEvent = "/invite/event"
-exports.inviteGroup = "/invite/group"
+exports.menu = exports.defaultRoot + "/menu"
+exports.settings = exports.defaultRoot + "/settings"
+exports.login = exports.defaultRoot + "/login"
+exports.registration = exports.defaultRoot + "/register"
 
-exports.updateEvent = "/events/:id/update"
-exports.eventReviews = "/events/:id/reviews"
-exports.event = "/events/:id"
-exports.user = "/users/:id"
-exports.userFriends = "/users/:id/friends"
-exports.group = "/groups/:id"
+exports.newEvent = exports.defaultRoot + "/events/new"
+exports.newGroup = exports.defaultRoot + "/groups/new"
+exports.map = exports.defaultRoot + "/map"
+exports.inviteEvent = exports.defaultRoot + "/invite/event"
+exports.inviteGroup = exports.defaultRoot + "/invite/group"
 
-exports.myProfile = "/profile"
-exports.myNotifications = "/notifications"
-exports.myFriends = "/friends"
-exports.myGroups = "/groups"
-exports.myEvents = "/myEvents"
-exports.myProgresses = '/myProgresses'
-exports.myReviews = "/myReviews"
+exports.updateEvent = exports.defaultRoot + "/events/:id/update"
+exports.eventReviews = exports.defaultRoot + "/events/:id/reviews"
+exports.event = exports.defaultRoot + "/events/:id"
+exports.user = exports.defaultRoot + "/users/:id"
+exports.userFriends = exports.defaultRoot + "/users/:id/friends"
+exports.group = exports.defaultRoot + "/groups/:id"
 
-exports.subscribedEvents = "/eventsOfInterest"
-exports.reviewsReceived = "/reviewReceived"
+exports.myProfile = exports.defaultRoot + "/profile"
+exports.myNotifications = exports.defaultRoot + "/notifications"
+exports.myFriends = exports.defaultRoot + "/friends"
+exports.myGroups = exports.defaultRoot + "/groups"
+exports.myEvents = exports.defaultRoot + "/myEvents"
+exports.myProgresses = exports.defaultRoot + '/myProgresses'
+exports.myReviews = exports.defaultRoot + "/myReviews"
 
-exports.updateEventFromId = id => "/events/" + id + "/update"
-exports.eventFromId = id => "/events/" + id
-exports.userFromId = id => "/users/" + id
-exports.groupFromId = id => "/groups/" + id
-exports.eventReviewsById = id => "/events/" + id + "/reviews"
-exports.usersFriendsFromId = id => "/users/" + id + "/friends"
+exports.subscribedEvents = exports.defaultRoot + "/eventsOfInterest"
+exports.reviewsReceived = exports.defaultRoot + "/reviewReceived"
+
+exports.updateEventFromId = id => exports.defaultRoot + "/events/" + id + "/update"
+exports.eventFromId = id => exports.defaultRoot + "/events/" + id
+exports.userFromId = id => exports.defaultRoot + "/users/" + id
+exports.groupFromId = id => exports.defaultRoot + "/groups/" + id
+exports.eventReviewsById = id => exports.defaultRoot + "/events/" + id + "/reviews"
+exports.usersFriendsFromId = id => exports.defaultRoot + "/users/" + id + "/friends"
 exports.usersFriendsFromPath = path => path + "/friends"
