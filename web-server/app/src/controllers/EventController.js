@@ -293,6 +293,6 @@ var deleteEventToUser = (userId, event, counter) => {
         .then(() => {sendNotification(userId,{typology: 11, sender: req.user._id, data: {event: event}}, 5)})
         .catch(()=> {
             if (counter>0)
-                deleteEventToUser(userId, eventId, --counter)
+                deleteEventToUser(userId, event, --counter)
         })
 }

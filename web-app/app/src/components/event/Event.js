@@ -184,7 +184,7 @@ let WriteReviewButton = props => {
 }
 
 let EventBadge = (props) => {
-    var typeClass = ""
+    var typeClass = "" 
     var label = ""
     if (props.event.typology === PARTY) {
         typeClass = "party partyBadge"
@@ -197,6 +197,7 @@ let EventBadge = (props) => {
         typeClass = "sport sportBadge"
         label = "Sport"
     }
+    typeClass += (props.badgeClass ? " " + props.badgeClass : "")
     return (<div className={"badge badge-pill badge-text " + typeClass}>#{label}</div>)
 }
 

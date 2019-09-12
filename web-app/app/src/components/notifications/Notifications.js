@@ -81,49 +81,68 @@ class Notifications extends React.Component {
         return (
             <div>
                 <LoginRedirect {...this.props} redirectIfNotLogged={true} />
-                <section className="row sticky-top shadow bg-white border-bottom border-primary text-center">
+                <section className="row d-xl-none sticky-top shadow bg-white border-bottom border-primary text-center">
                     <h2 className="col ml-1 page-title">Notifiche</h2>
                 </section>
 
-                <main className="main-container">
-                    {
-                        <div>
-                            {
-                                notificationsToShow.map(notification => {
-                                    let notificationComponent = <Notification {...this.props}
-                                                                            key={notification._id}
-                                                                            notification={notification}
-                                                                            deleteNotification={this.deleteNotification}
-                                                                />
-                                    return this.isNotificationToBeReadOnce(notification.typology) ?
-                                        (<TrackVisibility key={"tracker-" + notification._id} once>
-                                            {({ isVisible }) => {
-                                                if (isVisible && this.state.notificationsRead.filter(n => n._id === notification._id).length <= 0) {
-                                                    this.setState(prevState => {
-                                                        let state = prevState
-                                                        state.notificationsRead.push(notification)
-                                                        state.notifications = prevState.notifications.filter(n => n._id !== notification._id)
-                                                        return state
-                                                    }, () => ApiService.notificationRead(notification._id, () => {}, () => {}))
-                                                }
-                                                return notificationComponent
-                                            }}
-                                        </TrackVisibility>)
-                                        : notificationComponent
-
-                                })
-                            }
-
-                            {
-                                notificationsToShow.length > 0 ?
-                                    <LargeFloatingButton
-                                        text={"Segna tutte le notifiche come lette"}
-                                        onClick={this.setAllNotificationsAsRead}
-                                    /> : <div/>
-                            }
+                <main className="main-container row">
+                    <div className="col-12 col-xl-8 mx-auto">
+                        <div className={"d-none d-xl-inline"}>
+                            <div className={" row mt-2 "}>
+                                <div className={"col-6 page-title"}>
+                                    Notifiche
+                                </div>
+                                <div className={"col-6 d-flex justify-content-end align-items-center"}>
+                                    {
+                                        notificationsToShow.length > 0 ?
+                                        <button className={"btn btn-primary button-size"} onClick={this.setAllNotificationsAsRead}>
+                                            Segna tutte le notifiche come lette
+                                        </button>: <div/>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    }
-                    {this.renderNoNotificationPlaceHolder()}
+                        {
+                            <div>
+                                {
+                                    notificationsToShow.map(notification => {
+                                        let notificationComponent = <Notification {...this.props}
+                                                                                key={notification._id}
+                                                                                notification={notification}
+                                                                                deleteNotification={this.deleteNotification}
+                                                                    />
+                                        return this.isNotificationToBeReadOnce(notification.typology) ?
+                                            (<TrackVisibility key={"tracker-" + notification._id} once>
+                                                {({ isVisible }) => {
+                                                    if (isVisible && this.state.notificationsRead.filter(n => n._id === notification._id).length <= 0) {
+                                                        this.setState(prevState => {
+                                                            let state = prevState
+                                                            state.notificationsRead.push(notification)
+                                                            state.notifications = prevState.notifications.filter(n => n._id !== notification._id)
+                                                            return state
+                                                        }, () => ApiService.notificationRead(notification._id, () => {}, () => {}))
+                                                    }
+                                                    return notificationComponent
+                                                }}
+                                            </TrackVisibility>)
+                                            : notificationComponent
+
+                                    })
+                                }
+
+                                {
+                                    notificationsToShow.length > 0 ?
+                                        <div className="d-xl-none" >
+                                            <LargeFloatingButton
+                                                text={"Segna tutte le notifiche come lette"}
+                                                onClick={this.setAllNotificationsAsRead}
+                                            /> 
+                                        </div>: <div/>
+                                }
+                            </div>
+                        }
+                        {this.renderNoNotificationPlaceHolder()}
+                    </div>
                 </main>
             </div>
         )

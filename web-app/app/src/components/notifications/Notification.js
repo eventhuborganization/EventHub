@@ -25,7 +25,8 @@ class Notification extends React.Component {
                 7: "Ha modificato l'evento ",
                 8: "Ha accettato la tua richiesta d'amicizia.",
                 9: "Ti ha inviato la sua posizione.",
-                10: "Non ha accettato di inviarti la sua posizione."
+                10: "Non ha accettato di inviarti la sua posizione.",
+                11: "Ha annullato l'evento"
             }
         }
         if(this.props.notification.typology === 8){
@@ -87,7 +88,7 @@ class Notification extends React.Component {
             case 5:
             case 6:
             case 7:
-                return <EventImage imageFolderPath={this.props.imageFolderPath}
+                return <EventImage imageSize="notification-image" imageFolderPath={this.props.imageFolderPath}
                                    event={this.props.notification.event} />
             case 1:
                 return <UserNotificationInteractionPanel key={this.props.notification._id + "userPanel"}
@@ -122,6 +123,7 @@ class Notification extends React.Component {
             case 2:
             case 8:
             case 10:
+            case 11:
                 break
             default:
                 break
@@ -129,7 +131,7 @@ class Notification extends React.Component {
     }
 
     getParentComponentByType(type, child) {
-        return this.isEventType(type) ? 
+        return this.isEventType(type) && type !== 11 ? 
             <Link 
                 to={routes.eventFromId(this.props.notification.event._id)} 
                 className="text-dark"
@@ -149,12 +151,13 @@ class Notification extends React.Component {
                                     key={this.props.notification._id}
                                     event={this.props.notification.event}
                                     hideInteractionButtons={true}
+                                    badgeClass={"notification-event-badge"}
                                     showReviewModal={this.props.showReviewModal}
             /> : <div/>
     }
 
     isEventType = (type) => {
-        return type === 0 || type === 5 || type === 6 || type === 7
+        return type === 0 || type === 5 || type === 6 || type === 7 || type === 11
     }
 
     render() {
@@ -216,10 +219,10 @@ class NotificationSenderInformation extends React.Component {
     render = () => {
         return (
             <div className="row">
-                <div className="col px-0 my-auto">
+                <div className="col col-xl-2 ml-xl-2 px-0 my-auto">
                     <RoundedSmallImage imageName={this.props.notification.sender.avatar} placeholderType={PLACEHOLDER_USER_CIRCLE} alt={"Immagine profilo utente"} />
                 </div>
-                <div className="col-8 d-flex flex-column justify-content-center px-1">
+                <div className="col-8 col-xl-9 d-flex flex-column justify-content-center px-1">
                     <span className="text-secondary time-passed">{this.getTime()}</span>
                     <span className="text-invited"><span className="font-weight-bold">{this.props.notification.sender.name} {this.props.notification.sender.surname}</span> {this.props.description}</span>
                 </div>
@@ -239,7 +242,7 @@ let UserNotificationInteractionPanel = (props) => {
 let EventImage = (props) => {
     return (
         <img src={ApiService.getImageUrl(props.event.thumbnail)}
-             className="img-fluid"
+             className={"img-fluid " + props.imageSize}
              alt="locandina evento" />
     )
 }

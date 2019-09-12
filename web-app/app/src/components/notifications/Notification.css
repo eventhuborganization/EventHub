@@ -79,10 +79,39 @@
  Desktop(XL) Portrait
 */
 @media (min-width: 1200px) {
+    .time-passed {
+        font-size: 0.85rem;
+    }
+    .text-invited {
+        font-size: 1.3rem;
+    }
+    .notification-text {
+        font-size: 1.15rem;
+    }
+    .notification-image {
+        min-height: 200px;
+        max-height: 200px;
+    }
 }
 
 /*
  Desktop(XL) Landscape
 */
 @media (min-width: 1200px) and (orientation: landscape) {
+    .time-passed {
+        font-size: 0.85rem;
+    }
+    .text-invited {
+        font-size: 1.3rem;
+    }
+    .notification-text {
+        font-size: 1.15rem;
+    }
+    .notification-image {
+        min-height: 200px;
+        max-height: 200px;
+    }
+    .notification-event-badge{
+        font-size: 1.35rem;
+    }
 }
