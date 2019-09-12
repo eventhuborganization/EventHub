@@ -625,7 +625,7 @@ class EventEditor extends React.Component {
                                 <div className="row mt-2">
                                     <div className="col-12 px-0">
                                         <h6 className={"event-info-section-title"}>Descrizione</h6>
-                                        <textarea id="description" className="w-100 form-control event-info-text" onChange={this.updateDescription} />
+                                        <textarea id="description" className="w-100 form-control textarea-size event-info-text" onChange={this.updateDescription} />
                                     </div>
                                 </div>
                             </div>
