@@ -1,0 +1,6 @@
+{
+  "short_name": "EventHub",
+  "name": "EventHub",
+  "start_url": ".",
+  "display": "standalone"
+}

@@ -31,7 +31,7 @@ let reconnectInterval = 2000
 
 function connect(reconnectTries, reconnectInterval) {
     // ! per lavorare con docker sostituire "_cfg.dbpath" con "_cfg.dbpath_docker"
-    mongoose.connect("mongodb://" + _cfg.dbpath + "/event-hub-db", { useNewUrlParser: true, useFindAndModify: false })
+    mongoose.connect("mongodb://" + _cfg.dbpath_docker + "/event-hub-db", { useNewUrlParser: true, useFindAndModify: false })
         .then(
             () => runApp(),
             error => handleMongoConnectionError(error, reconnectTries, reconnectInterval)
@@ -53,9 +53,9 @@ function runApp() {
     let routes = require('./src/routes/routes')
     //host e port servizio utenti
     global.UserServicePort = 3001
-    global.UserServiceHost = "localhost"//'event-hub_user-service'
+    global.UserServiceHost = 'event-hub_user-service'
     global.EventServicePort = 3002
-    global.EventServiceHost = "localhost"//'event-hub_event-service'
+    global.EventServiceHost = 'event-hub_event-service'
     global.UserServiceServer = 'http://' + UserServiceHost + ':' + UserServicePort
     global.EventServiceServer = 'http://' + EventServiceHost + ':' + EventServicePort
     //port di questo servizio
@@ -78,9 +78,13 @@ function runApp() {
         next()
     })
     
-    //allow to use the whole content of the folder build
-    //app.use(express.static(path.join(__dirname, 'build')))
+    
     routes(app)
+    
+    app.use(express.static(path.join(__dirname, 'build')))
+    app.get('/*', function (req, res) {
+        res.sendFile(path.join(__dirname, 'build', 'index.html'))
+    })
 
     app.use(function(req, res) {
         res.status(404).send({url: req.originalUrl + ' not found'})

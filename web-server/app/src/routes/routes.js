@@ -1,4 +1,4 @@
-module.exports = (app) => {    
+module.exports = (app) => {
     var eventController = require('../controllers/EventController')
     var userController = require('../controllers/UserController')
     var notificationController = require('../controllers/NotificationController')
@@ -13,12 +13,6 @@ module.exports = (app) => {
         dest: __dirname + "../../../temp/files"
     });
 
-    app.route("/")
-        .get((req, res) => {
-            //res.sendFile(path.join(__dirname, 'build', 'index.html'))
-            res.status(200).end()
-        })
-
     app.route('/images/:name')
         .get((req, res) => {
             res.sendFile(`${appRoot}/public/images/events/${req.params.name}`)
@@ -32,6 +26,11 @@ module.exports = (app) => {
     app.route('/badges/:name')
         .get((req, res) => {
             res.sendFile(`${appRoot}/public/images/badges/${req.params.name}`)
+        })
+    
+    app.route('/icons/:name')
+        .get((req, res) => {
+            res.sendFile(`${appRoot}/public/images/icons/${req.params.name}`)
         })
 
     /* ----------------------------------------------- */

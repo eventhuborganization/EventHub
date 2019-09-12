@@ -25,8 +25,8 @@ let checkIfIsNotAuthenticated = response => {
 let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
     promise
         .then(response => {
-            /*console.log("RESPONSE: ")
-            console.log(response)*/
+            console.log("RESPONSE: ")
+            console.log(response)
             if (checkIfIsNotAuthenticated(response))
                 onNotAuthenticated(onError, response)
             else if (!response || !httpSuccessfulCodes.includes(response.status))
@@ -37,9 +37,9 @@ let managePromise = (promise, httpSuccessfulCodes, onError, onSuccess) => {
             }
         })
         .catch(error => {
-            /*console.log("ERROR: ")
+            console.log("ERROR: ")
             console.log(error)
-            console.log(error.response)*/
+            console.log(error.response)
             if (checkIfIsNotAuthenticated(error.response))
                 onNotAuthenticated(onError, error)
             else
@@ -1059,6 +1059,14 @@ let getBadgeUrl = (imageName) => {
     return "/badges/" + imageName
 }
 
+/**
+ * @param imageName {string}
+ * @returns {string}
+ */
+let getIconUrl = (imageName) => {
+    return "/icons/" + imageName
+}
+
 export default {
     createNewEvent,
     deleteEvent,
@@ -1105,5 +1113,6 @@ export default {
     getReviewsForEvent,
     getWrittenReviews,
     getReceivedReviews,
-    getSubscribedEvents
+    getSubscribedEvents,
+    getIconUrl
 }

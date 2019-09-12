@@ -22,7 +22,7 @@ let reconnectInterval = 2000
 
 function connect(reconnectTries, reconnectInterval) {
     // ! per lavorare con docker sostituire "_cfg.dbpath" con "_cfg.dbpath_docker"
-    mongoose.connect(`mongodb://${_cfg.dbpath}/event-hub-db`, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
+    mongoose.connect(`mongodb://${_cfg.dbpath_docker}/event-hub-db`, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true })
         .then(
             () => runApp(),
             error => {

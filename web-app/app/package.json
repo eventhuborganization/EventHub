@@ -25,6 +25,7 @@
     "eject": "react-scripts eject"
   },
   "proxy": "https://0.0.0.0:3003",
+  "homepage" : ".",
   "eslintConfig": {
     "extends": "react-app"
   },

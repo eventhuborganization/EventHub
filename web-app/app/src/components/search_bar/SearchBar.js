@@ -70,11 +70,11 @@ class SearchBar extends CallableComponent {
     }
 
     componentDidMount() {
+        super.componentDidMount()
         this.checkIfRouteChanged()
         this.updateFiltersMarginTop()
         if (this.code < 0)
             this.code = ResizeService.addSubscription(() => this.updateFiltersMarginTop())
-        super.componentDidMount()
         if (!this.configured) {
             switch(this.props.searchBy) {
                 case SEARCH_BY_PLACE:
@@ -89,8 +89,19 @@ class SearchBar extends CallableComponent {
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         this.checkIfRouteChanged()
+        if (prevProps.searchBy !== this.props.searchBy) {
+            switch(this.props.searchBy) {
+                case SEARCH_BY_PLACE:
+                    this.configureSearchByPlace()
+                    break
+                case SEARCH_BY_EVENT:
+                    this.configureSearchByEvent()
+                    break
+                default: break
+            }
+        }
     }
 
     checkIfRouteChanged = () => {

@@ -7,8 +7,8 @@ import GoogleApi from "../../services/google_cloud/GoogleMaps"
 import {CallableComponent} from "../redirect/Redirect"
 import GeoLocation from "../../services/location/GeoLocation"
 import LocalStorage from "local-storage"
+import ApiService from '../../services/api/Api'
 
-let images = require.context("../../assets/images", true)
 let routes = require("../../services/routes/Routes")
 
 class EventsMap extends CallableComponent {
@@ -113,7 +113,7 @@ class EventsMap extends CallableComponent {
         let marker = new window.google.maps.Marker({
             position: new window.google.maps.LatLng(event.location.lat, event.location.lng),
             icon: {
-                url: images(`./${iconName}`),
+                url: ApiService.getIconUrl(iconName),
                 scaledSize: new window.google.maps.Size(24, 24),
                 origin: new window.google.maps.Point(0, 0),
                 anchor: new window.google.maps.Point(0, 24)
@@ -133,7 +133,7 @@ class EventsMap extends CallableComponent {
             new window.google.maps.Marker({
                 position: location,
                 icon: {
-                    url: images(`./${"circle-solid.png"}`),
+                    url: ApiService.getIconUrl("circle-solid.png"),
                     scaledSize: new window.google.maps.Size(14, 14),
                     origin: new window.google.maps.Point(0, 0),
                     anchor: new window.google.maps.Point(0, 14)
