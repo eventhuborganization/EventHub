@@ -33,7 +33,7 @@ let SEARCH_BY_PLACE = 1
  */
 class SearchBar extends CallableComponent {
 
-    rand = Math.floor(Math.random() * 100) + 1
+    rand = Math.floor(Math.random() * 10000000) + 1
     search_input_id = 'tf-search' + this.rand
     btn_search_id = 'btn-search' + this.rand
     location_filter_id = 'location' + this.rand
