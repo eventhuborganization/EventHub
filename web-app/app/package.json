@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "body-scroll-lock": "^2.6.4",
     "js-sha512": "^0.8.0",
     "local-storage": "^2.0.0",
